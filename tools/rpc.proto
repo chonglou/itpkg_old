@@ -1,0 +1,28 @@
+package itpkg;
+
+option java_package = "com.odong.itpkg.model";
+option java_outer_classname = "Rpc";
+
+enum Type{
+	BYE = 0;
+	COMMAND = 1;
+	FILE=2;
+}
+message Request{
+	required Type type = 1;
+	optional string name = 2;
+	optional string mode = 3;
+	repeated string lines = 4;		
+	required int64 created = 5;
+}
+
+enum Code{
+	SUCCESS = 1;
+	FAIL = -1;
+}
+message Response{
+	required Type type = 1;
+	required Code code = 2;
+	repeated string lines = 3;
+	required int64 created = 4; 
+}

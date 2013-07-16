@@ -21,10 +21,27 @@
         <jackson.version>2.2.2</jackson.version>
         <antlr.version>3.5</antlr.version>
         <httl.version>1.0.10</httl.version>
+        <netty.version>4.0.0.Final</netty.version>
         <java.version>1.7</java.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.odong.itpkg</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>

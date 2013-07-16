@@ -16,6 +16,15 @@ public class Host implements Serializable {
     private String netId;
     private String name;
     private String details;
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getNetId() {
         return netId;

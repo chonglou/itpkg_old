@@ -1,4 +1,4 @@
-package com.odong.itpkg.model;
+package com.odong.itpkg.entity.net;
 
 import java.io.Serializable;
 
