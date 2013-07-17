@@ -23,10 +23,10 @@ import javax.annotation.Resource;
  */
 @Component("rpc.server")
 public class Server {
+
     @PreDestroy
     void destroy() {
         try {
-            logger.info("服务停止");
             rootCF.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             logger.error("停止服务出错", e);
@@ -36,6 +36,7 @@ public class Server {
         }
     }
 
+
     @PostConstruct
     void init() {
         bossG = new NioEventLoopGroup();
@@ -44,7 +45,6 @@ public class Server {
         sb.group(bossG, workerG).channel(NioServerSocketChannel.class).childHandler(initializer).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 
         try {
-            logger.info("服务启动");
             rootCF = sb.bind(host, port).sync();
         } catch (InterruptedException e) {
             logger.error("启动服务出错", e);

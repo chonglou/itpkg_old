@@ -25,6 +25,7 @@
 
     <logger name="org.springframework" level="WARN" />
     <logger name="org.apache" level="WARN" />
+    <logger name="io.netty" level="WARN"/>
 
     <root level="DEBUG">
         <appender-ref ref="stdout"/>
