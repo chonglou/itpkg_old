@@ -1,10 +1,14 @@
 package com.odong.itpkg.util;
 
 import com.odong.itpkg.Constants;
+import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.RbacService;
+import com.odong.itpkg.service.TaskService;
+import com.odong.portal.config.Database;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.TimeHelper;
 import httl.spi.resolvers.GlobalResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +52,28 @@ public class SiteHelper {
             accountService.addUser(email, "管理员", "123456", company);
             User admin = accountService.getUser(email);
             rbacService.bindAdmin(admin.getId(), true);
+
+            Task gcT = new Task();
+            gcT.setId(UUID.randomUUID().toString());
+            gcT.setType(Task.Type.SYS_GC);
+            gcT.setState(Task.State.SUBMIT);
+            gcT.setStartUp(timeHelper.nextDay(gcHour));
+            gcT.setSpace(60 * 24);
+            gcT.setIndex(0);
+            gcT.setCreated(new Date());
+            taskService.add(gcT);
+
+            if (database.isMysql()) {
+                Task backupT = new Task();
+                backupT.setId(UUID.randomUUID().toString());
+                backupT.setType(Task.Type.MYSQL_BACKUP);
+                backupT.setState(Task.State.SUBMIT);
+                backupT.setStartUp(timeHelper.nextDay(backupHour));
+                backupT.setSpace(60 * 24);
+                backupT.setIndex(0);
+                backupT.setCreated(new Date());
+                taskService.add(backupT);
+            }
         }
 
         GlobalResolver.put("gl_debug", appDebug);
@@ -78,6 +104,12 @@ public class SiteHelper {
     }
 
     @Resource
+    private Database database;
+    @Resource
+    private TimeHelper timeHelper;
+    @Resource
+    private TaskService taskService;
+    @Resource
     private RbacService rbacService;
     @Resource
     private AccountService accountService;
@@ -89,7 +121,31 @@ public class SiteHelper {
     private String appStoreDir;
     @Value("${app.debug}")
     private boolean appDebug;
+    @Value("${backup.hour}")
+    private int backupHour;
+    @Value("${gc.hour}")
+    private int gcHour;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
+
+    public void setBackupHour(int backupHour) {
+        this.backupHour = backupHour;
+    }
+
+    public void setGcHour(int gcHour) {
+        this.gcHour = gcHour;
+    }
+
+    public void setTimeHelper(TimeHelper timeHelper) {
+        this.timeHelper = timeHelper;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     public void setRbacService(RbacService rbacService) {
         this.rbacService = rbacService;

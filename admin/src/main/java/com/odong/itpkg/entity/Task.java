@@ -13,15 +13,16 @@ import java.util.Date;
  * Time: 上午9:42
  */
 @Entity
-@Table(name = "siteRpc")
+@Table(name = "siteTask")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Rpc implements Serializable {
+public class Task implements Serializable {
+
     public enum Type {
-        FILE, COMMAND, HEART
+        RPC_FILE, RPC_COMMAND, RPC_HEART, SYS_GC, MYSQL_BACKUP
     }
 
     public enum State {
-        SUBMIT, PROCESS, SUCCESS, FAIL
+        SUBMIT,  DONE
     }
 
     private static final long serialVersionUID = -2733778730965933362L;
@@ -30,12 +31,10 @@ public class Rpc implements Serializable {
     @Column(nullable = false, updatable = false, unique = true)
     private String id;
     @Column(nullable = false, updatable = false)
-    private Long host;
-    @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
     @Lob
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private String request;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -44,8 +43,18 @@ public class Rpc implements Serializable {
     private String response;
     @Column(nullable = false, updatable = false)
     private Date created;
-    private Date begin;
-    private Date end;
+    private Date lastBegin;
+    private Date lastEnd;
+    @Column(nullable = false, updatable = false)
+    private Date startUp;
+    @Column(updatable = false)
+    private Date shutDown;
+    @Column(updatable = false)
+    private int total;
+    @Column(nullable = false)
+    private int index;
+    @Column(nullable = false, updatable = false)
+    private int space;
     @Version
     private int version;
 
@@ -57,13 +66,6 @@ public class Rpc implements Serializable {
         this.id = id;
     }
 
-    public Long getHost() {
-        return host;
-    }
-
-    public void setHost(Long host) {
-        this.host = host;
-    }
 
     public Type getType() {
         return type;
@@ -89,14 +91,6 @@ public class Rpc implements Serializable {
         this.state = state;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
     public String getResponse() {
         return response;
     }
@@ -113,19 +107,67 @@ public class Rpc implements Serializable {
         this.created = created;
     }
 
-    public Date getBegin() {
-        return begin;
+    public Date getLastBegin() {
+        return lastBegin;
     }
 
-    public void setBegin(Date begin) {
-        this.begin = begin;
+    public void setLastBegin(Date lastBegin) {
+        this.lastBegin = lastBegin;
     }
 
-    public Date getEnd() {
-        return end;
+    public Date getLastEnd() {
+        return lastEnd;
     }
 
-    public void setEnd(Date end) {
-        this.end = end;
+    public void setLastEnd(Date lastEnd) {
+        this.lastEnd = lastEnd;
+    }
+
+    public Date getStartUp() {
+        return startUp;
+    }
+
+    public void setStartUp(Date startUp) {
+        this.startUp = startUp;
+    }
+
+    public Date getShutDown() {
+        return shutDown;
+    }
+
+    public void setShutDown(Date shutDown) {
+        this.shutDown = shutDown;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getSpace() {
+        return space;
+    }
+
+    public void setSpace(int space) {
+        this.space = space;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }
