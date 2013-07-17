@@ -1,7 +1,7 @@
 package com.odong.itpkg.util;
 
 import com.odong.itpkg.model.SmtpProfile;
-import com.odong.itpkg.service.SiteService;
+import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;

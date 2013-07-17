@@ -1,6 +1,11 @@
 package com.odong.itpkg.entity.net.firewall;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -9,12 +14,20 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午11:13
  */
-public class Dmz implements Serializable {
+@Entity
+@Table(name = "ffDmz")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Dmz extends IdEntity {
     private static final long serialVersionUID = -1357313352371095441L;
+    @Column(nullable = false, updatable = false)
     private Long host;
+    @Column(nullable = false)
     private Long ip;
+    @Column(nullable = false)
     private Long mac;
-    private String details;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false, updatable = false)
     private Date created;
 
     public Date getCreated() {
@@ -49,11 +62,11 @@ public class Dmz implements Serializable {
         this.mac = mac;
     }
 
-    public String getDetails() {
-        return details;
+    public String getName() {
+        return name;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setName(String name) {
+        this.name = name;
     }
 }

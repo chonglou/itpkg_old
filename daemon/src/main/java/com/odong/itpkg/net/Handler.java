@@ -1,6 +1,6 @@
 package com.odong.itpkg.net;
 
-import com.odong.itpkg.Constant;
+import com.odong.itpkg.Constants;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
@@ -72,7 +72,7 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
 
     private Rpc.Response process(Rpc.Request request) {
         Rpc.Response.Builder response = Rpc.Response.newBuilder().setType(request.getType()).setCode(Rpc.Code.FAIL);
-        if (encryptHelper.encode(request.getSign()).length() == Constant.SIGN_LENGTH) {
+        if (encryptHelper.encode(request.getSign()).length() == Constants.SIGN_LENGTH) {
             switch (request.getType()) {
                 case HEART:
                     Properties props = System.getProperties();

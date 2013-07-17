@@ -15,16 +15,16 @@ import org.slf4j.LoggerFactory;
 public class NamingStrategy extends ImprovedNamingStrategy {
     private static final long serialVersionUID = 3022396147085580172L;
 
-    public NamingStrategy(String appName) {
+    public NamingStrategy() {
         super();
-        this.prefix = appName.toUpperCase()+"_";
+        this.prefix = "ITPKG_";
         this.stringHelper = new StringHelper();
 
     }
 
     @Override
     public String classToTableName(String className) {
-        return prefix+ encode(stringHelper.camelCase2Underscore(className));
+        return prefix + encode(stringHelper.camelCase2Underscore(className));
     }
 
     @Override
@@ -49,11 +49,15 @@ public class NamingStrategy extends ImprovedNamingStrategy {
         for (char c : s.toUpperCase().toCharArray()) {
             if (c >= 'A' && c <= 'Z') {
                 c = base.charAt((base.indexOf(c) + 5) % 26);
-            } else if (c != '_') {
-                throw new IllegalArgumentException("只能由数字或下划线组成[" + s + "]");
+
+                sb.append(c);
+            } else if (c == '_' || (c >= '0' && c <= '9')) {
+                sb.append(c);
+            } else {
+
+                throw new IllegalArgumentException("只能由数字、字母、下划线组成[" + s + "]");
             }
 
-            sb.append(c);
         }
         return sb.toString();
     }

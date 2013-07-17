@@ -1,6 +1,9 @@
 package com.odong.itpkg.entity.net.firewall;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -9,14 +12,22 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午10:57
  */
-public class Input implements Serializable {
+@Entity
+@Table(name = "ffIn")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Input extends IdEntity {
     private static final long serialVersionUID = 3757284773772753042L;
-    private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, updatable = false)
     private Long host;
+    @Column(nullable = false)
     private int port;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Protocol protocol;
     private Long dateLimit;
+    @Column(nullable = false, updatable = false)
     private Date created;
 
     public Date getCreated() {
@@ -33,14 +44,6 @@ public class Input implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getHost() {

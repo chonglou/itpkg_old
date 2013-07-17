@@ -1,6 +1,9 @@
 package com.odong.itpkg.entity.net;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,14 +11,19 @@ import java.io.Serializable;
  * Date: 13-7-16
  * Time: 上午11:09
  */
-public class Ip implements Serializable {
+@Entity
+@Table(name = "netIp")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Ip extends IdEntity {
     public enum Type {
         PPPOE, DHCP, STATIC
     }
 
     private static final long serialVersionUID = 4176678672721576398L;
-    private Long id;
+    @Column(nullable = false, updatable = false)
     private Long host;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Type type;
     private String username;
     private String password;
@@ -24,6 +32,9 @@ public class Ip implements Serializable {
     private String gateway;
     private String dns1;
     private String dns2;
+    @Version
+    private int version;
+
 
     public Long getHost() {
         return host;
@@ -33,12 +44,12 @@ public class Ip implements Serializable {
         this.host = host;
     }
 
-    public Long getId() {
-        return id;
+    public int getVersion() {
+        return version;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public Type getType() {

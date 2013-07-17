@@ -76,7 +76,7 @@ public class Jpa {
 
 
     @Bean(destroyMethod = "close")
-    @DependsOn("database.init")
+    @DependsOn("config.database")
     BoneCPDataSource getDataSource() {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setDriverClass(jdbcDriver);

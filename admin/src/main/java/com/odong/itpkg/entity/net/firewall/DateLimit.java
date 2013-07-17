@@ -1,6 +1,12 @@
 package com.odong.itpkg.entity.net.firewall;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -9,13 +15,21 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午11:29
  */
-public class DateLimit implements Serializable {
+
+@Entity
+@Table(name = "ffDate")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class DateLimit extends IdEntity {
     private static final long serialVersionUID = -4892201038551133631L;
-    private Long id;
+    @Column(nullable = false)
     private String name;
+    @Lob
     private String details;
+    @Column(nullable = false, updatable = false)
     private Long company;
+    @Column(nullable = false)
     private String beginTime;
+    @Column(nullable = false)
     private String endTime;
     private boolean mon;
     private boolean tues;
@@ -24,7 +38,7 @@ public class DateLimit implements Serializable {
     private boolean fri;
     private boolean sat;
     private boolean sun;
-
+    @Column(nullable = false, updatable = false)
     private Date created;
 
     public Date getCreated() {
@@ -35,13 +49,6 @@ public class DateLimit implements Serializable {
         this.created = created;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

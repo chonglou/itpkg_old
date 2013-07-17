@@ -1,6 +1,12 @@
 package com.odong.itpkg.entity.uc;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -9,21 +15,20 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午11:02
  */
-public class Group implements Serializable {
+
+@Entity
+@Table(name = "ucGroup")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Group extends IdEntity {
     private static final long serialVersionUID = -4913124079464312839L;
-    private Long id;
+    @Column(nullable = false)
     private String name;
+    @Lob
     private String details;
-    private Long company;
+    @Column(nullable = false, updatable = false)
+    private String company;
+    @Column(nullable = false, updatable = false)
     private Date created;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -41,11 +46,11 @@ public class Group implements Serializable {
         this.details = details;
     }
 
-    public Long getCompany() {
+    public String getCompany() {
         return company;
     }
 
-    public void setCompany(Long company) {
+    public void setCompany(String company) {
         this.company = company;
     }
 

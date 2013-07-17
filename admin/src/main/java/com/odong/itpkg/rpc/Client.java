@@ -1,6 +1,6 @@
 package com.odong.itpkg.rpc;
 
-import com.odong.itpkg.Constant;
+import com.odong.itpkg.Constants;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.util.JsonHelper;
 import com.odong.itpkg.util.StringHelper;
@@ -41,7 +41,7 @@ public class Client {
     }
 
     private Rpc.Request.Builder builder(Rpc.Type type) {
-        return Rpc.Request.newBuilder().setType(type).setCreated(new Date().getTime()).setSign(stringHelper.random(Constant.SIGN_LENGTH));
+        return Rpc.Request.newBuilder().setType(type).setCreated(new Date().getTime()).setSign(stringHelper.random(Constants.SIGN_LENGTH));
     }
 
     public Rpc.Response call(String host, int port, Rpc.Request request) {

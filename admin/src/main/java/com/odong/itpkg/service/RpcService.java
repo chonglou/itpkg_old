@@ -3,8 +3,8 @@ package com.odong.itpkg.service;
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-7-16
- * Time: 上午10:50
+ * Date: 13-7-17
+ * Time: 上午9:48
  */
-public class SiteService {
+public interface RpcService {
 }

@@ -1,6 +1,11 @@
 package com.odong.itpkg.entity.net.firewall;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -9,25 +14,22 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午11:24
  */
-public class FlowLimit implements Serializable {
+
+@Entity
+@Table(name = "ffFlow")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class FlowLimit extends IdEntity {
     private static final long serialVersionUID = -4311479941247650306L;
-    private Long id;
+    @Column(nullable = false, updatable = false)
     private Long company;
+    @Column(nullable = false)
     private String name;
-    private String details;
-    private int maxIn;
-    private int maxOut;
-    private int minIn;
-    private int minOut;
+    private Integer maxIn;
+    private Integer maxOut;
+    private Integer minIn;
+    private Integer minOut;
+    @Column(nullable = false, updatable = false)
     private Date created;
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
 
     public Long getCompany() {
         return company;
@@ -35,14 +37,6 @@ public class FlowLimit implements Serializable {
 
     public void setCompany(Long company) {
         this.company = company;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -53,43 +47,43 @@ public class FlowLimit implements Serializable {
         this.name = name;
     }
 
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public int getMaxIn() {
+    public Integer getMaxIn() {
         return maxIn;
     }
 
-    public void setMaxIn(int maxIn) {
+    public void setMaxIn(Integer maxIn) {
         this.maxIn = maxIn;
     }
 
-    public int getMaxOut() {
+    public Integer getMaxOut() {
         return maxOut;
     }
 
-    public void setMaxOut(int maxOut) {
+    public void setMaxOut(Integer maxOut) {
         this.maxOut = maxOut;
     }
 
-    public int getMinIn() {
+    public Integer getMinIn() {
         return minIn;
     }
 
-    public void setMinIn(int minIn) {
+    public void setMinIn(Integer minIn) {
         this.minIn = minIn;
     }
 
-    public int getMinOut() {
+    public Integer getMinOut() {
         return minOut;
     }
 
-    public void setMinOut(int minOut) {
+    public void setMinOut(Integer minOut) {
         this.minOut = minOut;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

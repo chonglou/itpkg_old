@@ -41,8 +41,7 @@ public class BaseJpa2DaoImpl<T extends Serializable, PK extends Serializable> im
 
     @Override
     public void insert(T t) {
-        entityManager.persist(t);  //
-        // entityManager.refresh(t);
+        entityManager.persist(t);
     }
 
     @Override

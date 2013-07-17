@@ -37,6 +37,9 @@ public class EncryptHelper {
 
 
     public void init() {
+        if(appKey==null || appKey.length() < 20){
+            throw new IllegalArgumentException("app.key长度不应小于20位");
+        }
         spe = new StrongPasswordEncryptor();
         ste = new StrongTextEncryptor();
         ste.setPassword(appKey);

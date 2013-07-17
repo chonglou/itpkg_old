@@ -1,6 +1,9 @@
 package com.odong.itpkg.entity.net;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -9,16 +12,36 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午10:58
  */
-public class Host implements Serializable {
+
+@Entity
+@Table(name = "netHost")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Host extends IdEntity {
     private static final long serialVersionUID = -7362809864882645300L;
-    private Long id;
-    private Long company;
-    private Long lan;
-    private String netId;
+    @Column(nullable = false, updatable = false)
+    private String company;
+    private Long wanIp;
+    @Column(nullable = false)
+    private String lanNet;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private String domain;
+    @Lob
     private String details;
     private Date lastHeart;
+    @Column(nullable = false)
     private String key;
+    @Version
+    private int version;
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
 
     public Date getLastHeart() {
         return lastHeart;
@@ -36,36 +59,36 @@ public class Host implements Serializable {
         this.key = key;
     }
 
-    public String getNetId() {
-        return netId;
-    }
-
-    public void setNetId(String netId) {
-        this.netId = netId;
-    }
-
-    public Long getCompany() {
+    public String getCompany() {
         return company;
     }
 
-    public void setCompany(Long company) {
+    public void setCompany(String company) {
         this.company = company;
     }
 
-    public Long getLan() {
-        return lan;
+    public Long getWanIp() {
+        return wanIp;
     }
 
-    public void setLan(Long lan) {
-        this.lan = lan;
+    public void setWanIp(Long wanIp) {
+        this.wanIp = wanIp;
     }
 
-    public Long getId() {
-        return id;
+    public String getLanNet() {
+        return lanNet;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setLanNet(String lanNet) {
+        this.lanNet = lanNet;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getName() {

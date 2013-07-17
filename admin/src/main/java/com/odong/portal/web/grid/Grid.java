@@ -22,16 +22,15 @@ public class Grid extends ResponseItem {
     }
 
     public void addRow(String... texts) {
-        if((action== null && texts.length == cols.length) ||
-                (action!=null && texts.length== cols.length+1)){
+        if ((action == null && texts.length == cols.length) ||
+                (action != null && texts.length == cols.length + 1)) {
             Collections.addAll(items, texts);
-        }
-        else{
-        throw new IllegalArgumentException("参数个数不对");
+        } else {
+            throw new IllegalArgumentException("参数个数不对");
         }
     }
 
-    public void able(boolean view, boolean add, boolean edit, boolean delete){
+    public void able(boolean view, boolean add, boolean edit, boolean delete) {
         this.view = view;
         this.add = add;
         this.edit = edit;

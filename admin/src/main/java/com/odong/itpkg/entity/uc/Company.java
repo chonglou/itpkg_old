@@ -1,5 +1,8 @@
 package com.odong.itpkg.entity.uc;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,12 +12,30 @@ import java.util.Date;
  * Date: 13-7-16
  * Time: 上午11:02
  */
+
+@Entity
+@Table(name = "ucCompany")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Company implements Serializable {
     private static final long serialVersionUID = 9041368825509992267L;
-    private Long id;
+
+    @Id
+    @Column(nullable = false, updatable = false, unique = true)
+    private String id;
+    @Column(nullable = false)
     private String name;
+    @Lob
     private String details;
+    @Column(nullable = false, updatable = false)
     private Date created;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Date getCreated() {
         return created;
@@ -22,14 +43,6 @@ public class Company implements Serializable {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

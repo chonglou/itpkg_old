@@ -1,6 +1,11 @@
 package com.odong.itpkg.entity.net;
 
-import java.io.Serializable;
+import com.odong.portal.entity.IdEntity;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,17 +13,22 @@ import java.io.Serializable;
  * Date: 13-7-16
  * Time: 上午10:55
  */
-public class Mac implements Serializable {
+@Entity
+@Table(name = "netMac")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Mac extends IdEntity {
     private static final long serialVersionUID = -885297753742159102L;
-    private Long id;
+
+    @Column(nullable = false, updatable = false)
     private Long host;
-    private String ip;
+    @Column(nullable = false, updatable = false)
     private String serial;
+    private String ip;
     private String hostname;
     private Long user;
-    private boolean bind;
     private Long dateLimit;
     private Long flowLimit;
+    private boolean bind;
 
     public Long getDateLimit() {
         return dateLimit;
@@ -44,13 +54,6 @@ public class Mac implements Serializable {
         this.host = host;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getIp() {
         return ip;

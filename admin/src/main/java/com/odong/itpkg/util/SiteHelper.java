@@ -1,9 +1,10 @@
 package com.odong.itpkg.util;
 
+import com.odong.itpkg.Constants;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.RbacService;
-import com.odong.itpkg.service.SiteService;
+import com.odong.portal.service.SiteService;
 import httl.spi.resolvers.GlobalResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,10 +31,10 @@ public class SiteHelper {
         siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
             siteService.set("site.init", new Date());
-            siteService.set("site.version", "v20130522");
-            siteService.set("site.title", "门户网站系统");
-            siteService.set("site.description", "站点说明信息");
-            siteService.set("site.keywords", "站点关键字");
+            siteService.set("site.version", Constants.VERSION);
+            siteService.set("site.title", "ITPKG-企业信息化管理系统");
+            siteService.set("site.description", "itpkg");
+            siteService.set("site.keywords", "itpkg");
             siteService.set("site.domain", "www.0-dong.com");
             siteService.set("site.copyright", "&copy;2013");
             siteService.set("site.allowRegister", true);
@@ -41,14 +43,9 @@ public class SiteHelper {
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
 
-            siteService.set("site.hotTagCount", 20);
-            siteService.set("site.hotArticleCount", 10);
-            siteService.set("site.latestCommentCount", 10);
-            siteService.set("site.archiveCount", 6);
-            siteService.set("site.articlePageSize", 50);
-
             String email = "flamen@0-dong.com";
-            accountService.addUser(email, "管理员", "123456");
+            String company = accountService.addCompany("IT-PACKAGE", "管理员");
+            accountService.addUser(email, "管理员", "123456", company);
             User admin = accountService.getUser(email);
             rbacService.bindAdmin(admin.getId(), true);
         }
