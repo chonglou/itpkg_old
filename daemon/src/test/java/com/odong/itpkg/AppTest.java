@@ -9,26 +9,19 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class AppTest {
     @Test
     public void testWrite(){
-        String name = "/tmp/aaa";
-        Path file = Paths.get(name);
-        try{
-            Files.deleteIfExists(file);
+        Properties props = System.getProperties();
+        for(Object t : props.keySet()){
+            log(t+"="+props.getProperty(t.toString()));
         }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        try (BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"))) {
-            for (String s : new String[]{"aaa", "bbb", "ccc"}) {
-                writer.write(s, 0, s.length());
-                writer.write('\n');
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    }
+    private void log(String... ss){
+        for(String s : ss){
+            System.out.println(s);
         }
     }
 }

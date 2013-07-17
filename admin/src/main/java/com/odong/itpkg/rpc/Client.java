@@ -1,5 +1,6 @@
 package com.odong.itpkg.rpc;
 
+import com.odong.itpkg.Constant;
 import com.odong.itpkg.model.Rpc;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +26,22 @@ import javax.annotation.Resource;
  */
 @Component("rpc.client")
 public class Client {
+    public Rpc.Request command(List<String> lines) {
+        return builder(Rpc.Type.COMMAND).addAllLines(lines).build();
+    }
+
+    public Rpc.Request file(String name, String mode, List<String> lines) {
+        return builder(Rpc.Type.FILE).setName(name).setMode(mode == null ? "444" : mode).addAllLines(lines).build();
+    }
+
+    public Rpc.Request heart() {
+        return builder(Rpc.Type.HEART).setType(Rpc.Type.HEART).build();
+    }
+
+    private Rpc.Request.Builder builder(Rpc.Type type) {
+        return Rpc.Request.newBuilder().setType(type).setCreated(new Date().getTime()).setSign(stringHelper.random(Constant.SIGN_LENGTH));
+    }
+
     public Rpc.Response call(String host, int port, Rpc.Request request) {
 
         try {
@@ -47,9 +66,16 @@ public class Client {
         group.shutdownGracefully();
     }
 
+    private EventLoopGroup group;
     @Resource
     private JsonHelper jsonHelper;
-    private EventLoopGroup group;
+    @Resource
+    private StringHelper stringHelper;
+
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
+    }
+
     private final static Logger logger = LoggerFactory.getLogger(Client.class);
 
     public void setJsonHelper(JsonHelper jsonHelper) {

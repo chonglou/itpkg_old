@@ -1,6 +1,7 @@
 package com.odong.itpkg.entity.net;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +17,16 @@ public class Host implements Serializable {
     private String netId;
     private String name;
     private String details;
+    private Date lastHeart;
     private String key;
+
+    public Date getLastHeart() {
+        return lastHeart;
+    }
+
+    public void setLastHeart(Date lastHeart) {
+        this.lastHeart = lastHeart;
+    }
 
     public String getKey() {
         return key;

@@ -25,6 +25,10 @@ public final class Rpc {
      * <code>FILE = 2;</code>
      */
     FILE(2, 2),
+    /**
+     * <code>HEART = 3;</code>
+     */
+    HEART(3, 3),
     ;
 
     /**
@@ -39,6 +43,10 @@ public final class Rpc {
      * <code>FILE = 2;</code>
      */
     public static final int FILE_VALUE = 2;
+    /**
+     * <code>HEART = 3;</code>
+     */
+    public static final int HEART_VALUE = 3;
 
 
     public final int getNumber() { return value; }
@@ -48,6 +56,7 @@ public final class Rpc {
         case 0: return BYE;
         case 1: return COMMAND;
         case 2: return FILE;
+        case 3: return HEART;
         default: return null;
       }
     }
@@ -253,6 +262,21 @@ public final class Rpc {
      * <code>required int64 created = 5;</code>
      */
     long getCreated();
+
+    // required string sign = 6;
+    /**
+     * <code>required string sign = 6;</code>
+     */
+    boolean hasSign();
+    /**
+     * <code>required string sign = 6;</code>
+     */
+    java.lang.String getSign();
+    /**
+     * <code>required string sign = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getSignBytes();
   }
   /**
    * Protobuf type {@code itpkg.Request}
@@ -337,6 +361,11 @@ public final class Rpc {
             case 40: {
               bitField0_ |= 0x00000008;
               created_ = input.readInt64();
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000010;
+              sign_ = input.readBytes();
               break;
             }
           }
@@ -530,12 +559,56 @@ public final class Rpc {
       return created_;
     }
 
+    // required string sign = 6;
+    public static final int SIGN_FIELD_NUMBER = 6;
+    private java.lang.Object sign_;
+    /**
+     * <code>required string sign = 6;</code>
+     */
+    public boolean hasSign() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required string sign = 6;</code>
+     */
+    public java.lang.String getSign() {
+      java.lang.Object ref = sign_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          sign_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string sign = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSignBytes() {
+      java.lang.Object ref = sign_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sign_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       type_ = com.odong.itpkg.model.Rpc.Type.BYE;
       name_ = "";
       mode_ = "";
       lines_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       created_ = 0L;
+      sign_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -547,6 +620,10 @@ public final class Rpc {
         return false;
       }
       if (!hasCreated()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSign()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -571,6 +648,9 @@ public final class Rpc {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeInt64(5, created_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(6, getSignBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -605,6 +685,10 @@ public final class Rpc {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(5, created_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getSignBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -732,6 +816,8 @@ public final class Rpc {
         bitField0_ = (bitField0_ & ~0x00000008);
         created_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
+        sign_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -782,6 +868,10 @@ public final class Rpc {
           to_bitField0_ |= 0x00000008;
         }
         result.created_ = created_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.sign_ = sign_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -824,6 +914,11 @@ public final class Rpc {
         if (other.hasCreated()) {
           setCreated(other.getCreated());
         }
+        if (other.hasSign()) {
+          bitField0_ |= 0x00000020;
+          sign_ = other.sign_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -834,6 +929,10 @@ public final class Rpc {
           return false;
         }
         if (!hasCreated()) {
+          
+          return false;
+        }
+        if (!hasSign()) {
           
           return false;
         }
@@ -1165,6 +1264,80 @@ public final class Rpc {
       public Builder clearCreated() {
         bitField0_ = (bitField0_ & ~0x00000010);
         created_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // required string sign = 6;
+      private java.lang.Object sign_ = "";
+      /**
+       * <code>required string sign = 6;</code>
+       */
+      public boolean hasSign() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required string sign = 6;</code>
+       */
+      public java.lang.String getSign() {
+        java.lang.Object ref = sign_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          sign_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string sign = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSignBytes() {
+        java.lang.Object ref = sign_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sign_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string sign = 6;</code>
+       */
+      public Builder setSign(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        sign_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string sign = 6;</code>
+       */
+      public Builder clearSign() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        sign_ = getDefaultInstance().getSign();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string sign = 6;</code>
+       */
+      public Builder setSignBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        sign_ = value;
         onChanged();
         return this;
       }
@@ -1984,15 +2157,15 @@ public final class Rpc {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017tools/rpc.proto\022\005itpkg\"`\n\007Request\022\031\n\004t" +
+      "\n\017tools/rpc.proto\022\005itpkg\"n\n\007Request\022\031\n\004t" +
       "ype\030\001 \002(\0162\013.itpkg.Type\022\014\n\004name\030\002 \001(\t\022\014\n\004" +
       "mode\030\003 \001(\t\022\r\n\005lines\030\004 \003(\t\022\017\n\007created\030\005 \002" +
-      "(\003\"`\n\010Response\022\031\n\004type\030\001 \002(\0162\013.itpkg.Typ" +
-      "e\022\031\n\004code\030\002 \002(\0162\013.itpkg.Code\022\r\n\005lines\030\003 " +
-      "\003(\t\022\017\n\007created\030\004 \002(\003*&\n\004Type\022\007\n\003BYE\020\000\022\013\n" +
-      "\007COMMAND\020\001\022\010\n\004FILE\020\002*&\n\004Code\022\013\n\007SUCCESS\020" +
-      "\001\022\021\n\004FAIL\020\377\377\377\377\377\377\377\377\377\001B\034\n\025com.odong.itpkg." +
-      "modelB\003Rpc"
+      "(\003\022\014\n\004sign\030\006 \002(\t\"`\n\010Response\022\031\n\004type\030\001 \002" +
+      "(\0162\013.itpkg.Type\022\031\n\004code\030\002 \002(\0162\013.itpkg.Co" +
+      "de\022\r\n\005lines\030\003 \003(\t\022\017\n\007created\030\004 \002(\003*1\n\004Ty" +
+      "pe\022\007\n\003BYE\020\000\022\013\n\007COMMAND\020\001\022\010\n\004FILE\020\002\022\t\n\005HE" +
+      "ART\020\003*&\n\004Code\022\013\n\007SUCCESS\020\001\022\021\n\004FAIL\020\377\377\377\377\377" +
+      "\377\377\377\377\001B\034\n\025com.odong.itpkg.modelB\003Rpc"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2004,7 +2177,7 @@ public final class Rpc {
           internal_static_itpkg_Request_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_itpkg_Request_descriptor,
-              new java.lang.String[] { "Type", "Name", "Mode", "Lines", "Created", });
+              new java.lang.String[] { "Type", "Name", "Mode", "Lines", "Created", "Sign", });
           internal_static_itpkg_Response_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_itpkg_Response_fieldAccessorTable = new

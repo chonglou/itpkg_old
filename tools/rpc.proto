@@ -7,6 +7,7 @@ enum Type{
 	BYE = 0;
 	COMMAND = 1;
 	FILE=2;
+	HEART=3;
 }
 message Request{
 	required Type type = 1;
@@ -14,6 +15,7 @@ message Request{
 	optional string mode = 3;
 	repeated string lines = 4;		
 	required int64 created = 5;
+	required string sign = 6;
 }
 
 enum Code{
