@@ -1,4 +1,4 @@
-package com.odong.itpkg.rpc;
+package com.odong.itpkg.util;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.jasypt.util.text.StrongTextEncryptor;

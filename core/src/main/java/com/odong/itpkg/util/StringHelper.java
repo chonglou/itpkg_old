@@ -1,4 +1,4 @@
-package com.odong.itpkg.rpc;
+package com.odong.itpkg.util;
 
 import java.util.Random;
 import java.util.regex.Matcher;

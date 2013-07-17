@@ -1,0 +1,34 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+@media (max-width: 980px) {
+    .navbar-text.pull-right {
+        float: none;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
+.form-table{
+    width: 98%;
+    text-align: left;
+}
+.form-label{
+    width: 80px;
+}
+
+.grid-tr{
+    border-bottom:1px dashed #ccc;
+}
+.grid-tr:hover {
+    background-color: #cccccc;
+}
+.grid-td-opt{
+    text-align: center;
+    width: 120px;
+}

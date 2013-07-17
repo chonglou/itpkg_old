@@ -2,8 +2,8 @@ package com.odong.itpkg.net;
 
 import com.odong.itpkg.Constant;
 import com.odong.itpkg.model.Rpc;
-import com.odong.itpkg.rpc.EncryptHelper;
-import com.odong.itpkg.rpc.JsonHelper;
+import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.JsonHelper;
 import com.sun.management.OperatingSystemMXBean;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;

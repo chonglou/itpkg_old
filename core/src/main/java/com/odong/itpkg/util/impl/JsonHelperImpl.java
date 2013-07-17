@@ -1,9 +1,9 @@
-package com.odong.itpkg.rpc.impl;
+package com.odong.itpkg.util.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.odong.itpkg.rpc.JsonHelper;
+import com.odong.itpkg.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
