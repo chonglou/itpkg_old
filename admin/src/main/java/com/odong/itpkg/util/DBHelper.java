@@ -1,4 +1,4 @@
-package com.odong.itpkg.job;
+package com.odong.itpkg.util;
 
 import com.odong.portal.config.Database;
 import com.odong.portal.util.ZipHelper;
@@ -23,9 +23,9 @@ import java.util.Date;
  * Date: 13-6-4
  * Time: 下午12:32
  */
-@Component("job.backup")
-public class BackupJob {
-    public void execute() {
+@Component
+public class DBHelper {
+    public void backup() {
         if (database.isMysql()) {
             logger.info("开始备份数据库{}@mysql", database.getDbName());
             try {
@@ -51,7 +51,6 @@ public class BackupJob {
     @PostConstruct
     void init() {
         format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-
     }
 
     @Resource
@@ -62,7 +61,7 @@ public class BackupJob {
     private String appStoreDir;
     private DateFormat format;
 
-    private final static Logger logger = LoggerFactory.getLogger(BackupJob.class);
+    private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
     public void setZipHelper(ZipHelper zipHelper) {
         this.zipHelper = zipHelper;

@@ -2,6 +2,7 @@ package com.odong.itpkg.util.impl;
 
 import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.service.TaskService;
+import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.TaskHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,8 @@ public class TaskHelperImpl implements TaskHelper {
                     break;
                 case RPC_HEART:
                     break;
-                case MYSQL_BACKUP:
+                case DB_BACKUP:
+                    dbHelper.backup();
                     break;
                 case SYS_GC:
                     System.gc();
@@ -62,7 +64,13 @@ public class TaskHelperImpl implements TaskHelper {
 
     @Resource
     private TaskService taskService;
+    @Resource
+    private DBHelper dbHelper;
     private final static Logger logger = LoggerFactory.getLogger(TaskHelperImpl.class);
+
+    public void setDbHelper(DBHelper dbHelper) {
+        this.dbHelper = dbHelper;
+    }
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;

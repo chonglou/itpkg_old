@@ -1,5 +1,7 @@
 package com.odong.itpkg.net;
 
+import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.JsonHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -42,7 +44,10 @@ public class Server {
         bossG = new NioEventLoopGroup();
         workerG = new NioEventLoopGroup();
         ServerBootstrap sb = new ServerBootstrap();
-        sb.group(bossG, workerG).channel(NioServerSocketChannel.class).childHandler(initializer).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
+        sb.group(bossG, workerG).channel(NioServerSocketChannel.class)
+                .childHandler(new Initializer(jsonHelper, encryptHelper,signLength))
+                .option(ChannelOption.SO_BACKLOG, 128)
+                .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         try {
             rootCF = sb.bind(host, port).sync();
@@ -53,19 +58,31 @@ public class Server {
 
     private final static Logger logger = LoggerFactory.getLogger(Server.class);
 
+
+    private ChannelFuture rootCF;
+    private EventLoopGroup bossG;
+    private EventLoopGroup workerG;
     @Value("${server.host}")
     private String host;
     @Value("${server.port}")
     private int port;
     @Resource
-    private Initializer initializer;
-    private ChannelFuture rootCF;
-    private EventLoopGroup bossG;
-    private EventLoopGroup workerG;
+    private JsonHelper jsonHelper;
+    @Resource
+    private EncryptHelper encryptHelper;
+    @Value("${rpc.sign.length}")
+    private int signLength;
 
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
-    public void setInitializer(Initializer initializer) {
-        this.initializer = initializer;
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
+
+    public void setSignLength(int signLength) {
+        this.signLength = signLength;
     }
 
     public void setHost(String host) {

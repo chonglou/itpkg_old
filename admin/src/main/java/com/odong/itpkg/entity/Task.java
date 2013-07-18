@@ -18,7 +18,7 @@ import java.util.Date;
 public class Task implements Serializable {
 
     public enum Type {
-        RPC_FILE, RPC_COMMAND, RPC_HEART, SYS_GC, MYSQL_BACKUP
+        RPC_FILE, RPC_COMMAND, RPC_HEART, SYS_GC, DB_BACKUP
     }
 
     public enum State {

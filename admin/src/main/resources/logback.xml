@@ -45,6 +45,7 @@
 
     <logger name="httl" level="WARN"/>
 
+    <logger name="io.netty" level="WARN"/>
 
     <root level="DEBUG">
         <appender-ref ref="stdout"/>

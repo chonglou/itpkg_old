@@ -13,40 +13,28 @@ import org.slf4j.LoggerFactory;
  * Time: 下午2:43
  */
 public class Handler extends SimpleChannelInboundHandler<Rpc.Response> {
-    public Handler(Rpc.Request request) {
+    public Handler(Callback callback) {
         super();
-        this.request = request;
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("发送消息", request);
-        ctx.writeAndFlush(request);
+        this.callback = callback;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Rpc.Response response) throws Exception {
-        logger.debug("收到消息", response);
-        this.response = response;
+        logger.debug("收到消息：\n{}", response);
+        callback.execute(response);
     }
 
-
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("通道停止");
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("网络异常", cause);
+        logger.error("网络出错", cause);
         ctx.close();
     }
 
     private final static Logger logger = LoggerFactory.getLogger(Handler.class);
-    private Rpc.Request request;
-    private Rpc.Response response;
-
-    public Rpc.Response getResponse() {
-        return response;
-    }
+    private Callback callback;
 }

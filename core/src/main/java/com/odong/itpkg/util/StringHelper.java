@@ -47,8 +47,8 @@ public class StringHelper {
     }
 
     public String random(int len) {
-        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < len; i++) {
             sb.append(base.charAt(random.nextInt(base.length())));
@@ -61,6 +61,6 @@ public class StringHelper {
     }
 
     private Random random;
-    private static final char SEPARATOR = '_';
+
 
 }

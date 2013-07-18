@@ -16,9 +16,9 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
  * Time: 下午2:43
  */
 public class Initializer extends ChannelInitializer<SocketChannel> {
-    public Initializer(Rpc.Request request) {
+    public Initializer(Callback callback) {
         super();
-        this.request = request;
+        this.callback = callback;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class Initializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
         pipeline.addLast("protobufEncoder", new ProtobufEncoder());
 
-        pipeline.addLast("handler", new Handler(request));
+        pipeline.addLast("handler", new Handler(callback));
     }
 
-    private Rpc.Request request;
+    private Callback callback;
 }

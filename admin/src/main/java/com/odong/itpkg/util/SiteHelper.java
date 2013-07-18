@@ -1,6 +1,5 @@
 package com.odong.itpkg.util;
 
-import com.odong.itpkg.Constants;
 import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.service.AccountService;
@@ -34,7 +33,7 @@ public class SiteHelper {
         siteService.set("site.startup", new Date());
         if (siteService.getObject("site.init", Date.class) == null) {
             siteService.set("site.init", new Date());
-            siteService.set("site.version", Constants.VERSION);
+            siteService.set("site.version", "v20130716");
             siteService.set("site.title", "ITPKG-企业信息化管理系统");
             siteService.set("site.description", "itpkg");
             siteService.set("site.keywords", "itpkg");
@@ -54,7 +53,7 @@ public class SiteHelper {
 
             taskService.add(Task.Type.SYS_GC, null, timeHelper.nextDay(gcHour), timeHelper.max(), 0, 60 * 60 * 24);
             if (database.isMysql()) {
-                taskService.add(Task.Type.MYSQL_BACKUP, null, timeHelper.nextDay(backupHour), timeHelper.max(), 0, 60 * 60 * 24);
+                taskService.add(Task.Type.DB_BACKUP, null, timeHelper.nextDay(backupHour), timeHelper.max(), 0, 60 * 60 * 24);
             }
         }
 
