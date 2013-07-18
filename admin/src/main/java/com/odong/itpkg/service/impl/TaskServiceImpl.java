@@ -110,6 +110,14 @@ public class TaskServiceImpl implements TaskService {
         return taskDao.list("FROM Task as i WHERE i.total!=:total AND i.state=:state AND i.startUp>=:now", map);
     }
 
+    @Override
+    public void removeInvalid(int daysKeep) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("date", timeHelper.plus(new Date(), -60*60*24*daysKeep));
+        map.put("state", Task.State.DONE);
+        taskDao.delete("DELETE Task AS i WHERE i.created < :date AND i.state=:state", map);
+    }
+
     @Resource
     private TaskDao taskDao;
     @Resource

@@ -1,15 +1,18 @@
-package com.odong.itpkg.model;
+package com.odong.itpkg.form.personal;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-7-16
- * Time: 上午11:09
+ * Date: 13-7-18
+ * Time: 下午1:21
  */
-public class Contact implements Serializable {
-    private static final long serialVersionUID = 6132288641306371890L;
+public class ContactForm implements Serializable {
+    private static final long serialVersionUID = 4565457953139198392L;
+    @NotNull
+    private String username;
     private String qq;
     private String fax;
     private String tel;
@@ -18,21 +21,12 @@ public class Contact implements Serializable {
     private String web;
     private String details;
 
-
-    public String getDetails() {
-        return details;
+    public String getUsername() {
+        return username;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public String getWeb() {
-        return web;
-    }
-
-    public void setWeb(String web) {
-        this.web = web;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getQq() {
@@ -74,5 +68,21 @@ public class Contact implements Serializable {
 
     public void setWeixin(String weixin) {
         this.weixin = weixin;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
+    public void setWeb(String web) {
+        this.web = web;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

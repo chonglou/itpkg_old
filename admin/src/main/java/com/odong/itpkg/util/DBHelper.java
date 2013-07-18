@@ -1,6 +1,9 @@
 package com.odong.itpkg.util;
 
+import com.odong.itpkg.service.LogService;
+import com.odong.itpkg.service.TaskService;
 import com.odong.portal.config.Database;
+import com.odong.portal.service.SiteService;
 import com.odong.portal.util.ZipHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,11 @@ import java.util.Date;
  */
 @Component
 public class DBHelper {
+    public void compress(int keepDays){
+        taskService.removeInvalid(keepDays);
+        logService.removeOld(keepDays);
+        siteService.set("db.last_compress", new Date());
+    }
     public void backup() {
         if (database.isMysql()) {
             logger.info("开始备份数据库{}@mysql", database.getDbName());
@@ -54,6 +62,12 @@ public class DBHelper {
     }
 
     @Resource
+    private SiteService siteService;
+    @Resource
+    private TaskService taskService;
+    @Resource
+    private LogService logService;
+    @Resource
     private ZipHelper zipHelper;
     @Resource
     private Database database;
@@ -62,6 +76,18 @@ public class DBHelper {
     private DateFormat format;
 
     private final static Logger logger = LoggerFactory.getLogger(DBHelper.class);
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
 
     public void setZipHelper(ZipHelper zipHelper) {
         this.zipHelper = zipHelper;
@@ -74,6 +100,7 @@ public class DBHelper {
     public void setDatabase(Database database) {
         this.database = database;
     }
+
 
 
 }

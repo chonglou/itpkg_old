@@ -14,7 +14,7 @@
         </property>
     </bean>
 
-    <context:component-scan base-package="com.odong.itpkg.controller">
+    <context:component-scan base-package="com.odong.**.controller">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     <mvc:annotation-driven/>

@@ -21,12 +21,11 @@ import java.util.*;
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
     @Override
-    public String addCompany(String name, String details) {
+    public String addCompany(String name) {
         String id = UUID.randomUUID().toString();
         Company c = new Company();
         c.setId(id);
         c.setName(name);
-        c.setDetails(details);
         c.setCreated(new Date());
         companyDao.insert(c);
         return id;

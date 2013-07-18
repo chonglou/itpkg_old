@@ -32,4 +32,6 @@ public interface TaskService {
     String add(Task.Type type, String request, Date startUp, Date shutDown, int total, int space);
 
     List<Task> listTimerTask();
+
+    void removeInvalid(int daysKeep);
 }

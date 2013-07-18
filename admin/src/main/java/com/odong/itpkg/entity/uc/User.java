@@ -36,6 +36,16 @@ public class User extends IdEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private State state;
+    @Lob
+    private String contact;
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
     public String getUsername() {
         return username;

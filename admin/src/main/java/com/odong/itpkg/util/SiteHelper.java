@@ -46,7 +46,7 @@ public class SiteHelper {
             siteService.set("site.author", "zhengjitang@gmail.com");
 
             String email = "flamen@0-dong.com";
-            String company = accountService.addCompany("IT-PACKAGE", "管理员");
+            String company = accountService.addCompany("IT-PACKAGE");
             accountService.addUser(email, "管理员", "123456", company);
             User admin = accountService.getUser(email);
             rbacService.bindAdmin(admin.getId(), true);
