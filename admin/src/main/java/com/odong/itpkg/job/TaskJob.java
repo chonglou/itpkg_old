@@ -1,14 +1,11 @@
 package com.odong.itpkg.job;
 
-import com.odong.itpkg.dao.TaskDao;
 import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.service.TaskService;
+import com.odong.itpkg.util.TaskHelper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,12 +16,21 @@ import java.util.Map;
 @Component("job.taskTarget")
 public class TaskJob {
     public void execute() {
-        for(Task t : taskService.listTimerTask()){
-            taskService.execute(t);
+        for (Task t : taskService.listTimerTask()) {
+            taskService.setBegin(t.getId());
+            String response = taskHelper.execute(t.getId());
+            taskService.setEnd(t.getId(), response);
         }
     }
+
     @Resource
     private TaskService taskService;
+    @Resource
+    private TaskHelper taskHelper;
+
+    public void setTaskHelper(TaskHelper taskHelper) {
+        this.taskHelper = taskHelper;
+    }
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;

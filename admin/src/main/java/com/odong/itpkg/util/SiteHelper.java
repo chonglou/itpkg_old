@@ -20,7 +20,6 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,26 +52,9 @@ public class SiteHelper {
             User admin = accountService.getUser(email);
             rbacService.bindAdmin(admin.getId(), true);
 
-            Task gcT = new Task();
-            gcT.setId(UUID.randomUUID().toString());
-            gcT.setType(Task.Type.SYS_GC);
-            gcT.setState(Task.State.SUBMIT);
-            gcT.setStartUp(timeHelper.nextDay(gcHour));
-            gcT.setSpace(60 * 24);
-            gcT.setIndex(0);
-            gcT.setCreated(new Date());
-            taskService.add(gcT);
-
+            taskService.add(Task.Type.SYS_GC, null, timeHelper.nextDay(gcHour), timeHelper.max(), 0, 60 * 60 * 24);
             if (database.isMysql()) {
-                Task backupT = new Task();
-                backupT.setId(UUID.randomUUID().toString());
-                backupT.setType(Task.Type.MYSQL_BACKUP);
-                backupT.setState(Task.State.SUBMIT);
-                backupT.setStartUp(timeHelper.nextDay(backupHour));
-                backupT.setSpace(60 * 24);
-                backupT.setIndex(0);
-                backupT.setCreated(new Date());
-                taskService.add(backupT);
+                taskService.add(Task.Type.MYSQL_BACKUP, null, timeHelper.nextDay(backupHour), timeHelper.max(), 0, 60 * 60 * 24);
             }
         }
 

@@ -22,7 +22,7 @@ public class Task implements Serializable {
     }
 
     public enum State {
-        SUBMIT,  DONE
+        SUBMIT, PROCESS, DONE
     }
 
     private static final long serialVersionUID = -2733778730965933362L;
@@ -50,13 +50,27 @@ public class Task implements Serializable {
     @Column(updatable = false)
     private Date shutDown;
     @Column(updatable = false)
-    private int total;
+    /**
+     * null - 立刻执行
+     * 0    - 不限次数
+     * >0   - 限制次数
+     */
+    private Integer total;
     @Column(nullable = false)
     private int index;
     @Column(nullable = false, updatable = false)
     private int space;
     @Version
     private int version;
+
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
 
     public String getId() {
         return id;
@@ -137,14 +151,6 @@ public class Task implements Serializable {
 
     public void setShutDown(Date shutDown) {
         this.shutDown = shutDown;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
     }
 
     public int getIndex() {

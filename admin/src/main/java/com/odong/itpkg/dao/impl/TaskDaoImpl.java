@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 下午12:32
  */
 @Repository("site.taskDao")
-public class TaskDaoImpl extends BaseJpa2DaoImpl<Task,String> implements TaskDao {
+public class TaskDaoImpl extends BaseJpa2DaoImpl<Task, String> implements TaskDao {
 }

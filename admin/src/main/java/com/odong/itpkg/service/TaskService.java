@@ -2,6 +2,7 @@ package com.odong.itpkg.service;
 
 import com.odong.itpkg.entity.Task;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,10 +12,19 @@ import java.util.List;
  * Time: 上午9:48
  */
 public interface TaskService {
-    String addRpcCommand(long host, List<String> commands);
-    String addRpcFile(String name, String mode, List<String> lines);
-    String addRpcHeart(int space);
-    void add(Task task);
-    void execute(Task t);
+    void setState(String id, Task.State state);
+
+    void setBegin(String id);
+
+    void setEnd(String id, String response);
+
+    Task get(String id);
+
+    void update(Task task);
+
+    String add(Task.Type type, String request);
+
+    String add(Task.Type type, String request, Date startUp, Date shutDown, int total, int space);
+
     List<Task> listTimerTask();
 }

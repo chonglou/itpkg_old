@@ -3,7 +3,6 @@ package com.odong.itpkg.service;
 import com.odong.itpkg.entity.uc.User;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
