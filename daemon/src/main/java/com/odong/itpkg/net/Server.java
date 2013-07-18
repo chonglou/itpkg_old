@@ -11,6 +11,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,7 @@ import javax.annotation.Resource;
  * Time: 下午2:06
  */
 @Component("rpc.server")
+@DependsOn("bootCheck")
 public class Server {
 
     @PreDestroy

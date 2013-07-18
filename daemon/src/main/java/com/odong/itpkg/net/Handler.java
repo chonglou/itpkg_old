@@ -1,7 +1,9 @@
 package com.odong.itpkg.net;
 
 import com.odong.itpkg.model.Rpc;
+import com.odong.itpkg.util.CommandHelper;
 import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.FileHelper;
 import com.odong.itpkg.util.JsonHelper;
 import com.sun.management.OperatingSystemMXBean;
 import io.netty.channel.ChannelFuture;
@@ -11,16 +13,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.lang.management.ManagementFactory;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Date;
 import java.util.Properties;
 
@@ -32,7 +25,9 @@ import java.util.Properties;
  */
 public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
 
-    public Handler(JsonHelper jsonHelper, EncryptHelper encryptHelper, int signLength) {
+    public Handler(JsonHelper jsonHelper,
+                   EncryptHelper encryptHelper,
+                   int signLength) {
         super();
         this.jsonHelper = jsonHelper;
         this.encryptHelper = encryptHelper;
@@ -87,23 +82,13 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                                 logger.debug(s);
                             }
                         } else {
-                            for (String s : request.getLinesList()) {
-                                Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", s}, null, null);
-                                LineNumberReader reader = new LineNumberReader(new InputStreamReader(process.getInputStream()));
 
-                                String line;
-                                process.waitFor();
-                                while ((line = reader.readLine()) != null) {
-                                    response.addLines(line);
-                                }
-                                reader.close();
-                            }
+                            response.addAllLines(CommandHelper.execute(request.getLinesList().toArray(new String[1])));
                         }
                         response.setCode(Rpc.Code.SUCCESS);
-                    } catch (InterruptedException | IOException e) {
-                        logger.error("执行命令出错", e.getMessage());
+                    } catch (Exception e) {
+                        response.setCode(Rpc.Code.FAIL);
                         response.addLines(e.getMessage());
-                        break;
                     }
 
                     break;
@@ -112,29 +97,14 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                     if (debug) {
                         filename = "/tmp" + request.getName();
                     }
-                    try {
-                        Path file = Paths.get(filename);
-                        if (!Files.isDirectory(file.getParent())) {
-                            Files.createDirectories(file.getParent());
-                        }
-                        Files.deleteIfExists(file);
-                        Files.createFile(file, PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(request.getMode())));
-
-                        BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"));
-
-                        for (String s : request.getLinesList()) {
-                            writer.write(s, 0, s.length());
-                            writer.write('\n');
-                        }
-                        writer.close();
-
-                        response.setCode(Rpc.Code.SUCCESS);
-                    } catch (IOException e) {
-                        logger.error("写文件出错", e);
+                    try{
+                    FileHelper.write(filename, request.getMode(), request.getLinesList().toArray(new String[1]));
+                    response.setCode(Rpc.Code.SUCCESS);
+                    }
+                    catch (Exception e){
+                        response.setCode(Rpc.Code.FAIL);
                         response.addLines(e.getMessage());
                     }
-
-
                     break;
                 case BYE:
                     response.setCode(Rpc.Code.SUCCESS);

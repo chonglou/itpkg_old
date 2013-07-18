@@ -1,5 +1,7 @@
 package com.odong.itpkg;
 
+import com.odong.itpkg.util.CommandHelper;
+import com.odong.itpkg.util.FileHelper;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -7,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.List;
 
 public class App implements Daemon {
     @Override
@@ -16,10 +20,6 @@ public class App implements Daemon {
         if (!"Oracle Corporation".equals(System.getProperty("java.vm.vendor")) || !"Linux".equals(System.getProperty("os.name")) || !"1.7".equals(System.getProperty("java.vm.specification.version"))) {
             logger.error("当前只支持Oracle JDK v1.7 For  Linux x64\n下载地址在：http://www.oracle.com/technetwork/java/javase/downloads/index.html");
             System.exit(-1);
-        }
-
-        if (!"root".equals(System.getProperty("user.name"))) {
-            logger.warn("调试启动");
         }
 
     }
