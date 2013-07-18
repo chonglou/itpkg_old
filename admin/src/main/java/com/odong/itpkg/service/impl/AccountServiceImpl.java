@@ -4,8 +4,10 @@ import com.odong.itpkg.dao.CompanyDao;
 import com.odong.itpkg.dao.UserDao;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.User;
+import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.JsonHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,6 +39,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void setUserInfo(long id, String username, Contact contact) {
+        User u = userDao.select(id);
+        u.setUsername(username);
+        u.setContact(jsonHelper.object2json(contact));
+        userDao.update(u);
+    }
+
+    @Override
     public void addUser(String email, String username, String password, String company) {
         User u = new User();
         u.setEmail(email);
@@ -46,6 +56,11 @@ public class AccountServiceImpl implements AccountService {
         u.setCompany(company);
         u.setState(User.State.ENABLE);
         userDao.insert(u);
+    }
+
+    @Override
+    public User getUser(long id) {
+        return userDao.select(id);  //
     }
 
     @Override
@@ -67,6 +82,12 @@ public class AccountServiceImpl implements AccountService {
     private UserDao userDao;
     @Resource
     private CompanyDao companyDao;
+    @Resource
+    private JsonHelper jsonHelper;
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setCompanyDao(CompanyDao companyDao) {
         this.companyDao = companyDao;

@@ -52,7 +52,7 @@ public class Server {
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         try {
-            rootCF = sb.bind(host, port).sync();
+            rootCF = sb.bind("localhost", port).sync();
         } catch (InterruptedException e) {
             logger.error("启动服务出错", e);
         }
@@ -64,8 +64,6 @@ public class Server {
     private ChannelFuture rootCF;
     private EventLoopGroup bossG;
     private EventLoopGroup workerG;
-    @Value("${server.host}")
-    private String host;
     @Value("${server.port}")
     private int port;
     @Resource
@@ -87,9 +85,6 @@ public class Server {
         this.signLength = signLength;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
 
     public void setPort(int port) {
         this.port = port;

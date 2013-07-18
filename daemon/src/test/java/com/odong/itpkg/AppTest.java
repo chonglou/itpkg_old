@@ -12,15 +12,7 @@ import java.util.List;
 
 public class AppTest {
 
-    @Test
-    public void testNet() {
-        try {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public void testServer() {
         try {
