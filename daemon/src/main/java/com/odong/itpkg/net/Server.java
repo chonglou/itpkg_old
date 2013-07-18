@@ -45,7 +45,7 @@ public class Server {
         workerG = new NioEventLoopGroup();
         ServerBootstrap sb = new ServerBootstrap();
         sb.group(bossG, workerG).channel(NioServerSocketChannel.class)
-                .childHandler(new Initializer(jsonHelper, encryptHelper,signLength))
+                .childHandler(new Initializer(jsonHelper, encryptHelper, signLength))
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 

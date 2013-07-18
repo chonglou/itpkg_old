@@ -20,8 +20,6 @@ public interface TaskService {
 
     Task get(String id);
 
-    void update(Task task);
-
     String add(Task.Type type, String request);
 
     String add(Task.Type type, String request, Date startUp, Date shutDown, int total, int space);

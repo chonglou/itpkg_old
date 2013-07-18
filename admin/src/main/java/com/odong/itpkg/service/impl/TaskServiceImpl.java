@@ -56,11 +56,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void update(Task task) {
-        taskDao.update(task);
-    }
-
-    @Override
     public String add(Task.Type type, String request) {
         return add(type, request, new Date(), timeHelper.max(), 1, 0);
     }
