@@ -20,6 +20,7 @@ public class Host extends IdEntity {
     private static final long serialVersionUID = -7362809864882645300L;
     @Column(nullable = false, updatable = false)
     private String company;
+    @Column(nullable = false)
     private Long wanIp;
     @Column(nullable = false)
     private String lanNet;
@@ -31,9 +32,29 @@ public class Host extends IdEntity {
     private String details;
     private Date lastHeart;
     @Column(nullable = false)
-    private String key;
+    private String signKey;
+    @Column(nullable = false)
+    private int rpcPort;
+    @Column(nullable = false)
+    private int signLen;
     @Version
     private int version;
+
+    public int getRpcPort() {
+        return rpcPort;
+    }
+
+    public void setRpcPort(int rpcPort) {
+        this.rpcPort = rpcPort;
+    }
+
+    public int getSignLen() {
+        return signLen;
+    }
+
+    public void setSignLen(int signLen) {
+        this.signLen = signLen;
+    }
 
     public String getDomain() {
         return domain;
@@ -51,12 +72,12 @@ public class Host extends IdEntity {
         this.lastHeart = lastHeart;
     }
 
-    public String getKey() {
-        return key;
+    public String getSignKey() {
+        return signKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setSignKey(String signKey) {
+        this.signKey = signKey;
     }
 
     public String getCompany() {

@@ -1,6 +1,7 @@
 package com.odong.itpkg.job;
 
 import com.odong.itpkg.entity.Task;
+import com.odong.itpkg.service.NetworkService;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.JsonHelper;
@@ -19,7 +20,13 @@ import javax.annotation.Resource;
 public class TaskJob {
     public void execute() {
         for (Task t : taskService.listTimerTask()) {
-            taskExecutor.execute(new TaskRunner(t.getId(), jsonHelper, taskService, dbHelper));
+            taskExecutor.execute(new TaskRunner(
+                    t.getId(),
+                    jsonHelper,
+                    taskService,
+                    networkService,
+                    dbHelper)
+            );
         }
     }
 
@@ -31,6 +38,12 @@ public class TaskJob {
     private JsonHelper jsonHelper;
     @Resource
     private DBHelper dbHelper;
+    @Resource
+    private NetworkService networkService;
+
+    public void setNetworkService(NetworkService networkService) {
+        this.networkService = networkService;
+    }
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
