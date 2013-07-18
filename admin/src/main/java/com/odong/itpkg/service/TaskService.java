@@ -12,6 +12,13 @@ import java.util.List;
  * Time: 上午9:48
  */
 public interface TaskService {
+
+    String addFile(long host, String name, String mode, List<String> commands);
+
+    String addCommand(long host, List<String> commands);
+
+    String addHeart(long host, int space);
+
     void setState(String id, Task.State state);
 
     void setBegin(String id);

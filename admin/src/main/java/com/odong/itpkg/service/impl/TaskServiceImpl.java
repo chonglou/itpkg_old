@@ -3,6 +3,7 @@ package com.odong.itpkg.service.impl;
 import com.odong.itpkg.dao.TaskDao;
 import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.service.TaskService;
+import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.util.TimeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,28 @@ import java.util.*;
  */
 @Service("taskService")
 public class TaskServiceImpl implements TaskService {
+
+    @Override
+    public String addFile(long host, String name, String mode, List<String> commands) {
+        commands.add(0, Long.toString(host));
+        commands.add(1, name);
+        commands.add(2, mode);
+        return add(Task.Type.RPC_FILE, jsonHelper.object2json(commands));
+    }
+
+    @Override
+    public String addCommand(long host, List<String> commands) {
+        commands.add(0, Long.toString(host));
+        return add(Task.Type.RPC_COMMAND, jsonHelper.object2json(commands));
+    }
+
+    @Override
+    public String addHeart(long host, int space) {
+        if (space < 3) {
+            throw new IllegalArgumentException("心跳时间过短：" + space);
+        }
+        return add(Task.Type.RPC_HEART, Long.toString(host), new Date(), timeHelper.max(), 0, space);
+    }
 
     @Override
     public void setState(String id, Task.State state) {
@@ -91,7 +114,13 @@ public class TaskServiceImpl implements TaskService {
     private TaskDao taskDao;
     @Resource
     private TimeHelper timeHelper;
+    @Resource
+    private JsonHelper jsonHelper;
     private final static Logger logger = LoggerFactory.getLogger(TaskServiceImpl.class);
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setTimeHelper(TimeHelper timeHelper) {
         this.timeHelper = timeHelper;
