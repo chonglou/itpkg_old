@@ -48,7 +48,7 @@ public class Client {
     }
 
     public Rpc.Request file(String name, String mode, List<String> lines) {
-        return builder(Rpc.Type.FILE).setName(name).setMode(mode == null ? "444" : mode).addAllLines(lines).build();
+        return builder(Rpc.Type.FILE).setName(name).setMode(mode == null ? "rw-------" : mode).addAllLines(lines).build();
     }
 
     public Rpc.Request heart() {

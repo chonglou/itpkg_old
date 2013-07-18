@@ -10,6 +10,9 @@ import com.odong.itpkg.util.impl.JsonHelperImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AppTest {
     @Test
     public void testClient() {
@@ -18,19 +21,26 @@ public class AppTest {
         int len = 12;
         String host = "localhost";
         int port = 9999;
-
+        Client client = new Client(host, port, key, len, new Callback() {
+            @Override
+            public void execute(Rpc.Response response) {
+                System.out.println(response);
+            }
+        });
+        /*
         for (int i = 0; i < 10; i++) {
             log("#################### " + i + " #########################");
-            Client client = new Client(host, port, key, len, new Callback() {
-                @Override
-                public void execute(Rpc.Response response) {
-                    System.out.println(response);
-                }
-            });
             client.send(client.heart());
-            client.bye();
         }
-        log("fuck");
+        */
+        List<String> lines= new ArrayList<>();
+        for(int i=0; i<10; i++){
+            lines.add("echo "+i);
+        }
+        client.send(client.command(lines));
+        client.send(client.file("/tmp/aaa/bbb/itpkg.conf","rw-r--r--", lines));
+
+        client.send(client.bye());
         try {
             Thread.sleep(1000 * 10);
         } catch (InterruptedException e) {

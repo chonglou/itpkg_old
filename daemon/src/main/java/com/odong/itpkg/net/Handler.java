@@ -101,7 +101,7 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                         }
                         response.setCode(Rpc.Code.SUCCESS);
                     } catch (InterruptedException | IOException e) {
-                        logger.error("执行命令出错",e.getMessage());
+                        logger.error("执行命令出错", e.getMessage());
                         response.addLines(e.getMessage());
                         break;
                     }
@@ -114,12 +114,17 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                     }
                     try {
                         Path file = Paths.get(filename);
+                        if (!Files.isDirectory(file.getParent())) {
+                            Files.createDirectories(file.getParent());
+                        }
                         Files.deleteIfExists(file);
                         Files.createFile(file, PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(request.getMode())));
+
                         BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"));
 
                         for (String s : request.getLinesList()) {
                             writer.write(s, 0, s.length());
+                            writer.write('\n');
                         }
                         writer.close();
 
