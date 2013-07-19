@@ -24,6 +24,13 @@ import java.util.*;
 @Component
 public class LinuxHelper {
 
+    public List<EtcFile> hostname(long hostId){
+        Host host = hostService.getHost(hostId);
+        List<EtcFile> etcs = new ArrayList<>();
+        etcs.add(new EtcFile("/etc/hostname", "root:root", "444",host.getDomain()));
+        etcs.add(new EtcFile("/etc/hosts", "root:root", "444", String.format("127.0.0.1\tlocalhost.localdomain\tlocalhost\t%s\n", host.getDomain())));
+        return etcs;
+    }
     public EtcFile daemonProfile(long hostId) {
         Host host = hostService.getHost(hostId);
         Ip wanIp = hostService.getIp(host.getWanIp());
