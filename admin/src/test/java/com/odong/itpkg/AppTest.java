@@ -1,20 +1,27 @@
 package com.odong.itpkg;
 
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.rpc.Callback;
 import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.util.JsonHelper;
+import com.odong.itpkg.util.SSHHelper;
 import com.odong.itpkg.util.StringHelper;
 import com.odong.itpkg.util.impl.JsonHelperImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class AppTest {
-    //@Test
+    @Test
     public void testClient() {
 
         String key = "Qui9eeghen5AN5quave4elix7ahc";
@@ -33,12 +40,12 @@ public class AppTest {
             client.send(client.heart());
         }
         */
-        List<String> lines= new ArrayList<>();
-        for(int i=0; i<10; i++){
-            lines.add("echo "+i);
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            lines.add("echo " + i);
         }
         client.send(client.command(lines));
-        client.send(client.file("/tmp/aaa/bbb/itpkg.conf","rw-r--r--", lines));
+        client.send(client.file("/tmp/aaa/bbb/itpkg.conf", "rw-r--r--", lines));
 
         client.send(client.bye());
         try {
