@@ -28,6 +28,7 @@ public class Output extends IdEntity {
     private Type type;
     @Column(nullable = false)
     private String key;
+    @Column(nullable = false)
     private Long dateLimit;
     @Column(nullable = false, updatable = false)
     private Date created;

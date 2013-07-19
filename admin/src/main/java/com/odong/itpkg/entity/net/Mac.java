@@ -23,10 +23,11 @@ public class Mac extends IdEntity {
     private Long host;
     @Column(nullable = false, updatable = false)
     private String serial;
-    private String ip;
+    private int ip;
     private String hostname;
     private Long user;
     private Long dateLimit;
+    @Column(nullable = false)
     private Long flowLimit;
     private boolean bind;
 
@@ -55,11 +56,11 @@ public class Mac extends IdEntity {
     }
 
 
-    public String getIp() {
+    public int getIp() {
         return ip;
     }
 
-    public void setIp(String ip) {
+    public void setIp(int ip) {
         this.ip = ip;
     }
 

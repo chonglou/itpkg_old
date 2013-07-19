@@ -4,7 +4,7 @@ import com.odong.itpkg.dao.HostDao;
 import com.odong.itpkg.dao.IpDao;
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
-import com.odong.itpkg.service.NetworkService;
+import com.odong.itpkg.service.HostService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * Time: 上午10:59
  */
 @Service
-public class NetworkServiceImpl implements NetworkService {
+public class HostServiceImpl implements HostService {
     @Override
     public Host getHost(long id) {
         return hostDao.select(id);  //

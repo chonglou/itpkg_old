@@ -37,8 +37,17 @@ public class Host extends IdEntity {
     private int rpcPort;
     @Column(nullable = false)
     private int signLen;
+    private boolean ping;
     @Version
     private int version;
+
+    public boolean isPing() {
+        return ping;
+    }
+
+    public void setPing(boolean ping) {
+        this.ping = ping;
+    }
 
     public int getRpcPort() {
         return rpcPort;

@@ -21,6 +21,7 @@ public class Input extends IdEntity {
     private String name;
     @Column(nullable = false, updatable = false)
     private Long host;
+    private String sIp;
     @Column(nullable = false)
     private int port;
     @Column(nullable = false)
@@ -29,6 +30,14 @@ public class Input extends IdEntity {
     private Long dateLimit;
     @Column(nullable = false, updatable = false)
     private Date created;
+
+    public String getsIp() {
+        return sIp;
+    }
+
+    public void setsIp(String sIp) {
+        this.sIp = sIp;
+    }
 
     public Date getCreated() {
         return created;

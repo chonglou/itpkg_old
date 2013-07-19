@@ -21,21 +21,21 @@ import java.util.Date;
 public class FlowLimit extends IdEntity {
     private static final long serialVersionUID = -4311479941247650306L;
     @Column(nullable = false, updatable = false)
-    private Long company;
+    private String company;
     @Column(nullable = false)
     private String name;
-    private Integer maxIn;
-    private Integer maxOut;
-    private Integer minIn;
-    private Integer minOut;
+    private Integer upRate;
+    private Integer downRate;
+    private Integer upCeil;
+    private Integer downCeil;
     @Column(nullable = false, updatable = false)
     private Date created;
 
-    public Long getCompany() {
+    public String getCompany() {
         return company;
     }
 
-    public void setCompany(Long company) {
+    public void setCompany(String company) {
         this.company = company;
     }
 
@@ -47,36 +47,36 @@ public class FlowLimit extends IdEntity {
         this.name = name;
     }
 
-    public Integer getMaxIn() {
-        return maxIn;
+    public Integer getUpRate() {
+        return upRate;
     }
 
-    public void setMaxIn(Integer maxIn) {
-        this.maxIn = maxIn;
+    public void setUpRate(Integer upRate) {
+        this.upRate = upRate;
     }
 
-    public Integer getMaxOut() {
-        return maxOut;
+    public Integer getDownRate() {
+        return downRate;
     }
 
-    public void setMaxOut(Integer maxOut) {
-        this.maxOut = maxOut;
+    public void setDownRate(Integer downRate) {
+        this.downRate = downRate;
     }
 
-    public Integer getMinIn() {
-        return minIn;
+    public Integer getUpCeil() {
+        return upCeil;
     }
 
-    public void setMinIn(Integer minIn) {
-        this.minIn = minIn;
+    public void setUpCeil(Integer upCeil) {
+        this.upCeil = upCeil;
     }
 
-    public Integer getMinOut() {
-        return minOut;
+    public Integer getDownCeil() {
+        return downCeil;
     }
 
-    public void setMinOut(Integer minOut) {
-        this.minOut = minOut;
+    public void setDownCeil(Integer downCeil) {
+        this.downCeil = downCeil;
     }
 
     public Date getCreated() {

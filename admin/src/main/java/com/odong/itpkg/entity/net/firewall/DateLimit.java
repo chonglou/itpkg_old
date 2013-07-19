@@ -20,6 +20,31 @@ import java.util.Date;
 @Table(name = "ffDate")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DateLimit extends IdEntity {
+    public String toWeeks(){
+        StringBuilder sb= new StringBuilder();
+        if(mon){
+            sb.append("Mon");
+        }
+        if(tues){
+            sb.append(",Tue");
+        }
+        if(wed){
+            sb.append(",Wed");
+        }
+        if(thur){
+            sb.append(",Thu");
+        }
+        if(fri){
+            sb.append(",Fri");
+        }
+        if(sat){
+            sb.append(",Sat");
+        }
+        if(sun){
+            sb.append(",Sun");
+        }
+        return sb.toString();
+    }
     private static final long serialVersionUID = -4892201038551133631L;
     @Column(nullable = false)
     private String name;
@@ -27,10 +52,15 @@ public class DateLimit extends IdEntity {
     private String details;
     @Column(nullable = false, updatable = false)
     private Long company;
+
     @Column(nullable = false)
-    private String beginTime;
+    private int beginHour;
     @Column(nullable = false)
-    private String endTime;
+    private int endHour;
+    @Column(nullable = false)
+    private int beginMinute;
+    @Column(nullable = false)
+    private int endMinute;
     private boolean mon;
     private boolean tues;
     private boolean wed;
@@ -40,6 +70,8 @@ public class DateLimit extends IdEntity {
     private boolean sun;
     @Column(nullable = false, updatable = false)
     private Date created;
+
+
 
     public Date getCreated() {
         return created;
@@ -74,20 +106,36 @@ public class DateLimit extends IdEntity {
         this.company = company;
     }
 
-    public String getBeginTime() {
-        return beginTime;
+    public int getBeginHour() {
+        return beginHour;
     }
 
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
+    public void setBeginHour(int beginHour) {
+        this.beginHour = beginHour;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public int getEndHour() {
+        return endHour;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setEndHour(int endHour) {
+        this.endHour = endHour;
+    }
+
+    public int getBeginMinute() {
+        return beginMinute;
+    }
+
+    public void setBeginMinute(int beginMinute) {
+        this.beginMinute = beginMinute;
+    }
+
+    public int getEndMinute() {
+        return endMinute;
+    }
+
+    public void setEndMinute(int endMinute) {
+        this.endMinute = endMinute;
     }
 
     public boolean isMon() {

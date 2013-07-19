@@ -20,12 +20,13 @@ public class Nat extends IdEntity {
     @Column(nullable = false, updatable = false)
     private Long host;
     @Column(nullable = false)
-    private int port;
+    private int sPort;
+    private int dPort;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Protocol protocol;
     @Column(nullable = false)
-    private Long mac;
+    private int dIp;
     @Column(nullable = false)
     private Long dateLimit;
     @Column(nullable = false, updatable = false)
@@ -48,13 +49,6 @@ public class Nat extends IdEntity {
         this.host = host;
     }
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 
     public Protocol getProtocol() {
         return protocol;
@@ -64,12 +58,28 @@ public class Nat extends IdEntity {
         this.protocol = protocol;
     }
 
-    public Long getMac() {
-        return mac;
+    public int getsPort() {
+        return sPort;
     }
 
-    public void setMac(Long mac) {
-        this.mac = mac;
+    public void setsPort(int sPort) {
+        this.sPort = sPort;
+    }
+
+    public int getdPort() {
+        return dPort;
+    }
+
+    public void setdPort(int dPort) {
+        this.dPort = dPort;
+    }
+
+    public int getdIp() {
+        return dIp;
+    }
+
+    public void setdIp(int dIp) {
+        this.dIp = dIp;
     }
 
     public Long getDateLimit() {

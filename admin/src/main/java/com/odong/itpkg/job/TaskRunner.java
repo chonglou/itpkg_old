@@ -6,7 +6,7 @@ import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.rpc.Callback;
 import com.odong.itpkg.rpc.Client;
-import com.odong.itpkg.service.NetworkService;
+import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.JsonHelper;
@@ -83,8 +83,8 @@ public class TaskRunner implements Runnable {
     }
 
     private Client createClient(long hostId, final String taskId) {
-        Host host = networkService.getHost(hostId);
-        Ip wan = networkService.getIp(host.getWanIp());
+        Host host = hostService.getHost(hostId);
+        Ip wan = hostService.getIp(host.getWanIp());
         return new Client(wan.getAddress(), host.getRpcPort(), host.getSignKey(), host.getSignLen(), new Callback() {
             @Override
             public void execute(Rpc.Response response) {
@@ -93,11 +93,11 @@ public class TaskRunner implements Runnable {
         });
     }
 
-    public TaskRunner(String taskId, JsonHelper jsonHelper, TaskService taskService, NetworkService networkService, DBHelper dbHelper) {
+    public TaskRunner(String taskId, JsonHelper jsonHelper, TaskService taskService, HostService hostService, DBHelper dbHelper) {
         this.taskId = taskId;
         this.jsonHelper = jsonHelper;
         this.taskService = taskService;
-        this.networkService = networkService;
+        this.hostService = hostService;
         this.dbHelper = dbHelper;
     }
 
@@ -105,7 +105,7 @@ public class TaskRunner implements Runnable {
 
     private JsonHelper jsonHelper;
     private TaskService taskService;
-    private NetworkService networkService;
+    private HostService hostService;
     private DBHelper dbHelper;
     private final static Logger logger = LoggerFactory.getLogger(TaskRunner.class);
 }

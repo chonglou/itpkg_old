@@ -1,7 +1,7 @@
 package com.odong.itpkg.job;
 
 import com.odong.itpkg.entity.Task;
-import com.odong.itpkg.service.NetworkService;
+import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.JsonHelper;
@@ -24,7 +24,7 @@ public class TaskJob {
                     t.getId(),
                     jsonHelper,
                     taskService,
-                    networkService,
+                    hostService,
                     dbHelper)
             );
         }
@@ -39,10 +39,10 @@ public class TaskJob {
     @Resource
     private DBHelper dbHelper;
     @Resource
-    private NetworkService networkService;
+    private HostService hostService;
 
-    public void setNetworkService(NetworkService networkService) {
-        this.networkService = networkService;
+    public void setHostService(HostService hostService) {
+        this.hostService = hostService;
     }
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {
