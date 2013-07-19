@@ -38,8 +38,27 @@ public class Host extends IdEntity {
     @Column(nullable = false)
     private int signLen;
     private boolean ping;
+    private String wanMac;
+    private String lanMac;
+
     @Version
     private int version;
+
+    public String getWanMac() {
+        return wanMac;
+    }
+
+    public void setWanMac(String wanMac) {
+        this.wanMac = wanMac;
+    }
+
+    public String getLanMac() {
+        return lanMac;
+    }
+
+    public void setLanMac(String lanMac) {
+        this.lanMac = lanMac;
+    }
 
     public boolean isPing() {
         return ping;

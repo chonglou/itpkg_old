@@ -10,5 +10,6 @@ import com.odong.itpkg.entity.uc.Log;
  */
 public interface LogService {
     void add(Long user, String message, Log.Type type);
+
     void removeOld(int daysKeep);
 }

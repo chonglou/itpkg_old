@@ -24,10 +24,88 @@ import java.util.*;
 @Component
 public class LinuxHelper {
 
-    public String hostnameScan(long hostId){
+    public EtcFile daemonProfile(long hostId) {
+        Host host = hostService.getHost(hostId);
+        Ip wanIp = hostService.getIp(host.getWanIp());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("app.key=%s", encryptHelper.decode(host.getSignKey())));
+        sb.append(String.format("server.host=%s", wanIp.getAddress()));
+        sb.append(String.format("server.port=%d", host.getRpcPort()));
+        sb.append(String.format("rpc.sign.length=%d", host.getSignLen()));
+        return new EtcFile("/opt/netmgrd/config.properties", "root:root", "400", sb.toString());
+    }
+
+    public String reboot() {
+        return "reboot";
+    }
+
+    public String listMac() {
+        return "ifconfig -a| grep ether | awk -F\" \" '{print $2}'";
+    }
+
+    public List<String> enableNetwork() {
+        List<String> lines = new ArrayList<>();
+        lines.add("udevadm trigger");
+        lines.add("netctl enable wan");
+        lines.add("netctl enable lan");
+        return lines;
+    }
+
+    public List<EtcFile> networkProfile(long hostId) {
+        Host host = hostService.getHost(hostId);
+        Ip wanIp = hostService.getIp(host.getWanIp());
+        List<EtcFile> etcs = new ArrayList<>();
+
+        StringBuilder sbU = new StringBuilder();
+        sbU.append(String.format("SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"%s\", NAME=\"wan\"", host.getWanMac()));
+        sbU.append(String.format("SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"%s\", NAME=\"lan\"", host.getLanMac()));
+        etcs.add(new EtcFile("/etc/udev/rules.d/10-network.rules", "root:root", "444", sbU.toString()));
+
+        StringBuilder sbW = new StringBuilder();
+        switch (wanIp.getType()) {
+            case STATIC:
+                sbW.append("Description='A static ethernet connection for wan'");
+                sbW.append("Interface=wan");
+                sbW.append("Connection=ethernet");
+                sbW.append("IP=static");
+                sbW.append(String.format("Address=('%s/24')", wanIp.getAddress()));
+                sbW.append(String.format("Gateway='%s'", wanIp.getGateway()));
+                sbW.append(String.format("DNS=('%s %s')", wanIp.getDns1(), wanIp.getDns2()));
+                break;
+            case DHCP:
+                sbW.append("Description='A dhcp ethernet connection for wan'");
+                sbW.append("Interface=wan");
+                sbW.append("Connection=ethernet");
+                sbW.append("IP=dhcp");
+                break;
+            case PPPOE:
+                sbW.append("Description='A PPPoE connection for wan'");
+                sbW.append("Interface=wan");
+                sbW.append("Connection=pppoe");
+                sbW.append(String.format("User='%s'", wanIp.getUsername()));
+                sbW.append(String.format("Password='%s'", wanIp.getPassword()));
+                sbW.append("ConnectionMode='persist'");
+                break;
+        }
+        etcs.add(new EtcFile("/etc/netctl/wan", "root:root", "444", sbW.toString()));
+
+        StringBuilder sbL = new StringBuilder();
+        sbL.append("Description='A static ethernet connection for lan'");
+        sbL.append("Interface=lan");
+        sbL.append("Connection=ethernet");
+        sbL.append("IP=static");
+        sbL.append(String.format("Address=('%s.1/24')", host.getLanNet()));
+        etcs.add(new EtcFile("/etc/netctl/lan", "root:root", "444", sbL.toString()));
+
+        return etcs;
+    }
+
+    public String hostnameScan(long hostId) {
         Host host = hostService.getHost(hostId);
         return String.format("nbtscan -r %s.0/24", host.getLanNet());
     }
+
     public String macScan() {
         return "arp -n -i lan";
     }
@@ -68,16 +146,16 @@ public class LinuxHelper {
         lines.add("iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT");
 
         //OUTPUT
-        for(Output out : hostService.listFirewallOutput(hostId)){
+        for (Output out : hostService.listFirewallOutput(hostId)) {
             DateLimit dl = hostService.getDateLimit(out.getDateLimit());
-            for(MacOutput mo : hostService.listFirewallMacOutputByOutput(out.getId())){
+            for (MacOutput mo : hostService.listFirewallMacOutputByOutput(out.getId())) {
                 Mac m = hostService.getMac(mo.getMac());
 
                 lines.add(String.format("iptables -A FORWARD  -m mac --mac-source %s -i lan -m time --kerneltz --timestart %02d:%02d --timestop %02d:%02d --weekdays %s -m string --string \"%s\" --algo bm -j ACCEPT",
-                        m.getSerial(), dl.getBeginHour(), dl.getBeginMinute(),dl.getEndHour(),dl.getEndMinute(), dl.toWeeks(),out.getKey()));
+                        m.getSerial(), dl.getBeginHour(), dl.getBeginMinute(), dl.getEndHour(), dl.getEndMinute(), dl.toWeeks(), out.getKey()));
             }
             lines.add(String.format("'iptables -A FORWARD -i lan -m time --kerneltz --timestart %02d:%02d --timestop %02d:%02d --weekdays %s -m string --string \"%s\" --algo bm -j DROP",
-                    dl.getBeginHour(), dl.getBeginMinute(),dl.getEndHour(),dl.getEndMinute(), dl.toWeeks(),out.getKey()));
+                    dl.getBeginHour(), dl.getBeginMinute(), dl.getEndHour(), dl.getEndMinute(), dl.toWeeks(), out.getKey()));
         }
 
         for (Mac m : hostService.listMac(hostId)) {
@@ -89,13 +167,13 @@ public class LinuxHelper {
         lines.add("iptables -t nat -P PREROUTING ACCEPT");
         lines.add("iptables -t nat -P POSTROUTING ACCEPT");
         lines.add("iptables -t nat -P OUTPUT ACCEPT");
-        for(Nat nat : hostService.listFirewallNat(hostId)){
+        for (Nat nat : hostService.listFirewallNat(hostId)) {
             lines.add(String.format("iptables -t nat -A PREROUTING -d %s -p %s --dport %d -j DNAT --to-destination %s.%d:%d",
                     wanIp.getAddress(), nat.getProtocol(), nat.getsPort(), host.getLanNet(), nat.getdIp(), nat.getdPort()));
             lines.add(String.format("iptables -t nat -A POSTROUTING -s %s.0/24 -d %s.%d -p %s --dport %s -j SNAT --to-source %s.1",
                     host.getLanNet(), host.getLanNet(), nat.getdIp(), nat.getProtocol(), nat.getdPort(), host.getLanNet()));
             lines.add(String.format("iptables -A FORWARD -d %s:%d -p %s --dport %s -j ACCEPT",
-                    host.getLanNet(),nat.getdIp(), nat.getProtocol(), nat.getdPort()));
+                    host.getLanNet(), nat.getdIp(), nat.getProtocol(), nat.getdPort()));
         }
         lines.add("iptables -A FORWARD  -m state --state ESTABLISHED -j ACCEPT");
         lines.add(String.format("iptables -t nat -A POSTROUTING -s %s.0/24 -o wan -j MASQUERADE", host.getLanNet()));
@@ -314,6 +392,12 @@ public class LinuxHelper {
 
     @Resource
     private HostService hostService;
+    @Resource
+    private EncryptHelper encryptHelper;
+
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
 
     public void setHostService(HostService hostService) {
         this.hostService = hostService;

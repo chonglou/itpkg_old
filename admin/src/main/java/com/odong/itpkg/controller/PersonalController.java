@@ -29,21 +29,21 @@ import javax.validation.Valid;
  */
 @Controller
 @RequestMapping(value = "/personal")
- @SessionAttributes(SessionItem.KEY)
+@SessionAttributes(SessionItem.KEY)
 public class PersonalController {
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
-    Form getInfo(@ModelAttribute(SessionItem.KEY) SessionItem si ) {
+    Form getInfo(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("info", "个人信息", "/personal/info");
-        User u= accountService.getUser(si.getUserId());
+        User u = accountService.getUser(si.getUserId());
         TextField<String> email = new TextField<>("email", "Email", u.getEmail());
         email.setReadonly(true);
         fm.addField(email);
-        fm.addField(new TextField<>("username", "用户名",u.getUsername()));
+        fm.addField(new TextField<>("username", "用户名", u.getUsername()));
 
         Contact c = jsonHelper.json2object(u.getContact(), Contact.class);
-        if(c == null){
+        if (c == null) {
             c = new Contact();
         }
         fm.addField(new TextField<>("qq", "QQ号", c.getQq()));
@@ -58,9 +58,10 @@ public class PersonalController {
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postInfo(@Valid ContactForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si ) {
+    ResponseItem postInfo(@Valid ContactForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             Contact c = new Contact();
@@ -90,6 +91,7 @@ public class PersonalController {
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/setPwd", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postSetPwd(@Valid SetPwdForm form, BindingResult result, HttpServletRequest request) {
@@ -109,6 +111,7 @@ public class PersonalController {
         //TODO
         return ri;
     }
+
     @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postResetPwd(@Valid ResetPwdForm form, BindingResult result, HttpServletRequest request) {
@@ -119,9 +122,10 @@ public class PersonalController {
         return ri;
 
     }
+
     @RequestMapping(value = "/resetPwd", method = RequestMethod.GET)
     @ResponseBody
-    Form getResetPwd(){
+    Form getResetPwd() {
         Form fm = new Form("resetPwd", "找回密码", "/personal/resetPwd");
         fm.addField(new TextField("email", "邮箱"));
         fm.addField(new PasswordField("password", "新密码"));
@@ -183,7 +187,7 @@ public class PersonalController {
         return ri;
     }
 
-      @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
     ResponseItem logout(SessionStatus status) {
 

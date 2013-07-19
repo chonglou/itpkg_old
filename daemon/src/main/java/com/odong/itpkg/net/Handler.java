@@ -97,11 +97,10 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                     if (debug) {
                         filename = "/tmp" + request.getName();
                     }
-                    try{
-                    FileHelper.write(filename, request.getMode(), request.getLinesList().toArray(new String[1]));
-                    response.setCode(Rpc.Code.SUCCESS);
-                    }
-                    catch (Exception e){
+                    try {
+                        FileHelper.write(filename, request.getMode(), request.getLinesList().toArray(new String[1]));
+                        response.setCode(Rpc.Code.SUCCESS);
+                    } catch (Exception e) {
                         response.setCode(Rpc.Code.FAIL);
                         response.addLines(e.getMessage());
                     }

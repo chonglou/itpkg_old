@@ -52,7 +52,7 @@ public class Server {
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         try {
-            rootCF = sb.bind("localhost", port).sync();
+            rootCF = sb.bind(host, port).sync();
         } catch (InterruptedException e) {
             logger.error("启动服务出错", e);
         }
@@ -64,14 +64,20 @@ public class Server {
     private ChannelFuture rootCF;
     private EventLoopGroup bossG;
     private EventLoopGroup workerG;
-    @Value("${server.port}")
-    private int port;
     @Resource
     private JsonHelper jsonHelper;
     @Resource
     private EncryptHelper encryptHelper;
-    @Value("${rpc.sign.length}")
+    @Value("${rpc.sign.len}")
     private int signLength;
+    @Value("${server.host}")
+    private String host;
+    @Value("${server.port}")
+    private int port;
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;

@@ -1,7 +1,5 @@
 package com.odong.itpkg;
 
-import com.odong.itpkg.util.CommandHelper;
-import com.odong.itpkg.util.FileHelper;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -9,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.List;
 
 public class App implements Daemon {
     @Override

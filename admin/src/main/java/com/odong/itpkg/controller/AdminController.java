@@ -8,7 +8,6 @@ import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
-import com.odong.portal.web.grid.Grid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,13 +30,14 @@ import java.util.Map;
 @RequestMapping(value = "/admin")
 public class AdminController {
     @RequestMapping(value = "/site/user/({userId},{enable})", method = RequestMethod.DELETE)
-    ResponseItem deleteUser(@PathVariable long userId, @PathVariable boolean enable){
+    ResponseItem deleteUser(@PathVariable long userId, @PathVariable boolean enable) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         //TODO
         return ri;
     }
+
     @RequestMapping(value = "/site/user", method = RequestMethod.GET)
-    String getUserList(Map<String,Object> map){
+    String getUserList(Map<String, Object> map) {
         //TODO
         return "admin/user_list";
     }

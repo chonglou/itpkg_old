@@ -9,5 +9,5 @@ import com.odong.portal.dao.BaseDao;
  * Date: 13-7-18
  * Time: 上午11:18
  */
-public interface HostDao extends BaseDao<Host,Long> {
+public interface HostDao extends BaseDao<Host, Long> {
 }

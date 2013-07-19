@@ -20,31 +20,32 @@ import java.util.Date;
 @Table(name = "ffDate")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DateLimit extends IdEntity {
-    public String toWeeks(){
-        StringBuilder sb= new StringBuilder();
-        if(mon){
+    public String toWeeks() {
+        StringBuilder sb = new StringBuilder();
+        if (mon) {
             sb.append("Mon");
         }
-        if(tues){
+        if (tues) {
             sb.append(",Tue");
         }
-        if(wed){
+        if (wed) {
             sb.append(",Wed");
         }
-        if(thur){
+        if (thur) {
             sb.append(",Thu");
         }
-        if(fri){
+        if (fri) {
             sb.append(",Fri");
         }
-        if(sat){
+        if (sat) {
             sb.append(",Sat");
         }
-        if(sun){
+        if (sun) {
             sb.append(",Sun");
         }
         return sb.toString();
     }
+
     private static final long serialVersionUID = -4892201038551133631L;
     @Column(nullable = false)
     private String name;
@@ -70,7 +71,6 @@ public class DateLimit extends IdEntity {
     private boolean sun;
     @Column(nullable = false, updatable = false)
     private Date created;
-
 
 
     public Date getCreated() {

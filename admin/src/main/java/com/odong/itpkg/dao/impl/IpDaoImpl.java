@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 上午11:18
  */
 @Repository("net.ipDao")
-public class IpDaoImpl extends BaseJpa2DaoImpl<Ip,Long> implements IpDao {
+public class IpDaoImpl extends BaseJpa2DaoImpl<Ip, Long> implements IpDao {
 }

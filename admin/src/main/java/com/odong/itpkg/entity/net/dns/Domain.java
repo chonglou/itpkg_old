@@ -16,9 +16,10 @@ import javax.persistence.*;
 @Table(name = "dnsDomain")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Domain extends IdEntity {
-    public enum Type{
-        A,MX,NS
+    public enum Type {
+        A, MX, NS
     }
+
     private static final long serialVersionUID = 1863549290229151142L;
     @Column(nullable = false)
     private Long zone;

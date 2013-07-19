@@ -22,6 +22,7 @@ public interface AccountService {
     void addUser(String email, String username, String password, String company);
 
     User getUser(long id);
+
     User getUser(String email);
 
     User auth(String email, String password);

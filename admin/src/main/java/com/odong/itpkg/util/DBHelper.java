@@ -28,11 +28,12 @@ import java.util.Date;
  */
 @Component
 public class DBHelper {
-    public void compress(int keepDays){
+    public void compress(int keepDays) {
         taskService.removeInvalid(keepDays);
         logService.removeOld(keepDays);
         siteService.set("db.last_compress", new Date());
     }
+
     public void backup() {
         if (database.isMysql()) {
             logger.info("开始备份数据库{}@mysql", database.getDbName());
@@ -100,7 +101,6 @@ public class DBHelper {
     public void setDatabase(Database database) {
         this.database = database;
     }
-
 
 
 }

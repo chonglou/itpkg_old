@@ -25,13 +25,13 @@ public class LogServiceImpl implements LogService {
         log.setType(type);
         log.setMessage(message);
         log.setUser(user);
-                    logDao.insert(log);
+        logDao.insert(log);
     }
 
     @Override
     public void removeOld(int daysKeep) {
         Map<String, Object> map = new HashMap<>();
-        map.put("date", timeHelper.plus(new Date(), -60*60*24*daysKeep));
+        map.put("date", timeHelper.plus(new Date(), -60 * 60 * 24 * daysKeep));
         logDao.delete("DELETE Log AS i WHERE i.created < :date", map);
     }
 
