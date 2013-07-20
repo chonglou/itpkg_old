@@ -4,7 +4,6 @@ import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.util.CommandHelper;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.FileHelper;
-import com.odong.itpkg.util.JsonHelper;
 import com.sun.management.OperatingSystemMXBean;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -14,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,13 +26,9 @@ import java.util.Properties;
  */
 public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
 
-    public Handler(JsonHelper jsonHelper,
-                   EncryptHelper encryptHelper,
-                   int signLength) {
+    public Handler(EncryptHelper encryptHelper) {
         super();
-        this.jsonHelper = jsonHelper;
         this.encryptHelper = encryptHelper;
-        this.signLength = signLength;
         this.debug = !"root".equals(System.getProperty("user.name"));
     }
 
@@ -60,73 +57,88 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
     }
 
     private Rpc.Response process(Rpc.Request request) {
-        Rpc.Response.Builder response = Rpc.Response.newBuilder().setType(request.getType()).setCode(Rpc.Code.FAIL);
-        if (encryptHelper.decode(request.getSign()).length() == signLength) {
-            switch (request.getType()) {
-                case HEART:
-                    Properties props = System.getProperties();
-                    for (Object t : props.keySet()) {
-                        response.addLines(t + "=" + props.getProperty(t.toString()));
-                    }
-                    OperatingSystemMXBean mxBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-                    response.addLines("memory.status=" + mxBean.getFreePhysicalMemorySize() + "/" + mxBean.getTotalPhysicalMemorySize());
-                    response.addLines("swap.status=" + mxBean.getFreeSwapSpaceSize() + "/" + mxBean.getTotalSwapSpaceSize());
-                    response.addLines("cpu.system=" + mxBean.getSystemCpuLoad());
-                    response.addLines("cpu.process=" + mxBean.getProcessCpuLoad());
-                    response.setCode(Rpc.Code.SUCCESS);
-                    break;
-                case COMMAND:
-                    try {
-                        if (debug) {
-                            for (String s : request.getLinesList()) {
-                                logger.debug(s);
-                            }
-                        } else {
 
-                            response.addAllLines(CommandHelper.execute(request.getLinesList().toArray(new String[1])));
-                        }
-                        response.setCode(Rpc.Code.SUCCESS);
-                    } catch (Exception e) {
-                        response.setCode(Rpc.Code.FAIL);
-                        response.addLines(e.getMessage());
+        Rpc.Type type = request.getType();
+        Rpc.Code code = Rpc.Code.FAIL;
+        List<String> lines = new ArrayList<>();
+
+        switch (request.getType()) {
+            case HEART:
+                Properties props = System.getProperties();
+                for (Object t : props.keySet()) {
+                    lines.add(t + "=" + props.getProperty(t.toString()));
+                }
+                OperatingSystemMXBean mxBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+                lines.add("memory.status=" + mxBean.getFreePhysicalMemorySize() + "/" + mxBean.getTotalPhysicalMemorySize());
+                lines.add("swap.status=" + mxBean.getFreeSwapSpaceSize() + "/" + mxBean.getTotalSwapSpaceSize());
+                lines.add("cpu.system=" + mxBean.getSystemCpuLoad());
+                lines.add("cpu.process=" + mxBean.getProcessCpuLoad());
+                code = Rpc.Code.SUCCESS;
+                break;
+            case COMMAND:
+                try {
+                    List<String> commands = new ArrayList<>();
+                    for (String s : request.getLinesList()) {
+                        commands.add(encryptHelper.decode(s));
                     }
 
-                    break;
-                case FILE:
-                    String filename = request.getName();
                     if (debug) {
-                        filename = "/tmp" + request.getName();
+                        logger.debug("命令：", commands);
+                    } else {
+                        for (String s : CommandHelper.execute(commands.toArray(new String[1]))) {
+                            lines.add(encryptHelper.encode(s));
+                        }
                     }
-                    try {
-                        FileHelper.write(filename, request.getMode(), request.getLinesList().toArray(new String[1]));
-                        response.setCode(Rpc.Code.SUCCESS);
-                    } catch (Exception e) {
-                        response.setCode(Rpc.Code.FAIL);
-                        response.addLines(e.getMessage());
-                    }
-                    break;
-                case BYE:
-                    response.setCode(Rpc.Code.SUCCESS);
-                    break;
-                default:
-                    logger.error("未知的请求：", request.getType());
-                    response.setType(Rpc.Type.BYE);
-                    response.addLines("未知的请求[" + response.getType() + "]");
-                    break;
+                    code = Rpc.Code.SUCCESS;
+                } catch (Exception e) {
+                    code = Rpc.Code.FAIL;
+                    lines.add("异常：" + e.getMessage());
+                }
 
-            }
-        } else {
-            logger.error("签名不对");
-            response.setType(Rpc.Type.BYE);
-            response.addLines("签名不对");
+                break;
+            case FILE:
+                String filename = request.getName();
+                if (debug) {
+                    filename = "/tmp" + request.getName();
+                }
+                try {
+                    FileHelper.write(filename, request.getLinesList().toArray(new String[1]));
+                    for (String s : CommandHelper.execute(
+                            String.format("chown %s %s", request.getOwner(), filename),
+                            String.format("chmod %s %s", request.getMode(), filename))) {
+                        lines.add(s);
+                    }
+                    code = Rpc.Code.SUCCESS;
+                } catch (Exception e) {
+                    code = Rpc.Code.FAIL;
+                    lines.add("异常：" + e.getMessage());
+                }
+                break;
+            case BYE:
+                code = Rpc.Code.SUCCESS;
+                break;
+            default:
+                logger.error("未知的请求：", request.getType());
+                type = Rpc.Type.BYE;
+                lines.add("未知的请求[" + request.getType() + "]");
+                break;
         }
-        return response.setCreated(new Date().getTime()).build();
+
+        return builder(type, code, lines).build();
+    }
+
+    private Rpc.Response.Builder builder(Rpc.Type type, Rpc.Code code, List<String> list) {
+        Rpc.Response.Builder builder = Rpc.Response.newBuilder();
+        if (list != null) {
+            for (String s : list) {
+                builder.addLines(encryptHelper.encode(s));
+            }
+        }
+        return builder.setType(type).setCode(code).setCreated(new Date().getTime());
     }
 
     private final static Logger logger = LoggerFactory.getLogger(Handler.class);
     private boolean debug;
-    private JsonHelper jsonHelper;
     private EncryptHelper encryptHelper;
-    private int signLength;
 
 }

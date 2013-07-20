@@ -13,6 +13,7 @@ import com.odong.itpkg.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class TaskRunner implements Runnable {
                 case RPC_FILE:
                     List<String> lines = jsonHelper.json2List(task.getRequest(), String.class);
                     client = createClient(Long.parseLong(lines.get(0)), taskId);
-                    client.send(client.file(lines.get(1), lines.get(2), lines.subList(3, lines.size())));
+                    client.send(client.file(lines.get(1), lines.get(2), lines.get(3), lines.subList(4, lines.size())));
                     client.send(client.bye());
                     break;
                 case RPC_HEART:
@@ -85,15 +86,27 @@ public class TaskRunner implements Runnable {
     private Client createClient(long hostId, final String taskId) {
         Host host = hostService.getHost(hostId);
         Ip wan = hostService.getIp(host.getWanIp());
-        return new Client(wan.getAddress(), host.getRpcPort(), host.getSignKey(), host.getSignLen(), new Callback() {
+        final Client client = new Client(host.getSignKey());
+
+        client.open(wan.getAddress(), host.getRpcPort(), new Callback() {
             @Override
             public void execute(Rpc.Response response) {
-                taskService.setEnd(taskId, jsonHelper.object2json(response.getLinesList()));
+                List<String> lines = new ArrayList<>();
+                lines.add(response.getCode().toString());
+                for (String line : response.getLinesList()) {
+                    lines.add(client.decode(line));
+                }
+                taskService.setEnd(taskId, jsonHelper.object2json(lines));
             }
         });
+        return client;
     }
 
-    public TaskRunner(String taskId, JsonHelper jsonHelper, TaskService taskService, HostService hostService, DBHelper dbHelper) {
+    public TaskRunner(String taskId,
+                      JsonHelper jsonHelper,
+                      TaskService taskService,
+                      HostService hostService,
+                      DBHelper dbHelper) {
         this.taskId = taskId;
         this.jsonHelper = jsonHelper;
         this.taskService = taskService;
@@ -102,7 +115,6 @@ public class TaskRunner implements Runnable {
     }
 
     private String taskId;
-
     private JsonHelper jsonHelper;
     private TaskService taskService;
     private HostService hostService;

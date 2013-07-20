@@ -35,8 +35,6 @@ public class Host extends IdEntity {
     private String signKey;
     @Column(nullable = false)
     private int rpcPort;
-    @Column(nullable = false)
-    private int signLen;
     private boolean ping;
     private String wanMac;
     private String lanMac;
@@ -74,14 +72,6 @@ public class Host extends IdEntity {
 
     public void setRpcPort(int rpcPort) {
         this.rpcPort = rpcPort;
-    }
-
-    public int getSignLen() {
-        return signLen;
-    }
-
-    public void setSignLen(int signLen) {
-        this.signLen = signLen;
     }
 
     public String getDomain() {

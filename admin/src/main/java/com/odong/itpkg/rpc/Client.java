@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,13 +22,37 @@ import java.util.Random;
  * Time: 下午2:39
  */
 public class Client {
-    public Client(String host, int port, String key, int signLength, Callback callback) {
-        this.signLength = signLength;
+    public Client(String key) {
         this.ste = new StrongTextEncryptor();
         ste.setPassword(key);
         this.group = new NioEventLoopGroup();
-        this.random = new Random();
 
+
+    }
+
+
+    public Rpc.Request command(List<String> lines) {
+        return builder(Rpc.Type.COMMAND, lines).build();
+    }
+
+    public Rpc.Request file(String name, String owner, String mode, List<String> lines) {
+        return builder(Rpc.Type.FILE, lines).setName(name).setOwner(owner).setMode(mode).build();
+    }
+
+    public Rpc.Request heart() {
+        return builder(Rpc.Type.HEART, null).build();
+    }
+
+    public Rpc.Request bye() {
+        return builder(Rpc.Type.BYE, null).build();
+    }
+
+    public String decode(String encrypt) {
+        return ste.decrypt(encrypt);
+    }
+
+
+    public void open(String host, int port, Callback callback) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
@@ -42,23 +65,6 @@ public class Client {
             throw new IllegalArgumentException("连接服务器[" + host + ":" + port + "]错误", e);
         }
     }
-
-    public Rpc.Request command(List<String> lines) {
-        return builder(Rpc.Type.COMMAND).addAllLines(lines).build();
-    }
-
-    public Rpc.Request file(String name, String mode, List<String> lines) {
-        return builder(Rpc.Type.FILE).setName(name).setMode(mode == null ? "rw-------" : mode).addAllLines(lines).build();
-    }
-
-    public Rpc.Request heart() {
-        return builder(Rpc.Type.HEART).build();
-    }
-
-    public Rpc.Request bye() {
-        return builder(Rpc.Type.BYE).build();
-    }
-
 
     public void close() {
         if (lastCF != null) {
@@ -85,27 +91,21 @@ public class Client {
     }
 
 
-    private String random(int len) {
-        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            sb.append(base.charAt(random.nextInt(base.length())));
+    private Rpc.Request.Builder builder(Rpc.Type type, List<String> lines) {
+        Rpc.Request.Builder builder = Rpc.Request.newBuilder();
+        if (lines != null) {
+            for (String line : lines) {
+                builder.addLines(ste.encrypt(line));
+            }
         }
-        return sb.toString();
-    }
-
-    private Rpc.Request.Builder builder(Rpc.Type type) {
-        return Rpc.Request.newBuilder().setSign(ste.encrypt(random(signLength))).setType(type).setCreated(new Date().getTime());
+        return builder.setType(type).setCreated(new Date().getTime());
     }
 
 
     private EventLoopGroup group;
-    private int signLength;
     private StrongTextEncryptor ste;
     private Channel rootCH;
     private ChannelFuture lastCF;
-    private Random random;
 
     private final static Logger logger = LoggerFactory.getLogger(Client.class);
 

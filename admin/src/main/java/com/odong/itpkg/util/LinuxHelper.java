@@ -24,13 +24,14 @@ import java.util.*;
 @Component
 public class LinuxHelper {
 
-    public List<EtcFile> hostname(long hostId){
+    public List<EtcFile> hostname(long hostId) {
         Host host = hostService.getHost(hostId);
         List<EtcFile> etcs = new ArrayList<>();
-        etcs.add(new EtcFile("/etc/hostname", "root:root", "444",host.getDomain()));
+        etcs.add(new EtcFile("/etc/hostname", "root:root", "444", host.getDomain()));
         etcs.add(new EtcFile("/etc/hosts", "root:root", "444", String.format("127.0.0.1\tlocalhost.localdomain\tlocalhost\t%s\n", host.getDomain())));
         return etcs;
     }
+
     public EtcFile daemonProfile(long hostId) {
         Host host = hostService.getHost(hostId);
         Ip wanIp = hostService.getIp(host.getWanIp());
@@ -39,7 +40,6 @@ public class LinuxHelper {
         sb.append(String.format("app.key=%s", encryptHelper.decode(host.getSignKey())));
         sb.append(String.format("server.host=%s", wanIp.getAddress()));
         sb.append(String.format("server.port=%d", host.getRpcPort()));
-        sb.append(String.format("rpc.sign.length=%d", host.getSignLen()));
         return new EtcFile("/opt/netmgrd/config.properties", "root:root", "400", sb.toString());
     }
 

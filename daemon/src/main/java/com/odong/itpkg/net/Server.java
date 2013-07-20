@@ -1,7 +1,6 @@
 package com.odong.itpkg.net;
 
 import com.odong.itpkg.util.EncryptHelper;
-import com.odong.itpkg.util.JsonHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -47,7 +46,7 @@ public class Server {
         workerG = new NioEventLoopGroup();
         ServerBootstrap sb = new ServerBootstrap();
         sb.group(bossG, workerG).channel(NioServerSocketChannel.class)
-                .childHandler(new Initializer(jsonHelper, encryptHelper, signLength))
+                .childHandler(new Initializer(encryptHelper))
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
@@ -65,11 +64,7 @@ public class Server {
     private EventLoopGroup bossG;
     private EventLoopGroup workerG;
     @Resource
-    private JsonHelper jsonHelper;
-    @Resource
     private EncryptHelper encryptHelper;
-    @Value("${rpc.sign.len}")
-    private int signLength;
     @Value("${server.host}")
     private String host;
     @Value("${server.port}")
@@ -79,18 +74,9 @@ public class Server {
         this.host = host;
     }
 
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
-
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;
     }
-
-    public void setSignLength(int signLength) {
-        this.signLength = signLength;
-    }
-
 
     public void setPort(int port) {
         this.port = port;

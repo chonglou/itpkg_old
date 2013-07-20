@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,14 +24,14 @@ public final class FileHelper {
         return Files.isRegularFile(Paths.get(name));
     }
 
-    public static void write(String name, String mode, String... lines) {
+    public static void write(String name, String... lines) {
         try {
             Path file = Paths.get(name);
             if (!Files.isDirectory(file.getParent())) {
                 Files.createDirectories(file.getParent());
             }
             Files.deleteIfExists(file);
-            Files.createFile(file, PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(mode)));
+            Files.createFile(file);
 
             BufferedWriter writer = Files.newBufferedWriter(file, Charset.forName("UTF-8"));
 
