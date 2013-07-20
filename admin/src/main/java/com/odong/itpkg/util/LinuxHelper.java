@@ -47,7 +47,7 @@ public class LinuxHelper {
         return "reboot";
     }
 
-    public String listMac() {
+    public String scanMac() {
         return "ifconfig -a| grep ether | awk -F\" \" '{print $2}'";
     }
 
@@ -157,16 +157,19 @@ public class LinuxHelper {
             DateLimit dl = hostService.getDateLimit(out.getDateLimit());
             for (MacOutput mo : hostService.listFirewallMacOutputByOutput(out.getId())) {
                 Mac m = hostService.getMac(mo.getMac());
-
+                if(m.getState() == Mac.State.ENABLE){
                 lines.add(String.format("iptables -A FORWARD  -m mac --mac-source %s -i lan -m time --kerneltz --timestart %02d:%02d --timestop %02d:%02d --weekdays %s -m string --string \"%s\" --algo bm -j ACCEPT",
                         m.getSerial(), dl.getBeginHour(), dl.getBeginMinute(), dl.getEndHour(), dl.getEndMinute(), dl.toWeeks(), out.getKey()));
+                }
             }
             lines.add(String.format("'iptables -A FORWARD -i lan -m time --kerneltz --timestart %02d:%02d --timestop %02d:%02d --weekdays %s -m string --string \"%s\" --algo bm -j DROP",
                     dl.getBeginHour(), dl.getBeginMinute(), dl.getEndHour(), dl.getEndMinute(), dl.toWeeks(), out.getKey()));
         }
 
         for (Mac m : hostService.listMac(hostId)) {
+            if(m.getState() == Mac.State.ENABLE){
             lines.add(String.format("iptables -A FORWARD -m mac --mac-source %s -j ACCEPT", m.getSerial()));
+            }
         }
         //NAT
         lines.add("iptables -t nat -F");
@@ -210,8 +213,6 @@ public class LinuxHelper {
 
     public List<String> tcApply(long hostId) {
         Host host = hostService.getHost(hostId);
-        List<Mac> macs = hostService.listMac(hostId);
-
 
         List<String> lines = new ArrayList<>();
         //清空打标信息
@@ -227,7 +228,8 @@ public class LinuxHelper {
         lines.add("tc class add dev wan parent 10: classid 10:1 htb rate 200mbit ceil 200mbit");
         lines.add("tc class add dev lan parent 10: classid 10:1 htb rate 500mbit ceil 500mbit");
 
-        for (Mac m : macs) {
+        for (Mac m : hostService.listMac(hostId)) {
+            if(m.getState() == Mac.State.ENABLE){
             FlowLimit f = hostService.getFlowLimit(m.getFlowLimit());
             //限速打标
             lines.add(String.format("iptables -t mangle -A PREROUTING  -s %s.%d -j MARK --set-mark 2%03d", host.getLanNet(), m.getIp(), m.getIp()));
@@ -248,6 +250,7 @@ public class LinuxHelper {
             lines.add(String.format("tc filter add dev lan parent 10: protocol ip prio 100 handle 2%03d fw classid 10:2%03d",
                     m.getIp(), m.getIp()));
 
+        }
         }
 
         return lines;
@@ -346,7 +349,7 @@ public class LinuxHelper {
 
     public EtcFile dhcpdProfile(long hostId) {
         Host host = hostService.getHost(hostId);
-        List<Mac> macs = hostService.listMac(hostId);
+
 
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("option domain-name \"%s\";", host.getDomain()));
@@ -360,8 +363,8 @@ public class LinuxHelper {
         sb.append(String.format("option routers %s.1;", host.getLanNet()));
         sb.append(String.format("option domain-name-servers %s.1;", host.getLanNet()));
         sb.append("}");
-        for (Mac m : macs) {
-            if (m.isBind()) {
+        for (Mac m : hostService.listMac(hostId)) {
+            if (m.getState() == Mac.State.ENABLE && m.isBind()) {
                 sb.append(String.format("host pc-%03d {", m.getIp()));
                 sb.append(String.format("hardware ethernet %s;", m.getSerial()));
                 sb.append(String.format("fixed-address %s.%d;", host.getLanNet(), m.getIp()));

@@ -18,11 +18,21 @@ import java.util.Date;
 public class MacOutput extends IdEntity {
     private static final long serialVersionUID = -5876366263996455731L;
     @Column(nullable = false, updatable = false)
+    private long host;
+    @Column(nullable = false, updatable = false)
     private long mac;
     @Column(nullable = false, updatable = false)
     private long output;
     @Column(nullable = false, updatable = false)
     private Date created;
+
+    public long getHost() {
+        return host;
+    }
+
+    public void setHost(long host) {
+        this.host = host;
+    }
 
     public Date getCreated() {
         return created;

@@ -16,7 +16,7 @@ import java.util.List;
  * Time: 上午10:59
  */
 public interface HostService {
-    void setHostKey(long hostId, String key);
+    void setHostKey(long hostId, String signKey);
 
     DateLimit getDateLimit(long dateLimitId);
 
