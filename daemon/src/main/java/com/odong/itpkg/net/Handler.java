@@ -12,6 +12,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,15 +78,10 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                 break;
             case COMMAND:
                 try {
-                    List<String> commands = new ArrayList<>();
-                    for (String s : request.getLinesList()) {
-                        commands.add(encryptHelper.decode(s));
-                    }
-
                     if (debug) {
-                        logger.debug("命令：", commands);
+                        logger.debug("命令：", getLines(request));
                     } else {
-                        for (String s : CommandHelper.execute(commands.toArray(new String[1]))) {
+                        for (String s : CommandHelper.execute(getLines(request).toArray(new String[1]))) {
                             lines.add(encryptHelper.encode(s));
                         }
                     }
@@ -102,7 +98,8 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                     filename = "/tmp" + request.getName();
                 }
                 try {
-                    FileHelper.write(filename, request.getLinesList().toArray(new String[1]));
+
+                    FileHelper.write(filename, getLines(request).toArray(new String[1]));
                     for (String s : CommandHelper.execute(
                             String.format("chown %s %s", request.getOwner(), filename),
                             String.format("chmod %s %s", request.getMode(), filename))) {
@@ -127,6 +124,13 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
         return builder(type, code, lines).build();
     }
 
+    private List<String> getLines(Rpc.Request request){
+        List<String> lines = new ArrayList<>();
+        for(String line : request.getLinesList()){
+            lines.add(encryptHelper.decode(line));
+        }
+        return lines;
+    }
     private Rpc.Response.Builder builder(Rpc.Type type, Rpc.Code code, List<String> list) {
         Rpc.Response.Builder builder = Rpc.Response.newBuilder();
         if (list != null) {

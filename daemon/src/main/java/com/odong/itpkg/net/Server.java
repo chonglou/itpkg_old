@@ -24,7 +24,6 @@ import javax.annotation.Resource;
  * Time: 下午2:06
  */
 @Component("rpc.server")
-@DependsOn("bootCheck")
 public class Server {
 
     @PreDestroy

@@ -1,34 +1,27 @@
 package com.odong.itpkg;
 
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.rpc.Callback;
 import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.util.JsonHelper;
-import com.odong.itpkg.util.SSHHelper;
 import com.odong.itpkg.util.StringHelper;
 import com.odong.itpkg.util.impl.JsonHelperImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class AppTest {
     @Test
     public void testClient() {
 
         String key = "Qui9eeghen5AN5quave4elix7ahc";
-        int len = 12;
-        String host = "localhost";
+        String host = "192.168.1.102";
         int port = 9999;
-        Client client = new Client(host, port, key, len, new Callback() {
+        Client client = new Client(key);
+        client.open(host, port, new Callback() {
             @Override
             public void execute(Rpc.Response response) {
                 System.out.println(response);
@@ -45,7 +38,7 @@ public class AppTest {
             lines.add("echo " + i);
         }
         client.send(client.command(lines));
-        client.send(client.file("/tmp/aaa/bbb/itpkg.conf", "rw-r--r--", lines));
+        client.send(client.file("/etc/itpkg.conf", "flamen:users", "444", lines));
 
         client.send(client.bye());
         try {

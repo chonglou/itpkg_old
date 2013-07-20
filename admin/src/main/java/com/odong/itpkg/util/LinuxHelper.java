@@ -113,6 +113,10 @@ public class LinuxHelper {
         return String.format("nbtscan -r %s.0/24", host.getLanNet());
     }
 
+    public String scanHost(String ip){
+        return String.format("name -v %s", ip);
+    }
+
     public String macScan() {
         return "arp -n -i lan";
     }

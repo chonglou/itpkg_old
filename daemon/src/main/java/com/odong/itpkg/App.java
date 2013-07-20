@@ -18,6 +18,10 @@ public class App implements Daemon {
             System.exit(-1);
         }
 
+        if (!"root".equals(System.getProperty("user.name"))) {
+            logger.warn("调试启动");
+        }
+
     }
 
     @Override

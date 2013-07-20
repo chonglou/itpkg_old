@@ -1,7 +1,8 @@
 #!/bin/sh
 
 root_dir=$(cd "$(dirname "$0")"; pwd)
-args=" -server -cp ${root_dir}/etc:${root_dir}/lib:${root_dir}/itpkgd.jar -pidfile ${root_dir}/var/.itpkgd -DXms512m -DXmx1024m com.odong.itpkg.App "
+pid=${root_dir}/var/.itpkgd
+args=" -server -cp ${root_dir}/etc:${root_dir}/lib:${root_dir}/itpkgd.jar -pidfile ${pid} -DXms512m -DXmx1024m com.odong.itpkg.App "
 
 start(){
 	if [ -s "$pid" ]; then
@@ -35,13 +36,21 @@ case $1 in
 			${root_dir}/bin/jsvc -outfile ${root_dir}/var/stdout -errfile ${root_dir}/var/stderr -debug ${args}
 		fi
 		;;
+	kill)
+		if [ -s "$pid" ]; then
+			echo "正在 kill"
+			${root_dir}/bin/jsvc -outfile ${root_dir}/var/stdout -errfile ${root_dir}/var/stderr -stop ${args}
+		else
+			echo "还未启动"
+		fi
+		;;
 	restart)
 		stop
 		sleep 2
 		start
 		;;
 	*)
-		echo "Usage: $0 {start|stop|debug|restart}" 
+		echo "Usage: $0 {start|stop|debug|kill|restart}" 
 		;;
 esac
 

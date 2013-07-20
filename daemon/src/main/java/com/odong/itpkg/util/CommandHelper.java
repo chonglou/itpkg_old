@@ -23,20 +23,36 @@ public final class CommandHelper {
     public static List<String> execute(String... commands) {
         List<String> lines = new ArrayList<>();
         try {
-            for (String s : commands) {
-                Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", s}, null, null);
-                LineNumberReader reader = new LineNumberReader(new InputStreamReader(process.getInputStream()));
+            for (String cmd : commands) {
+                logger.debug("运行：{}", cmd);
+                Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd}, null, null);
+                LineNumberReader out = new LineNumberReader(new InputStreamReader(process.getInputStream()));
+                LineNumberReader err = new LineNumberReader(new InputStreamReader(process.getErrorStream()));
 
                 String line;
-                process.waitFor();
-                while ((line = reader.readLine()) != null) {
-                    lines.add(line);
+                int code = process.waitFor();
+
+                if(code == 0){
+                    lines.add("成功");
+                    while ((line = out.readLine()) != null) {
+                        logger.debug(line);
+                        lines.add(line);
+                    }
                 }
-                reader.close();
+                else {
+                    lines.add("出错 返回值["+code+"]");
+                    while ((line = err.readLine()) != null) {
+                        logger.debug(line);
+                        lines.add(line);
+                    }
+                    break;
+                }
+                out.close();
+                err.close();
             }
 
         } catch (InterruptedException | IOException e) {
-            logger.error("执行命令出错", e.getMessage());
+            logger.error("出错", e.getMessage());
             lines.add(e.getMessage());
             throw new RuntimeException(e);
         }
