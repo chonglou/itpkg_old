@@ -1,6 +1,6 @@
-package com.odong.itpkg.dao;
+package com.odong.itpkg.dao.net;
 
-import com.odong.itpkg.entity.net.Host;
+import com.odong.itpkg.entity.net.Ip;
 import com.odong.portal.dao.BaseDao;
 
 /**
@@ -9,5 +9,5 @@ import com.odong.portal.dao.BaseDao;
  * Date: 13-7-18
  * Time: 上午11:18
  */
-public interface HostDao extends BaseDao<Host, Long> {
+public interface IpDao extends BaseDao<Ip, Long> {
 }

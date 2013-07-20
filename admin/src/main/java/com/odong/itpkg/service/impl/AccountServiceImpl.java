@@ -1,7 +1,7 @@
 package com.odong.itpkg.service.impl;
 
-import com.odong.itpkg.dao.CompanyDao;
-import com.odong.itpkg.dao.UserDao;
+import com.odong.itpkg.dao.uc.CompanyDao;
+import com.odong.itpkg.dao.uc.UserDao;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.model.Contact;

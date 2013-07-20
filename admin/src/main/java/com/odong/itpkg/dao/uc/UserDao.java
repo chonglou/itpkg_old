@@ -1,4 +1,4 @@
-package com.odong.itpkg.dao;
+package com.odong.itpkg.dao.uc;
 
 import com.odong.itpkg.entity.uc.User;
 import com.odong.portal.dao.BaseDao;

@@ -1,6 +1,6 @@
-package com.odong.itpkg.dao.impl;
+package com.odong.itpkg.dao.net.impl;
 
-import com.odong.itpkg.dao.IpDao;
+import com.odong.itpkg.dao.net.IpDao;
 import com.odong.itpkg.entity.net.Ip;
 import com.odong.portal.dao.impl.BaseJpa2DaoImpl;
 import org.springframework.stereotype.Repository;

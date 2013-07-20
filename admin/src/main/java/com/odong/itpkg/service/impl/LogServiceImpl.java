@@ -1,6 +1,6 @@
 package com.odong.itpkg.service.impl;
 
-import com.odong.itpkg.dao.LogDao;
+import com.odong.itpkg.dao.uc.LogDao;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.service.LogService;
 import com.odong.portal.util.TimeHelper;

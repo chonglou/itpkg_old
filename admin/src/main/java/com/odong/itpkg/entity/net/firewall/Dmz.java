@@ -22,9 +22,9 @@ public class Dmz extends IdEntity {
     @Column(nullable = false, updatable = false)
     private Long host;
     @Column(nullable = false)
-    private Long ip;
+    private Long wanIp;
     @Column(nullable = false)
-    private Long mac;
+    private Integer lanIp;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false, updatable = false)
@@ -46,20 +46,20 @@ public class Dmz extends IdEntity {
         this.host = host;
     }
 
-    public Long getIp() {
-        return ip;
+    public Long getWanIp() {
+        return wanIp;
     }
 
-    public void setIp(Long ip) {
-        this.ip = ip;
+    public void setWanIp(Long wanIp) {
+        this.wanIp = wanIp;
     }
 
-    public Long getMac() {
-        return mac;
+    public Integer getLanIp() {
+        return lanIp;
     }
 
-    public void setMac(Long mac) {
-        this.mac = mac;
+    public void setLanIp(Integer lanIp) {
+        this.lanIp = lanIp;
     }
 
     public String getName() {
