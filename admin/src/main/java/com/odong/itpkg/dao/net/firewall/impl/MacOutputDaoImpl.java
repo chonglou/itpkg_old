@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.macOutputDao")
-public class MacOutputDaoImpl extends BaseJpa2DaoImpl<MacOutput,Long> implements MacOutputDao {
+public class MacOutputDaoImpl extends BaseJpa2DaoImpl<MacOutput, Long> implements MacOutputDao {
 }

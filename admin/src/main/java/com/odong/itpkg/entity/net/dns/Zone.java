@@ -5,6 +5,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -19,11 +20,30 @@ import java.util.Date;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Zone extends IdEntity {
     private static final long serialVersionUID = 8278817293761075567L;
-    @Column(nullable = false, updatable = false, unique = true)
+    @Column(nullable = false, updatable = false)
+    private long host;
+    @Column(nullable = false, updatable = false)
     private String name;
+    @Lob
+    private String details;
     @Column(nullable = false, updatable = false)
     private Date created;
-    private Date lastEdit;
+
+    public long getHost() {
+        return host;
+    }
+
+    public void setHost(long host) {
+        this.host = host;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
     public String getName() {
         return name;
@@ -41,11 +61,4 @@ public class Zone extends IdEntity {
         this.created = created;
     }
 
-    public Date getLastEdit() {
-        return lastEdit;
-    }
-
-    public void setLastEdit(Date lastEdit) {
-        this.lastEdit = lastEdit;
-    }
 }

@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("uc.groupUserDao")
-public class GroupUserDaoImpl extends BaseJpa2DaoImpl<GroupUser,Long> implements GroupUserDao {
+public class GroupUserDaoImpl extends BaseJpa2DaoImpl<GroupUser, Long> implements GroupUserDao {
 }

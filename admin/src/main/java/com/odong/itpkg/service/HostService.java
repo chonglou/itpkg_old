@@ -16,6 +16,110 @@ import java.util.List;
  * Time: 上午10:59
  */
 public interface HostService {
+
+
+    void addFirewallDmz(long hostId, String name, long wanIp, int lanIp);
+
+    List<Dmz> listFirewallDmz(long hostId);
+
+    void setFirewallDmzInfo(long dmzId, String name);
+
+    void setFirewallDmzRule(long dmzId, long wanIp, int lanIp);
+
+    void delFirewallDmz(long dmzId);
+
+    void addFirewallInput(long hostId, String name, String sIp, int port, Protocol protocol);
+
+    void setFirewallInputInfo(long inputId, String name);
+
+    void setFirewallInputRule(long inputId, String sIp, int port, Protocol protocol);
+
+    void delFirewallInput(long inputId);
+
+    void addFirewallOutput(long hostId, String name, String key, long dateLimitId);
+
+    void setFirewallOutputInfo(long outputId, String name);
+
+    void setFirewallOutputRule(long outputId, String key, long dateLimitId);
+
+    void delFirewallOutput(long outputId);
+
+    void addFirewallNat(long hostId, String name, int sPort, Protocol protocol, int dIp, int dPort);
+
+    void setFirewallNatInfo(long natId, String name);
+
+    void setFirewallNatRule(long natId, int sPort, Protocol protocol, int dIp, int dPort);
+
+    void delFirewallNat(long natId);
+
+
+    void addFlowLimit(String companyId,
+                      String name, String details,
+                      int upRate, int upCeil,
+                      int downRate, int downCeil);
+
+    void setFlowLimitInfo(long flowLimitId, String name, String details);
+
+    void setFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil);
+
+    List<Mac> listMacByFlowLimit(long flowLimitId);
+
+    void delFlowLimit(long flowLimitId);
+
+    List<DateLimit> listDateLimit(String companyId);
+
+    void addDateLimit(String companyId,
+                      String name, String details,
+                      int beginHour, int beginMinute,
+                      int endHour, int endMinute,
+                      boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun);
+
+    void setDateLimitInfo(long dateLimitId, String name, String details);
+
+    void setDateLimitTime(long dateLimitId, int beginHour, int beginMinute, int endHour, int endMinute);
+
+    void setDateLimitWeekdays(long dateLimitId, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun);
+
+    List<Output> listFirewallOutputByDateLimit(long dateLimitId);
+
+    void delDateLimit(long dateLimitId);
+
+    void addDnsZone(long hostId, String name, String details);
+
+    void setDnsZone(long zoneId, String name, String details);
+
+    void delDnsZone(long zoneId);
+
+    void addDnsDomainA(long zoneId, String name, String wanIp);
+
+    void addDnsDomainA(long zoneId, String name, Integer lanIp);
+
+    void addDnsDomainNS(long zoneId, String name, String wanIp);
+
+    void addDnsDomainNS(long zoneId, String name, Integer lanIp);
+
+    void addDnsDomainMX(long zoneId, String name, String wanIp, int priority);
+
+    void addDnsDomainMX(long zoneId, String name, Integer lanIp, int priority);
+
+    void delDnsDomain(long domainId);
+
+    void addMac(long hostId, String serial, int ip, Long flowLimit);
+
+    void setMacState(long macId, Mac.State state);
+
+    void setMacInfo(long macId, String name, String detail);
+
+    void bindIp2Mac(long macId, int ip, boolean bind);
+
+    void addMac2Output(long macId, long outputId, boolean bind);
+
+    void setMacLimit(long macId, long flowLimitId);
+
+    void setMacUser(long macId, long userId);
+
+    void delete(long macId);
+
     void setIpInfo(String id, String address, String netmask, String gateway, String dns1, String dns2);
 
     void setStaticIp(String id, String address, String netmask, String gateway, String dns1, String dns2);
@@ -59,21 +163,19 @@ public interface HostService {
 
     FlowLimit getFlowLimit(long flowId);
 
-    List<MacOutput> listFirewallMacOutputByHost(long hostId);
-
     List<MacOutput> listFirewallMacOutputByMac(long macId);
 
     List<MacOutput> listFirewallMacOutputByOutput(long outputId);
 
     List<Input> listFirewallInput(long hostId);
 
-    List<Output> listFirewallOutput(long hostId);
+    List<Output> listFirewallOutputByHost(long hostId);
 
     List<Nat> listFirewallNat(long hostId);
 
     List<FlowLimit> listFlowLimit(String companyId);
 
-    List<Mac> listMac(long hostId);
+    List<Mac> listMacByHost(long hostId);
 
     List<Zone> listDnsZone(long hostId);
 

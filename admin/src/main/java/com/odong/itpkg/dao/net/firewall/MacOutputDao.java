@@ -9,5 +9,5 @@ import com.odong.portal.dao.BaseDao;
  * Date: 13-7-20
  * Time: 下午2:32
  */
-public interface MacOutputDao extends BaseDao<MacOutput,Long> {
+public interface MacOutputDao extends BaseDao<MacOutput, Long> {
 }

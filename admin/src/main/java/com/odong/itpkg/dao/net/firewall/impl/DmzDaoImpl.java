@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.dmzDao")
-public class DmzDaoImpl extends BaseJpa2DaoImpl<Dmz,Long> implements DmzDao {
+public class DmzDaoImpl extends BaseJpa2DaoImpl<Dmz, Long> implements DmzDao {
 }

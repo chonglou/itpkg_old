@@ -1,6 +1,5 @@
 package com.odong.itpkg.entity.net;
 
-import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;

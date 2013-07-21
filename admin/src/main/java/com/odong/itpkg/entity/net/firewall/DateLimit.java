@@ -3,10 +3,7 @@ package com.odong.itpkg.entity.net.firewall;
 import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -52,7 +49,7 @@ public class DateLimit extends IdEntity {
     @Lob
     private String details;
     @Column(nullable = false, updatable = false)
-    private Long company;
+    private String company;
 
     @Column(nullable = false)
     private int beginHour;
@@ -71,7 +68,16 @@ public class DateLimit extends IdEntity {
     private boolean sun;
     @Column(nullable = false, updatable = false)
     private Date created;
+    @Version
+    private int version;
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public Date getCreated() {
         return created;
@@ -98,11 +104,11 @@ public class DateLimit extends IdEntity {
         this.details = details;
     }
 
-    public Long getCompany() {
+    public String getCompany() {
         return company;
     }
 
-    public void setCompany(Long company) {
+    public void setCompany(String company) {
         this.company = company;
     }
 

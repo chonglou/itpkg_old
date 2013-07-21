@@ -4,6 +4,7 @@ import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,9 +16,10 @@ import javax.persistence.*;
 @Table(name = "netMac")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Mac extends IdEntity {
-    public enum State{
-        ENABLE,DISABLE
+    public enum State {
+        ENABLE, SUBMIT, DISABLE
     }
+
     private static final long serialVersionUID = -885297753742159102L;
 
     @Column(nullable = false, updatable = false)
@@ -27,13 +29,34 @@ public class Mac extends IdEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private State state;
+    @Column(nullable = false)
     private int ip;
-    private String hostname;
+    private String name;
     private Long user;
     private Long dateLimit;
     @Column(nullable = false)
-    private Long flowLimit;
+    private long flowLimit;
+    @Lob
+    private String detail;
     private boolean bind;
+    @Column(nullable = false, updatable = false)
+    private Date created;
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 
     public Long getDateLimit() {
         return dateLimit;
@@ -51,11 +74,11 @@ public class Mac extends IdEntity {
         this.dateLimit = dateLimit;
     }
 
-    public Long getFlowLimit() {
+    public long getFlowLimit() {
         return flowLimit;
     }
 
-    public void setFlowLimit(Long flowLimit) {
+    public void setFlowLimit(long flowLimit) {
         this.flowLimit = flowLimit;
     }
 
@@ -84,12 +107,12 @@ public class Mac extends IdEntity {
         this.serial = serial;
     }
 
-    public String getHostname() {
-        return hostname;
+    public String getName() {
+        return name;
     }
 
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getUser() {

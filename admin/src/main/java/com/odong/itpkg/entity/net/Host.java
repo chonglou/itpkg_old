@@ -17,10 +17,12 @@ import java.util.Date;
 @Table(name = "netHost")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Host extends IdEntity {
-    public final static int KEY_LEN=18;
-    public enum  State{
+    public final static int KEY_LEN = 18;
+
+    public enum State {
         RUNNING, SUBMIT, DONE
     }
+
     private static final long serialVersionUID = -7362809864882645300L;
     @Column(nullable = false, updatable = false)
     private String company;

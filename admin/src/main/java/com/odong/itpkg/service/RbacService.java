@@ -8,7 +8,9 @@ package com.odong.itpkg.service;
  */
 public interface RbacService {
     boolean auth(long user, long company, OperationType type);
+
     void bind(long user, long company, OperationType type, boolean bind);
+
     void bindAdmin(long user, boolean bind);
 
     boolean auth(long user);

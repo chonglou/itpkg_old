@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.flowLimitDao")
-public class FlowLimitDaoImpl extends BaseJpa2DaoImpl<FlowLimit,Long> implements FlowLimitDao {
+public class FlowLimitDaoImpl extends BaseJpa2DaoImpl<FlowLimit, Long> implements FlowLimitDao {
 }

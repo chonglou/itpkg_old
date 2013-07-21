@@ -5,7 +5,6 @@ import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.util.EncryptHelper;
-import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.web.ResponseItem;
 import org.springframework.stereotype.Controller;
@@ -59,8 +58,8 @@ public class SiteController {
             }
             Ip wanIp = hostService.getIp(host.getWanIp());
             Client client = new Client(encryptHelper.decode(host.getSignKey()));
-            String[] ip=client.decode(code).split(" ");
-            if(ip.length != 5){
+            String[] ip = client.decode(code).split(" ");
+            if (ip.length != 5) {
                 throw new IllegalArgumentException("IP地址格式不正确");
             }
             switch (wanIp.getType()) {

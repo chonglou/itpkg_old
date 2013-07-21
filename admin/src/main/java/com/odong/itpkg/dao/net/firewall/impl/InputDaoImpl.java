@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.inputDao")
-public class InputDaoImpl extends BaseJpa2DaoImpl<Input,Long> implements InputDao {
+public class InputDaoImpl extends BaseJpa2DaoImpl<Input, Long> implements InputDao {
 }

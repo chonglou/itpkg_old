@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.dateLimitDao")
-public class DateLimitDaoImpl extends BaseJpa2DaoImpl<DateLimit,Long> implements DateLimitDao {
+public class DateLimitDaoImpl extends BaseJpa2DaoImpl<DateLimit, Long> implements DateLimitDao {
 }

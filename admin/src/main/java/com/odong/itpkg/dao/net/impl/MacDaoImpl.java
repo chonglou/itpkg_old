@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("net.macDao")
-public class MacDaoImpl extends BaseJpa2DaoImpl<Mac,Long> implements MacDao {
+public class MacDaoImpl extends BaseJpa2DaoImpl<Mac, Long> implements MacDao {
 }

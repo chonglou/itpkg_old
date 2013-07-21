@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 下午2:37
  */
 @Repository("dns.domainDao")
-public class DomainDaoImpl extends BaseJpa2DaoImpl<Domain,Long> implements DomainDao {
+public class DomainDaoImpl extends BaseJpa2DaoImpl<Domain, Long> implements DomainDao {
 }

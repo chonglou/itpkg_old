@@ -4,6 +4,7 @@ import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +33,16 @@ public class Domain extends IdEntity {
     @Enumerated(EnumType.STRING)
     private Type type;
     private boolean local;
+    @Column(nullable = false, updatable = false)
+    private Date created;
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
     public String getName() {
         return name;

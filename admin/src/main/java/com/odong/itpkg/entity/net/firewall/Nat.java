@@ -20,17 +20,27 @@ public class Nat extends IdEntity {
     @Column(nullable = false, updatable = false)
     private Long host;
     @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
     private int sPort;
+    @Column(nullable = false)
     private int dPort;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Protocol protocol;
     @Column(nullable = false)
     private int dIp;
-    @Column(nullable = false)
     private Long dateLimit;
     @Column(nullable = false, updatable = false)
     private Date created;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Date getCreated() {
         return created;

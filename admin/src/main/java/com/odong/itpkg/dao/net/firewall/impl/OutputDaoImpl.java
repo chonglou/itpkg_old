@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.outputDao")
-public class OutputDaoImpl extends BaseJpa2DaoImpl<Output,Long> implements OutputDao {
+public class OutputDaoImpl extends BaseJpa2DaoImpl<Output, Long> implements OutputDao {
 }

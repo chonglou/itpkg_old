@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 下午2:38
  */
 @Repository("dns.zoneDao")
-public class ZoneDaoImpl extends BaseJpa2DaoImpl<Zone,Long> implements ZoneDao{
+public class ZoneDaoImpl extends BaseJpa2DaoImpl<Zone, Long> implements ZoneDao {
 }

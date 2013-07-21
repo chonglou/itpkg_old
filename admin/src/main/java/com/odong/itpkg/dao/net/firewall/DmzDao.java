@@ -9,5 +9,5 @@ import com.odong.portal.dao.BaseDao;
  * Date: 13-7-20
  * Time: 下午2:30
  */
-public interface DmzDao extends BaseDao<Dmz,Long> {
+public interface DmzDao extends BaseDao<Dmz, Long> {
 }

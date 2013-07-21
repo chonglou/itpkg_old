@@ -15,6 +15,8 @@ public interface LogService {
     void add(Long user, String message, Log.Type type);
 
     void removeOld(int daysKeep);
+
     List<Log> list(Long user);
+
     List<Log> list(Date start, Date end);
 }

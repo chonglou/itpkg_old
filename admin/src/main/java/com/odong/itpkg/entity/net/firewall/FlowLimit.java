@@ -3,9 +3,7 @@ package com.odong.itpkg.entity.net.firewall;
 import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -24,12 +22,32 @@ public class FlowLimit extends IdEntity {
     private String company;
     @Column(nullable = false)
     private String name;
+    @Lob
+    private String details;
     private Integer upRate;
     private Integer downRate;
     private Integer upCeil;
     private Integer downCeil;
     @Column(nullable = false, updatable = false)
     private Date created;
+    @Version
+    private int version;
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public String getCompany() {
         return company;

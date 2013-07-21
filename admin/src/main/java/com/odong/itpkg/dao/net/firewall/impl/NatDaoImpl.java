@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("ff.natDao")
-public class NatDaoImpl extends BaseJpa2DaoImpl<Nat,Long> implements NatDao {
+public class NatDaoImpl extends BaseJpa2DaoImpl<Nat, Long> implements NatDao {
 }
