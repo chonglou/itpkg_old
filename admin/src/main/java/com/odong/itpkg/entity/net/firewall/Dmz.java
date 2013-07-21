@@ -22,7 +22,7 @@ public class Dmz extends IdEntity {
     @Column(nullable = false, updatable = false)
     private Long host;
     @Column(nullable = false)
-    private Long wanIp;
+    private String wanIp;
     @Column(nullable = false)
     private Integer lanIp;
     @Column(nullable = false)
@@ -46,11 +46,11 @@ public class Dmz extends IdEntity {
         this.host = host;
     }
 
-    public Long getWanIp() {
+    public String getWanIp() {
         return wanIp;
     }
 
-    public void setWanIp(Long wanIp) {
+    public void setWanIp(String wanIp) {
         this.wanIp = wanIp;
     }
 

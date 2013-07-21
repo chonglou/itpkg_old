@@ -18,13 +18,13 @@ import java.util.List;
 public interface HostService {
 
 
-    void addFirewallDmz(long hostId, String name, long wanIp, int lanIp);
+    void addFirewallDmz(long hostId, String name, String wanIp, int lanIp);
 
     List<Dmz> listFirewallDmz(long hostId);
 
     void setFirewallDmzInfo(long dmzId, String name);
 
-    void setFirewallDmzRule(long dmzId, long wanIp, int lanIp);
+    void setFirewallDmzRule(long dmzId, String wanIp, int lanIp);
 
     void delFirewallDmz(long dmzId);
 
@@ -139,6 +139,10 @@ public interface HostService {
     void setHostWan(long hostId, int rpcPort, String wanMac);
 
     void setHostLan(long hostId, String lanNet, String lanMac);
+
+    void setHostDmz(long hostId, boolean enable);
+
+    void setHostDmz(long hostId, String dmzNet, String dmzMac);
 
     void setHostDomain(long hostId, String domain);
 

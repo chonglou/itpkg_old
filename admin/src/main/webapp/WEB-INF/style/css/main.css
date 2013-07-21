@@ -2,6 +2,7 @@ body {
     padding-top: 60px;
     padding-bottom: 40px;
 }
+
 .sidebar-nav {
     padding: 9px 0;
 }
@@ -14,21 +15,24 @@ body {
     }
 }
 
-.form-table{
+.form-table {
     width: 98%;
     text-align: left;
 }
-.form-label{
+
+.form-label {
     width: 80px;
 }
 
-.grid-tr{
-    border-bottom:1px dashed #ccc;
+.grid-tr {
+    border-bottom: 1px dashed #ccc;
 }
+
 .grid-tr:hover {
     background-color: #cccccc;
 }
-.grid-td-opt{
+
+.grid-td-opt {
     text-align: center;
     width: 120px;
 }

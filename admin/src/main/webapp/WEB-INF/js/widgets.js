@@ -52,7 +52,7 @@ function GridWindow(grid) {
     var _id = function (id) {
         return "grid-" + _grid_id + "-" + id;
     };
-    var _c_id = function(id){
+    var _c_id = function (id) {
         return id.split('-')[3];
     };
     var _init = function () {
@@ -76,12 +76,12 @@ function GridWindow(grid) {
         }
         content += "</tr></thead><tbody>";
         for (var i = 0; i < grid.items.length;) {
-            if(grid.action){
-                if (i % (grid.cols.length+1) == 0) {
+            if (grid.action) {
+                if (i % (grid.cols.length + 1) == 0) {
                     content += "<tr class='grid-tr'>";
                 }
             }
-            else{
+            else {
 
                 if (i % grid.cols.length == 0) {
                     content += "<tr class='grid-tr'>";
@@ -90,23 +90,23 @@ function GridWindow(grid) {
             content += "<td>" + grid.items[i] + "</td>";
             i++;
             if (grid.action) {
-                if ((i+1) % (grid.cols.length+1) == 0) {
+                if ((i + 1) % (grid.cols.length + 1) == 0) {
                     content += "<td class='grid-td-opt'>";
                     if (grid.view) {
-                        content += "<button title='查看' id='" + _id("view") +"-"+grid.items[i]+ "'>查看</button>";
+                        content += "<button title='查看' id='" + _id("view") + "-" + grid.items[i] + "'>查看</button>";
                     }
                     if (grid.edit) {
-                        content += "<button title='编辑' id='" + _id("edit") +"-"+grid.items[i]+ "'>编辑</button>";
+                        content += "<button title='编辑' id='" + _id("edit") + "-" + grid.items[i] + "'>编辑</button>";
                     }
                     if (grid.delete) {
-                        content += "<button title='删除' id='" + _id("delete") +"-"+grid.items[i]+ "'>删除</button>";
+                        content += "<button title='删除' id='" + _id("delete") + "-" + grid.items[i] + "'>删除</button>";
                     }
                     content += "</td>";
                     content += "</tr>";
                     i++;
                 }
             }
-            else{
+            else {
                 if (i % (grid.cols.length) == 0) {
                     content += "</tr>";
                 }
@@ -118,34 +118,34 @@ function GridWindow(grid) {
 
         if (grid.action != undefined) {
             if (grid.add) {
-                var addBtn=$("button#" + _id("add"));
+                var addBtn = $("button#" + _id("add"));
                 addBtn.addClass("btn btn-primary btn-mini");
                 addBtn.click(function () {
                     new Ajax(grid.action + "/add");
                 });
             }
-            if(grid.view){
+            if (grid.view) {
 
-                $("button[id^='"+_id("view")+"']").each(function(){
+                $("button[id^='" + _id("view") + "']").each(function () {
                     $(this).addClass("btn btn-info btn-mini");
-                    $(this).click(function(){
-                        new Ajax(grid.action+"/"+_c_id($(this).attr("id")), "PUT");
+                    $(this).click(function () {
+                        new Ajax(grid.action + "/" + _c_id($(this).attr("id")), "PUT");
                     });
                 });
             }
             if (grid.edit) {
-                $("button[id^='"+_id("edit")+"']").each(function(){
+                $("button[id^='" + _id("edit") + "']").each(function () {
                     $(this).addClass("btn btn-warning btn-mini");
-                    $(this).click(function(){
-                        new Ajax(grid.action+"/"+_c_id($(this).attr("id")));
+                    $(this).click(function () {
+                        new Ajax(grid.action + "/" + _c_id($(this).attr("id")));
                     });
                 });
             }
             if (grid.delete) {
-                $("button[id^='"+_id("delete")+"']").each(function(){
+                $("button[id^='" + _id("delete") + "']").each(function () {
                     $(this).addClass("btn btn-danger btn-mini");
-                    $(this).click(function(){
-                        new Ajax(grid.action+"/"+_c_id($(this).attr("id")), "DELETE");
+                    $(this).click(function () {
+                        new Ajax(grid.action + "/" + _c_id($(this).attr("id")), "DELETE");
                     });
                 });
             }

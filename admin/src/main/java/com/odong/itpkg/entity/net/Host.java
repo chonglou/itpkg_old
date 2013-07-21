@@ -30,6 +30,11 @@ public class Host extends IdEntity {
     private String wanIp;
     @Column(nullable = false)
     private String lanNet;
+    private boolean dmz;
+    @Column
+    private String dmzNet;
+    @Column
+    private String dmzMac;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -55,6 +60,30 @@ public class Host extends IdEntity {
     private Date created;
     @Version
     private int version;
+
+    public boolean isDmz() {
+        return dmz;
+    }
+
+    public void setDmz(boolean dmz) {
+        this.dmz = dmz;
+    }
+
+    public String getDmzNet() {
+        return dmzNet;
+    }
+
+    public void setDmzNet(String dmzNet) {
+        this.dmzNet = dmzNet;
+    }
+
+    public String getDmzMac() {
+        return dmzMac;
+    }
+
+    public void setDmzMac(String dmzMac) {
+        this.dmzMac = dmzMac;
+    }
 
     public int getSpace() {
         return space;

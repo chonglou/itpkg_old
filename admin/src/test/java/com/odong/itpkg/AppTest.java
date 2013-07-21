@@ -8,7 +8,6 @@ import com.odong.itpkg.util.JsonHelper;
 import com.odong.itpkg.util.StringHelper;
 import com.odong.itpkg.util.impl.JsonHelperImpl;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -24,19 +24,18 @@
     </appender>
 
 
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.opensymphony" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
 
-    <logger name="org.springframework" level="WARN" />
-    <logger name="com.opensymphony" level="WARN" />
-    <logger name="org.apache" level="WARN" />
-
-    <logger name="org.hibernate" level="WARN" />
+    <logger name="org.hibernate" level="WARN"/>
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder"
-            level="TRACE" />
+            level="TRACE"/>
     <logger name="org.hibernate.type.descriptor.sql.BasicExtractor"
-            level="DEBUG" />
-    <logger name="org.hibernate.SQL" level="DEBUG" />
-    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
-    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />
+            level="DEBUG"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG"/>
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG"/>
 
     <logger name="net.rubyeye.xmemcached" level="WARN"/>
     <logger name="com.google.code.yanf4j" level="WARN"/>

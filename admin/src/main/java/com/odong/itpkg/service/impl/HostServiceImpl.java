@@ -34,7 +34,7 @@ public class HostServiceImpl implements HostService {
 
 
     @Override
-    public void addFirewallDmz(long hostId, String name, long wanIp, int lanIp) {
+    public void addFirewallDmz(long hostId, String name, String wanIp, int lanIp) {
         Dmz d = new Dmz();
         d.setHost(hostId);
         d.setCreated(new Date());
@@ -59,7 +59,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setFirewallDmzRule(long dmzId, long wanIp, int lanIp) {
+    public void setFirewallDmzRule(long dmzId, String wanIp, int lanIp) {
         Dmz d = dmzDao.select(dmzId);
         d.setWanIp(wanIp);
         d.setLanIp(lanIp);
@@ -573,6 +573,21 @@ public class HostServiceImpl implements HostService {
         Host h = hostDao.select(hostId);
         h.setLanNet(lanNet);
         h.setLanMac(lanMac);
+        hostDao.update(h);
+    }
+
+    @Override
+    public void setHostDmz(long hostId, boolean enable) {
+        Host h = hostDao.select(hostId);
+        h.setDmz(enable);
+        hostDao.update(h);
+    }
+
+    @Override
+    public void setHostDmz(long hostId, String dmzNet, String dmzMac) {
+        Host h = hostDao.select(hostId);
+        h.setDmzNet(dmzNet);
+        h.setDmzMac(dmzMac);
         hostDao.update(h);
     }
 

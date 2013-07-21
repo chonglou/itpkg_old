@@ -1,13 +1,11 @@
-
- 
 body {
-/*    font: 70% Verdana, Helvetica, Arial, sans-serif;*/
+    /*    font: 70% Verdana, Helvetica, Arial, sans-serif;*/
     font-size: 9pt;
     background: White;
     color: Black;
     margin: 0;
     padding: 0;
-/* These work in IE only, changes the look of the scrollbar + textareas */
+    /* These work in IE only, changes the look of the scrollbar + textareas */
     scrollbar-base-color: #DEE7EC;
     scrollbar-highlight-color: #DEE7EC;
     scrollbar-track-color: #F7F9FA;
@@ -22,29 +20,32 @@ table {
 }
 
 a:link {
-	text-decoration: none;
+    text-decoration: none;
     color: #436976;
     background-color: transparent;
 }
+
 a:visited {
-	text-decoration: none;
+    text-decoration: none;
     color: #436976;
     background-color: transparent;
 }
-a:active  {
-	text-decoration: none;
+
+a:active {
+    text-decoration: none;
     color: #436976;
     background-color: transparent;
 }
-a:hover  { 
-	text-decoration: underline;
+
+a:hover {
+    text-decoration: underline;
     color: #436976;
     background-color: transparent;
 }
 
 img {
     border: none;
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 p {
@@ -58,12 +59,12 @@ p a {
 }
 
 p a:visited {
-	color: Purple;
+    color: Purple;
     background-color: transparent;
 }
 
 p a:active {
-	color: Red;
+    color: Red;
     background-color: transparent;
 }
 
@@ -72,14 +73,12 @@ p img {
     margin: 0;
 }
 
-
 hr {
     clear: both;
     height: 1px;
     color: #8CACBB;
     background-color: transparent;
 }
-
 
 h1, h2, h3, h4, h5, h6 {
     color: Black;
@@ -114,16 +113,16 @@ h6 {
     font-size: 80%;
 }
 
-ul { 
+ul {
     line-height: 1.5em;
     margin-left: 2em;
-    padding:0;
+    padding: 0;
 }
 
 ol {
     line-height: 1.5em;
     margin-left: 2em;
-    padding:0;
+    padding: 0;
 }
 
 ul a, ol a {
@@ -134,14 +133,13 @@ dl {
 }
 
 dt {
-    font-weight: bold;    
+    font-weight: bold;
 }
 
 dd {
     line-height: 1.5em;
     margin-bottom: 1em;
 }
-
 
 fieldset {
     border: 1px solid #8cacbb;
@@ -154,14 +152,13 @@ legend {
     padding: 0.5em;
 }
 
-
 form {
     border: none;
     margin: 0;
 }
 
 textarea {
-    border: 1px solid #8cacbb;  
+    border: 1px solid #8cacbb;
     color: Black;
     background-color: white;
     width: 88%;
@@ -171,7 +168,7 @@ textarea {
 input {
     /*font: 100% Verdana, Helvetica, Arial, sans-serif;*/
     font-size: 9pt;
-    border: 1px solid #8cacbb;  
+    border: 1px solid #8cacbb;
     color: Black;
     background-color: white;
     vertical-align: middle;
@@ -182,7 +179,7 @@ input {
 select {
     /*font: 100% Verdana, Helvetica, Arial, sans-serif;*/
     font-size: 9pt;
-    border: 1px solid #8cacbb;  
+    border: 1px solid #8cacbb;
     vertical-align: top;
 }
 
@@ -258,13 +255,13 @@ input.searchButton {
 }
 
 div.tabs {
-	background: transparent;
-	border-collapse: collapse;
-	border-bottom-color: #8CACBB;
-	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	padding: 0.5em 0em 0em 2em;
-	white-space: nowrap;
+    background: transparent;
+    border-collapse: collapse;
+    border-bottom-color: #8CACBB;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding: 0.5em 0em 0em 2em;
+    white-space: nowrap;
 
 }
 
@@ -272,7 +269,7 @@ div.tabs a {
     /* The normal, unselected tabs. They are all links */
     background: transparent;
     border-color: #8CACBB;
-    border-width: 1px; 
+    border-width: 1px;
     border-style: solid solid none solid;
     color: #436976;
     margin-right: 0.5em;
@@ -314,10 +311,11 @@ div.personalBar {
 
 div.personalBar a {
     background-color: transparent;
-	color: #436976;
+    color: #436976;
     /*font-weight: normal;*/
     margin-left: 1em;
 }
+
 /*
 div.personalBar img {
     vertical-align: top;
@@ -343,7 +341,7 @@ div.pathBar {
 }
 
 table.columns {
-	width: 100%;
+    width: 100%;
 }
 
 table.columns td.left {
@@ -423,7 +421,7 @@ div.editableDocument {
 }
 
 div.documentActions {
-    float: right; 
+    float: right;
     margin-top: 1.5em;
 }
 
@@ -438,11 +436,9 @@ div.message {
 }
 
 div.message a {
-	color: Black;
+    color: Black;
     text-decoration: underline;
 }
-
-
 
 div.title {
     margin-top: 1em;
@@ -467,7 +463,6 @@ div.title {
     padding: 0.5em 0em 1em 0em;
     text-align: center;
 }
-
 
 /*
 ** Widgets
@@ -496,7 +491,7 @@ input.context {
 }
 
 input.destructive {
-    border: 1px solid #FFA500;  
+    border: 1px solid #FFA500;
     color: Black;
     cursor: pointer;
     font-size: 80%;
@@ -524,11 +519,12 @@ div.row {
     margin: 1em 0em 1em 0em;
     padding: 0em 1em;
 }
+
 span.legend {
     background: White;
     font-size: 80%;
     padding: 0.5em;
-    position : relative;
+    position: relative;
     top: -0.8em;
     left: 0em;
 }
@@ -544,8 +540,8 @@ div.field {
 }
 
 div.help {
-    background-color: #FFFFE1; 
-    border: 1px solid black; 
+    background-color: #FFFFE1;
+    border: 1px solid black;
     font-size: 80%;
     font-weight: normal;
     line-height: normal;
@@ -639,25 +635,25 @@ table.listing a:hover {
 }
 
 table.listing img {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 /* Additional STX workaround classes */
 
 div.stx table p /* stupid STX table workaround */
-{
+ {
     margin: 0;
     padding: 0;
 }
 
 div.stx table  /* stupid STX table workaround */
-{
+ {
     border: 1px solid #8CACBB ! important;
 }
+
 div.stx table td {
     border-bottom: 1px solid #8CACBB;
 }
-
 
 div.box {
     border: none;
@@ -669,7 +665,7 @@ div.box h4 {
     font-size: 1em;
 }
 
-div.box h5 { 
+div.box h5 {
     background: #DEE7EC;
     border: 1px solid #8CACBB;
     border-style: solid solid none solid;
@@ -681,7 +677,7 @@ div.box h5 {
     height: 1em;
 }
 
-div.box h6 { 
+div.box h6 {
     background: #DEE7EC;
     border: 1px solid #8CACBB;
     border-style: solid solid none solid;
@@ -692,7 +688,6 @@ div.box h6 {
     font-size: 1em;
     height: 1.2em;
 }
-
 
 div.box div.body {
     background: transparent;
@@ -715,9 +710,9 @@ div.box a.close {
     padding: 0em 0.2em;
 }
 
-div.box h1, 
-div.box h2, 
-div.box h3, 
+div.box h1,
+div.box h2,
+div.box h3,
 div.box h4 {
     margin: 0;
     padding: 0;
@@ -732,7 +727,7 @@ div.box .odd {
 }
 
 div.box .highlight {
-    background-color:  #FFA500;
+    background-color: #FFA500;
     border: 2px solid;
 }
 
@@ -741,7 +736,7 @@ div.box input {
 }
 
 div.spacer {
-	margin: 1em;
+    margin: 1em;
 }
 
 .currentNavItem {
@@ -805,9 +800,8 @@ div.listingBar span.next {
 }
 
 div.listingBar img {
-	vertical-align: middle;
+    vertical-align: middle;
 }
-
 
 /*
 ** Calendar elements - used in the calendar rendering 
@@ -827,7 +821,6 @@ div.date {
     font-weight: bold;
 }
 
-  
 table.calendar {
     border: 1px solid #8CACBB;
     margin: 0em 1em 2em 0em;
@@ -882,10 +875,5 @@ table.calendar td.todaynoevent {
     border-collapse: collapse;
     border: 2px solid #FFA500;
 }
-
-
-
-
-
 
 /*  */

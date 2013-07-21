@@ -24,6 +24,9 @@ import java.util.*;
  */
 @Component
 public class LinuxHelper {
+    public String saveIptables() {
+        return "iptables-save > /etc/iptables/iptables.rules";
+    }
 
     public List<String> getWanInfo() {
         List<String> lines = new ArrayList<>();
@@ -60,11 +63,26 @@ public class LinuxHelper {
         return "ifconfig -a| grep ether | awk -F\" \" '{print $2}'";
     }
 
-    public List<String> enableNetwork() {
+    public String restartDncpd() {
+        return "systemctl restart dhcpd4";
+    }
+
+    public String restartBind() {
+        return "systemctl restart named";
+    }
+
+    public List<String> enableNetwork(long hostId) {
+        Host host = hostService.getHost(hostId);
         List<String> lines = new ArrayList<>();
         lines.add("udevadm trigger");
         lines.add("netctl enable wan");
         lines.add("netctl enable lan");
+        if (host.isDmz()) {
+            lines.add("netctl enable dmz");
+        }
+        for (String s : new String[]{"dhcpd4", "named", "iptables"}) {
+            lines.add(String.format("systemctl enable %s", s));
+        }
         return lines;
     }
 
@@ -85,7 +103,14 @@ public class LinuxHelper {
                 sbW.append("Interface=wan");
                 sbW.append("Connection=ethernet");
                 sbW.append("IP=static");
-                sbW.append(String.format("Address=('%s/24')", wanIp.getAddress()));
+                sbU.append(String.format("Address=('%s/24'", wanIp.getAddress()));
+                if(host.isDmz()){
+                    for(Dmz d : hostService.listFirewallDmz(hostId)){
+                        Ip dmzIp = hostService.getIp(d.getWanIp());
+                        sbU.append(String.format(" %s/24", dmzIp.getAddress()));
+                    }
+                }
+                sbU.append(")");
                 sbW.append(String.format("Gateway='%s'", wanIp.getGateway()));
                 sbW.append(String.format("DNS=('%s %s')", wanIp.getDns1(), wanIp.getDns2()));
                 break;
@@ -200,6 +225,19 @@ public class LinuxHelper {
         }
         lines.add("iptables -A FORWARD  -m state --state ESTABLISHED -j ACCEPT");
         lines.add(String.format("iptables -t nat -A POSTROUTING -s %s.0/24 -o wan -j MASQUERADE", host.getLanNet()));
+        //DMZ
+        if (host.isDmz()) {
+            // TODO 未验证
+            for (Dmz dmz : hostService.listFirewallDmz(hostId)) {
+                Ip dmzIp = hostService.getIp(dmz.getWanIp());
+                lines.add(String.format("iptables -t nat -A PREROUTING -d %s -j DNAT --to-destination %s.1", dmzIp.getAddress(), host.getDmzNet()));
+                lines.add(String.format("iptables -t nat -A POSTROUTING -s %s.1 -j SNAT --to-source %s", host.getDmzNet(), dmzIp.getAddress()));
+
+            }
+
+            lines.add(String.format("iptables -A FORWARD -s %s.1 -j ACCEPT", host.getDmzNet()));
+            lines.add(String.format("iptables -A FORWARD -d %s.1 -j ACCEPT", host.getDmzNet()));
+        }
 
         return lines;
     }
