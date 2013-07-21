@@ -1,17 +1,26 @@
 package com.odong.itpkg.controller;
 
+import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.form.personal.*;
 import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.AccountService;
+import com.odong.itpkg.service.LogService;
+import com.odong.itpkg.service.RbacService;
+import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
+import com.odong.portal.service.SiteService;
+import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.FormHelper;
+import com.odong.portal.util.TimeHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.PasswordField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +28,12 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -94,10 +108,22 @@ public class PersonalController {
 
     @RequestMapping(value = "/setPwd", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSetPwd(@Valid SetPwdForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postSetPwd(@Valid SetPwdForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (!form.getNewPwd().equals(form.getRePwd())) {
+            ri.setOk(false);
+            ri.addData("两次密码输入不一致");
+        }
         if (ri.isOk()) {
-            //TODO
+
+            if (accountService.auth(si.getEmail(), form.getOldPwd()) == null) {
+                ri.setOk(false);
+                ri.addData("当前密码输入有误");
+            } else {
+                accountService.setUserPassword(si.getUserId(), form.getNewPwd());
+                emailHelper.send(si.getEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
+                        "如果不是您的操作，请忽略该邮件。", true);
+            }
         }
         return ri;
 
@@ -107,8 +133,28 @@ public class PersonalController {
     @RequestMapping(value = "/resetPwd/{code}", method = RequestMethod.GET)
     @ResponseBody
     ResponseItem activateResetPwd(@PathVariable String code) {
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
-        //TODO
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        try {
+            Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
+            String email = map.get("email");
+            User user = accountService.getUser(email);
+            if (user.getState() == User.State.ENABLE) {
+                if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(map.get("created"), Date.class), 60 * 30)) <= 0) {
+                    accountService.setUserPassword(user.getId(), map.get("password"));
+                    ri.setOk(true);
+                    logService.add(user.getId(), "重置密码", Log.Type.INFO);
+                    emailHelper.send(email, "您在[" + siteService.getString("site.domain") + "]上的密码重置记录",
+                            "如果不是您的操作，请忽略该邮件。", true);
+                } else {
+                    ri.addData("链接已失效");
+                }
+            } else {
+                ri.addData("用户[" + user.getEmail() + "]状态不对");
+            }
+        } catch (Exception e) {
+            logger.error("重置密码错误", e);
+        }
+
         return ri;
     }
 
@@ -116,8 +162,27 @@ public class PersonalController {
     @ResponseBody
     ResponseItem postResetPwd(@Valid ResetPwdForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
+        if (!form.getNewPwd().equals(form.getRePwd())) {
+            ri.setOk(false);
+            ri.addData("两次密码输入不一致");
+        }
         if (ri.isOk()) {
-            //TODO
+            User u = accountService.getUser(form.getEmail());
+            if (u != null && u.getState() == User.State.ENABLE) {
+
+                Map<String, String> map = new HashMap<>();
+                map.put("email", form.getEmail());
+                map.put("password", form.getNewPwd());
+                map.put("created", jsonHelper.object2json(new Date()));
+                String domain = siteService.getString("site.domain");
+                emailHelper.send(form.getEmail(), "您在[" + domain + "]上的密码重置",
+                        "<a href='http://" + domain +
+                                "/personal/resetPwd/" + jsonHelper.object2json(map) +
+                                "' target='_blank'>请点击此链接重置密码</a>。<br/>如果不是您的操作，请忽略该邮件。",
+                        true);
+            } else {
+                ri.addData("用户[" + form.getEmail() + "]状态不对");
+            }
         }
         return ri;
 
@@ -135,15 +200,49 @@ public class PersonalController {
         return fm;
     }
 
-    @RequestMapping(value = "/register/{code}", method = RequestMethod.GET)
+    @RequestMapping(value = "/active/{code}", method = RequestMethod.GET)
     @ResponseBody
     ResponseItem activateRegister(@PathVariable String code) {
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
-        //TODO
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        try{
+            Map<String,String> map = jsonHelper.json2map(code, String.class, String.class);
+            String email = map.get("email");
+            User u  = accountService.getUser(email);
+            if(u != null && u.getState() == User.State.SUBMIT){
+                accountService.setUserState(u.getId(), User.State.ENABLE);
+                ri.setOk(true);
+                logService.add(u.getId(), "账户激活", Log.Type.INFO);
+            }
+            else {
+                ri.addData("账户["+email+"]状态不对");
+            }
+        }
+        catch (Exception e){
+            logger.error("激活账户失败", e);
+        }
         return ri;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    @RequestMapping(value = "/active", method = RequestMethod.GET)
+    @ResponseBody
+    Form getActive() {
+        Form fm = new Form("active", "欢迎注册", "/personal/active");
+        fm.addField(new TextField("email", "邮箱"));
+        fm.setCaptcha(true);
+        fm.setOk(true);
+        return fm;
+    }
+    @RequestMapping(value = "/active", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postActive(@Valid ActiveForm form, BindingResult result, HttpServletRequest request) {
+        ResponseItem ri = formHelper.check(result, request, true);
+        if(ri.isOk()){
+            sendActiveEmail(form.getEmail());
+        }
+        return ri;
+    }
+
+        @RequestMapping(value = "/register", method = RequestMethod.GET)
     @ResponseBody
     Form getRegister() {
         Form fm = new Form("register", "欢迎注册", "/personal/register");
@@ -160,10 +259,36 @@ public class PersonalController {
     @ResponseBody
     ResponseItem postRegister(@Valid RegisterForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
+        if(!form.getNewPwd().equals(form.getRePwd())){
+            ri.setOk(false);
+            ri.addData("两次密码输入不一致");
+        }
         if (ri.isOk()) {
-            //TODO
+            User u = accountService.getUser(form.getEmail());
+            if (u == null){
+                String companyId = UUID.randomUUID().toString();
+                accountService.addCompany(companyId, form.getCompany(), "");
+                accountService.addUser(companyId, form.getEmail(), form.getUsername(), form.getNewPwd());
+                sendActiveEmail(form.getEmail());
+            }
+            else {
+                ri.setOk(false);
+                ri.addData("邮箱["+form.getEmail()+"]已存在");
+            }
         }
         return ri;
+    }
+
+    private void sendActiveEmail(String email){
+        String domain = siteService.getString("site.domain");
+        Map<String,String> map = new HashMap<>();
+        map.put("email", email);
+        map.put("created", jsonHelper.object2json(new Date()));
+        emailHelper.send(email, "您在[" + domain + "]上的账户激活",
+                "<a href='http://" + domain +
+                        "/personal/active/" + jsonHelper.object2json(map) +
+                        "' target='_blank'>请点击此链接激活账户</a>。<br/>如果不是您的操作，请忽略该邮件。",
+                true);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -179,10 +304,40 @@ public class PersonalController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postLogin(@Valid LoginForm form, BindingResult result, HttpServletRequest request) {
+    ResponseItem postLogin(@Valid LoginForm form, BindingResult result, HttpServletRequest request, HttpSession session) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            //TODO
+            User u = accountService.auth(form.getEmail(), form.getPassword());
+            if(u == null){
+                ri.setOk(false);
+                ri.addData("账户密码不匹配");
+            }
+            else {
+                switch (u.getState()){
+                    case ENABLE:
+                        SessionItem si = new SessionItem();
+                        si.setUsername(u.getUsername());
+                        si.setEmail(u.getEmail());
+                        si.setUserId(u.getId());
+                        si.setAdmin(rbacService.authAdmin(u.getId()));
+                        si.setCreated(new Date());
+                        ri.setType(ResponseItem.Type.redirect);
+                        ri.addData("/personal/self");
+                        break;
+                    case DISABLE:
+                        ri.setOk(false);
+                        ri.addData("账户["+form.getEmail()+"]被禁用");
+                        break;
+                    case SUBMIT:
+                        ri.setOk(false);
+                        ri.addData("账户["+form.getEmail()+"]未激活");
+                        break;
+                    default:
+                        ri.setOk(false);
+                        ri.addData("未知错误");
+                        break;
+                }
+            }
         }
         return ri;
     }
@@ -201,11 +356,48 @@ public class PersonalController {
 
 
     @Resource
+    private TimeHelper timeHelper;
+    @Resource
+    private SiteService siteService;
+    @Resource
+    private EmailHelper emailHelper;
+    @Resource
     private FormHelper formHelper;
     @Resource
     private JsonHelper jsonHelper;
     @Resource
+    private EncryptHelper encryptHelper;
+    @Resource
     private AccountService accountService;
+    @Resource
+    private RbacService rbacService;
+    @Resource
+    private LogService logService;
+    private final static Logger logger = LoggerFactory.getLogger(PersonalController.class);
+
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
+    public void setTimeHelper(TimeHelper timeHelper) {
+        this.timeHelper = timeHelper;
+    }
+
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setEmailHelper(EmailHelper emailHelper) {
+        this.emailHelper = emailHelper;
+    }
 
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;

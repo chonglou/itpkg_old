@@ -176,7 +176,7 @@ public class HostServiceImpl implements HostService {
 
 
     @Override
-    public void addFlowLimit(String companyId, String name, String details, int upRate, int upCeil, int downRate, int downCeil) {
+    public void addFirewallFlowLimit(String companyId, String name, String details, int upRate, int upCeil, int downRate, int downCeil) {
         FlowLimit fl = new FlowLimit();
         fl.setCompany(companyId);
         fl.setName(name);
@@ -190,7 +190,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setFlowLimitInfo(long flowLimitId, String name, String details) {
+    public void setFirewallFlowLimitInfo(long flowLimitId, String name, String details) {
         FlowLimit fl = flowLimitDao.select(flowLimitId);
         fl.setName(name);
         fl.setDetails(details);
@@ -198,7 +198,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil) {
+    public void setFirewallFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil) {
         FlowLimit fl = flowLimitDao.select(flowLimitId);
         fl.setUpCeil(upCeil);
         fl.setUpRate(upRate);
@@ -208,19 +208,19 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public List<Mac> listMacByFlowLimit(long flowLimitId) {
+    public List<Mac> listMacByFirewallFlowLimit(long flowLimitId) {
         Map<String, Object> map = new HashMap<>();
         map.put("flowLimit", flowLimitId);
         return macDao.list("FROM Mac AS i WHERE i.flowLimit=:flowLimit", map);  //
     }
 
     @Override
-    public void delFlowLimit(long flowLimitId) {
+    public void delFirewallFlowLimit(long flowLimitId) {
         flowLimitDao.delete(flowLimitId);
     }
 
     @Override
-    public List<DateLimit> listDateLimit(String companyId) {
+    public List<DateLimit> listFirewallDateLimit(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
         return dateLimitDao.list("FROM DateLimit AS i WHERE i.company=:company", map);  //
@@ -228,7 +228,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addDateLimit(String companyId, String name, String details, int beginHour, int beginMinute, int endHour, int endMinute, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun) {
+    public void addFirewallDateLimit(String companyId, String name, String details, int beginHour, int beginMinute, int endHour, int endMinute, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun) {
         DateLimit dl = new DateLimit();
         dl.setCompany(companyId);
         dl.setName(name);
@@ -249,7 +249,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setDateLimitInfo(long dateLimitId, String name, String details) {
+    public void setFirewallDateLimitInfo(long dateLimitId, String name, String details) {
         DateLimit dl = dateLimitDao.select(dateLimitId);
         dl.setName(name);
         dl.setDetails(details);
@@ -257,7 +257,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setDateLimitTime(long dateLimitId, int beginHour, int beginMinute, int endHour, int endMinute) {
+    public void setFirewallDateLimitTime(long dateLimitId, int beginHour, int beginMinute, int endHour, int endMinute) {
         DateLimit dl = dateLimitDao.select(dateLimitId);
         dl.setBeginHour(beginHour);
         dl.setBeginMinute(beginMinute);
@@ -267,7 +267,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setDateLimitWeekdays(long dateLimitId, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun) {
+    public void setFirewallDateLimitWeekdays(long dateLimitId, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun) {
         DateLimit dl = dateLimitDao.select(dateLimitId);
         dl.setMon(mon);
         dl.setTues(tues);
@@ -287,7 +287,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void delDateLimit(long dateLimitId) {
+    public void delFirewallDateLimit(long dateLimitId) {
         dateLimitDao.delete(dateLimitId);
     }
 
@@ -468,7 +468,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void delete(long macId) {
+    public void delMac(long macId) {
         Map<String, Object> map = new HashMap<>();
         map.put("mac", macId);
         macOutputDao.delete("DELETE MacOutput AS i WHERE i.mac=:mac", map);
@@ -488,7 +488,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setStaticIp(String id, String address, String netmask, String gateway, String dns1, String dns2) {
+    public void setIpStatic(String id, String address, String netmask, String gateway, String dns1, String dns2) {
         Ip ip = ipDao.select(id);
         ip.setAddress(address);
         ip.setNetmask(netmask);
@@ -500,14 +500,14 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setDhcpIp(String id) {
+    public void setIpDhcp(String id) {
         Ip ip = ipDao.select(id);
         ip.setType(Ip.Type.DHCP);
         ipDao.update(ip);
     }
 
     @Override
-    public void setPppoeIp(String id, String username, String password) {
+    public void setIpPppoe(String id, String username, String password) {
         Ip ip = ipDao.select(id);
         ip.setUsername(username);
         ip.setPassword(password);
@@ -516,7 +516,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addStaticIp(long host, String id, String address, String netmask, String gateway, String dns1, String dns2) {
+    public void addIpStatic(long host, String id, String address, String netmask, String gateway, String dns1, String dns2) {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setHost(host);
@@ -531,7 +531,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addDhcpIp(long host, String id) {
+    public void addIpDhcp(long host, String id) {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setHost(host);
@@ -541,7 +541,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addPppoeIp(long host, String id, String username, String password) {
+    public void addIpPppoe(long host, String id, String username, String password) {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setHost(host);
@@ -599,6 +599,13 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
+    public List<Ip> listIpByHost(long hostId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("host", hostId);
+        return ipDao.list("SELECT Ip AS i WHERE i.host=:host", map);
+    }
+
+    @Override
     public List<Host> listHost(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
@@ -650,7 +657,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public DateLimit getDateLimit(long dateLimitId) {
+    public DateLimit getFirewallDateLimit(long dateLimitId) {
         return dateLimitDao.select(dateLimitId);  //
     }
 
@@ -665,7 +672,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public FlowLimit getFlowLimit(long flowId) {
+    public FlowLimit getFirewallFlowLimit(long flowId) {
         return flowLimitDao.select(flowId);  //
     }
 
@@ -707,7 +714,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public List<FlowLimit> listFlowLimit(String companyId) {
+    public List<FlowLimit> listFirewallFlowLimit(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
         return flowLimitDao.list("SELECT FlowLimit AS i WHERE i.company=:company", map);

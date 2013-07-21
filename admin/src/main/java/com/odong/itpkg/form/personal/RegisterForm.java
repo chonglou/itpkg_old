@@ -19,11 +19,21 @@ public class RegisterForm implements Serializable {
     @NotNull
     private String email;
     @NotNull
-    private String password;
+    private String username;
     @NotNull
-    private String re_password;
+    private String newPwd;
+    @NotNull
+    private String rePwd;
     @NotNull
     private String captcha;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getCompany() {
         return company;
@@ -41,20 +51,20 @@ public class RegisterForm implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNewPwd() {
+        return newPwd;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNewPwd(String newPwd) {
+        this.newPwd = newPwd;
     }
 
-    public String getRe_password() {
-        return re_password;
+    public String getRePwd() {
+        return rePwd;
     }
 
-    public void setRe_password(String re_password) {
-        this.re_password = re_password;
+    public void setRePwd(String rePwd) {
+        this.rePwd = rePwd;
     }
 
     public String getCaptcha() {

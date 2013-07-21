@@ -192,7 +192,7 @@ public class LinuxHelper {
 
         //OUTPUT
         for (Output out : hostService.listFirewallOutputByHost(hostId)) {
-            DateLimit dl = hostService.getDateLimit(out.getDateLimit());
+            DateLimit dl = hostService.getFirewallDateLimit(out.getDateLimit());
             for (MacOutput mo : hostService.listFirewallMacOutputByOutput(out.getId())) {
                 Mac m = hostService.getMac(mo.getMac());
                 if (m.getState() == Mac.State.ENABLE) {
@@ -281,7 +281,7 @@ public class LinuxHelper {
 
         for (Mac m : hostService.listMacByHost(hostId)) {
             if (m.getState() == Mac.State.ENABLE) {
-                FlowLimit f = hostService.getFlowLimit(m.getFlowLimit());
+                FlowLimit f = hostService.getFirewallFlowLimit(m.getFlowLimit());
                 //限速打标
                 lines.add(String.format("iptables -t mangle -A PREROUTING  -s %s.%d -j MARK --set-mark 2%03d", host.getLanNet(), m.getIp(), m.getIp()));
                 lines.add(String.format("iptables -t mangle -A PREROUTING  -s %s.%d -j RETURN", host.getLanNet(), m.getIp()));

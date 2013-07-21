@@ -18,7 +18,7 @@ import java.util.Date;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity {
     public enum State {
-        SUBMIT, ENABLE, DISABLE, DELETE
+        SUBMIT, ENABLE, DISABLE, DONE
     }
 
     private static final long serialVersionUID = 5060112157855548851L;

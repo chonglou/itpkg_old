@@ -53,36 +53,36 @@ public interface HostService {
     void delFirewallNat(long natId);
 
 
-    void addFlowLimit(String companyId,
-                      String name, String details,
-                      int upRate, int upCeil,
-                      int downRate, int downCeil);
+    void addFirewallFlowLimit(String companyId,
+                              String name, String details,
+                              int upRate, int upCeil,
+                              int downRate, int downCeil);
 
-    void setFlowLimitInfo(long flowLimitId, String name, String details);
+    void setFirewallFlowLimitInfo(long flowLimitId, String name, String details);
 
-    void setFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil);
+    void setFirewallFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil);
 
-    List<Mac> listMacByFlowLimit(long flowLimitId);
+    List<Mac> listMacByFirewallFlowLimit(long flowLimitId);
 
-    void delFlowLimit(long flowLimitId);
+    void delFirewallFlowLimit(long flowLimitId);
 
-    List<DateLimit> listDateLimit(String companyId);
+    List<DateLimit> listFirewallDateLimit(String companyId);
 
-    void addDateLimit(String companyId,
-                      String name, String details,
-                      int beginHour, int beginMinute,
-                      int endHour, int endMinute,
-                      boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun);
+    void addFirewallDateLimit(String companyId,
+                              String name, String details,
+                              int beginHour, int beginMinute,
+                              int endHour, int endMinute,
+                              boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun);
 
-    void setDateLimitInfo(long dateLimitId, String name, String details);
+    void setFirewallDateLimitInfo(long dateLimitId, String name, String details);
 
-    void setDateLimitTime(long dateLimitId, int beginHour, int beginMinute, int endHour, int endMinute);
+    void setFirewallDateLimitTime(long dateLimitId, int beginHour, int beginMinute, int endHour, int endMinute);
 
-    void setDateLimitWeekdays(long dateLimitId, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun);
+    void setFirewallDateLimitWeekdays(long dateLimitId, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun);
 
     List<Output> listFirewallOutputByDateLimit(long dateLimitId);
 
-    void delDateLimit(long dateLimitId);
+    void delFirewallDateLimit(long dateLimitId);
 
     void addDnsZone(long hostId, String name, String details);
 
@@ -118,21 +118,21 @@ public interface HostService {
 
     void setMacUser(long macId, long userId);
 
-    void delete(long macId);
+    void delMac(long macId);
 
     void setIpInfo(String id, String address, String netmask, String gateway, String dns1, String dns2);
 
-    void setStaticIp(String id, String address, String netmask, String gateway, String dns1, String dns2);
+    void setIpStatic(String id, String address, String netmask, String gateway, String dns1, String dns2);
 
-    void setDhcpIp(String id);
+    void setIpDhcp(String id);
 
-    void setPppoeIp(String id, String username, String password);
+    void setIpPppoe(String id, String username, String password);
 
-    void addStaticIp(long host, String id, String address, String netmask, String gateway, String dns1, String dns2);
+    void addIpStatic(long host, String id, String address, String netmask, String gateway, String dns1, String dns2);
 
-    void addDhcpIp(long host, String id);
+    void addIpDhcp(long host, String id);
 
-    void addPppoeIp(long host, String id, String username, String password);
+    void addIpPppoe(long host, String id, String username, String password);
 
     void setHostInfo(long hostId, String name, String details);
 
@@ -145,6 +145,8 @@ public interface HostService {
     void setHostDmz(long hostId, String dmzNet, String dmzMac);
 
     void setHostDomain(long hostId, String domain);
+
+    List<Ip> listIpByHost(long hostId);
 
     List<Host> listHost(String companyId);
 
@@ -159,13 +161,13 @@ public interface HostService {
 
     Host getHost(String wanMac);
 
-    DateLimit getDateLimit(long dateLimitId);
+    DateLimit getFirewallDateLimit(long dateLimitId);
 
     Mac getMac(long macId);
 
     Output getFirewallOutput(long outputId);
 
-    FlowLimit getFlowLimit(long flowId);
+    FlowLimit getFirewallFlowLimit(long flowId);
 
     List<MacOutput> listFirewallMacOutputByMac(long macId);
 
@@ -177,7 +179,7 @@ public interface HostService {
 
     List<Nat> listFirewallNat(long hostId);
 
-    List<FlowLimit> listFlowLimit(String companyId);
+    List<FlowLimit> listFirewallFlowLimit(String companyId);
 
     List<Mac> listMacByHost(long hostId);
 

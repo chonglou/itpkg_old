@@ -10,14 +10,6 @@ import org.jasypt.util.text.StrongTextEncryptor;
  * Time: 上午10:54
  */
 public class EncryptHelper {
-    public String encode(Object plain) {
-        return plain == null ? null : ste.encrypt(jsonHelper.object2json(plain));
-    }
-
-    public <T> T decode(String encrypt, Class<T> clazz) {
-        return encrypt == null ? null : jsonHelper.json2object(ste.decrypt(encrypt), clazz
-        );
-    }
 
     public String encode(String plain) {
         return ste.encrypt(plain);
@@ -49,14 +41,8 @@ public class EncryptHelper {
     private StrongTextEncryptor ste;
     private String appKey;
 
-    private JsonHelper jsonHelper;
-
     public void setAppKey(String appKey) {
         this.appKey = appKey;
-    }
-
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
     }
 
 
