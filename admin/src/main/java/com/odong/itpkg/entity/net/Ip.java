@@ -4,6 +4,8 @@ import com.odong.portal.entity.IdEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,12 +16,15 @@ import javax.persistence.*;
 @Entity
 @Table(name = "netIp")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Ip extends IdEntity {
+public class Ip implements Serializable {
     public enum Type {
         PPPOE, DHCP, STATIC
     }
 
     private static final long serialVersionUID = 4176678672721576398L;
+    @Id
+    @Column(nullable = false, updatable = false, unique = true)
+    private String id;
     @Column(nullable = false, updatable = false)
     private Long host;
     @Column(nullable = false)
@@ -32,9 +37,26 @@ public class Ip extends IdEntity {
     private String gateway;
     private String dns1;
     private String dns2;
+    @Column(nullable = false, updatable = false)
+    private Date created;
     @Version
     private int version;
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Long getHost() {
         return host;

@@ -118,6 +118,14 @@ public class TaskServiceImpl implements TaskService {
         taskDao.delete("DELETE Task AS i WHERE i.created < :date AND i.state=:state", map);
     }
 
+    @Override
+    public List<Task> list(Date begin, Date end) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("begin", begin);
+        map.put("end", end);
+        return taskDao.list("SELECT Task AS i WHERE i.created>=:start AND i.created <=:end", map);  //
+    }
+
     @Resource
     private TaskDao taskDao;
     @Resource

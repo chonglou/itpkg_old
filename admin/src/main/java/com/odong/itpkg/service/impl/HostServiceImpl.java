@@ -6,7 +6,6 @@ import com.odong.itpkg.dao.net.MacDao;
 import com.odong.itpkg.dao.net.dns.DomainDao;
 import com.odong.itpkg.dao.net.dns.ZoneDao;
 import com.odong.itpkg.dao.net.firewall.*;
-import com.odong.itpkg.dao.uc.CompanyDao;
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.entity.net.Mac;
@@ -14,9 +13,12 @@ import com.odong.itpkg.entity.net.dns.Domain;
 import com.odong.itpkg.entity.net.dns.Zone;
 import com.odong.itpkg.entity.net.firewall.*;
 import com.odong.itpkg.service.HostService;
+import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.StringHelper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +31,164 @@ import java.util.Map;
  */
 @Service
 public class HostServiceImpl implements HostService {
+
+
     @Override
-    public void setHostKey(long hostId, String signKey) {
+    public void setIpInfo(String id, String address, String netmask, String gateway, String dns1, String dns2) {
+        Ip ip = ipDao.select(id);
+        ip.setAddress(address);
+        ip.setNetmask(netmask);
+        ip.setGateway(gateway);
+        ip.setDns1(dns1);
+        ip.setDns2(dns2);
+        ipDao.update(ip);
+    }
+
+    @Override
+    public void setStaticIp(String id, String address, String netmask, String gateway, String dns1, String dns2) {
+        Ip ip = ipDao.select(id);
+        ip.setAddress(address);
+        ip.setNetmask(netmask);
+        ip.setGateway(gateway);
+        ip.setDns1(dns1);
+        ip.setDns2(dns2);
+        ip.setType(Ip.Type.STATIC);
+        ipDao.update(ip);
+    }
+
+    @Override
+    public void setDhcpIp(String id) {
+        Ip ip = ipDao.select(id);
+        ip.setType(Ip.Type.DHCP);
+        ipDao.update(ip);
+    }
+
+    @Override
+    public void setPppoeIp(String id, String username, String password) {
+        Ip ip = ipDao.select(id);
+        ip.setUsername(username);
+        ip.setPassword(password);
+        ip.setType(Ip.Type.PPPOE);
+        ipDao.update(ip);
+    }
+
+    @Override
+    public void addStaticIp(long host, String id, String address, String netmask, String gateway, String dns1, String dns2) {
+        Ip ip = new Ip();
+        ip.setId(id);
+        ip.setHost(host);
+        ip.setAddress(address);
+        ip.setNetmask(netmask);
+        ip.setGateway(gateway);
+        ip.setDns1(dns1);
+        ip.setDns2(dns2);
+        ip.setType(Ip.Type.STATIC);
+        ip.setCreated(new Date());
+        ipDao.insert(ip);
+    }
+
+    @Override
+    public void addDhcpIp(long host, String id) {
+        Ip ip = new Ip();
+        ip.setId(id);
+        ip.setHost(host);
+        ip.setType(Ip.Type.DHCP);
+        ip.setCreated(new Date());
+        ipDao.insert(ip);
+    }
+
+    @Override
+    public void addPppoeIp(long host, String id, String username, String password) {
+        Ip ip = new Ip();
+        ip.setId(id);
+        ip.setHost(host);
+        ip.setUsername(username);
+        ip.setPassword(password);
+        ip.setType(Ip.Type.PPPOE);
+        ip.setCreated(new Date());
+        ipDao.insert(ip);
+    }
+
+    @Override
+    public void setHostInfo(long hostId, String name, String details) {
+        Host h = hostDao.select(hostId);
+        h.setName(name);
+        h.setDetails(details);
+        hostDao.update(h);
+    }
+
+    @Override
+    public void setHostWan(long hostId, int rpcPort, String wanMac) {
+        Host h = hostDao.select(hostId);
+        h.setRpcPort(rpcPort);
+        h.setWanMac(wanMac);
+        hostDao.update(h);
+    }
+
+    @Override
+    public void setHostLan(long hostId, String lanNet, String lanMac) {
+        Host h = hostDao.select(hostId);
+        h.setLanNet(lanNet);
+        h.setLanMac(lanMac);
+        hostDao.update(h);
+    }
+
+    @Override
+    public void setHostDomain(long hostId, String domain) {
+        Host h = hostDao.select(hostId);
+        h.setDomain(domain);
+        hostDao.update(h);
+    }
+
+    @Override
+    public List<Host> listHost(String companyId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("company", companyId);
+        return hostDao.list("SELECT Host AS i WHERE i.company=:company", map);
+    }
+
+    @Override
+    public void addHost(String companyId, String name, String domain,
+                        String wanIp, String wanMac, int rpcPort,
+                        String lanNet, String lanMac,
+                        String details) {
+        Host h = new Host();
+        h.setCompany(companyId);
+        h.setName(name);
+        h.setDomain(domain);
+        h.setWanIp(wanIp);
+        h.setWanMac(wanMac);
+        h.setRpcPort(rpcPort);
+        h.setLanNet(lanNet);
+        h.setLanMac(lanMac);
+        h.setDetails(details);
+        h.setState(Host.State.SUBMIT);
+        h.setSignKey(encryptHelper.encode(stringHelper.random(Host.KEY_LEN)));
+        h.setCreated(new Date());
+        hostDao.insert(h);
+    }
+
+    @Override
+    public String resetHostSignKey(long hostId) {
+        String key = stringHelper.random(Host.KEY_LEN);
         Host host = hostDao.select(hostId);
-        host.setSignKey(signKey);
+        host.setSignKey(encryptHelper.encode(key));
         hostDao.update(host);
+        return key;
+    }
+
+    @Override
+    public void setHostState(long hostId, Host.State state) {
+        Host host = hostDao.select(hostId);
+        host.setState(state);
+        hostDao.update(host);
+    }
+
+    @Override
+    public Host getHost(String wanMac) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("wanMac", wanMac);
+        return hostDao.select("SELECT Host AS i WHERE i.wanMac=:wanMac", map);
     }
 
     @Override
@@ -135,10 +290,12 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public Ip getIp(long id) {
+    public Ip getIp(String id) {
         return ipDao.select(id);  //
     }
 
+    @Resource
+    private StringHelper stringHelper;
     @Resource
     private DomainDao domainDao;
     @Resource
@@ -161,7 +318,16 @@ public class HostServiceImpl implements HostService {
     private IpDao ipDao;
     @Resource
     private HostDao hostDao;
+    @Resource
+    private EncryptHelper encryptHelper;
 
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
+
+    public void setStringHelper(StringHelper stringHelper) {
+        this.stringHelper = stringHelper;
+    }
 
     public void setIpDao(IpDao ipDao) {
         this.ipDao = ipDao;

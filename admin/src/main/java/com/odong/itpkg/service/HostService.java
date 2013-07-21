@@ -16,7 +16,40 @@ import java.util.List;
  * Time: 上午10:59
  */
 public interface HostService {
-    void setHostKey(long hostId, String signKey);
+    void setIpInfo(String id, String address, String netmask, String gateway, String dns1, String dns2);
+
+    void setStaticIp(String id, String address, String netmask, String gateway, String dns1, String dns2);
+
+    void setDhcpIp(String id);
+
+    void setPppoeIp(String id, String username, String password);
+
+    void addStaticIp(long host, String id, String address, String netmask, String gateway, String dns1, String dns2);
+
+    void addDhcpIp(long host, String id);
+
+    void addPppoeIp(long host, String id, String username, String password);
+
+    void setHostInfo(long hostId, String name, String details);
+
+    void setHostWan(long hostId, int rpcPort, String wanMac);
+
+    void setHostLan(long hostId, String lanNet, String lanMac);
+
+    void setHostDomain(long hostId, String domain);
+
+    List<Host> listHost(String companyId);
+
+    void addHost(String companyId, String name, String domain,
+                 String wanIp, String wanMac, int rpcPort,
+                 String lanNet, String lanMac,
+                 String details);
+
+    String resetHostSignKey(long hostId);
+
+    void setHostState(long hostId, Host.State state);
+
+    Host getHost(String wanMac);
 
     DateLimit getDateLimit(long dateLimitId);
 
@@ -48,5 +81,5 @@ public interface HostService {
 
     Host getHost(long hostId);
 
-    Ip getIp(long ipId);
+    Ip getIp(String ipId);
 }

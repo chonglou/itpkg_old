@@ -10,7 +10,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +49,8 @@ public class Server {
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         try {
-            rootCF = sb.bind(host, port).sync();
+
+            rootCF = sb.bind(port).sync();
         } catch (InterruptedException e) {
             logger.error("启动服务出错", e);
         }
@@ -64,14 +64,8 @@ public class Server {
     private EventLoopGroup workerG;
     @Resource
     private EncryptHelper encryptHelper;
-    @Value("${server.host}")
-    private String host;
     @Value("${server.port}")
     private int port;
-
-    public void setHost(String host) {
-        this.host = host;
-    }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;

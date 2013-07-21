@@ -12,7 +12,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Date;
@@ -124,13 +123,14 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
         return builder(type, code, lines).build();
     }
 
-    private List<String> getLines(Rpc.Request request){
+    private List<String> getLines(Rpc.Request request) {
         List<String> lines = new ArrayList<>();
-        for(String line : request.getLinesList()){
+        for (String line : request.getLinesList()) {
             lines.add(encryptHelper.decode(line));
         }
         return lines;
     }
+
     private Rpc.Response.Builder builder(Rpc.Type type, Rpc.Code code, List<String> list) {
         Rpc.Response.Builder builder = Rpc.Response.newBuilder();
         if (list != null) {

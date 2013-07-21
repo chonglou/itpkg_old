@@ -8,6 +8,7 @@ import com.odong.itpkg.entity.net.dns.Zone;
 import com.odong.itpkg.entity.net.firewall.*;
 import com.odong.itpkg.model.EtcFile;
 import com.odong.itpkg.service.HostService;
+import com.odong.portal.service.SiteService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,6 +25,14 @@ import java.util.*;
 @Component
 public class LinuxHelper {
 
+    public List<String> getWanInfo(){
+        List<String> lines = new ArrayList<>();
+        lines.add("ifconfig wlan | grep inet |  awk -F\" \" '{print $2\"\\n\"$4}'");
+        lines.add("route | grep default | awk -F\" \" '{print $2}'");
+        lines.add("cat /etc/resolv.conf | grep nameserver| awk -F\" \" '{print $2}'");
+        return lines;
+    }
+
     public List<EtcFile> hostname(long hostId) {
         Host host = hostService.getHost(hostId);
         List<EtcFile> etcs = new ArrayList<>();
@@ -34,18 +43,18 @@ public class LinuxHelper {
 
     public EtcFile daemonProfile(long hostId) {
         Host host = hostService.getHost(hostId);
-        Ip wanIp = hostService.getIp(host.getWanIp());
-
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("app.key=%s", encryptHelper.decode(host.getSignKey())));
-        sb.append(String.format("server.host=%s", wanIp.getAddress()));
+        sb.append(String.format("server.key=%s", encryptHelper.decode(host.getSignKey())));
         sb.append(String.format("server.port=%d", host.getRpcPort()));
+        sb.append(String.format("server.space=%d", host.getSpace()));
+        sb.append(String.format("server.http=http://%s", siteService.getString("site.domain")));
         return new EtcFile("/opt/netmgrd/config.properties", "root:root", "400", sb.toString());
     }
 
     public String reboot() {
         return "reboot";
     }
+
 
     public String scanMac() {
         return "ifconfig -a| grep ether | awk -F\" \" '{print $2}'";
@@ -405,9 +414,15 @@ public class LinuxHelper {
     }
 
     @Resource
+    private SiteService siteService;
+    @Resource
     private HostService hostService;
     @Resource
     private EncryptHelper encryptHelper;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;

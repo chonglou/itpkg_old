@@ -34,4 +34,6 @@ public interface TaskService {
     List<Task> listTimerTask();
 
     void removeInvalid(int daysKeep);
+
+    List<Task> list(Date begin, Date end);
 }

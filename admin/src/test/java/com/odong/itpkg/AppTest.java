@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppTest {
-    @Test
+    //@Test
     public void testClient() {
 
         String key = "Qui9eeghen5AN5quave4elix7ahc";

@@ -32,20 +32,17 @@ public final class CommandHelper {
                 String line;
                 int code = process.waitFor();
 
-                if(code == 0){
-                    lines.add("成功");
+                if (code == 0) {
                     while ((line = out.readLine()) != null) {
                         logger.debug(line);
                         lines.add(line);
                     }
-                }
-                else {
-                    lines.add("出错 返回值["+code+"]");
+                } else {
                     while ((line = err.readLine()) != null) {
                         logger.debug(line);
                         lines.add(line);
                     }
-                    break;
+                    throw new IllegalArgumentException("出错，返回值[" + code + "]");
                 }
                 out.close();
                 err.close();

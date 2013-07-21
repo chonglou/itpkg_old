@@ -9,6 +9,7 @@ import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
+import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,7 @@ public class TaskRunner implements Runnable {
     private Client createClient(long hostId, final String taskId) {
         Host host = hostService.getHost(hostId);
         Ip wan = hostService.getIp(host.getWanIp());
-        final Client client = new Client(host.getSignKey());
+        final Client client = new Client(encryptHelper.decode(host.getSignKey()));
 
         client.open(wan.getAddress(), host.getRpcPort(), new Callback() {
             @Override
@@ -104,11 +105,13 @@ public class TaskRunner implements Runnable {
 
     public TaskRunner(String taskId,
                       JsonHelper jsonHelper,
+                      EncryptHelper encryptHelper,
                       TaskService taskService,
                       HostService hostService,
                       DBHelper dbHelper) {
         this.taskId = taskId;
         this.jsonHelper = jsonHelper;
+        this.encryptHelper = encryptHelper;
         this.taskService = taskService;
         this.hostService = hostService;
         this.dbHelper = dbHelper;
@@ -116,6 +119,7 @@ public class TaskRunner implements Runnable {
 
     private String taskId;
     private JsonHelper jsonHelper;
+    private EncryptHelper encryptHelper;
     private TaskService taskService;
     private HostService hostService;
     private DBHelper dbHelper;

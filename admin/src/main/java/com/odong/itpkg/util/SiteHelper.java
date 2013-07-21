@@ -19,6 +19,7 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,9 +47,11 @@ public class SiteHelper {
             siteService.set("site.author", "zhengjitang@gmail.com");
 
             String email = "flamen@0-dong.com";
-            String company = accountService.addCompany("IT-PACKAGE");
-            accountService.addUser(email, "管理员", "123456", company);
+            String companyId = UUID.randomUUID().toString();
+            accountService.addCompany(companyId, "IT-PACKAGE", "");
+            accountService.addUser(companyId, email, "管理员", "123456");
             User admin = accountService.getUser(email);
+            accountService.setUserState(admin.getId(), User.State.ENABLE);
             rbacService.bindAdmin(admin.getId(), true);
 
             taskService.add(Task.Type.SYS_GC, null, timeHelper.nextDay(gcHour), timeHelper.max(), 0, 60 * 60 * 24);

@@ -17,6 +17,9 @@ import java.util.Date;
 @Table(name = "ucCompany")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Company implements Serializable {
+    public enum State{
+        ENABLE,DISABLE
+    }
     private static final long serialVersionUID = 9041368825509992267L;
 
     @Id
@@ -28,6 +31,18 @@ public class Company implements Serializable {
     private String details;
     @Column(nullable = false, updatable = false)
     private Date created;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private State state;
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public String getId() {
         return id;

@@ -14,7 +14,7 @@
 
     <bean id="jsonHelper" init-method="init" class="com.odong.itpkg.util.impl.JsonHelperImpl"/>
     <bean id="encryptHelper" init-method="init" class="com.odong.itpkg.util.EncryptHelper">
-        <property name="appKey" value="${app.key}"/>
+        <property name="appKey" value="${server.key}"/>
         <property name="jsonHelper" ref="jsonHelper"/>
     </bean>
     <bean id="stringHelper" init-method="init" class="com.odong.itpkg.util.StringHelper"/>

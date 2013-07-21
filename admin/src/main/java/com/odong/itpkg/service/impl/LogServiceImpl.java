@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,8 +32,24 @@ public class LogServiceImpl implements LogService {
     @Override
     public void removeOld(int daysKeep) {
         Map<String, Object> map = new HashMap<>();
+        map.put("user", null);
         map.put("date", timeHelper.plus(new Date(), -60 * 60 * 24 * daysKeep));
-        logDao.delete("DELETE Log AS i WHERE i.created < :date", map);
+        logDao.delete("DELETE Log AS i WHERE i.user=:user i.created < :date", map);
+    }
+
+    @Override
+    public List<Log> list(Long user) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("user", user);
+        return logDao.list("SELECT Log AS i WHERE i.user=:user", map);
+    }
+
+    @Override
+    public List<Log> list(Date start, Date end) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("start", start);
+        map.put("end", end);
+        return logDao.list("SELECT Log AS i WHERE i.created>=:start AND i.created<=:end", map);  //
     }
 
     @Resource

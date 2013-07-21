@@ -4,6 +4,7 @@ import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
+import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class TaskJob {
             taskExecutor.execute(new TaskRunner(
                     t.getId(),
                     jsonHelper,
+                    encryptHelper,
                     taskService,
                     hostService,
                     dbHelper)
@@ -40,6 +42,12 @@ public class TaskJob {
     private DBHelper dbHelper;
     @Resource
     private HostService hostService;
+    @Resource
+    private EncryptHelper encryptHelper;
+
+    public void setEncryptHelper(EncryptHelper encryptHelper) {
+        this.encryptHelper = encryptHelper;
+    }
 
     public void setHostService(HostService hostService) {
         this.hostService = hostService;

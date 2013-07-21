@@ -17,11 +17,15 @@ import java.util.Date;
 @Table(name = "netHost")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Host extends IdEntity {
+    public final static int KEY_LEN=18;
+    public enum  State{
+        RUNNING, SUBMIT, DONE
+    }
     private static final long serialVersionUID = -7362809864882645300L;
     @Column(nullable = false, updatable = false)
     private String company;
-    @Column(nullable = false)
-    private Long wanIp;
+    @Column(nullable = false, updatable = false)
+    private String wanIp;
     @Column(nullable = false)
     private String lanNet;
     @Column(nullable = false)
@@ -36,11 +40,43 @@ public class Host extends IdEntity {
     @Column(nullable = false)
     private int rpcPort;
     private boolean ping;
+    @Column(nullable = false, unique = true)
     private String wanMac;
+    @Column(nullable = false, unique = true)
     private String lanMac;
-
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private State state;
+    @Column(nullable = false)
+    private int space;
+    @Column(nullable = false, updatable = false)
+    private Date created;
     @Version
     private int version;
+
+    public int getSpace() {
+        return space;
+    }
+
+    public void setSpace(int space) {
+        this.space = space;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public String getWanMac() {
         return wanMac;
@@ -106,11 +142,11 @@ public class Host extends IdEntity {
         this.company = company;
     }
 
-    public Long getWanIp() {
+    public String getWanIp() {
         return wanIp;
     }
 
-    public void setWanIp(Long wanIp) {
+    public void setWanIp(String wanIp) {
         this.wanIp = wanIp;
     }
 

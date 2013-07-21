@@ -1,9 +1,6 @@
 package com.odong.portal.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -17,6 +14,7 @@ public class IdEntity implements Serializable {
     private static final long serialVersionUID = -2284330052157073437L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false, updatable = false, unique = true)
     private Long id;
 
     public Long getId() {
