@@ -47,7 +47,7 @@ public class SiteHelper {
             siteService.set("site.author", "zhengjitang@gmail.com");
 
             String email = "flamen@0-dong.com";
-            String companyId = UUID.randomUUID().toString();
+            String companyId = "admin";
             accountService.addCompany(companyId, "IT-PACKAGE", "");
             accountService.addUser(companyId, email, "管理员", "123456");
             User admin = accountService.getUser(email);

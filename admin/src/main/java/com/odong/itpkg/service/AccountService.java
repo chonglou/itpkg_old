@@ -45,6 +45,7 @@ public interface AccountService {
     List<User> listUser(String companyId);
 
     List<User> listUser(long groupId);
+    List<User> listUser();
 
     User getUser(long userId);
 

@@ -139,6 +139,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<User> listUser() {
+        return userDao.list();
+    }
+
+    @Override
     public User getUser(long userId) {
         return userDao.select(userId);  //
     }

@@ -1,8 +1,15 @@
 package com.odong.itpkg.controller;
 
+import com.odong.itpkg.entity.uc.Company;
+import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.form.admin.*;
 import com.odong.itpkg.model.SmtpProfile;
+import com.odong.itpkg.service.AccountService;
+import com.odong.itpkg.service.RbacService;
+import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.JsonHelper;
+import com.odong.itpkg.util.SiteHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.FormHelper;
@@ -29,23 +36,32 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
-    @RequestMapping(value = "/site/user/({userId},{enable})", method = RequestMethod.DELETE)
-    ResponseItem deleteUser(@PathVariable long userId, @PathVariable boolean enable) {
+    @RequestMapping(value = "/site/company/({companyId},{state})", method = RequestMethod.POST)
+    ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        //TODO
+        if("admin".equals(companyId)){
+            ri.addData("管理员公司，不能被删除");
+        }
+        else {
+            accountService.setCompanyState(companyId, state);
+            ri.setOk(true);
+        }
         return ri;
     }
 
-    @RequestMapping(value = "/site/user", method = RequestMethod.GET)
-    String getUserList(Map<String, Object> map) {
-        //TODO
-        return "admin/user_list";
+    @RequestMapping(value = "/site/company", method = RequestMethod.GET)
+    String getCompanyList(Map<String, Object> map) {
+        map.put("users", accountService.listUser());
+        map.put("companies", accountService.listCompany());
+        return "admin/companyList";
     }
 
     @RequestMapping(value = "/site/smtp", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteSmtp() {
-        SmtpProfile profile = encryptHelper.decode(siteService.getString("site.smtp"), SmtpProfile.class);
+        SmtpProfile profile = jsonHelper.json2object(
+                encryptHelper.decode(siteService.getString("site.smtp")),
+                SmtpProfile.class);
         if (profile == null) {
             profile = new SmtpProfile();
         }
@@ -68,7 +84,7 @@ public class AdminController {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
             profile.setPort(form.getPort());
             profile.setFrom(form.getFrom());
-            siteService.set("site.smtp", encryptHelper.encode(profile));
+            siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
 
             emailHelper.reload();
         }
@@ -94,7 +110,11 @@ public class AdminController {
     ResponseItem postSiteInfo(@Valid SiteInfoForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            //TODO
+            siteService.set("site.title", form.getTitle());
+            siteService.set("site.domain", form.getDomain());
+            siteService.set("site.keywords", form.getKeywords());
+            siteService.set("site.description", form.getDescription());
+            siteService.set("site.copyright", form.getCopyright());
         }
         return ri;
 
@@ -116,7 +136,7 @@ public class AdminController {
     ResponseItem postSiteAboutMe(@Valid SiteAboutMeForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            //TODO
+            siteService.set("site.aboutMe", form.getAboutMe());
         }
         return ri;
 
@@ -138,7 +158,7 @@ public class AdminController {
     ResponseItem postRegProtocol(@Valid SiteRegProtocolForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            //TODO
+            siteService.set("site.regProtocol", form.getRegProtocol());
         }
         return ri;
 
@@ -165,7 +185,8 @@ public class AdminController {
     ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            //TODO
+            siteService.set("site.allowLogin", form.isAllowLogin());
+            siteService.set("site.allowRegister", form.isAllowRegister());
         }
         return ri;
 
@@ -189,12 +210,14 @@ public class AdminController {
     ResponseItem postCompress(@Valid CompressForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            //TODO
+            dbHelper.compress(form.getDays());
         }
         return ri;
 
     }
 
+    @Resource
+    private DBHelper dbHelper;
     @Resource
     private FormHelper formHelper;
     @Resource
@@ -203,6 +226,22 @@ public class AdminController {
     private EncryptHelper encryptHelper;
     @Resource
     private EmailHelper emailHelper;
+    @Resource
+    private JsonHelper jsonHelper;
+    @Resource
+    private AccountService accountService;
+
+    public void setDbHelper(DBHelper dbHelper) {
+        this.dbHelper = dbHelper;
+    }
+
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setEmailHelper(EmailHelper emailHelper) {
         this.emailHelper = emailHelper;

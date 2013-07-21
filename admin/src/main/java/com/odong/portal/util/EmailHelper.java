@@ -2,6 +2,7 @@ package com.odong.portal.util;
 
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,14 +59,14 @@ public class EmailHelper {
 
 
     public void setup(SmtpProfile profile) {
-        siteService.set("site.smtp", encryptHelper.encode(profile));
+        siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
         this.profile = profile;
     }
 
     @PostConstruct
     public void reload() {
         sender = null;
-        profile = encryptHelper.decode(siteService.getString("site.smtp"), SmtpProfile.class);
+        profile = jsonHelper.json2object(encryptHelper.decode(siteService.getString("site.smtp")), SmtpProfile.class);
         if (profile != null) {
             try {
                 sender = new JavaMailSenderImpl();
@@ -86,12 +87,18 @@ public class EmailHelper {
     private JavaMailSenderImpl sender;
 
     @Resource
+    private JsonHelper jsonHelper;
+    @Resource
     private SiteService siteService;
     @Resource
     private EncryptHelper encryptHelper;
     private SmtpProfile profile;
+
     private final static Logger logger = LoggerFactory.getLogger(EmailHelper.class);
 
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;

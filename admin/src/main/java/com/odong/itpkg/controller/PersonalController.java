@@ -1,5 +1,6 @@
 package com.odong.itpkg.controller;
 
+import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.form.personal.*;
@@ -313,6 +314,8 @@ public class PersonalController {
                 ri.addData("账户密码不匹配");
             }
             else {
+                Company c = accountService.getCompany(u.getCompany());
+                if(c.getState() == Company.State.ENABLE){
                 switch (u.getState()){
                     case ENABLE:
                         SessionItem si = new SessionItem();
@@ -336,6 +339,11 @@ public class PersonalController {
                         ri.setOk(false);
                         ri.addData("未知错误");
                         break;
+                }
+                }
+                else {
+                    ri.setOk(false);
+                    ri.addData("公司["+c.getName()+"]被禁用");
                 }
             }
         }
