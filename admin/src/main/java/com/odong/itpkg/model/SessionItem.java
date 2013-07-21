@@ -12,11 +12,20 @@ import java.util.Date;
 public class SessionItem implements Serializable {
     private static final long serialVersionUID = 7022196605186543132L;
     private Long userId;
+    private String companyId;
     private String username;
     private String email;
     private Date created;
     private boolean admin;
     public final static String KEY = "d1s7e0wp";
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
     public boolean isAdmin() {
         return admin;

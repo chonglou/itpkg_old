@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -91,6 +90,7 @@ public class PersonalController {
             si.setUsername(form.getUsername());
             ri.setType(ResponseItem.Type.redirect);
             ri.addData("/personal");
+            logService.add(si.getUserId(), "更新个人信息", Log.Type.INFO);
         }
         return ri;
 
@@ -205,20 +205,18 @@ public class PersonalController {
     @ResponseBody
     ResponseItem activateRegister(@PathVariable String code) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try{
-            Map<String,String> map = jsonHelper.json2map(code, String.class, String.class);
+        try {
+            Map<String, String> map = jsonHelper.json2map(code, String.class, String.class);
             String email = map.get("email");
-            User u  = accountService.getUser(email);
-            if(u != null && u.getState() == User.State.SUBMIT){
+            User u = accountService.getUser(email);
+            if (u != null && u.getState() == User.State.SUBMIT) {
                 accountService.setUserState(u.getId(), User.State.ENABLE);
                 ri.setOk(true);
                 logService.add(u.getId(), "账户激活", Log.Type.INFO);
+            } else {
+                ri.addData("账户[" + email + "]状态不对");
             }
-            else {
-                ri.addData("账户["+email+"]状态不对");
-            }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error("激活账户失败", e);
         }
         return ri;
@@ -233,17 +231,18 @@ public class PersonalController {
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/active", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postActive(@Valid ActiveForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(ri.isOk()){
+        if (ri.isOk()) {
             sendActiveEmail(form.getEmail());
         }
         return ri;
     }
 
-        @RequestMapping(value = "/register", method = RequestMethod.GET)
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
     @ResponseBody
     Form getRegister() {
         Form fm = new Form("register", "欢迎注册", "/personal/register");
@@ -260,29 +259,32 @@ public class PersonalController {
     @ResponseBody
     ResponseItem postRegister(@Valid RegisterForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(!form.getNewPwd().equals(form.getRePwd())){
+        if (!form.getNewPwd().equals(form.getRePwd())) {
             ri.setOk(false);
             ri.addData("两次密码输入不一致");
         }
+        if(!siteService.getBoolean("site.allowRegister")){
+            ri.setOk(false);
+            ri.addData("站点禁止注册");
+        }
         if (ri.isOk()) {
             User u = accountService.getUser(form.getEmail());
-            if (u == null){
+            if (u == null) {
                 String companyId = UUID.randomUUID().toString();
                 accountService.addCompany(companyId, form.getCompany(), "");
                 accountService.addUser(companyId, form.getEmail(), form.getUsername(), form.getNewPwd());
                 sendActiveEmail(form.getEmail());
-            }
-            else {
+            } else {
                 ri.setOk(false);
-                ri.addData("邮箱["+form.getEmail()+"]已存在");
+                ri.addData("邮箱[" + form.getEmail() + "]已存在");
             }
         }
         return ri;
     }
 
-    private void sendActiveEmail(String email){
+    private void sendActiveEmail(String email) {
         String domain = siteService.getString("site.domain");
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put("email", email);
         map.put("created", jsonHelper.object2json(new Date()));
         emailHelper.send(email, "您在[" + domain + "]上的账户激活",
@@ -307,43 +309,49 @@ public class PersonalController {
     @ResponseBody
     ResponseItem postLogin(@Valid LoginForm form, BindingResult result, HttpServletRequest request, HttpSession session) {
         ResponseItem ri = formHelper.check(result, request, true);
+        if(!siteService.getBoolean("site.allowLogin")){
+            ri.setOk(false);
+            ri.addData("站点禁止登陆");
+        }
         if (ri.isOk()) {
             User u = accountService.auth(form.getEmail(), form.getPassword());
-            if(u == null){
+            if (u == null) {
                 ri.setOk(false);
                 ri.addData("账户密码不匹配");
-            }
-            else {
+            } else {
                 Company c = accountService.getCompany(u.getCompany());
-                if(c.getState() == Company.State.ENABLE){
-                switch (u.getState()){
-                    case ENABLE:
-                        SessionItem si = new SessionItem();
-                        si.setUsername(u.getUsername());
-                        si.setEmail(u.getEmail());
-                        si.setUserId(u.getId());
-                        si.setAdmin(rbacService.authAdmin(u.getId()));
-                        si.setCreated(new Date());
-                        ri.setType(ResponseItem.Type.redirect);
-                        ri.addData("/personal/self");
-                        break;
-                    case DISABLE:
-                        ri.setOk(false);
-                        ri.addData("账户["+form.getEmail()+"]被禁用");
-                        break;
-                    case SUBMIT:
-                        ri.setOk(false);
-                        ri.addData("账户["+form.getEmail()+"]未激活");
-                        break;
-                    default:
-                        ri.setOk(false);
-                        ri.addData("未知错误");
-                        break;
-                }
-                }
-                else {
+                if (c.getState() == Company.State.ENABLE) {
+                    switch (u.getState()) {
+                        case ENABLE:
+                            SessionItem si = new SessionItem();
+                            si.setUsername(u.getUsername());
+                            si.setEmail(u.getEmail());
+                            si.setUserId(u.getId());
+                            si.setCompanyId(u.getCompany());
+                            si.setAdmin(rbacService.authAdmin(u.getId()));
+                            si.setCreated(new Date());
+
+                            ri.setType(ResponseItem.Type.redirect);
+                            ri.addData("/personal/self");
+                            session.setAttribute(SessionItem.KEY, si);
+                            logService.add(u.getId(), "用户登陆", Log.Type.INFO);
+                            break;
+                        case DISABLE:
+                            ri.setOk(false);
+                            ri.addData("账户[" + form.getEmail() + "]被禁用");
+                            break;
+                        case SUBMIT:
+                            ri.setOk(false);
+                            ri.addData("账户[" + form.getEmail() + "]未激活");
+                            break;
+                        default:
+                            ri.setOk(false);
+                            ri.addData("未知错误");
+                            break;
+                    }
+                } else {
                     ri.setOk(false);
-                    ri.addData("公司["+c.getName()+"]被禁用");
+                    ri.addData("公司[" + c.getName() + "]被禁用");
                 }
             }
         }
@@ -352,10 +360,12 @@ public class PersonalController {
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
-    ResponseItem logout(SessionStatus status) {
-
-        //session.invalidate();
-        status.setComplete();
+    ResponseItem getLogout(HttpSession session) {
+        //ResponseItem logout(SessionStatus status) {
+        //status.setComplete();
+        SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
+        logService.add(si.getUserId(), "注销登陆", Log.Type.INFO);
+        session.invalidate();
         ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
         ri.addData("/");
         ri.setOk(true);

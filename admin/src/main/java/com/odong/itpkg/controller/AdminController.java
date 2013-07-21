@@ -1,10 +1,13 @@
 package com.odong.itpkg.controller;
 
 import com.odong.itpkg.entity.uc.Company;
+import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.form.admin.*;
+import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.service.AccountService;
+import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.service.RbacService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
@@ -17,10 +20,7 @@ import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +35,10 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping(value = "/admin")
+@SessionAttributes(SessionItem.KEY)
 public class AdminController {
     @RequestMapping(value = "/site/company/({companyId},{state})", method = RequestMethod.POST)
-    ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state) {
+    ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         if("admin".equals(companyId)){
             ri.addData("管理员公司，不能被删除");
@@ -45,6 +46,7 @@ public class AdminController {
         else {
             accountService.setCompanyState(companyId, state);
             ri.setOk(true);
+            logService.add(si.getUserId(),"设置公司["+companyId+"]状态["+state+"]", Log.Type.INFO);
         }
         return ri;
     }
@@ -78,15 +80,16 @@ public class AdminController {
 
     @RequestMapping(value = "/site/smtp", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteSmtp(@Valid SiteSmtpForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postSiteSmtp(@Valid SiteSmtpForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
             profile.setPort(form.getPort());
             profile.setFrom(form.getFrom());
             siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
-
+            logService.add(si.getUserId(), "设置SMTP信息", Log.Type.INFO);
             emailHelper.reload();
+
         }
         return ri;
 
@@ -107,14 +110,15 @@ public class AdminController {
 
     @RequestMapping(value = "/site/info", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteInfo(@Valid SiteInfoForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postSiteInfo(@Valid SiteInfoForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.title", form.getTitle());
             siteService.set("site.domain", form.getDomain());
             siteService.set("site.keywords", form.getKeywords());
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
+            logService.add(si.getUserId(), "设置站点基本信息", Log.Type.INFO);
         }
         return ri;
 
@@ -133,10 +137,11 @@ public class AdminController {
 
     @RequestMapping(value = "/site/aboutMe", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteAboutMe(@Valid SiteAboutMeForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postSiteAboutMe(@Valid SiteAboutMeForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.aboutMe", form.getAboutMe());
+            logService.add(si.getUserId(), "设置关于我们信息", Log.Type.INFO);
         }
         return ri;
 
@@ -155,10 +160,11 @@ public class AdminController {
 
     @RequestMapping(value = "/site/regProtocol", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postRegProtocol(@Valid SiteRegProtocolForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postRegProtocol(@Valid SiteRegProtocolForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.regProtocol", form.getRegProtocol());
+            logService.add(si.getUserId(), "设置用户注册协议", Log.Type.INFO);
         }
         return ri;
 
@@ -182,11 +188,12 @@ public class AdminController {
 
     @RequestMapping(value = "/site/state", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.allowLogin", form.isAllowLogin());
             siteService.set("site.allowRegister", form.isAllowRegister());
+            logService.add(si.getUserId(), "设置站点权限[登陆,"+form.isAllowLogin()+"][注册,"+form.isAllowRegister()+"]", Log.Type.INFO);
         }
         return ri;
 
@@ -207,10 +214,11 @@ public class AdminController {
 
     @RequestMapping(value = "/compress", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postCompress(@Valid CompressForm form, BindingResult result, HttpServletRequest request) {
-        ResponseItem ri = formHelper.check(result, request, true);
+    ResponseItem postCompress(@Valid CompressForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             dbHelper.compress(form.getDays());
+            logService.add(si.getUserId(), "压缩数据库，只保留最近["+form.getDays()+"]天的数据", Log.Type.INFO);
         }
         return ri;
 
@@ -230,6 +238,12 @@ public class AdminController {
     private JsonHelper jsonHelper;
     @Resource
     private AccountService accountService;
+    @Resource
+    private LogService logService;
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
 
     public void setDbHelper(DBHelper dbHelper) {
         this.dbHelper = dbHelper;

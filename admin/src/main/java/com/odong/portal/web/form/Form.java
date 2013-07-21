@@ -43,6 +43,7 @@ public final class Form extends ResponseItem {
     private Method method;
     private boolean captcha;
 
+
     public Method getMethod() {
         return method;
     }

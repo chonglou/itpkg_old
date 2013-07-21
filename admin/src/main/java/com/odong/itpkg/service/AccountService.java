@@ -2,6 +2,7 @@ package com.odong.itpkg.service;
 
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Group;
+import com.odong.itpkg.entity.uc.GroupUser;
 import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.model.Contact;
 
@@ -44,6 +45,8 @@ public interface AccountService {
 
     List<User> listUser(String companyId);
 
+    List<GroupUser> listGroupUser(String companyId);
+
     List<User> listUser(long groupId);
     List<User> listUser();
 
@@ -56,6 +59,7 @@ public interface AccountService {
     void setUserPassword(long userId, String password);
 
     void setUserGroup(long userId, long groupId, boolean bind);
+    GroupUser getGroupUser(long groupId, long userId);
 
     void setUserInfo(long userId, String username, Contact contact);
 

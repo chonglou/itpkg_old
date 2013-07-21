@@ -4,6 +4,7 @@ import com.odong.itpkg.dao.uc.CompanyDao;
 import com.odong.itpkg.dao.uc.GroupDao;
 import com.odong.itpkg.dao.uc.GroupUserDao;
 import com.odong.itpkg.dao.uc.UserDao;
+import com.odong.itpkg.dao.uc.impl.GroupUserDaoImpl;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Group;
 import com.odong.itpkg.entity.uc.GroupUser;
@@ -132,6 +133,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<GroupUser> listGroupUser(String companyId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("company", companyId);
+        return groupUserDao.list("FROM GroupUser AS gu WHERE gu.group IN (SELECT Company AS c WHERE c.id=:company)", map);  //
+    }
+
+    @Override
     public List<User> listUser(long groupId) {
         Map<String, Object> map = new HashMap<>();
         map.put("group", groupId);
@@ -171,27 +179,27 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void setUserGroup(long userId, long groupId, boolean bind) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("user", userId);
-        map.put("group", groupId);
-        GroupUser gu = groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
         if (bind) {
-            if (gu == null) {
-                gu = new GroupUser();
+                GroupUser gu = new GroupUser();
                 gu.setUser(userId);
                 gu.setGroup(groupId);
                 gu.setCreated(new Date());
                 groupUserDao.insert(gu);
-            } else {
-                throw new IllegalArgumentException("用户[" + userId + "]和用户[" + groupId + "]组已绑定");
-            }
+
         } else {
-            if (gu == null) {
-                throw new IllegalArgumentException("用户[" + userId + "]和用户[" + groupId + "]组未绑定");
-            } else {
-                groupUserDao.delete(gu.getId());
-            }
+            Map<String, Object> map = new HashMap<>();
+            map.put("user", userId);
+            map.put("group", groupId);
+            groupUserDao.delete("DELETE GroupUser AS i WHERE i.user=:user && i.group=:group", map);
         }
+    }
+
+    @Override
+    public GroupUser getGroupUser(long groupId, long userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", userId);
+        map.put("group", groupId);
+        return  groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
     }
 
     @Override

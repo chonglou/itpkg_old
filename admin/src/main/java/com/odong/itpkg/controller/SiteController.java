@@ -32,9 +32,9 @@ public class SiteController {
         return "main";
     }
 
-    @RequestMapping(value = "/about_me", method = RequestMethod.GET)
+    @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
     String getAboutMe(Map<String, Object> map) {
-        return "about_me";
+        return "aboutMe";
     }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)

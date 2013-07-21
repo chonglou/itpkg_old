@@ -26,12 +26,12 @@ import java.util.Map;
 @Service("rbacService")
 public class RbacServiceImpl implements RbacService {
     @Override
-    public boolean authCompany(long user, long company, OperationType type) {
+    public boolean authCompany(long user, String company, OperationType type) {
         return checkPermission(getRole(user), getOperation(type), getResource(getCompanyResourceName(company)));
     }
 
     @Override
-    public void bindCompany(long user, long company, OperationType type, boolean bind) {
+    public void bindCompany(long user, String company, OperationType type, boolean bind) {
         bindPermission(getRole(user), getOperation(type), getResource(getCompanyResourceName(company)), bind);
     }
 
@@ -45,7 +45,7 @@ public class RbacServiceImpl implements RbacService {
         return checkPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()));
     }
 
-    private String getCompanyResourceName(long company) {
+    private String getCompanyResourceName(String company) {
         return "rbac://resource/company/" + company;  //
     }
 
