@@ -31,8 +31,8 @@ public class Mac extends IdEntity {
     private State state;
     @Column(nullable = false)
     private int ip;
-    private String name;
     private Long user;
+    private String hostname;
     private Long dateLimit;
     @Column(nullable = false)
     private long flowLimit;
@@ -60,6 +60,14 @@ public class Mac extends IdEntity {
 
     public Long getDateLimit() {
         return dateLimit;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 
     public State getState() {
@@ -107,13 +115,6 @@ public class Mac extends IdEntity {
         this.serial = serial;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getUser() {
         return user;

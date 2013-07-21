@@ -1,8 +1,8 @@
 package com.odong.itpkg.controller;
 
+import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
-import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.form.personal.*;
 import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.model.SessionItem;
@@ -41,16 +41,20 @@ import java.util.UUID;
  * Date: 13-7-16
  * Time: 上午10:49
  */
-@Controller
+@Controller("c.personal")
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
 public class PersonalController {
+    @RequestMapping(value = "/self", method = RequestMethod.GET)
+    String getSelf(Map<String,Object> map){
+        return "personal/self";
+    }
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     Form getInfo(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("info", "个人信息", "/personal/info");
-        User u = accountService.getUser(si.getUserId());
+        Account u = accountService.getAccount(si.getAccountId());
         TextField<String> email = new TextField<>("email", "Email", u.getEmail());
         email.setReadonly(true);
         fm.addField(email);
@@ -86,11 +90,11 @@ public class PersonalController {
             c.setWeb(form.getWeb());
             c.setWeixin(form.getWeixin());
             c.setDetails(form.getDetails());
-            accountService.setUserInfo(si.getUserId(), form.getUsername(), c);
+            accountService.setAccountInfo(si.getAccountId(), form.getUsername(), c);
             si.setUsername(form.getUsername());
             ri.setType(ResponseItem.Type.redirect);
             ri.addData("/personal");
-            logService.add(si.getUserId(), "更新个人信息", Log.Type.INFO);
+            logService.add(si.getAccountId(), "更新个人信息", Log.Type.INFO);
         }
         return ri;
 
@@ -121,7 +125,7 @@ public class PersonalController {
                 ri.setOk(false);
                 ri.addData("当前密码输入有误");
             } else {
-                accountService.setUserPassword(si.getUserId(), form.getNewPwd());
+                accountService.setAccountPassword(si.getAccountId(), form.getNewPwd());
                 emailHelper.send(si.getEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
                         "如果不是您的操作，请忽略该邮件。", true);
             }
@@ -138,19 +142,19 @@ public class PersonalController {
         try {
             Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
             String email = map.get("email");
-            User user = accountService.getUser(email);
-            if (user.getState() == User.State.ENABLE) {
+            Account account = accountService.getAccount(email);
+            if (account.getState() == Account.State.ENABLE) {
                 if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(map.get("created"), Date.class), 60 * 30)) <= 0) {
-                    accountService.setUserPassword(user.getId(), map.get("password"));
+                    accountService.setAccountPassword(account.getId(), map.get("password"));
                     ri.setOk(true);
-                    logService.add(user.getId(), "重置密码", Log.Type.INFO);
+                    logService.add(account.getId(), "重置密码", Log.Type.INFO);
                     emailHelper.send(email, "您在[" + siteService.getString("site.domain") + "]上的密码重置记录",
                             "如果不是您的操作，请忽略该邮件。", true);
                 } else {
                     ri.addData("链接已失效");
                 }
             } else {
-                ri.addData("用户[" + user.getEmail() + "]状态不对");
+                ri.addData("用户[" + account.getEmail() + "]状态不对");
             }
         } catch (Exception e) {
             logger.error("重置密码错误", e);
@@ -168,8 +172,8 @@ public class PersonalController {
             ri.addData("两次密码输入不一致");
         }
         if (ri.isOk()) {
-            User u = accountService.getUser(form.getEmail());
-            if (u != null && u.getState() == User.State.ENABLE) {
+            Account u = accountService.getAccount(form.getEmail());
+            if (u != null && u.getState() == Account.State.ENABLE) {
 
                 Map<String, String> map = new HashMap<>();
                 map.put("email", form.getEmail());
@@ -208,9 +212,9 @@ public class PersonalController {
         try {
             Map<String, String> map = jsonHelper.json2map(code, String.class, String.class);
             String email = map.get("email");
-            User u = accountService.getUser(email);
-            if (u != null && u.getState() == User.State.SUBMIT) {
-                accountService.setUserState(u.getId(), User.State.ENABLE);
+            Account u = accountService.getAccount(email);
+            if (u != null && u.getState() == Account.State.SUBMIT) {
+                accountService.setAccountState(u.getId(), Account.State.ENABLE);
                 ri.setOk(true);
                 logService.add(u.getId(), "账户激活", Log.Type.INFO);
             } else {
@@ -237,7 +241,14 @@ public class PersonalController {
     ResponseItem postActive(@Valid ActiveForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
-            sendActiveEmail(form.getEmail());
+            Account a = accountService.getAccount(form.getEmail());
+            if(a !=null && a.getState() == Account.State.SUBMIT){
+                sendActiveEmail(form.getEmail());
+            }
+            else {
+                ri.setOk(false);
+                ri.addData("邮箱["+form.getEmail()+"]状态不对");
+            }
         }
         return ri;
     }
@@ -265,14 +276,14 @@ public class PersonalController {
         }
         if(!siteService.getBoolean("site.allowRegister")){
             ri.setOk(false);
-            ri.addData("站点禁止注册");
+            ri.addData("站点禁止注册新账户");
         }
         if (ri.isOk()) {
-            User u = accountService.getUser(form.getEmail());
+            Account u = accountService.getAccount(form.getEmail());
             if (u == null) {
                 String companyId = UUID.randomUUID().toString();
                 accountService.addCompany(companyId, form.getCompany(), "");
-                accountService.addUser(companyId, form.getEmail(), form.getUsername(), form.getNewPwd());
+                accountService.addAccount(companyId, form.getEmail(), form.getUsername(), form.getNewPwd());
                 sendActiveEmail(form.getEmail());
             } else {
                 ri.setOk(false);
@@ -287,7 +298,7 @@ public class PersonalController {
         Map<String, String> map = new HashMap<>();
         map.put("email", email);
         map.put("created", jsonHelper.object2json(new Date()));
-        emailHelper.send(email, "您在[" + domain + "]上的账户激活",
+        emailHelper.send(email, "您在[" + domain + "]上的账户创建了账户，请激活",
                 "<a href='http://" + domain +
                         "/personal/active/" + jsonHelper.object2json(map) +
                         "' target='_blank'>请点击此链接激活账户</a>。<br/>如果不是您的操作，请忽略该邮件。",
@@ -314,7 +325,7 @@ public class PersonalController {
             ri.addData("站点禁止登陆");
         }
         if (ri.isOk()) {
-            User u = accountService.auth(form.getEmail(), form.getPassword());
+            Account u = accountService.auth(form.getEmail(), form.getPassword());
             if (u == null) {
                 ri.setOk(false);
                 ri.addData("账户密码不匹配");
@@ -326,7 +337,7 @@ public class PersonalController {
                             SessionItem si = new SessionItem();
                             si.setUsername(u.getUsername());
                             si.setEmail(u.getEmail());
-                            si.setUserId(u.getId());
+                            si.setAccountId(u.getId());
                             si.setCompanyId(u.getCompany());
                             si.setAdmin(rbacService.authAdmin(u.getId()));
                             si.setCreated(new Date());
@@ -364,7 +375,7 @@ public class PersonalController {
         //ResponseItem logout(SessionStatus status) {
         //status.setComplete();
         SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
-        logService.add(si.getUserId(), "注销登陆", Log.Type.INFO);
+        logService.add(si.getAccountId(), "注销登陆", Log.Type.INFO);
         session.invalidate();
         ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
         ri.addData("/");

@@ -21,27 +21,27 @@ import java.util.Map;
 @Service
 public class LogServiceImpl implements LogService {
     @Override
-    public void add(Long user, String message, Log.Type type) {
+    public void add(Long account, String message, Log.Type type) {
         Log log = new Log();
         log.setType(type);
         log.setMessage(message);
-        log.setUser(user);
+        log.setAccount(account);
         logDao.insert(log);
     }
 
     @Override
     public void removeOld(int daysKeep) {
         Map<String, Object> map = new HashMap<>();
-        map.put("user", null);
+        map.put("account", null);
         map.put("date", timeHelper.plus(new Date(), -60 * 60 * 24 * daysKeep));
-        logDao.delete("DELETE Log AS i WHERE i.user=:user i.created < :date", map);
+        logDao.delete("DELETE Log AS i WHERE i.account=:account i.created < :date", map);
     }
 
     @Override
-    public List<Log> list(Long user) {
+    public List<Log> list(Long account) {
         Map<String, Object> map = new HashMap<>();
-        map.put("user", user);
-        return logDao.list("SELECT Log AS i WHERE i.user=:user", map);
+        map.put("account", account);
+        return logDao.list("SELECT Log AS i WHERE i.account=:account", map);
     }
 
     @Override

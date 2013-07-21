@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class SessionItem implements Serializable {
     private static final long serialVersionUID = 7022196605186543132L;
-    private Long userId;
+    private Long accountId;
     private String companyId;
     private String username;
     private String email;
@@ -35,12 +35,12 @@ public class SessionItem implements Serializable {
         this.admin = admin;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public String getUsername() {

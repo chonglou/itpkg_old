@@ -23,7 +23,7 @@ public class Log extends IdEntity {
 
     private static final long serialVersionUID = -3548662034390764951L;
     @Column(nullable = false, updatable = false)
-    private Long user;
+    private Long account;
     @Lob
     @Column(nullable = false, updatable = false)
     private String message;
@@ -39,12 +39,12 @@ public class Log extends IdEntity {
         this.type = type;
     }
 
-    public Long getUser() {
-        return user;
+    public Long getAccount() {
+        return account;
     }
 
-    public void setUser(Long user) {
-        this.user = user;
+    public void setAccount(Long account) {
+        this.account = account;
     }
 
     public String getMessage() {

@@ -6,8 +6,8 @@ import com.odong.portal.dao.BaseDao;
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-7-16
- * Time: 上午10:49
+ * Date: 13-7-21
+ * Time: 下午3:25
  */
-public interface UserDao extends BaseDao<User, Long> {
+public interface UserDao extends BaseDao<User,Long> {
 }

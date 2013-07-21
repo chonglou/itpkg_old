@@ -1,9 +1,6 @@
 package com.odong.itpkg.service;
 
-import com.odong.itpkg.entity.uc.Company;
-import com.odong.itpkg.entity.uc.Group;
-import com.odong.itpkg.entity.uc.GroupUser;
-import com.odong.itpkg.entity.uc.User;
+import com.odong.itpkg.entity.uc.*;
 import com.odong.itpkg.model.Contact;
 
 import java.util.List;
@@ -41,29 +38,38 @@ public interface AccountService {
     void setCompanyState(String companyId, Company.State state);
 
 
-    void addUser(String companyId, String email, String username, String password);
+    void addAccount(String companyId, String email, String username, String password);
 
-    List<User> listUser(String companyId);
+    List<Account> listAccount(String companyId);
 
     List<GroupUser> listGroupUser(String companyId);
 
-    List<User> listUser(long groupId);
-    List<User> listUser();
+    List<User> listUserByGroup(long groupId);
+    List<User> listUserByCompany(String companyId);
 
+    void addUser( String username, Contact contact, String company);
+    void delUser(long userId);
     User getUser(long userId);
-
-    User getUser(String email);
-
-    void setUserState(long userId, User.State state);
-
-    void setUserPassword(long userId, String password);
-
+    User getUser(String username, String company);
     void setUserGroup(long userId, long groupId, boolean bind);
-    GroupUser getGroupUser(long groupId, long userId);
-
     void setUserInfo(long userId, String username, Contact contact);
 
-    User auth(String email, String password);
+    List<Account> listAccount();
+
+    Account getAccount(long accountId);
+
+    Account getAccount(String email);
+
+    void setAccountState(long accountId, Account.State state);
+
+    void setAccountPassword(long accountId, String password);
+
+
+    GroupUser getGroupUser(long groupId, long userId);
+
+    void setAccountInfo(long accountId, String username, Contact contact);
+
+    Account auth(String email, String password);
 
 
 }

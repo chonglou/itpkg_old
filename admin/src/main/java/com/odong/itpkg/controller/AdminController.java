@@ -2,17 +2,14 @@ package com.odong.itpkg.controller;
 
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
-import com.odong.itpkg.entity.uc.User;
 import com.odong.itpkg.form.admin.*;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.LogService;
-import com.odong.itpkg.service.RbacService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
-import com.odong.itpkg.util.SiteHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.FormHelper;
@@ -23,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 
@@ -46,14 +42,14 @@ public class AdminController {
         else {
             accountService.setCompanyState(companyId, state);
             ri.setOk(true);
-            logService.add(si.getUserId(),"设置公司["+companyId+"]状态["+state+"]", Log.Type.INFO);
+            logService.add(si.getAccountId(),"设置公司["+companyId+"]状态["+state+"]", Log.Type.INFO);
         }
         return ri;
     }
 
     @RequestMapping(value = "/site/company", method = RequestMethod.GET)
     String getCompanyList(Map<String, Object> map) {
-        map.put("users", accountService.listUser());
+        map.put("users", accountService.listAccount());
         map.put("companies", accountService.listCompany());
         return "admin/companyList";
     }
@@ -87,7 +83,7 @@ public class AdminController {
             profile.setPort(form.getPort());
             profile.setFrom(form.getFrom());
             siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
-            logService.add(si.getUserId(), "设置SMTP信息", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置SMTP信息", Log.Type.INFO);
             emailHelper.reload();
 
         }
@@ -118,7 +114,7 @@ public class AdminController {
             siteService.set("site.keywords", form.getKeywords());
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
-            logService.add(si.getUserId(), "设置站点基本信息", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置站点基本信息", Log.Type.INFO);
         }
         return ri;
 
@@ -141,7 +137,7 @@ public class AdminController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.aboutMe", form.getAboutMe());
-            logService.add(si.getUserId(), "设置关于我们信息", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置关于我们信息", Log.Type.INFO);
         }
         return ri;
 
@@ -164,7 +160,7 @@ public class AdminController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.regProtocol", form.getRegProtocol());
-            logService.add(si.getUserId(), "设置用户注册协议", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置用户注册协议", Log.Type.INFO);
         }
         return ri;
 
@@ -193,7 +189,7 @@ public class AdminController {
         if (ri.isOk()) {
             siteService.set("site.allowLogin", form.isAllowLogin());
             siteService.set("site.allowRegister", form.isAllowRegister());
-            logService.add(si.getUserId(), "设置站点权限[登陆,"+form.isAllowLogin()+"][注册,"+form.isAllowRegister()+"]", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置站点权限[登陆,"+form.isAllowLogin()+"][注册,"+form.isAllowRegister()+"]", Log.Type.INFO);
         }
         return ri;
 
@@ -218,7 +214,7 @@ public class AdminController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             dbHelper.compress(form.getDays());
-            logService.add(si.getUserId(), "压缩数据库，只保留最近["+form.getDays()+"]天的数据", Log.Type.INFO);
+            logService.add(si.getAccountId(), "压缩数据库，只保留最近["+form.getDays()+"]天的数据", Log.Type.INFO);
         }
         return ri;
 

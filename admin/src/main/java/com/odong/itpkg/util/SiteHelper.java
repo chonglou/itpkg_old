@@ -1,7 +1,7 @@
 package com.odong.itpkg.util;
 
 import com.odong.itpkg.entity.Task;
-import com.odong.itpkg.entity.uc.User;
+import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.RbacService;
 import com.odong.itpkg.service.TaskService;
@@ -19,7 +19,6 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,9 +48,9 @@ public class SiteHelper {
             String email = "flamen@0-dong.com";
             String companyId = "admin";
             accountService.addCompany(companyId, "IT-PACKAGE", "");
-            accountService.addUser(companyId, email, "管理员", "123456");
-            User admin = accountService.getUser(email);
-            accountService.setUserState(admin.getId(), User.State.ENABLE);
+            accountService.addAccount(companyId, email, "管理员", "123456");
+            Account admin = accountService.getAccount(email);
+            accountService.setAccountState(admin.getId(), Account.State.ENABLE);
             rbacService.bindAdmin(admin.getId(), true);
 
             taskService.add(Task.Type.SYS_GC, null, timeHelper.nextDay(gcHour), timeHelper.max(), 0, 60 * 60 * 24);

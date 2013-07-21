@@ -413,9 +413,9 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setMacInfo(long macId, String name, String detail) {
+    public void setMacInfo(long macId, String hostname, String detail) {
         Mac m = macDao.select(macId);
-        m.setName(name);
+        m.setHostname(hostname);
         m.setDetail(detail);
         macDao.update(m);
     }

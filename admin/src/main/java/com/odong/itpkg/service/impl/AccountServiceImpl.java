@@ -1,14 +1,8 @@
 package com.odong.itpkg.service.impl;
 
-import com.odong.itpkg.dao.uc.CompanyDao;
-import com.odong.itpkg.dao.uc.GroupDao;
-import com.odong.itpkg.dao.uc.GroupUserDao;
-import com.odong.itpkg.dao.uc.UserDao;
-import com.odong.itpkg.dao.uc.impl.GroupUserDaoImpl;
-import com.odong.itpkg.entity.uc.Company;
-import com.odong.itpkg.entity.uc.Group;
-import com.odong.itpkg.entity.uc.GroupUser;
-import com.odong.itpkg.entity.uc.User;
+import com.odong.itpkg.dao.net.MacDao;
+import com.odong.itpkg.dao.uc.*;
+import com.odong.itpkg.entity.uc.*;
 import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.util.EncryptHelper;
@@ -114,22 +108,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addUser(String companyId, String email, String username, String password) {
-        User u = new User();
+    public void addAccount(String companyId, String email, String username, String password) {
+        Account u = new Account();
         u.setEmail(email);
         u.setUsername(username);
         u.setPassword(encryptHelper.encrypt(password));
         u.setCreated(new Date());
         u.setCompany(companyId);
-        u.setState(User.State.SUBMIT);
-        userDao.insert(u);
+        u.setState(Account.State.SUBMIT);
+        accountDao.insert(u);
     }
 
     @Override
-    public List<User> listUser(String companyId) {
+    public List<Account> listAccount(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return userDao.list("FROM USER AS u WHERE u.company=:company)", map);  //
+        return accountDao.list("FROM USER AS u WHERE u.company=:company)", map);  //
     }
 
     @Override
@@ -140,41 +134,81 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<User> listUser(long groupId) {
+    public List<User> listUserByGroup(long groupId) {
         Map<String, Object> map = new HashMap<>();
         map.put("group", groupId);
-        return userDao.list("FROM USER AS u WHERE u.id in (SELECT gu.user FROM GroupUser AS gu WHERE gu.group=:group)", map);  //
+        return userDao.list("FROM User AS u WHERE u.id in (SELECT gu.user FROM GroupUser AS gu WHERE gu.group=:group)", map);  //
     }
 
     @Override
-    public List<User> listUser() {
-        return userDao.list();
+    public List<User> listUserByCompany(String companyId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("company", companyId);
+        return userDao.list("FROM User AS i WHERE i.company=:company", map);  //
+
+    }
+
+    @Override
+    public void addUser(String username, Contact contact, String company) {
+        User user = new User();
+        user.setCreated(new Date());
+        user.setCompany(company);
+        user.setUsername(username);
+        user.setCompany(jsonHelper.object2json(contact));
+        userDao.insert(user);
+    }
+
+    @Override
+    public void delUser(long userId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("user", userId);
+        groupUserDao.delete("DELETE GroupUser AS i WHERE i.user=:user", map);
+        macDao.update("UPDATE Mac AS i WHERE i.user=NULL WHERE i.user=:user", map);
+        userDao.delete(userId);
     }
 
     @Override
     public User getUser(long userId) {
-        return userDao.select(userId);  //
+        return userDao.select(userId);
     }
 
     @Override
-    public User getUser(String email) {
+    public User getUser(String username, String company) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("username", username);
+        map.put("company", company);
+        return userDao.select("FROM User as i WHERE i.username=:username && i.company=:company", map);
+    }
+
+    @Override
+    public List<Account> listAccount() {
+        return accountDao.list();
+    }
+
+    @Override
+    public Account getAccount(long accountId) {
+        return accountDao.select(accountId);  //
+    }
+
+    @Override
+    public Account getAccount(String email) {
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
-        return userDao.select("FROM User as i WHERE i.email=:email", map);
+        return accountDao.select("FROM Account as i WHERE i.email=:email", map);
     }
 
     @Override
-    public void setUserState(long userId, User.State state) {
-        User user = userDao.select(userId);
-        user.setState(state);
-        userDao.update(user);
+    public void setAccountState(long accountId, Account.State state) {
+        Account account = accountDao.select(accountId);
+        account.setState(state);
+        accountDao.update(account);
     }
 
     @Override
-    public void setUserPassword(long userId, String password) {
-        User user = userDao.select(userId);
-        user.setPassword(encryptHelper.encrypt(password));
-        userDao.update(user);
+    public void setAccountPassword(long accountId, String password) {
+        Account account = accountDao.select(accountId);
+        account.setPassword(encryptHelper.encrypt(password));
+        accountDao.update(account);
     }
 
     @Override
@@ -195,14 +229,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public GroupUser getGroupUser(long groupId, long userId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("user", userId);
-        map.put("group", groupId);
-        return  groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
-    }
-
-    @Override
     public void setUserInfo(long userId, String username, Contact contact) {
         User u = userDao.select(userId);
         u.setUsername(username);
@@ -211,11 +237,29 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public User auth(String email, String password) {
-        User u = getUser(email);
-        return u != null && encryptHelper.check(password, u.getPassword()) ? u : null;  //
+    public GroupUser getGroupUser(long groupId, long userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", userId);
+        map.put("group", groupId);
+        return  groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
     }
 
+    @Override
+    public void setAccountInfo(long accountId, String username, Contact contact) {
+        Account account = accountDao.select(accountId);
+        account.setUsername(username);
+        account.setContact(jsonHelper.object2json(contact));
+        accountDao.update(account);
+    }
+
+    @Override
+    public Account auth(String email, String password) {
+        Account account = getAccount(email);
+        return account != null && encryptHelper.check(password, account.getPassword()) ? account : null;  //
+    }
+
+    @Resource
+    private UserDao userDao;
     @Resource
     private GroupDao groupDao;
     @Resource
@@ -223,11 +267,29 @@ public class AccountServiceImpl implements AccountService {
     @Resource
     private EncryptHelper encryptHelper;
     @Resource
-    private UserDao userDao;
+    private AccountDao accountDao;
     @Resource
     private CompanyDao companyDao;
     @Resource
     private JsonHelper jsonHelper;
+    @Resource
+    private MacDao macDao;
+
+    public void setMacDao(MacDao macDao) {
+        this.macDao = macDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
+
+    public void setGroupUserDao(GroupUserDao groupUserDao) {
+        this.groupUserDao = groupUserDao;
+    }
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;
@@ -241,8 +303,8 @@ public class AccountServiceImpl implements AccountService {
         this.encryptHelper = encryptHelper;
     }
 
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
+    public void setAccountDao(AccountDao accountDao) {
+        this.accountDao = accountDao;
     }
 
 }

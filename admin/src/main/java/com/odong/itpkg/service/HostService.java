@@ -108,7 +108,7 @@ public interface HostService {
 
     void setMacState(long macId, Mac.State state);
 
-    void setMacInfo(long macId, String name, String detail);
+    void setMacInfo(long macId, String hostname, String detail);
 
     void bindIp2Mac(long macId, int ip, boolean bind);
 

@@ -26,23 +26,23 @@ import java.util.Map;
 @Service("rbacService")
 public class RbacServiceImpl implements RbacService {
     @Override
-    public boolean authCompany(long user, String company, OperationType type) {
-        return checkPermission(getRole(user), getOperation(type), getResource(getCompanyResourceName(company)));
+    public boolean authCompany(long account, String company, OperationType type) {
+        return checkPermission(getRole(account), getOperation(type), getResource(getCompanyResourceName(company)));
     }
 
     @Override
-    public void bindCompany(long user, String company, OperationType type, boolean bind) {
-        bindPermission(getRole(user), getOperation(type), getResource(getCompanyResourceName(company)), bind);
+    public void bindCompany(long account, String company, OperationType type, boolean bind) {
+        bindPermission(getRole(account), getOperation(type), getResource(getCompanyResourceName(company)), bind);
     }
 
     @Override
-    public void bindAdmin(long user, boolean bind) {
-        bindPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()), bind);
+    public void bindAdmin(long account, boolean bind) {
+        bindPermission(getRole(account), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()), bind);
     }
 
     @Override
-    public boolean authAdmin(long user) {
-        return checkPermission(getRole(user), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()));
+    public boolean authAdmin(long account) {
+        return checkPermission(getRole(account), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()));
     }
 
     private String getCompanyResourceName(String company) {
@@ -120,8 +120,8 @@ public class RbacServiceImpl implements RbacService {
         return o.getId();
     }
 
-    private long getRole(long user) {
-        String key = "rbac://role/" + user;
+    private long getRole(long account) {
+        String key = "rbac://role/" + account;
         Map<String, Object> map = new HashMap<>();
         map.put("name", key);
         Role r = roleDao.select("FROM Role AS i WHERE i.name=:name", map);
