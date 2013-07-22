@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
  * Time: 下午3:25
  */
 @Repository("uc.userDao")
-public class UserDaoImpl extends BaseJpa2DaoImpl<User,Long> implements UserDao{
+public class UserDaoImpl extends BaseJpa2DaoImpl<User, Long> implements UserDao {
 }

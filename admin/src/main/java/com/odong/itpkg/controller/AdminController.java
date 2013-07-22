@@ -36,13 +36,12 @@ public class AdminController {
     @RequestMapping(value = "/site/company/({companyId},{state})", method = RequestMethod.POST)
     ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if("admin".equals(companyId)){
+        if ("admin".equals(companyId)) {
             ri.addData("管理员公司，不能被删除");
-        }
-        else {
+        } else {
             accountService.setCompanyState(companyId, state);
             ri.setOk(true);
-            logService.add(si.getAccountId(),"设置公司["+companyId+"]状态["+state+"]", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置公司[" + companyId + "]状态[" + state + "]", Log.Type.INFO);
         }
         return ri;
     }
@@ -76,7 +75,7 @@ public class AdminController {
 
     @RequestMapping(value = "/site/smtp", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteSmtp(@Valid SiteSmtpForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSiteSmtp(@Valid SiteSmtpForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
@@ -106,7 +105,7 @@ public class AdminController {
 
     @RequestMapping(value = "/site/info", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteInfo(@Valid SiteInfoForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSiteInfo(@Valid SiteInfoForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.title", form.getTitle());
@@ -133,7 +132,7 @@ public class AdminController {
 
     @RequestMapping(value = "/site/aboutMe", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteAboutMe(@Valid SiteAboutMeForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSiteAboutMe(@Valid SiteAboutMeForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.aboutMe", form.getAboutMe());
@@ -156,7 +155,7 @@ public class AdminController {
 
     @RequestMapping(value = "/site/regProtocol", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postRegProtocol(@Valid SiteRegProtocolForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postRegProtocol(@Valid SiteRegProtocolForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.regProtocol", form.getRegProtocol());
@@ -184,12 +183,12 @@ public class AdminController {
 
     @RequestMapping(value = "/site/state", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result,@ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.allowLogin", form.isAllowLogin());
             siteService.set("site.allowRegister", form.isAllowRegister());
-            logService.add(si.getAccountId(), "设置站点权限[登陆,"+form.isAllowLogin()+"][注册,"+form.isAllowRegister()+"]", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置站点权限[登陆," + form.isAllowLogin() + "][注册," + form.isAllowRegister() + "]", Log.Type.INFO);
         }
         return ri;
 
@@ -214,7 +213,7 @@ public class AdminController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             dbHelper.compress(form.getDays());
-            logService.add(si.getAccountId(), "压缩数据库，只保留最近["+form.getDays()+"]天的数据", Log.Type.INFO);
+            logService.add(si.getAccountId(), "压缩数据库，只保留最近[" + form.getDays() + "]天的数据", Log.Type.INFO);
         }
         return ri;
 

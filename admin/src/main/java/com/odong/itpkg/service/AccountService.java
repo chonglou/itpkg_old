@@ -45,13 +45,19 @@ public interface AccountService {
     List<GroupUser> listGroupUser(String companyId);
 
     List<User> listUserByGroup(long groupId);
+
     List<User> listUserByCompany(String companyId);
 
-    void addUser( String username, Contact contact, String company);
+    void addUser(String username, Contact contact, String company);
+
     void delUser(long userId);
+
     User getUser(long userId);
+
     User getUser(String username, String company);
+
     void setUserGroup(long userId, long groupId, boolean bind);
+
     void setUserInfo(long userId, String username, Contact contact);
 
     List<Account> listAccount();

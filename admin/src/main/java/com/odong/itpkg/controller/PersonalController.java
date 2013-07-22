@@ -46,7 +46,7 @@ import java.util.UUID;
 @SessionAttributes(SessionItem.KEY)
 public class PersonalController {
     @RequestMapping(value = "/self", method = RequestMethod.GET)
-    String getSelf(Map<String,Object> map){
+    String getSelf(Map<String, Object> map) {
         return "personal/self";
     }
 
@@ -242,12 +242,11 @@ public class PersonalController {
         ResponseItem ri = formHelper.check(result, request, true);
         if (ri.isOk()) {
             Account a = accountService.getAccount(form.getEmail());
-            if(a !=null && a.getState() == Account.State.SUBMIT){
+            if (a != null && a.getState() == Account.State.SUBMIT) {
                 sendActiveEmail(form.getEmail());
-            }
-            else {
+            } else {
                 ri.setOk(false);
-                ri.addData("邮箱["+form.getEmail()+"]状态不对");
+                ri.addData("邮箱[" + form.getEmail() + "]状态不对");
             }
         }
         return ri;
@@ -274,7 +273,7 @@ public class PersonalController {
             ri.setOk(false);
             ri.addData("两次密码输入不一致");
         }
-        if(!siteService.getBoolean("site.allowRegister")){
+        if (!siteService.getBoolean("site.allowRegister")) {
             ri.setOk(false);
             ri.addData("站点禁止注册新账户");
         }
@@ -320,7 +319,7 @@ public class PersonalController {
     @ResponseBody
     ResponseItem postLogin(@Valid LoginForm form, BindingResult result, HttpServletRequest request, HttpSession session) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(!siteService.getBoolean("site.allowLogin")){
+        if (!siteService.getBoolean("site.allowLogin")) {
             ri.setOk(false);
             ri.addData("站点禁止登陆");
         }

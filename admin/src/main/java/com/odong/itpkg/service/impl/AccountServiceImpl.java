@@ -160,7 +160,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void delUser(long userId) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("user", userId);
         groupUserDao.delete("DELETE GroupUser AS i WHERE i.user=:user", map);
         macDao.update("UPDATE Mac AS i WHERE i.user=NULL WHERE i.user=:user", map);
@@ -214,11 +214,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void setUserGroup(long userId, long groupId, boolean bind) {
         if (bind) {
-                GroupUser gu = new GroupUser();
-                gu.setUser(userId);
-                gu.setGroup(groupId);
-                gu.setCreated(new Date());
-                groupUserDao.insert(gu);
+            GroupUser gu = new GroupUser();
+            gu.setUser(userId);
+            gu.setGroup(groupId);
+            gu.setCreated(new Date());
+            groupUserDao.insert(gu);
 
         } else {
             Map<String, Object> map = new HashMap<>();
@@ -241,7 +241,7 @@ public class AccountServiceImpl implements AccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("user", userId);
         map.put("group", groupId);
-        return  groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
+        return groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
     }
 
     @Override

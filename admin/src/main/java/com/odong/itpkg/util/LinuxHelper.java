@@ -104,8 +104,8 @@ public class LinuxHelper {
                 sbW.append("Connection=ethernet");
                 sbW.append("IP=static");
                 sbU.append(String.format("Address=('%s/24'", wanIp.getAddress()));
-                if(host.isDmz()){
-                    for(Dmz d : hostService.listFirewallDmz(hostId)){
+                if (host.isDmz()) {
+                    for (Dmz d : hostService.listFirewallDmz(hostId)) {
                         Ip dmzIp = hostService.getIp(d.getWanIp());
                         sbU.append(String.format(" %s/24", dmzIp.getAddress()));
                     }
@@ -366,7 +366,7 @@ public class LinuxHelper {
         DateFormat df = new SimpleDateFormat("yyyyMMdd");
         for (Zone zone : hostService.listDnsZone(hostId)) {
             StringBuilder sb = new StringBuilder();
-            List<Domain> domains = hostService.listDnsDomain(zone.getId());
+            List<Domain> domains = hostService.listDnsDomainByZone(zone.getId());
             sb.append("$TTL 86400\n");
             sb.append(String.format("@	IN SOA	%s. ns.%s. (\n", zone.getName(), zone.getName()));
             sb.append(String.format("%s\n", df.format(new Date())));

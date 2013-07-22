@@ -1,7 +1,5 @@
 package com.odong.itpkg.form.uc;
 
-import org.hibernate.validator.constraints.Email;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 

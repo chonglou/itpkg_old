@@ -33,28 +33,29 @@ import java.util.Map;
 public class AccountController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getList(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Map<Long, Group> groups = new HashMap<>();
-        Map<Long, User> users = new HashMap<>();
-        Map<Long,Account> accounts = new HashMap<>();
-        Map<Long, Contact> contacts = new HashMap<>();
+        Map<Long, Group> groupMap = new HashMap<>();
+        Map<Long, User> userMap = new HashMap<>();
+        Map<Long, Account> accountMap = new HashMap<>();
+        Map<Long, Contact> contactMap = new HashMap<>();
         for (Group g : accountService.listGroup(si.getCompanyId())) {
-            groups.put(g.getId(), g);
+            groupMap.put(g.getId(), g);
         }
         for (User u : accountService.listUserByCompany(si.getCompanyId())) {
-            users.put(u.getId(), u);
-            contacts.put(u.getId(), jsonHelper.json2object(u.getContact(), Contact.class));
+            userMap.put(u.getId(), u);
+            contactMap.put(u.getId(), jsonHelper.json2object(u.getContact(), Contact.class));
         }
-        for(Account a : accountService.listAccount(si.getCompanyId())){
-            accounts.put(a.getId(), a);
-            contacts.put(a.getId(), jsonHelper.json2object(a.getContact(), Contact.class));
+        for (Account a : accountService.listAccount(si.getCompanyId())) {
+            accountMap.put(a.getId(), a);
+            contactMap.put(a.getId(), jsonHelper.json2object(a.getContact(), Contact.class));
         }
 
-        map.put("groups", groups);
-        map.put("users", users);
-        map.put("contacts", contacts);
-        map.put("groupUsers", accountService.listGroupUser(si.getCompanyId()));
+        map.put("groupMap", groupMap);
+        map.put("userMap", userMap);
+        map.put("accountMap", accountMap);
+        map.put("contactMap", contactMap);
+        map.put("groupUserList", accountService.listGroupUser(si.getCompanyId()));
         map.put("company", accountService.getCompany(si.getCompanyId()));
-        map.put("accounts", accounts);
+
 
         return "uc/company";
     }
@@ -112,36 +113,72 @@ public class AccountController {
         return fm;
     }
 
-
-    @RequestMapping(value = "/company/account", method = RequestMethod.GET)
+    @RequestMapping(value = "/company/setAccount", method = RequestMethod.GET)
     @ResponseBody
-    Form getAccountAddForm( @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("addAccount", "添加账户", "/uc/company/account");
+    Form getAccountSetForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        Form fm = new Form("setAccount", "添加账户", "/uc/company/setAccount");
+        SelectField<Long> account = new SelectField<Long>("account", "账户");
+        for(Account a : accountService.listAccount(si.getCompanyId())){
+            if(a.getState() != Account.State.SUBMIT){
+            account.addOption(String.format("%s[%s]", a.getEmail(), a.getUsername()), a.getId());
+            }
+        }
+        RadioField<Boolean> enable = new RadioField<Boolean>("enable", "状态", false);
+        enable.addOption("启用", true);
+        enable.addOption("禁用", false);
+        fm.addField(account);
+        fm.addField(enable);
+        fm.setOk(true);
+        return fm;
+    }
 
-            fm.addField(new TextField<>("email", "名称"));
+    @RequestMapping(value = "/company/setAccount", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem  postAccountSetForm(@Valid AccountSetForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if(ri.isOk()){
+            Account a = accountService.getAccount(form.getAccount());
+            if(a != null && a.getCompany().equals(si.getCompanyId())){
+                accountService.setAccountState(a.getId(), form.isEnable() ? Account.State.ENABLE : Account.State.DISABLE);
+                logService.add(si.getAccountId(), (form.isEnable() ? "启用":"禁用")+"账户["+a.getEmail()+"]", Log.Type.INFO);
+            }
+        }
+        else {
+            ri.addData("用户["+form.getAccount()+"]不存在");
+        }
+        return ri;
+    }
+
+    @RequestMapping(value = "/company/addAccount", method = RequestMethod.GET)
+    @ResponseBody
+    Form getAccountAddForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        Form fm = new Form("addAccount", "添加账户", "/uc/company/addAccount");
+
+        fm.addField(new TextField<>("email", "名称"));
         fm.addField(new TextField<>("username", "名称"));
-            fm.addField(new TextField<>("password", "详情"));
-            fm.setOk(true);
+        fm.addField(new TextField<>("password", "详情"));
+        fm.setOk(true);
 
         return fm;
     }
 
-    @RequestMapping(value = "/company/account", method = RequestMethod.POST)
+    @RequestMapping(value = "/company/addAccount", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postAccountAddForm(@Valid AccountForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postAccountAddForm(@Valid AccountAddForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
-        if(!siteService.getBoolean("site.allowRegister")){
+        if (!siteService.getBoolean("site.allowRegister")) {
             ri.setOk(false);
             ri.addData("站点禁止注册新账户");
         }
-        if(ri.isOk()){
-            if(accountService.getAccount(form.getEmail()) == null){
+        if (ri.isOk()) {
+            if (accountService.getAccount(form.getEmail()) == null) {
                 accountService.addAccount(si.getCompanyId(), form.getEmail(), form.getUsername(), form.getPassword());
-                logService.add(si.getAccountId(), "添加新用户["+form.getEmail()+"]", Log.Type.INFO);
-            }
-            else {
+                Account a = accountService.getAccount(form.getEmail());
+                rbacService.bindCompany(a.getId(), si.getCompanyId(), RbacService.OperationType.USE, true);
+                logService.add(si.getAccountId(), "添加新用户[" + form.getEmail() + "] 并赋予USE权限", Log.Type.INFO);
+            } else {
                 ri.setOk(false);
-                ri.addData("邮箱["+form.getEmail()+"]已存在");
+                ri.addData("邮箱[" + form.getEmail() + "]已存在");
             }
         }
         return ri;
@@ -158,8 +195,7 @@ public class AccountController {
             fm.addField(new TextField<>("name", "名称", g.getName()));
             fm.addField(new TextField<>("details", "详情", g.getDetails()));
             fm.setOk(true);
-        }
-        else {
+        } else {
             fm.addData("用户组[" + id + "]不存在");
         }
         return fm;

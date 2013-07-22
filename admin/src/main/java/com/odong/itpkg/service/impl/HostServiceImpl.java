@@ -292,6 +292,19 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
+    public Zone getZone(long zoneId) {
+        return zoneDao.select(zoneId);
+    }
+
+    @Override
+    public Zone getZone(String name, long hostId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("host", hostId);
+        return zoneDao.select("SELECT Zone AS i WHERE i.name=:nam AND i.host=:host", map);
+    }
+
+    @Override
     public void addDnsZone(long hostId, String name, String details) {
         Zone z = new Zone();
         z.setHost(hostId);
@@ -302,9 +315,8 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setDnsZone(long zoneId, String name, String details) {
+    public void setDnsZone(long zoneId, String details) {
         Zone z = zoneDao.select(zoneId);
-        z.setName(name);
         z.setDetails(details);
         zoneDao.update(z);
     }
@@ -600,7 +612,7 @@ public class HostServiceImpl implements HostService {
 
     @Override
     public List<Ip> listIpByHost(long hostId) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
         return ipDao.list("SELECT Ip AS i WHERE i.host=:host", map);
     }
@@ -736,10 +748,18 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public List<Domain> listDnsDomain(long zoneId) {
+    public List<Domain> listDnsDomainByZone(long zoneId) {
         Map<String, Object> map = new HashMap<>();
         map.put("zone", zoneId);
         return domainDao.list("SELECT Domain AS i WHERE i.zone=:zone", map);  //
+    }
+
+    @Override
+    public List<Domain> listDnsDomainByHost(long hostId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("host", hostId);
+        return domainDao.list("SELECT Domain AS d WHERE d.zone IN (SELECT Zone AS z WHERE z.host=:host)", map);
     }
 
     @Override
