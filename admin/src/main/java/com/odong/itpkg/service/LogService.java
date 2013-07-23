@@ -12,6 +12,7 @@ import java.util.List;
  * Time: 上午11:57
  */
 public interface LogService {
+
     void add(Long account, String message, Log.Type type);
 
     void removeOld(int daysKeep);

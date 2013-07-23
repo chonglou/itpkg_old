@@ -32,32 +32,38 @@ public class JsonHelperImpl implements JsonHelper {
 
     @Override
     public <T> T json2object(String json, Class<T> clazz) {
-        try {
-            return mapper.readValue(json, clazz);
-        } catch (IOException e) {
-            logger.debug("解析JSON出错", e);
+        if (json != null) {
+            try {
+                return mapper.readValue(json, clazz);
+            } catch (IOException e) {
+                logger.debug("解析JSON出错", e);
+            }
         }
         return null;
     }
 
     @Override
     public <K, V> Map<K, V> json2map(String json, Class<K> kClazz, Class<V> vClazz) {
-        try {
-            return mapper.readValue(json, new TypeReference<Map<K, V>>() {
-            });
-        } catch (IOException e) {
-            logger.debug("解析JSON出错", e);
+        if (json != null) {
+            try {
+                return mapper.readValue(json, new TypeReference<Map<K, V>>() {
+                });
+            } catch (IOException e) {
+                logger.debug("解析JSON出错", e);
+            }
         }
         return new HashMap<>();
     }
 
     @Override
     public <T> List<T> json2List(String json, Class<T> clazz) {
-        try {
-            return mapper.readValue(json, new TypeReference<List<T>>() {
-            });
-        } catch (IOException e) {
-            logger.debug("解析JSON出错", e);
+        if (json != null) {
+            try {
+                return mapper.readValue(json, new TypeReference<List<T>>() {
+                });
+            } catch (IOException e) {
+                logger.debug("解析JSON出错", e);
+            }
         }
         return new ArrayList<>();
     }

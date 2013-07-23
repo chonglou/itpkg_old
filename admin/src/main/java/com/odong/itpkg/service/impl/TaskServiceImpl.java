@@ -107,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
         map.put("total", null);
         map.put("state", Task.State.SUBMIT);
         map.put("now", new Date());
-        return taskDao.list("FROM Task as i WHERE i.total!=:total AND i.state=:state AND i.startUp>=:now", map);
+        return taskDao.list("SELECT i FROM Task i WHERE i.total!=:total AND i.state=:state AND i.startUp>=:now", map);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TaskServiceImpl implements TaskService {
         Map<String, Object> map = new HashMap<>();
         map.put("date", timeHelper.plus(new Date(), -60 * 60 * 24 * daysKeep));
         map.put("state", Task.State.DONE);
-        taskDao.delete("DELETE Task AS i WHERE i.created < :date AND i.state=:state", map);
+        taskDao.delete("DELETE Task i WHERE i.created < :date AND i.state=:state", map);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class TaskServiceImpl implements TaskService {
         Map<String, Object> map = new HashMap<>();
         map.put("begin", begin);
         map.put("end", end);
-        return taskDao.list("SELECT Task AS i WHERE i.created>=:start AND i.created <=:end", map);  //
+        return taskDao.list("SELECT i FROM Task i WHERE i.created>=:start AND i.created <=:end", map);  //
     }
 
     @Resource

@@ -2,11 +2,14 @@ package com.odong.itpkg.util;
 
 import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.entity.uc.Account;
+import com.odong.itpkg.entity.uc.Company;
+import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.RbacService;
 import com.odong.itpkg.service.TaskService;
 import com.odong.portal.config.Database;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.TimeHelper;
 import httl.spi.resolvers.GlobalResolver;
 import org.slf4j.Logger;
@@ -34,7 +37,7 @@ public class SiteHelper {
         if (siteService.getObject("site.init", Date.class) == null) {
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20130716");
-            siteService.set("site.title", "ITPKG-企业信息化管理系统");
+            siteService.set("site.title", "IT-PACKAGE(企业信息化管理系统)");
             siteService.set("site.description", "itpkg");
             siteService.set("site.keywords", "itpkg");
             siteService.set("site.domain", "www.0-dong.com");
@@ -45,13 +48,20 @@ public class SiteHelper {
             siteService.set("site.regProtocol", "注册协议");
             siteService.set("site.author", "zhengjitang@gmail.com");
 
+            //SMTP
+            emailHelper.setup(new SmtpProfile());
+            emailHelper.reload();
+
+
             String email = "flamen@0-dong.com";
             String companyId = "admin";
             accountService.addCompany(companyId, "IT-PACKAGE", "");
+            accountService.setCompanyState(companyId, Company.State.ENABLE);
             accountService.addAccount(companyId, email, "管理员", "123456");
             Account admin = accountService.getAccount(email);
             accountService.setAccountState(admin.getId(), Account.State.ENABLE);
             rbacService.bindAdmin(admin.getId(), true);
+            rbacService.bindCompany(admin.getId(), companyId, RbacService.OperationType.MANAGE, true);
 
             taskService.add(Task.Type.SYS_GC, null, timeHelper.nextDay(gcHour), timeHelper.max(), 0, 60 * 60 * 24);
             if (database.isMysql()) {
@@ -69,7 +79,7 @@ public class SiteHelper {
         }
         if (!base.exists()) {
             logger.info("数据存储目录[{}]不存在,创建之!", appStoreDir);
-            for (String s : new String[]{"backup", "seo", "attach"}) {
+            for (String s : new String[]{"backup", "attach"}) {
                 String dir = appStoreDir + "/" + s;
                 File f = new File(dir);
                 if (f.mkdirs()) {
@@ -79,6 +89,8 @@ public class SiteHelper {
                 }
             }
         }
+
+
     }
 
     @PreDestroy
@@ -86,6 +98,8 @@ public class SiteHelper {
         siteService.set("site.shutdown", new Date());
     }
 
+    @Resource
+    private EmailHelper emailHelper;
     @Resource
     private Database database;
     @Resource
@@ -109,6 +123,10 @@ public class SiteHelper {
     @Value("${gc.hour}")
     private int gcHour;
     private final static Logger logger = LoggerFactory.getLogger(SiteHelper.class);
+
+    public void setEmailHelper(EmailHelper emailHelper) {
+        this.emailHelper = emailHelper;
+    }
 
     public void setDatabase(Database database) {
         this.database = database;

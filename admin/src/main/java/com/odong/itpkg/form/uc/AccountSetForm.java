@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Date: 13-7-21
  * Time: 下午5:02
  */
-public class AccountSetForm implements Serializable{
+public class AccountSetForm implements Serializable {
     private static final long serialVersionUID = 3922033101638258165L;
     private long account;
     private boolean enable;

@@ -18,7 +18,7 @@ import java.util.Date;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Company implements Serializable {
     public enum State {
-        ENABLE, DISABLE
+        SUBMIT, ENABLE, DISABLE
     }
 
     private static final long serialVersionUID = 9041368825509992267L;

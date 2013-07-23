@@ -1,65 +1,67 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-#set(Map<String,String> gl_site)
-#set(gl_session=session.d1s7e0wp)
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="${gl_site.description}"/>
-    <meta name="keywords" content="${gl_site.keywords}"/>
-    <meta name="author" content="${gl_site.author}">
-    <title>${gl_site.title}#if(gl_title)-${gl_title}#end</title>
-    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
-    <script type="text/javascript" src="/jquery/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-    <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
-    <script type="text/javascript" src="/js/widgets.js#if(gl_debug)?_=${random()}#end"></script>
-    <script type="text/javascript" src="/js/main.js#if(gl_debug)?_=${random()}#end"></script>
-    #if(gl_debug)
-    <script type="text/javascript" src="/js/test.js?_=${random()}"></script>
-    #end
+$!{extends("/frame.httl")}
+
+#macro(left_nav_bar(List<NavBar> navBars))
+#if(navBars)
+<div class="well sidebar-nav">
+    <ul class="nav nav-list">
+        #for(NavBar i:navBars)
+            <li class="nav-header">${i.title}</li>
+            #if(i.ajax)
+                #for(Page j: i.pages)
+                    <li><a id="left_nav-${j.url}">${j.name}</a></li>
+                #end
+            #else
+                #for(Page j: i.pages)
+                <li><a href="${j.url}" target="_blank">${j.name}</a></li>
+                #end
+            #end
+        #end
+    </ul>
+</div>
+#end
+#end
+
+#macro(personal_bar)
+    #set(SessionItem gl_session)
     #if(gl_session)
-    <script type="text/javascript" src="/js/personal.js#if(gl_debug)?_=${random()}#end"></script>
+        #set(personal_bar_items=["self":"用户中心","logout":"安全退出"])
+        #set(personal_bar_sort=["self", "logout"])
+        #set(personal_bar_name="欢迎你，"+gl_session.username+"。")
     #else
-    <script type="text/javascript" src="/js/non-login.js#if(gl_debug)?_=${random()}#end"></script>
+        #set(personal_bar_items=["login":"用户登录", "register":"账户注册", "active":"账户激活", "resetPwd":"重置密码"])
+        #set(personal_bar_sort=["login", "register", "active", "resetPwd"])
+        #set(personal_bar_name="登录/注册")
     #end
-    #macro($!head)#end
-</head>
-<body>
-<div class="navbar navbar-fixed-top  navbar-inverse">
-    <div class="navbar-inner">
-        <div class="container-fluid">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar">&nbsp;</span>
-                <span class="icon-bar">&nbsp;</span>
-                <span class="icon-bar">&nbsp;</span>
-            </a>
-            <a class="brand" href="/">${gl_site.title}</a>
-            #macro($!personal_bar)#end
-            #macro($!top_nav_bar)#end
-        </div>
+
+    <div class="btn-group pull-right">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="icon-user">&nbsp;</i> ${personal_bar_name}
+        <span class="caret">&nbsp;</span>
+    </a>
+    <ul class="dropdown-menu">
+        #for(i : personal_bar_sort)
+            <li><a id="personal_bar-${i}">${personal_bar_items[i]}</a></li>
+            #if(!for.last)
+            <li class="divider">&nbsp;</li>
+            #end
+        #end
+    </ul>
     </div>
-</div>
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span3">
-            <!--#macro($!left)-->
-            <a href="/">Left</a>
-            <!--#end-->
-        </div>
-        <div class="span9">
-            <div id="gl_message"></div>
-            <div id="gl_root"></div>
-            <!--#macro($!main)-->
-            <a href="/">Main</a>
-            <!--#end-->
-        </div>
+#end
+#macro(top_nav_bar(String top_nav_key, Map<String,Object> gl_site))
+    <div class="nav-collapse">
+        <ul class="nav">
+            #set(Map<String,String> topNavs=gl_site.topNavs)
+            #for(i : ["main", "personal/self", "aboutMe"])
+                <li
+                #if(top_nav_key == i)
+                class="active"
+                #end
+                ><a href="/${i}">${topNavs.get(i)}</a><li>
+            #end
+        </ul>
+        <form method="post" target="_blank" action="/search" class="navbar-search pull-left">
+            <input type="text" name="keyword" class="search-query" placeholder="点击此处进行搜索">
+        </form>
     </div>
-<hr/>
-<footer class="footer">
-<div class="container">$!{gl_site.copyright}</div>
-</footer>
-</div>
-</body>
-</html>
+#end

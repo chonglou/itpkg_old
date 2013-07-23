@@ -29,7 +29,7 @@ import java.util.Map;
  * Date: 13-7-18
  * Time: 上午10:59
  */
-@Service
+@Service("hostService")
 public class HostServiceImpl implements HostService {
 
 
@@ -48,7 +48,7 @@ public class HostServiceImpl implements HostService {
     public List<Dmz> listFirewallDmz(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return dmzDao.list("FROM Dmz AS i WHERE i.host=:hostId", map);  //
+        return dmzDao.list("SELECT i FROM Dmz i WHERE i.host=:hostId", map);  //
     }
 
     @Override
@@ -134,7 +134,7 @@ public class HostServiceImpl implements HostService {
     public void delFirewallOutput(long outputId) {
         Map<String, Object> map = new HashMap<>();
         map.put("output", outputId);
-        macOutputDao.delete("DELETE MacOutput AS i WHERE i.output=:output", map);
+        macOutputDao.delete("DELETE MacOutput i WHERE i.output=:output", map);
         outputDao.delete(outputId);
     }
 
@@ -211,7 +211,7 @@ public class HostServiceImpl implements HostService {
     public List<Mac> listMacByFirewallFlowLimit(long flowLimitId) {
         Map<String, Object> map = new HashMap<>();
         map.put("flowLimit", flowLimitId);
-        return macDao.list("FROM Mac AS i WHERE i.flowLimit=:flowLimit", map);  //
+        return macDao.list("SELECT i FROM Mac i WHERE i.flowLimit=:flowLimit", map);  //
     }
 
     @Override
@@ -223,7 +223,7 @@ public class HostServiceImpl implements HostService {
     public List<DateLimit> listFirewallDateLimit(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return dateLimitDao.list("FROM DateLimit AS i WHERE i.company=:company", map);  //
+        return dateLimitDao.list("SELECT i FROM DateLimit i WHERE i.company=:company", map);  //
 
     }
 
@@ -283,7 +283,7 @@ public class HostServiceImpl implements HostService {
     public List<Output> listFirewallOutputByDateLimit(long dateLimitId) {
         Map<String, Object> map = new HashMap<>();
         map.put("dateLimit", dateLimitId);
-        return outputDao.list("FROM Output AS i WHERE i.dateLimit=:dateLimit", map);  //
+        return outputDao.list("SELECT i FROM Output i WHERE i.dateLimit=:dateLimit", map);  //
     }
 
     @Override
@@ -292,16 +292,16 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public Zone getZone(long zoneId) {
+    public Zone getDnsZone(long zoneId) {
         return zoneDao.select(zoneId);
     }
 
     @Override
-    public Zone getZone(String name, long hostId) {
-        Map<String,Object> map = new HashMap<>();
+    public Zone getDnsZone(String name, long hostId) {
+        Map<String, Object> map = new HashMap<>();
         map.put("name", name);
         map.put("host", hostId);
-        return zoneDao.select("SELECT Zone AS i WHERE i.name=:nam AND i.host=:host", map);
+        return zoneDao.select("SELECT i FROM Zone i WHERE i.name=:nam AND i.host=:host", map);
     }
 
     @Override
@@ -325,7 +325,7 @@ public class HostServiceImpl implements HostService {
     public void delDnsZone(long zoneId) {
         Map<String, Object> map = new HashMap<>();
         map.put("zone", zoneId);
-        domainDao.delete("DELETE Domain AS i WHERE i.zone=:zone", map);
+        domainDao.delete("DELETE Domain i WHERE i.zone=:zone", map);
         zoneDao.delete(zoneId);
     }
 
@@ -445,7 +445,7 @@ public class HostServiceImpl implements HostService {
         Map<String, Object> map = new HashMap<>();
         map.put("mac", macId);
         map.put("output", outputId);
-        MacOutput mo = macOutputDao.select("FROM MacOutput AS i WHERE i.mac=:mac AND i.output=:output", map);
+        MacOutput mo = macOutputDao.select("SELECT i FROM MacOutput i WHERE i.mac=:mac AND i.output=:output", map);
         if (mo == null) {
             if (bind) {
                 mo = new MacOutput();
@@ -483,7 +483,7 @@ public class HostServiceImpl implements HostService {
     public void delMac(long macId) {
         Map<String, Object> map = new HashMap<>();
         map.put("mac", macId);
-        macOutputDao.delete("DELETE MacOutput AS i WHERE i.mac=:mac", map);
+        macOutputDao.delete("DELETE MacOutput i WHERE i.mac=:mac", map);
         macDao.delete(macId);
     }
 
@@ -614,14 +614,14 @@ public class HostServiceImpl implements HostService {
     public List<Ip> listIpByHost(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return ipDao.list("SELECT Ip AS i WHERE i.host=:host", map);
+        return ipDao.list("SELECT i FROM Ip i WHERE i.host=:host", map);
     }
 
     @Override
     public List<Host> listHost(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return hostDao.list("SELECT Host AS i WHERE i.company=:company", map);
+        return hostDao.list("SELECT i FROM Host i WHERE i.company=:company", map);
     }
 
     @Override
@@ -665,7 +665,7 @@ public class HostServiceImpl implements HostService {
     public Host getHost(String wanMac) {
         Map<String, Object> map = new HashMap<>();
         map.put("wanMac", wanMac);
-        return hostDao.select("SELECT Host AS i WHERE i.wanMac=:wanMac", map);
+        return hostDao.select("SELECT i FROM Host i WHERE i.wanMac=:wanMac", map);
     }
 
     @Override
@@ -693,7 +693,7 @@ public class HostServiceImpl implements HostService {
     public List<MacOutput> listFirewallMacOutputByMac(long macId) {
         Map<String, Object> map = new HashMap<>();
         map.put("mac", macId);
-        return macOutputDao.list("SELECT MacOutput AS i WHERE i.mac=:mac", map);
+        return macOutputDao.list("SELECT i FROM MacOutput i WHERE i.mac=:mac", map);
     }
 
     @Override
@@ -701,42 +701,42 @@ public class HostServiceImpl implements HostService {
 
         Map<String, Object> map = new HashMap<>();
         map.put("output", outputId);
-        return macOutputDao.list("SELECT MacOutput AS i WHERE i.output=:output", map);
+        return macOutputDao.list("SELECT i FROM MacOutput i WHERE i.output=:output", map);
     }
 
     @Override
     public List<Input> listFirewallInput(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return inputDao.list("SELECT Input AS i WHERE i.host=:host", map);
+        return inputDao.list("SELECT i FROM Input i WHERE i.host=:host", map);
     }
 
     @Override
     public List<Output> listFirewallOutputByHost(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return outputDao.list("SELECT Output AS i WHERE i.host=:host", map);
+        return outputDao.list("SELECT i FROM Output i WHERE i.host=:host", map);
     }
 
     @Override
     public List<Nat> listFirewallNat(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return natDao.list("SELECT Nat AS i WHERE i.host=:host", map);
+        return natDao.list("SELECT i FROM Nat i WHERE i.host=:host", map);
     }
 
     @Override
     public List<FlowLimit> listFirewallFlowLimit(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return flowLimitDao.list("SELECT FlowLimit AS i WHERE i.company=:company", map);
+        return flowLimitDao.list("SELECT i FROM FlowLimit i WHERE i.company=:company", map);
     }
 
     @Override
     public List<Mac> listMacByHost(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return macDao.list("SELECT Mac AS i WHERE i.host=:host", map);
+        return macDao.list("SELECT i FROM Mac i WHERE i.host=:host", map);
 
     }
 
@@ -744,14 +744,14 @@ public class HostServiceImpl implements HostService {
     public List<Zone> listDnsZone(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return zoneDao.list("SELECT Zone AS i WHERE i.host=:host", map);  //
+        return zoneDao.list("SELECT i FROM Zone i WHERE i.host=:host", map);  //
     }
 
     @Override
     public List<Domain> listDnsDomainByZone(long zoneId) {
         Map<String, Object> map = new HashMap<>();
         map.put("zone", zoneId);
-        return domainDao.list("SELECT Domain AS i WHERE i.zone=:zone", map);  //
+        return domainDao.list("SELECT i FROM Domain i WHERE i.zone=:zone", map);  //
     }
 
     @Override
@@ -759,7 +759,7 @@ public class HostServiceImpl implements HostService {
 
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
-        return domainDao.list("SELECT Domain AS d WHERE d.zone IN (SELECT Zone AS z WHERE z.host=:host)", map);
+        return domainDao.list("SELECT d FROM Domain d WHERE d.zone IN (SELECT z FROM Zone z WHERE z.host=:host)", map);
     }
 
     @Override

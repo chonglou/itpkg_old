@@ -1,0 +1,8 @@
+$!{extends("/layout.httl")}
+
+#macro(left)
+   ${left_nav_bar}
+#end
+
+#macro(main)
+#end

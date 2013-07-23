@@ -7,7 +7,7 @@ package com.odong.itpkg.service;
  * Time: 上午10:48
  */
 public interface RbacService {
-    boolean authCompany(long account, String company, OperationType type);
+    boolean authCompany(long account, String company, OperationType... types);
 
     void bindCompany(long account, String company, OperationType type, boolean bind);
 
@@ -16,7 +16,7 @@ public interface RbacService {
     boolean authAdmin(long account);
 
     public enum OperationType {
-        MANAGER, USE
+        MANAGE, USE
     }
 
 }

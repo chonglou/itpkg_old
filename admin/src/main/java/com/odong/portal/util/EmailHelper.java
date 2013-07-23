@@ -6,6 +6,7 @@ import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -25,7 +26,7 @@ import java.util.Properties;
  * Date: 13-5-22
  * Time: 下午5:08
  */
-@Component
+@Component("emailHelper")
 public class EmailHelper {
     public void send(String to, String title, String body, boolean html) {
         send(to, title, body, html, new HashMap<String, String>());

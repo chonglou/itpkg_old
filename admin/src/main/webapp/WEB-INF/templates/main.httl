@@ -1,0 +1,13 @@
+$!{extends("/layout.httl")}
+
+#macro(main)
+<fieldset>
+    #set(List<String> logs)
+    <legend>更新日志[${logs.size}]</legend>
+    <ul>
+    #for(i : logs)
+        <li>${i}</li>
+    #end
+    </ul>
+</fieldset>
+#end

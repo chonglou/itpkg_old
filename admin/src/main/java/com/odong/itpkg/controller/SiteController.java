@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,16 +28,7 @@ import java.util.Map;
  */
 @Controller
 public class SiteController {
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    String getMain(Map<String, Object> map) {
 
-        return "main";
-    }
-
-    @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
-    String getAboutMe(Map<String, Object> map) {
-        return "aboutMe";
-    }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
     @ResponseBody

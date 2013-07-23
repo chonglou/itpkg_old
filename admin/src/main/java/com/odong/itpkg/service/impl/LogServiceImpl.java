@@ -34,14 +34,15 @@ public class LogServiceImpl implements LogService {
         Map<String, Object> map = new HashMap<>();
         map.put("account", null);
         map.put("date", timeHelper.plus(new Date(), -60 * 60 * 24 * daysKeep));
-        logDao.delete("DELETE Log AS i WHERE i.account=:account i.created < :date", map);
+        logDao.delete("DELETE Log i WHERE i.account=:account i.created < :date", map);
     }
 
     @Override
-    public List<Log> list(Long account) {
+    public List<Log> list(Long accountId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("account", account);
-        return logDao.list("SELECT Log AS i WHERE i.account=:account", map);
+        map.put("account", accountId);
+        return logDao.list("SELECT i FROM Log i WHERE i.account = :account", map);
+
     }
 
     @Override
@@ -49,7 +50,7 @@ public class LogServiceImpl implements LogService {
         Map<String, Object> map = new HashMap<>();
         map.put("start", start);
         map.put("end", end);
-        return logDao.list("SELECT Log AS i WHERE i.created>=:start AND i.created<=:end", map);  //
+        return logDao.list("SELECT i FROM Log WHERE i.created>=:start AND i.created<=:end", map);  //
     }
 
     @Resource

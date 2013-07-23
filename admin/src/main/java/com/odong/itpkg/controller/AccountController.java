@@ -86,6 +86,7 @@ public class AccountController {
     @ResponseBody
     ResponseItem postBind(@Valid BindForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
+
         if (ri.isOk()) {
             Group g = accountService.getGroup(form.getGroup());
             User u = accountService.getUser(form.getUser());
@@ -118,9 +119,9 @@ public class AccountController {
     Form getAccountSetForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("setAccount", "添加账户", "/uc/company/setAccount");
         SelectField<Long> account = new SelectField<Long>("account", "账户");
-        for(Account a : accountService.listAccount(si.getCompanyId())){
-            if(a.getState() != Account.State.SUBMIT){
-            account.addOption(String.format("%s[%s]", a.getEmail(), a.getUsername()), a.getId());
+        for (Account a : accountService.listAccount(si.getCompanyId())) {
+            if (a.getState() != Account.State.SUBMIT) {
+                account.addOption(String.format("%s[%s]", a.getEmail(), a.getUsername()), a.getId());
             }
         }
         RadioField<Boolean> enable = new RadioField<Boolean>("enable", "状态", false);
@@ -134,17 +135,17 @@ public class AccountController {
 
     @RequestMapping(value = "/company/setAccount", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem  postAccountSetForm(@Valid AccountSetForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem postAccountSetForm(@Valid AccountSetForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
+
+        if (ri.isOk()) {
             Account a = accountService.getAccount(form.getAccount());
-            if(a != null && a.getCompany().equals(si.getCompanyId())){
+            if (a != null && a.getCompany().equals(si.getCompanyId())) {
                 accountService.setAccountState(a.getId(), form.isEnable() ? Account.State.ENABLE : Account.State.DISABLE);
-                logService.add(si.getAccountId(), (form.isEnable() ? "启用":"禁用")+"账户["+a.getEmail()+"]", Log.Type.INFO);
+                logService.add(si.getAccountId(), (form.isEnable() ? "启用" : "禁用") + "账户[" + a.getEmail() + "]", Log.Type.INFO);
             }
-        }
-        else {
-            ri.addData("用户["+form.getAccount()+"]不存在");
+        } else {
+            ri.addData("用户[" + form.getAccount() + "]不存在");
         }
         return ri;
     }
@@ -166,6 +167,7 @@ public class AccountController {
     @ResponseBody
     ResponseItem postAccountAddForm(@Valid AccountAddForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
+
         if (!siteService.getBoolean("site.allowRegister")) {
             ri.setOk(false);
             ri.addData("站点禁止注册新账户");
@@ -205,6 +207,7 @@ public class AccountController {
     @ResponseBody
     ResponseItem postGroup(@Valid GroupForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
+
         if (ri.isOk()) {
             if (form.getId() == null) {
                 accountService.addGroup(si.getCompanyId(), form.getName(), form.getDetails());
@@ -227,6 +230,7 @@ public class AccountController {
     @ResponseBody
     ResponseItem delGroup(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+
         Group g = accountService.getGroup(id);
         if (g != null && si.getCompanyId().equals(g.getCompany())) {
             accountService.delGroup(id);
@@ -282,6 +286,7 @@ public class AccountController {
     @ResponseBody
     ResponseItem postUserAddForm(@Valid UserForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
+
         if (ri.isOk()) {
             Contact c = new Contact();
             c.setFax(form.getFax());
@@ -316,6 +321,7 @@ public class AccountController {
     @ResponseBody
     ResponseItem delUser(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+
         User u = accountService.getUser(id);
         if (u != null && si.getCompanyId().equals(u.getCompany())) {
             accountService.delUser(id);

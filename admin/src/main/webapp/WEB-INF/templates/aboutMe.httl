@@ -1,0 +1,8 @@
+$!{extends("/layout.httl")}
+
+#macro(main)
+<fieldset>
+    <legend>关于我们</legend>
+    ${aboutMe}
+</fieldset>
+#end

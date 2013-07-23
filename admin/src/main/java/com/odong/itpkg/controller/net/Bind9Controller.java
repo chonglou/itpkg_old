@@ -46,55 +46,61 @@ public class Bind9Controller {
 
     @RequestMapping(value = "/{hostId}/zone", method = RequestMethod.GET)
     @ResponseBody
-    Form getAddZone(@PathVariable long hostId) {
-        Form fm = new Form("addZone", "添加主域名", "/"+hostId+"/zone");
+    Form getAddZoneAddFrom(@PathVariable long hostId) {
+        Form fm = new Form("addZone", "添加主域名", "/net/bind9/" + hostId + "/zone");
         fm.addField(new HiddenField<Long>("zone", null));
         fm.addField(new TextField<>("name", "域名"));
-        fm.addField(new TextAreaField("details","详情"));
+        fm.addField(new TextAreaField("details", "详情"));
         fm.setOk(true);
         return fm;
     }
+
     @RequestMapping(value = "/{hostId}/zone/{zoneId}", method = RequestMethod.GET)
     @ResponseBody
-    Form getAddZone(@PathVariable long hostId, @PathVariable long zoneId) {
-        Zone z = hostService.getZone(zoneId);
-        Form fm = new Form("setZone", "修改域名["+z.getName()+"]", "/"+hostId+"/zone");
+    Form getAddZoneEditForm(@PathVariable long hostId, @PathVariable long zoneId) {
+        Zone z = hostService.getDnsZone(zoneId);
+        Form fm = new Form("setZone", "修改域名[" + z.getName() + "]", "/" + hostId + "/zone");
         fm.addField(new HiddenField<>("zone", zoneId));
-        TextField<String> name =new TextField<>("name", "域名");
+        TextField<String> name = new TextField<>("name", "域名");
         name.setReadonly(true);
         fm.addField(name);
-        fm.addField(new TextAreaField("details","详情"));
+        fm.addField(new TextAreaField("details", "详情"));
         fm.setOk(true);
         return fm;
     }
 
     @RequestMapping(value = "/{hostId}/zone", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postAddZone(@PathVariable long hostId, @Valid DomainForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-       ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
-            if(form.getZone() == null){
-                if(hostService.getZone(form.getName(), hostId) == null){
+    ResponseItem postZone(@PathVariable long hostId, @Valid DomainForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            if (form.getZone() == null) {
+                if (hostService.getDnsZone(form.getName(), hostId) == null) {
                     hostService.addDnsZone(hostId, form.getName(), form.getDetails());
-                    logService.add(si.getAccountId(), "添加主域名["+form.getName()+"]", Log.Type.INFO);
-                }
-                else {
+                    logService.add(si.getAccountId(), "添加主域名[" + form.getName() + "]", Log.Type.INFO);
+                } else {
                     ri.setOk(false);
-                    ri.addData("主域名["+form.getName()+"]已存在");
+                    ri.addData("主域名[" + form.getName() + "]已存在");
                 }
-            }
-            else {
+            } else {
                 hostService.setDnsZone(form.getZone(), form.getDetails());
-                logService.add(si.getAccountId(), "更新主域名["+form.getName()+"]信息", Log.Type.INFO);
+                logService.add(si.getAccountId(), "更新主域名[" + form.getName() + "]信息", Log.Type.INFO);
             }
         }
         return ri;
     }
 
-    @RequestMapping(value = "/zone/${zoneId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{hostId}/zone/{zoneId}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem delZone(@PathVariable long zoneId){
-
+    ResponseItem delZone(@PathVariable  long hostId, @PathVariable long zoneId) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        Zone z = hostService.getDnsZone(zoneId);
+        if(z != null && z.getHost() == hostId){
+            hostService.delDnsZone(zoneId);
+            ri.setOk(true);
+        }
+        ri.addData("域名["+zoneId+"]不存在");
+        return ri;
     }
 
     @Resource

@@ -45,10 +45,7 @@ import java.util.UUID;
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
 public class PersonalController {
-    @RequestMapping(value = "/self", method = RequestMethod.GET)
-    String getSelf(Map<String, Object> map) {
-        return "personal/self";
-    }
+
 
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
@@ -229,7 +226,7 @@ public class PersonalController {
     @RequestMapping(value = "/active", method = RequestMethod.GET)
     @ResponseBody
     Form getActive() {
-        Form fm = new Form("active", "欢迎注册", "/personal/active");
+        Form fm = new Form("active", "激活账户", "/personal/active");
         fm.addField(new TextField("email", "邮箱"));
         fm.setCaptcha(true);
         fm.setOk(true);
@@ -255,7 +252,7 @@ public class PersonalController {
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     @ResponseBody
     Form getRegister() {
-        Form fm = new Form("register", "欢迎注册", "/personal/register");
+        Form fm = new Form("register", "注册账户", "/personal/register");
         fm.addField(new TextField("company", "公司名称"));
         fm.addField(new TextField("email", "邮箱"));
         fm.addField(new PasswordField("password", "登陆密码"));
@@ -339,11 +336,13 @@ public class PersonalController {
                             si.setAccountId(u.getId());
                             si.setCompanyId(u.getCompany());
                             si.setAdmin(rbacService.authAdmin(u.getId()));
+                            si.setCompanyManager(rbacService.authCompany(u.getId(), u.getCompany(), RbacService.OperationType.MANAGE));
                             si.setCreated(new Date());
 
                             ri.setType(ResponseItem.Type.redirect);
                             ri.addData("/personal/self");
                             session.setAttribute(SessionItem.KEY, si);
+                            accountService.setAccountLastLogin(u.getId());
                             logService.add(u.getId(), "用户登陆", Log.Type.INFO);
                             break;
                         case DISABLE:

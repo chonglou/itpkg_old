@@ -48,14 +48,14 @@ public class AccountServiceImpl implements AccountService {
     public List<Group> listGroup(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return groupDao.list("FROM Group AS i WHERE i.company=:company)", map);  //
+        return groupDao.list("SELECT i FROM Group i WHERE i.company=:company)", map);  //
     }
 
     @Override
     public List<Group> listGroup(long userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("user", userId);
-        return groupDao.list("FROM Group AS g WHERE g.id in (SELECT gu.group FROM GroupUser AS gu WHERE gu.user=:user)", map);  //
+        return groupDao.list("SELECT i FROM Group g WHERE g.id in (SELECT gu.group FROM GroupUser gu WHERE gu.user=:user)", map);  //
 
     }
 
@@ -68,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
     public void delGroup(long groupId) {
         Map<String, Object> map = new HashMap<>();
         map.put("group", groupId);
-        groupUserDao.delete("DELETE GroupUser AS i WHERE i.group=:group", map);
+        groupUserDao.delete("DELETE GroupUser i WHERE i.group=:group", map);
         groupDao.delete(groupId);
     }
 
@@ -89,6 +89,7 @@ public class AccountServiceImpl implements AccountService {
         c.setName(name);
         c.setDetails(details);
         c.setCreated(new Date());
+        c.setState(Company.State.SUBMIT);
         companyDao.insert(c);
     }
 
@@ -115,6 +116,7 @@ public class AccountServiceImpl implements AccountService {
         u.setPassword(encryptHelper.encrypt(password));
         u.setCreated(new Date());
         u.setCompany(companyId);
+        u.setContact(jsonHelper.object2json(new Contact()));
         u.setState(Account.State.SUBMIT);
         accountDao.insert(u);
     }
@@ -123,28 +125,28 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> listAccount(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return accountDao.list("FROM USER AS u WHERE u.company=:company)", map);  //
+        return accountDao.list("SELECT i FROM USER i WHERE i.company=:company)", map);  //
     }
 
     @Override
     public List<GroupUser> listGroupUser(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return groupUserDao.list("FROM GroupUser AS gu WHERE gu.group IN (SELECT Company AS c WHERE c.id=:company)", map);  //
+        return groupUserDao.list("SELECT gu FROM GroupUser gu WHERE gu.group IN (SELECT g.group FROM Group g WHERE g.company=:company)", map);  //
     }
 
     @Override
     public List<User> listUserByGroup(long groupId) {
         Map<String, Object> map = new HashMap<>();
         map.put("group", groupId);
-        return userDao.list("FROM User AS u WHERE u.id in (SELECT gu.user FROM GroupUser AS gu WHERE gu.group=:group)", map);  //
+        return userDao.list("SELECT u FROM User u WHERE u.id in (SELECT gu.user FROM GroupUser gu WHERE gu.group=:group)", map);  //
     }
 
     @Override
     public List<User> listUserByCompany(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return userDao.list("FROM User AS i WHERE i.company=:company", map);  //
+        return userDao.list("SELECT i FROM User i WHERE i.company=:company", map);  //
 
     }
 
@@ -162,8 +164,8 @@ public class AccountServiceImpl implements AccountService {
     public void delUser(long userId) {
         Map<String, Object> map = new HashMap<>();
         map.put("user", userId);
-        groupUserDao.delete("DELETE GroupUser AS i WHERE i.user=:user", map);
-        macDao.update("UPDATE Mac AS i WHERE i.user=NULL WHERE i.user=:user", map);
+        groupUserDao.delete("DELETE GroupUser i WHERE i.user=:user", map);
+        macDao.update("UPDATE Mac i SET i.user=NULL WHERE i.user=:user", map);
         userDao.delete(userId);
     }
 
@@ -177,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("username", username);
         map.put("company", company);
-        return userDao.select("FROM User as i WHERE i.username=:username && i.company=:company", map);
+        return userDao.select("SELECT i FROM User i WHERE i.username=:username && i.company=:company", map);
     }
 
     @Override
@@ -194,7 +196,7 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccount(String email) {
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
-        return accountDao.select("FROM Account as i WHERE i.email=:email", map);
+        return accountDao.select("SELECT i FROM Account i WHERE i.email=:email", map);
     }
 
     @Override
@@ -202,6 +204,14 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountDao.select(accountId);
         account.setState(state);
         accountDao.update(account);
+    }
+
+    @Override
+    public void setAccountLastLogin(long accountId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", accountId);
+        map.put("lastLogin", new Date());
+        accountDao.update("UPDATE Account i SET i.lastLogin=:lastLogin WHERE i.id=:id", map);
     }
 
     @Override
@@ -224,7 +234,7 @@ public class AccountServiceImpl implements AccountService {
             Map<String, Object> map = new HashMap<>();
             map.put("user", userId);
             map.put("group", groupId);
-            groupUserDao.delete("DELETE GroupUser AS i WHERE i.user=:user && i.group=:group", map);
+            groupUserDao.delete("DELETE GroupUser i WHERE i.user=:user && i.group=:group", map);
         }
     }
 
@@ -241,7 +251,7 @@ public class AccountServiceImpl implements AccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("user", userId);
         map.put("group", groupId);
-        return groupUserDao.select("SELECT GroupUser AS i WHERE i.user=:user && i.group=:group", map);
+        return groupUserDao.select("SELECT i FROM GroupUser i WHERE i.user=:user && i.group=:group", map);
     }
 
     @Override

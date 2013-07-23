@@ -1,0 +1,9 @@
+$!{extends("/layout.httl")}
+
+#macro(main)
+<fieldset>
+    <legend>搜索结果[]</legend>
+    <ul>
+    </ul>
+</fieldset>
+#end

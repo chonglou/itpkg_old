@@ -84,8 +84,9 @@ public interface HostService {
 
     void delFirewallDateLimit(long dateLimitId);
 
-    Zone getZone(long zoneId);
-    Zone getZone(String name, long hostId);
+    Zone getDnsZone(long zoneId);
+
+    Zone getDnsZone(String name, long hostId);
 
     void addDnsZone(long hostId, String name, String details);
 
@@ -189,6 +190,7 @@ public interface HostService {
     List<Zone> listDnsZone(long hostId);
 
     List<Domain> listDnsDomainByZone(long zoneId);
+
     List<Domain> listDnsDomainByHost(long hostId);
 
 

@@ -33,11 +33,11 @@ import java.util.Map;
 @RequestMapping(value = "/admin")
 @SessionAttributes(SessionItem.KEY)
 public class AdminController {
-    @RequestMapping(value = "/site/company/({companyId},{state})", method = RequestMethod.POST)
+    @RequestMapping(value = "/company/({companyId},{state})", method = RequestMethod.POST)
     ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         if ("admin".equals(companyId)) {
-            ri.addData("管理员公司，不能被删除");
+            ri.addData("管理员公司");
         } else {
             accountService.setCompanyState(companyId, state);
             ri.setOk(true);
@@ -46,14 +46,14 @@ public class AdminController {
         return ri;
     }
 
-    @RequestMapping(value = "/site/company", method = RequestMethod.GET)
+    @RequestMapping(value = "/company", method = RequestMethod.GET)
     String getCompanyList(Map<String, Object> map) {
         map.put("users", accountService.listAccount());
         map.put("companies", accountService.listCompany());
         return "admin/companyList";
     }
 
-    @RequestMapping(value = "/site/smtp", method = RequestMethod.GET)
+    @RequestMapping(value = "/smtp", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteSmtp() {
         SmtpProfile profile = jsonHelper.json2object(
@@ -73,7 +73,7 @@ public class AdminController {
         return fm;
     }
 
-    @RequestMapping(value = "/site/smtp", method = RequestMethod.POST)
+    @RequestMapping(value = "/smtp", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postSiteSmtp(@Valid SiteSmtpForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
@@ -90,10 +90,10 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/site/info", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteBase() {
-        Form fm = new Form("siteInfo", "站点信息", "/admin/site/info");
+        Form fm = new Form("siteInfo", "站点信息", "/admin/info");
         fm.addField(new TextField<>("title", "标题", siteService.getString("site.title")));
         fm.addField(new TextField<>("domain", "域名", siteService.getString("site.domain")));
         fm.addField(new TextField<>("keywords", "关键字列表", siteService.getString("site.keywords")));
@@ -103,7 +103,7 @@ public class AdminController {
         return fm;
     }
 
-    @RequestMapping(value = "/site/info", method = RequestMethod.POST)
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postSiteInfo(@Valid SiteInfoForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
@@ -119,10 +119,10 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/site/aboutMe", method = RequestMethod.GET)
+    @RequestMapping(value = "/aboutMe", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteAboutMe() {
-        Form fm = new Form("siteAboutMe", "关于我们", "/admin/site/aboutMe");
+        Form fm = new Form("siteAboutMe", "关于我们", "/admin/aboutMe");
         TextAreaField taf = new TextAreaField("aboutMe", "内容", siteService.getString("site.aboutMe"));
         taf.setHtml(true);
         fm.addField(taf);
@@ -130,7 +130,7 @@ public class AdminController {
         return fm;
     }
 
-    @RequestMapping(value = "/site/aboutMe", method = RequestMethod.POST)
+    @RequestMapping(value = "/aboutMe", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postSiteAboutMe(@Valid SiteAboutMeForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
@@ -142,10 +142,10 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/site/regProtocol", method = RequestMethod.GET)
+    @RequestMapping(value = "/regProtocol", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteRegProtocol() {
-        Form fm = new Form("siteRegProtocol", "注册协议", "/admin/site/regProtocol");
+        Form fm = new Form("siteRegProtocol", "注册协议", "/admin/regProtocol");
         TextAreaField taf = new TextAreaField("regProtocol", "内容", siteService.getString("site.regProtocol"));
         taf.setHtml(true);
         fm.addField(taf);
@@ -153,7 +153,7 @@ public class AdminController {
         return fm;
     }
 
-    @RequestMapping(value = "/site/regProtocol", method = RequestMethod.POST)
+    @RequestMapping(value = "/regProtocol", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postRegProtocol(@Valid SiteRegProtocolForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
@@ -165,10 +165,10 @@ public class AdminController {
 
     }
 
-    @RequestMapping(value = "/site/state", method = RequestMethod.GET)
+    @RequestMapping(value = "/state", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteState() {
-        Form fm = new Form("siteState", "网站状态", "/admin/site/state");
+        Form fm = new Form("siteState", "网站状态", "/admin/state");
         RadioField<Boolean> login = new RadioField<>("allowLogin", "登陆", siteService.getBoolean("site.allowLogin"));
         login.addOption("允许", true);
         login.addOption("禁止", false);
@@ -181,7 +181,7 @@ public class AdminController {
         return fm;
     }
 
-    @RequestMapping(value = "/site/state", method = RequestMethod.POST)
+    @RequestMapping(value = "/state", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);

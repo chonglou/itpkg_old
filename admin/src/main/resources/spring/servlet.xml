@@ -22,7 +22,10 @@
     <mvc:default-servlet-handler/>
 
     <mvc:interceptors>
-        <bean class="com.odong.itpkg.aop.SecurityInterceptor"/>
+        <bean class="com.odong.itpkg.aop.SecurityInterceptor">
+            <property name="hostService" ref="hostService"/>
+            <property name="rbacService" ref="rbacService"/>
+        </bean>
     </mvc:interceptors>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -41,6 +44,8 @@
 
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
+    <!--
     <bean id="exceptionHandler" class="com.odong.itpkg.aop.ExceptionHandler"/>
+    -->
 
 </beans>

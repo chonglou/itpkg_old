@@ -26,8 +26,13 @@ import java.util.Map;
 @Service("rbacService")
 public class RbacServiceImpl implements RbacService {
     @Override
-    public boolean authCompany(long account, String company, OperationType type) {
-        return checkPermission(getRole(account), getOperation(type), getResource(getCompanyResourceName(company)));
+    public boolean authCompany(long account, String company, OperationType... types) {
+        for(OperationType t : types){
+               if(checkPermission(getRole(account), getOperation(t), getResource(getCompanyResourceName(company)))){
+                   return true;
+               }
+        }
+        return false;
     }
 
     @Override
@@ -37,12 +42,12 @@ public class RbacServiceImpl implements RbacService {
 
     @Override
     public void bindAdmin(long account, boolean bind) {
-        bindPermission(getRole(account), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()), bind);
+        bindPermission(getRole(account), getOperation(OperationType.MANAGE), getResource(getSiteResourceName()), bind);
     }
 
     @Override
     public boolean authAdmin(long account) {
-        return checkPermission(getRole(account), getOperation(OperationType.MANAGER), getResource(getSiteResourceName()));
+        return checkPermission(getRole(account), getOperation(OperationType.MANAGE), getResource(getSiteResourceName()));
     }
 
     private String getCompanyResourceName(String company) {
@@ -59,7 +64,7 @@ public class RbacServiceImpl implements RbacService {
         map.put("role", role);
         map.put("operation", operation);
         map.put("resource", resource);
-        return permissionDao.select("FROM Permission AS i WHERE i.role=:role AND i.operation=:operation AND i.resource=:resource", map);
+        return permissionDao.select("SELECT i FROM Permission i WHERE i.role=:role AND i.operation=:operation AND i.resource=:resource", map);
 
     }
 
@@ -96,7 +101,7 @@ public class RbacServiceImpl implements RbacService {
     private long getResource(String name) {
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
-        Resource r = resourceDao.select("FROM Resource AS i WHERE i.name=:name", map);
+        Resource r = resourceDao.select("SELECT i FROM Resource i WHERE i.name=:name", map);
         if (r == null) {
             r = new Resource();
             r.setName(name);
@@ -110,7 +115,7 @@ public class RbacServiceImpl implements RbacService {
         String key = "rbac://operation/" + type;
         Map<String, Object> map = new HashMap<>();
         map.put("name", key);
-        Operation o = operationDao.select("FROM Operation AS i WHERE i.name=:name", map);
+        Operation o = operationDao.select("SELECT i FROM Operation i WHERE i.name=:name", map);
         if (o == null) {
             o = new Operation();
             o.setName(key);
@@ -124,7 +129,7 @@ public class RbacServiceImpl implements RbacService {
         String key = "rbac://role/" + account;
         Map<String, Object> map = new HashMap<>();
         map.put("name", key);
-        Role r = roleDao.select("FROM Role AS i WHERE i.name=:name", map);
+        Role r = roleDao.select("SELECT i FROM Role i WHERE i.name=:name", map);
         if (r == null) {
             r = new Role();
             r.setName(key);

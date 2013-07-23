@@ -68,6 +68,8 @@ public interface AccountService {
 
     void setAccountState(long accountId, Account.State state);
 
+    void setAccountLastLogin(long accountId);
+
     void setAccountPassword(long accountId, String password);
 
 

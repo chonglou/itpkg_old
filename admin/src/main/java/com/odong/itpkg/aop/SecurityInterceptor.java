@@ -1,6 +1,8 @@
 package com.odong.itpkg.aop;
 
 import com.odong.itpkg.model.SessionItem;
+import com.odong.itpkg.service.HostService;
+import com.odong.itpkg.service.RbacService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,28 +23,30 @@ public class SecurityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String url = request.getRequestURI();
         //logger.debug("路径{}", url);
-        SessionItem si = (SessionItem) request.getSession().getAttribute(SessionItem.KEY);
-        if (url.startsWith("/admin/") || url.equals("/js/admin.js")) {
-            if (si == null) {
-                login(response);
-                return false;
-
-            } else if (si.isAdmin()) {
+        //静态资源
+        for (String s : new String[]{"bootstrap", "highcharts", "kindeditor", "style", "status", "error"}) {
+            if (url.startsWith("/" + s + "/")) {
                 return true;
             }
-            notFound(response);
-            return false;
         }
+        for (String s : new String[]{"/", "/main", "/aboutMe", "/status","/captcha.jpg"}) {
+            if (url.equals(s)) {
+                return true;
+            }
+        }
+        SessionItem si = (SessionItem) request.getSession().getAttribute(SessionItem.KEY);
+        //personal
+        if (url.startsWith("/personal")) {
 
-
-        if (url.startsWith("/personal/")) {
             boolean notNeedLogin = false;
-            for (String s : new String[]{"login", "register", "reset_pwd"}) {
+
+            for (String s : new String[]{"login", "register", "resetPwd", "active"}) {
                 if (url.startsWith("/personal/" + s)) {
                     notNeedLogin = true;
                     break;
                 }
             }
+
             if (si == null && !notNeedLogin) {
                 login(response);
                 return false;
@@ -53,16 +57,97 @@ public class SecurityInterceptor implements HandlerInterceptor {
             }
             return true;
         }
-        if (si == null && url.equals("/js/personal.js")) {
-            notFound(response);
-            return false;
+        //js
+        if (url.startsWith("/js/")) {
+            if (si == null) {
+                for (String s : new String[]{"personal", "admin"}) {
+                    if (url.equals("/js/" + s + ".js")) {
+                        notFound(response);
+                        return false;
+                    }
+                }
+            } else {
+                if (
+                        url.equals("/js/non-login.js") ||
+                                (url.equals("/js/admin.js") && !si.isAdmin())
+                        ) {
+                    notFound(response);
+                    return false;
+                }
+            }
+            return true;
         }
-        if (si != null && url.equals("/js/non-login.js")) {
+        //uc
+        if (url.startsWith("/uc/")) {
+            if (si == null) {
+                login(response);
+                return false;
+            }
+            if ("/ur/".equals(url) || si.isCompanyManager()) {
+                return true;
+            }
             notFound(response);
             return false;
         }
 
-        return true;  //
+        //admin
+        if (url.startsWith("/admin/")) {
+            if (si == null) {
+                login(response);
+                return false;
+
+            }
+            if (si.isAdmin()) {
+                return true;
+            }
+            notFound(response);
+            return false;
+        }
+        //net
+        if (url.startsWith("/net/")) {
+            if(si == null){
+                login(response);
+                return false;
+            }
+            String[] ss = url.split("/");
+
+            for (String s : new String[]{"bind8", "dhcp4", "firewall", "mac"}) {
+                if (ss[1].equals(s)) {
+                    Long hostId = Long.parseLong(ss[2]);
+                    if (    hostService.getHost(hostId).getCompany().equals(si.getCompanyId()) ){
+                            //rbacService.authCompany(si.getAccountId(), si.getCompanyId(), RbacService.OperationType.MANAGE, RbacService.OperationType.USE)){
+                            return true;
+                    }
+                    else {
+                        notFound(response);
+                        return false;
+                    }
+                }
+            }
+            if(ss[1].equals("limit")){
+                Long limitId = Long.parseLong(ss[2]);
+                if(
+                        ("date".equals(ss[3]) && hostService.getFirewallDateLimit(limitId).getCompany().equals(si.getCompanyId()))||
+                        ("flow".equals(ss[3]) && hostService.getFirewallFlowLimit(limitId).getCompany().equals(si.getCompanyId()))
+                        ){
+                    return true;
+                }
+                notFound(response);
+                return false;
+            }
+            return true;
+        }
+        //search
+        if(url.equals("/search")){
+            if(si == null){
+                login(response);
+                return false;
+            }
+            return true;
+        }
+
+        notFound(response);
+        return false;  //
     }
 
     private void login(HttpServletResponse response) throws IOException {
@@ -85,5 +170,14 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
+    private RbacService rbacService;
+    private HostService hostService;
 
+    public void setRbacService(RbacService rbacService) {
+        this.rbacService = rbacService;
+    }
+
+    public void setHostService(HostService hostService) {
+        this.hostService = hostService;
+    }
 }

@@ -17,7 +17,17 @@ public class SessionItem implements Serializable {
     private String email;
     private Date created;
     private boolean admin;
+    private boolean companyManager;
+
     public final static String KEY = "d1s7e0wp";
+
+    public boolean isCompanyManager() {
+        return companyManager;
+    }
+
+    public void setCompanyManager(boolean companyManager) {
+        this.companyManager = companyManager;
+    }
 
     public String getCompanyId() {
         return companyId;

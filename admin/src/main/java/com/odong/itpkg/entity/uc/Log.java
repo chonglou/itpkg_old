@@ -22,7 +22,7 @@ public class Log extends IdEntity {
     }
 
     private static final long serialVersionUID = -3548662034390764951L;
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private Long account;
     @Lob
     @Column(nullable = false, updatable = false)
