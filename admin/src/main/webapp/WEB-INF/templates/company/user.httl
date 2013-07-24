@@ -19,11 +19,19 @@
             </tr>
         </thead>
         <tbody>
+            #set(Contact c)
             #for(u : userList)
                 <tr>
                     <td>${u.username}</td>
                     <td>${u.unit}</td>
-                    <td>${u.id}</td>
+                    <td>
+                        #set(c = contactMap.get(u.id))
+                        <ul>
+                        <li>qq：${c.qq} 电话：${c.tel} 微信：${c.weixin} 传真：${c.fax}</li>
+                        <li>网站：${c.web} 地址：${c.getAddress()}</li>
+                        <li>详情：${c.details}</li>
+                        </ul>
+                    </td>
                     <td>${u.created}</td>
                     <td>
                         <button id="user-edit-${u.id}" class="btn btn-primary">编辑</button>
@@ -40,7 +48,7 @@
     $("button[id^='user-edit']").each(function () {
         $(this).click(function () {
             clear_message_div();
-            new Ajax("/company/manage/user/"+$(this).attr('id').split('-')[2]);
+            new Ajax("/company/user/"+$(this).attr('id').split('-')[2]);
         });
     });
 
@@ -48,7 +56,7 @@
     $("button[id^='user-delete']").each(function () {
         $(this).click(function () {
             clear_message_div();
-            new Ajax("/company/manage/user/"+$(this).attr('id').split('-')[2], "DELETE");
+            new Ajax("/company/user/"+$(this).attr('id').split('-')[2], "DELETE");
         });
     });
 
@@ -59,6 +67,6 @@
 
     $("button#add").click(function(){
         clear_message_div();
-        new Ajax("/company/manage/user/add");
+        new Ajax("/company/user/add");
     });
 </script>

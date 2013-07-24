@@ -167,14 +167,15 @@ public class CompanyController {
         return ri;
     }
 
-    @RequestMapping(value = "/manage/user/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/add", method = RequestMethod.GET)
     @ResponseBody
     Form getUserAddForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("addUser", "添加用户", "/company/manage/user");
+        Form fm = new Form("user", "添加用户", "/company/user");
         fm.addField(new HiddenField<Long>("user", null));
         fm.addField(new TextField<>("username", "用户名"));
 
         String[] fields = new String[]{
+                "unit", "部门",
                 "qq", "QQ号",
                 "tel", "电话",
                 "fax", "传真",
@@ -195,17 +196,18 @@ public class CompanyController {
         return fm;
     }
 
-    @RequestMapping(value = "/manage/user/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     @ResponseBody
     Form getUserAddForm(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         User u = accountService.getUser(id);
-        Form fm = new Form("user", "修改用户[" + id + "]", "/company/manage/user");
+        Form fm = new Form("user", "修改用户[" + id + "]", "/company/user");
         if (u != null && si.getCompanyId().equals(u.getCompany())) {
             Contact c = jsonHelper.json2object(u.getContact(), Contact.class);
             fm.addField(new HiddenField<>("user", u.getId()));
             fm.addField(new TextField<>("username", "用户名", u.getUsername()));
 
             String[] fields = new String[]{
+                    "unit", "部门", u.getUnit(),
                     "qq", "QQ号", c.getQq(),
                     "tel", "电话", c.getTel(),
                     "fax", "传真", c.getFax(),
@@ -227,7 +229,7 @@ public class CompanyController {
     }
 
 
-    @RequestMapping(value = "/manage/user", method = RequestMethod.POST)
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem postUserForm(@Valid UserForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
@@ -262,7 +264,7 @@ public class CompanyController {
         return ri;
     }
 
-    @RequestMapping(value = "/manage/user/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     ResponseItem delUser(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
