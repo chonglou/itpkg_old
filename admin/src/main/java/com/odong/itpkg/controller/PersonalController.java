@@ -141,7 +141,7 @@ public class PersonalController {
 
     @RequestMapping(value = "/log", method = RequestMethod.GET)
     String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si){
-        map.put("logs", logService.list(si.getAccountId()));
+        map.put("logList", logService.list(si.getAccountId()));
         return "personal/log";
     }
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -229,16 +229,34 @@ public class PersonalController {
 
     @RequestMapping(value = "/active/{code}", method = RequestMethod.GET)
     @ResponseBody
-    ResponseItem getActivateRegisterCode(@PathVariable String code) {
+    ResponseItem getActivateCode(@PathVariable String code) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         try {
             Map<String, String> map = jsonHelper.json2map(code, String.class, String.class);
             String email = map.get("email");
             Account u = accountService.getAccount(email);
             if (u != null && u.getState() == Account.State.SUBMIT) {
-                accountService.setAccountState(u.getId(), Account.State.ENABLE);
-                ri.setOk(true);
-                logService.add(u.getId(), "账户激活", Log.Type.INFO);
+                Company c = accountService.getCompany(u.getCompany());
+                switch (c.getState()){
+                    case SUBMIT:
+                        accountService.setCompanyState(u.getCompany(), Company.State.ENABLE);
+                        logService.add(u.getId(), "公司激活", Log.Type.INFO);
+                    case ENABLE:
+                        accountService.setAccountState(u.getId(), Account.State.ENABLE);
+                        ri.setOk(true);
+                        logService.add(u.getId(), "账户激活", Log.Type.INFO);
+                        emailHelper.send(
+                                u.getEmail(),
+                                "您在["+siteService.getString("site.title")+"]上的账户激活成功",
+                                "欢迎使用",
+                                true);
+                        break;
+                    default:
+                        ri.addData("公司["+c.getName()+"]状态不对");
+                        break;
+                }
+
+
             } else {
                 ri.addData("账户[" + email + "]状态不对");
             }

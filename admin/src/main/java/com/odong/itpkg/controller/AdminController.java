@@ -6,6 +6,7 @@ import com.odong.itpkg.form.admin.*;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.service.AccountService;
+import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,21 +38,25 @@ public class AdminController {
 
     @RequestMapping(value = "/company", method = RequestMethod.GET)
     String getCompanyList(Map<String, Object> map) {
-        map.put("users", accountService.listAccount());
-        map.put("companies", accountService.listCompany());
-        return "admin/companyList";
+        map.put("companyList", accountService.listCompany());
+        return "admin/company";
     }
 
 
-    @RequestMapping(value = "/company/({companyId},{state})", method = RequestMethod.POST)
-    ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if ("admin".equals(companyId)) {
+    @RequestMapping(value = "/company/state", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postCompany(@Valid CompanyStateForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+
+        if (si.getCompanyId().equals(form.getCompany())) {
             ri.addData("管理员公司");
-        } else {
-            accountService.setCompanyState(companyId, state);
+            ri.setOk(false);
+        }
+
+        if(ri.isOk()){
+            accountService.setCompanyState(form.getCompany(), form.getState());
             ri.setOk(true);
-            logService.add(si.getAccountId(), "设置公司[" + companyId + "]状态[" + state + "]", Log.Type.INFO);
+            logService.add(si.getAccountId(), "设置公司[" + form.getCompany() + "]状态[" + form.getState() + "]", Log.Type.INFO);
         }
         return ri;
     }
@@ -205,7 +211,7 @@ public class AdminController {
     Form getCompress() {
         Form fm = new Form("compress", "压缩数据", "/admin/compress");
         SelectField<Integer> daysKeep = new SelectField<>("days", "保留最近", 7);
-        for (int i : new Integer[]{1, 3, 7, 30, 90, 180}) {
+        for (int i : new Integer[]{7, 30, 90, 180}) {
             daysKeep.addOption(i + "天", i);
         }
         fm.addField(daysKeep);
@@ -217,6 +223,10 @@ public class AdminController {
     @ResponseBody
     ResponseItem postCompress(@Valid CompressForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
+        if(form.getDays()<7){
+            ri.setOk(false);
+            ri.addData("至少要保留最近一周的历史数据");
+        }
         if (ri.isOk()) {
             dbHelper.compress(form.getDays());
             logService.add(si.getAccountId(), "压缩数据库，只保留最近[" + form.getDays() + "]天的数据", Log.Type.INFO);

@@ -1,5 +1,8 @@
 package com.odong.itpkg.form.uc;
 
+import com.odong.itpkg.entity.uc.Account;
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -11,7 +14,8 @@ import java.io.Serializable;
 public class AccountSetForm implements Serializable {
     private static final long serialVersionUID = 3922033101638258165L;
     private long account;
-    private boolean enable;
+    @NotNull
+    private Account.State state;
 
     public long getAccount() {
         return account;
@@ -21,11 +25,11 @@ public class AccountSetForm implements Serializable {
         this.account = account;
     }
 
-    public boolean isEnable() {
-        return enable;
+    public Account.State getState() {
+        return state;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public void setState(Account.State state) {
+        this.state = state;
     }
 }

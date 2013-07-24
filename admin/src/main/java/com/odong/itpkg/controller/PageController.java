@@ -51,9 +51,10 @@ public class PageController {
 
         NavBar nbCompany = new NavBar("设备管理");
         nbCompany.add("公司信息", "/company/info");
+        nbCompany.add("账户列表", "/company/account");
         nbCompany.add("用户列表", "/company/user");
         nbCompany.add("主机列表", "/company/host");
-        nbCompany.add("模板列表", "/net/limit");
+        nbCompany.add("规则模板", "/company/limit");
         for(Host h : hostService.listHost(si.getCompanyId())){
             nbCompany.add("主机-"+h.getName(), "/net/host/"+h.getId());
         }
@@ -86,7 +87,7 @@ public class PageController {
         fillSiteInfo(map);
         map.put("title", "首页");
         map.put("top_nav_key", "main");
-        map.put("logs", logService.list(null));
+        map.put("logList", logService.list(null));
         return "main";
     }
 

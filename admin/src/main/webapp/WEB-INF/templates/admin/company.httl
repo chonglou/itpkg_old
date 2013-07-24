@@ -1,0 +1,53 @@
+<fieldset>
+    #set(List<Company> companyList)
+    <legend>
+    公司列表[${companyList.size}]
+        &nbsp; &nbsp;
+        <button id="refresh" class="btn btn-warning">刷新</button>
+    </legend>
+
+     <table width="98%">
+            <thead>
+            <tr>
+                <td>名称</td>
+                <td>详细信息</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            #for(c : companyList)
+            <tr>
+                <td>${c.name}</td>
+                <td>${c.details}</td>
+                <td>
+                #if(c.state.toString() == "ENABLE")
+                    <button id="company-${c.id}-DISABLE" class="btn btn-danger">禁用</button>
+                #else(c.state.toString() == "DISABLE")
+                    <button id="company-${c.id}-ENABLE" class="btn btn-primary">启用</button>
+                #else
+                    <button class="btn btn-inverse">未激活</button>
+                #end
+                </td>
+            </tr>
+            #end
+            </tbody>
+        </table>
+</fieldset>
+<script type="text/javascript">
+    var btnId = "button[id^='company-']";
+    $(btnId).each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/admin/company/state",
+            "POST",
+            {"company":ss[1], "state":ss[2]}
+            );
+        });
+    });
+
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/admin/company");
+    });
+</script>

@@ -48,7 +48,7 @@ public interface AccountService {
 
     List<User> listUserByCompany(String companyId);
 
-    void addUser(String username, Contact contact, String company);
+    void addUser(String username, String unit,  Contact contact, String company);
 
     void delUser(long userId);
 
@@ -58,7 +58,7 @@ public interface AccountService {
 
     void setUserGroup(long userId, long groupId, boolean bind);
 
-    void setUserInfo(long userId, String username, Contact contact);
+    void setUserInfo(long userId, String username, String unit, Contact contact);
 
     List<Account> listAccount();
 

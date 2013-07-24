@@ -1,0 +1,9 @@
+#set(List<Host> hostList)
+<fieldset>
+    <legend>主机列表[${hostList.size}]</legend>
+    <ul>
+    #for(h : hostList)
+        <li>h.name</li>
+    #end
+    </ul>
+</fieldset>

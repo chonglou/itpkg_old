@@ -1,8 +1,8 @@
 <fieldset>
-    #set(List<Log> logs)
-    <legend>日志列表[${logs.size}]</legend>
+    #set(List<Log> logList)
+    <legend>日志列表[${logList.size}]</legend>
     <ul>
-    #for(i : logs)
+    #for(i : logList)
         <li>${i.created}：${i.message}</li>
     #end
     </ul>

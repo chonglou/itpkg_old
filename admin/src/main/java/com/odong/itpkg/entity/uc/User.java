@@ -26,10 +26,20 @@ public class User extends IdEntity {
     private String username;
     @Column(nullable = false, updatable = false)
     private String company;
+    @Column
+    private String unit;
     @Lob
     private String contact;
     @Column(nullable = false, updatable = false)
     private Date created;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public String getUsername() {
         return username;

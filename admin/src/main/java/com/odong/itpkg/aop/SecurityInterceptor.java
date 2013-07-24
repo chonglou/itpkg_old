@@ -78,16 +78,16 @@ public class SecurityInterceptor implements HandlerInterceptor {
             return true;
         }
         //uc
-        if (url.startsWith("/uc/")) {
+        if (url.startsWith("/company/")) {
             if (si == null) {
                 login(response);
                 return false;
             }
-            if ("/ur/".equals(url) || si.isCompanyManager()) {
-                return true;
+            if(url.startsWith("/company/manage/") && !si.isCompanyManager()){
+                notFound(response);
+                return false;
             }
-            notFound(response);
-            return false;
+            return true;
         }
 
         //admin

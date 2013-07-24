@@ -125,7 +125,7 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> listAccount(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return accountDao.list("SELECT i FROM USER i WHERE i.company=:company)", map);  //
+        return accountDao.list("SELECT i FROM Account i WHERE i.company=:company)", map);  //
     }
 
     @Override
@@ -151,12 +151,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addUser(String username, Contact contact, String company) {
+    public void addUser(String username, String unit, Contact contact, String company) {
         User user = new User();
         user.setCreated(new Date());
         user.setCompany(company);
         user.setUsername(username);
-        user.setCompany(jsonHelper.object2json(contact));
+        user.setUnit(unit);
+        user.setContact(jsonHelper.object2json(contact));
         userDao.insert(user);
     }
 
@@ -239,9 +240,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void setUserInfo(long userId, String username, Contact contact) {
+    public void setUserInfo(long userId, String username, String unit, Contact contact) {
         User u = userDao.select(userId);
         u.setUsername(username);
+        u.setUnit(unit);
         u.setContact(jsonHelper.object2json(contact));
         userDao.update(u);
     }

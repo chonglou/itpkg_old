@@ -16,6 +16,7 @@ public class UserForm implements Serializable {
     @NotNull
     @Size(min = 2, max = 20)
     private String username;
+    private String unit;
     private String qq;
     private String fax;
     private String tel;
@@ -23,6 +24,14 @@ public class UserForm implements Serializable {
     private String weixin;
     private String web;
     private String details;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public Long getUser() {
         return user;

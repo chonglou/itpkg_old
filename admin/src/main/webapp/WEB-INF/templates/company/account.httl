@@ -1,0 +1,80 @@
+#set(SessionItem gl_session=session.d1s7e0wp)
+#set(List<Account> accountList)
+
+<fieldset>
+    <legend>
+    账户列表[${accountList.size}]
+    #if(gl_session.companyManager)
+    &nbsp; &nbsp;
+        <button id="refresh" class="btn btn-warning">刷新</button>
+        <button id="add" class="btn btn-success">新增</button>
+    #end
+    </legend>
+    <table>
+        <thead>
+            <tr>
+                <td>邮箱</td>
+                <td>用户名</td>
+                <td>状态</td>
+                <td>上次登录</td>
+                <td>创建日期</td>
+                #if(gl_session.companyManager)
+                    <td>操作</td>
+                #end
+            </tr>
+        </head>
+        <tbody>
+            #for(a : accountList)
+            <tr>
+                <td>${a.email}</td>
+                <td>${a.username}</td>
+                <td>${a.state}</td>
+                <td>${a.lastLogin}</td>
+                <td>${a.created}</td>
+
+                #if(gl_session.companyManager)
+                    <td>
+                    #if(a.id == gl_session.accountId)
+                        <button class="btn btn-inverse">自己</button>
+                    #else(a.state.toString() == "ENABLE")
+                        <button id="account-${a.id}-DISABLE" class="btn btn-danger">禁用</button>
+                    #else(a.state.toString() == "DISABLE")
+                        <button id="account-${a.id}-ENABLE" class="btn btn-primary">启用</button>
+                    #else
+                        <button class="btn btn-inverse">未激活</button>
+                    #end
+                    </td>
+                #end
+            </tr>
+            #end
+        </tbody>
+    </table>
+
+</fieldset>
+
+
+#if(gl_session.companyManager)
+<script type="text/javascript">
+    var btnId = "button[id^='account-']";
+    $(btnId).each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/company/account/state",
+            "POST",
+            {"account":ss[1], "state":ss[2]}
+            );
+        });
+    });
+
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/company/account");
+    });
+
+    $("button#add").click(function(){
+        clear_message_div();
+        new Ajax("/company/manage/account/add");
+    });
+</script>
+#end

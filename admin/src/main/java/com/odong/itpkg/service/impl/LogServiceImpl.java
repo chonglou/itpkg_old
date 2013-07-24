@@ -35,7 +35,7 @@ public class LogServiceImpl implements LogService {
         Map<String, Object> map = new HashMap<>();
         map.put("account", null);
         map.put("date", timeHelper.plus(new Date(), -60 * 60 * 24 * daysKeep));
-        logDao.delete("DELETE Log i WHERE i.account=:account i.created < :date", map);
+        logDao.delete("DELETE Log i WHERE i.account=:account AND i.created < :date", map);
     }
 
     @Override

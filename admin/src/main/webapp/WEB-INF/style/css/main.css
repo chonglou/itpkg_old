@@ -36,3 +36,14 @@ body {
     text-align: center;
     width: 120px;
 }
+
+table {
+    width: 98%;
+}
+thead{
+    font-weight:bold;
+}
+
+tr:hover {
+    background-color: #cccccc;
+}

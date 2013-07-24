@@ -154,6 +154,8 @@ public interface HostService {
 
     List<Host> listHost(String companyId);
 
+    List<Host> listHost();
+
     void addHost(String companyId, String name, String domain,
                  String wanIp, String wanMac, int rpcPort,
                  String lanNet, String lanMac,

@@ -1,0 +1,20 @@
+#set(SessionItem gl_session=session.d1s7e0wp)
+#set(List<DateLimit> dateLimitList)
+#set(List<FlowLimit> flowLimitList)
+<fieldset>
+    <legend>时间规则[${dateLimitList.size}]</legend>
+    <ul>
+    #for(dl : dateLimitList)
+        <li>dl.name</li>
+    #end
+    </ul>
+</fieldset>
+
+<fieldset>
+    <legend>限速规则[${flowLimitList.size}]</legend>
+    <ul>
+    #for(fl : flowLimitList)
+        <li>fl.name</li>
+    #end
+    </ul>
+</fieldset>

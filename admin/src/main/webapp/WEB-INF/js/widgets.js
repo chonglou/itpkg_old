@@ -20,7 +20,7 @@ function Ajax(url, type, data, success, async) {
                             window.location.href = result.data[0];
                             break;
                         case "message":
-                            new MessageDialog("操作成功");
+                            new MessageDialog("操作成功", "success");
                             break;
                         default:
                             new MessageDialog("尚未支持");
@@ -185,7 +185,12 @@ function FormWindow(form) {
         return "fm-" + _form_id + "-" + id;
     };
     var _hidden_field = function (id, value) {
-        return  "<input type='hidden' id='" + _id(id) + "' value='" + value + "'/>";
+        var s = "<input type='hidden' id='" + _id(id) + "'";
+            if(value != undefined){
+                s +="value='" + value + "'";
+            }
+        s+= "/>";
+        return   s;
     };
 
     var _button = function (id, label, type) {
@@ -271,7 +276,8 @@ function FormWindow(form) {
                     input += " /> *";
                     break;
                 case "radio":
-                    input = _hidden_field(field.id, field.value);
+                    //input = _hidden_field(field.id, field.value);
+                    input = "";
                     var k = 1;
                     for (var j in field.options) {
                         var item = field.options[j];
@@ -289,7 +295,8 @@ function FormWindow(form) {
                     break;
 
                 case  "checkbox":
-                    input = _hidden_field(field.id, field.value);
+                    //input = _hidden_field(field.id, field.value);
+                    input = "";
                     var k = 1;
                     for (var j in field.options) {
                         var item = field.options[j];
@@ -328,6 +335,7 @@ function FormWindow(form) {
         content += "</fieldset></form>";
         //alert(content);
         new HtmlDiv("fm-" + form.id, content);
+
         $('img#' + _id('captcha_img')).click(reload_captcha);
         $('button#' + _id("reset")).click(function () {
             for (var i in form.fields) {
@@ -335,8 +343,16 @@ function FormWindow(form) {
                 switch (field.type) {
                     case "text":
                     case "password":
+                        $("input#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
+                        break;
                     case "textarea":
-                        $("#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
+                        $("textarea#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
+                        break;
+                    case "radio":
+                        $("input:radio[name='"+_id(field.id)+"'][value='"+field.value+"']").prop('checked', true);
+                        break;
+                    case "select":
+                        $("select#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
                         break;
                     default:
                         break;
@@ -353,10 +369,20 @@ function FormWindow(form) {
             for (var i in form.fields) {
                 var field = form.fields[i];
                 switch (field.type) {
+                    case "hidden":
                     case "text":
-                    case "textarea":
                     case "password":
-                        data[field.id] = $('#' + _id(field.id)).val();
+                        data[field.id] = $('input#' + _id(field.id)).val();
+                        break;
+                    case "textarea":
+                        data[field.id] = $('textarea#' + _id(field.id)).val();
+                        break;
+                    case "radio":
+                        data[field.id] = $("input[name='"+_id(field.id)+"']:checked").val();
+                        break;
+                    case "select":
+                        data[field.id] = $('select#' + _id(field.id)).val();
+                        break;
                     default:
                         break;
                 }
@@ -405,7 +431,7 @@ function MessageDialog(messages, type) {
             type = "error";
         }
         $("div#gl_message").html("<div class='alert alert-block'><button type='button' class='close' data-dismiss='alert'>&times;</button><h4>" +
-            name + "：</h4>" + (messages instanceof Array ? messages.join("<br/>") : messages) + "</div>");
+            name+"[" +new Date() + "]：</h4>" + (messages instanceof Array ? messages.join("<br/>") : messages) + "</div>");
 
     };
     _init();

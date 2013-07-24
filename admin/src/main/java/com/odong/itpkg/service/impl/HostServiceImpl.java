@@ -625,6 +625,11 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
+    public List<Host> listHost() {
+        return hostDao.list();
+    }
+
+    @Override
     public void addHost(String companyId, String name, String domain,
                         String wanIp, String wanMac, int rpcPort,
                         String lanNet, String lanMac,
