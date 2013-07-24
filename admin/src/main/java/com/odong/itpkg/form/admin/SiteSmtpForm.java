@@ -1,6 +1,11 @@
 package com.odong.itpkg.form.admin;
 
+import org.hibernate.validator.constraints.Email;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -13,13 +18,20 @@ public class SiteSmtpForm implements Serializable {
     private static final long serialVersionUID = 1230919592219488330L;
     @NotNull
     private String from;
+    @Email
+    @NotNull
     private String bcc;
     @NotNull
     private String host;
+
+    @Min(1)
+    @Max(65535)
     private int port;
     @NotNull
+    @Size(min = 2, max = 20)
     private String username;
     @NotNull
+    @Size(min = 6, max = 20)
     private String password;
 
     public String getFrom() {

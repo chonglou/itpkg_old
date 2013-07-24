@@ -1,6 +1,7 @@
 package com.odong.itpkg.form.personal;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -12,8 +13,10 @@ import java.io.Serializable;
 public class SetPwdForm implements Serializable {
     private static final long serialVersionUID = 1266968470855323112L;
     @NotNull
+    @Size(min = 6, max = 20)
     private String oldPwd;
     @NotNull
+    @Size(min = 6, max = 20)
     private String newPwd;
     @NotNull
     private String rePwd;

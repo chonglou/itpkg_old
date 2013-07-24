@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +31,16 @@ public class Log extends IdEntity {
     @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
+    @Column(nullable = false, updatable = false)
+    private Date  created;
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 
     public Type getType() {
         return type;

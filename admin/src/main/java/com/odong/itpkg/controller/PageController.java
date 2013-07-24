@@ -1,13 +1,19 @@
 package com.odong.itpkg.controller;
 
+import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.model.SessionItem;
+import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
+import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.web.NavBar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -22,8 +28,9 @@ import java.util.Map;
  * Time: 下午1:26
  */
 @Controller
+@SessionAttributes(SessionItem.KEY)
 public class PageController {
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     String postSearch(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         fillSiteInfo(map);
         map.put("title", "搜索结果");
@@ -31,34 +38,47 @@ public class PageController {
         return "search";
     }
 
-        @RequestMapping(value = "/personal/self", method = RequestMethod.GET)
+    @RequestMapping(value = "/personal/self", method = RequestMethod.GET)
     String getSelf(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         List<NavBar> navBars = new ArrayList<>();
 
-        NavBar nbInfo = new NavBar("个人信息");
-        nbInfo.add("基本信息", "/personal/info");
-        nbInfo.add("公司信息", "/company/info");
-        nbInfo.add("主机列表", "/net/host");
-        nbInfo.add("日志管理", "/company/log");
+        NavBar nbInfo = new NavBar("个人参数");
+        nbInfo.add("联系信息", "/personal/info");
+        nbInfo.add("修改密码", "/personal/setPwd");
+        nbInfo.add("日志管理", "/personal/log");
         nbInfo.setAjax(true);
         navBars.add(nbInfo);
 
+        NavBar nbCompany = new NavBar("设备管理");
+        nbCompany.add("公司信息", "/company/info");
+        nbCompany.add("用户列表", "/company/user");
+        nbCompany.add("主机列表", "/company/host");
+        nbCompany.add("模板列表", "/net/limit");
+        for(Host h : hostService.listHost(si.getCompanyId())){
+            nbCompany.add("主机-"+h.getName(), "/net/host/"+h.getId());
+        }
+        nbCompany.setAjax(true);
+        navBars.add(nbCompany);
+
+        //logger.debug("SessionItem {}", jsonHelper.object2json(si));
         if (si.isAdmin()) {
             NavBar nbSite = new NavBar("站点管理");
-            nbSite.add("公司管理", "/admin/company");
-            nbSite.add("SMTP设置", "/admin/smtp");
+            nbSite.add("公司列表", "/admin/company");
+            nbSite.add("邮件设置", "/admin/smtp");
             nbSite.add("站点信息", "/admin/info");
             nbSite.add("关于我们", "/admin/aboutMe");
             nbSite.add("注册协议", "/admin/regProtocol");
             nbSite.add("站点状态", "/admin/state");
             nbSite.add("数据压缩", "/admin/compress");
+            nbSite.setAjax(true);
+            navBars.add(nbSite);
         }
 
         map.put("navBars", navBars);
         fillSiteInfo(map);
         map.put("title", "用户中心");
         map.put("top_nav_key", "personal/self");
-        return "self";
+        return "personal/self";
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
@@ -99,6 +119,19 @@ public class PageController {
     private SiteService siteService;
     @Resource
     private LogService logService;
+    @Resource
+    private HostService hostService;
+    @Resource
+    private JsonHelper jsonHelper;
+    private final static Logger logger = LoggerFactory.getLogger(PageController.class);
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
+
+    public void setHostService(HostService hostService) {
+        this.hostService = hostService;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;

@@ -33,6 +33,15 @@ import java.util.Map;
 @RequestMapping(value = "/admin")
 @SessionAttributes(SessionItem.KEY)
 public class AdminController {
+
+    @RequestMapping(value = "/company", method = RequestMethod.GET)
+    String getCompanyList(Map<String, Object> map) {
+        map.put("users", accountService.listAccount());
+        map.put("companies", accountService.listCompany());
+        return "admin/companyList";
+    }
+
+
     @RequestMapping(value = "/company/({companyId},{state})", method = RequestMethod.POST)
     ResponseItem postCompany(@PathVariable String companyId, @PathVariable Company.State state, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
@@ -46,13 +55,6 @@ public class AdminController {
         return ri;
     }
 
-    @RequestMapping(value = "/company", method = RequestMethod.GET)
-    String getCompanyList(Map<String, Object> map) {
-        map.put("users", accountService.listAccount());
-        map.put("companies", accountService.listCompany());
-        return "admin/companyList";
-    }
-
     @RequestMapping(value = "/smtp", method = RequestMethod.GET)
     @ResponseBody
     Form getSiteSmtp() {
@@ -62,7 +64,8 @@ public class AdminController {
         if (profile == null) {
             profile = new SmtpProfile();
         }
-        Form fm = new Form("siteSmtp", "SMTP信息", "/admin/site/smtp");
+
+        Form fm = new Form("siteSmtp", "SMTP信息", "/admin/smtp");
         fm.addField(new TextField<>("host", "主机", profile.getHost()));
         fm.addField(new TextField<>("port", "端口", profile.getPort()));
         fm.addField(new TextField<>("username", "用户名", profile.getUsername()));
@@ -97,7 +100,9 @@ public class AdminController {
         fm.addField(new TextField<>("title", "标题", siteService.getString("site.title")));
         fm.addField(new TextField<>("domain", "域名", siteService.getString("site.domain")));
         fm.addField(new TextField<>("keywords", "关键字列表", siteService.getString("site.keywords")));
-        fm.addField(new TextAreaField("description", "说明信息", siteService.getString("site.description")));
+        TextAreaField taf = new TextAreaField("description", "说明信息", siteService.getString("site.description"));
+        taf.setHtml(false);
+        fm.addField(taf);
         fm.addField(new TextField<>("copyright", "版权信息", siteService.getString("site.copyright")));
         fm.setOk(true);
         return fm;
@@ -114,6 +119,8 @@ public class AdminController {
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
             logService.add(si.getAccountId(), "设置站点基本信息", Log.Type.INFO);
+            ri.setType(ResponseItem.Type.redirect);
+            ri.addData("/personal/self");
         }
         return ri;
 
@@ -124,7 +131,6 @@ public class AdminController {
     Form getSiteAboutMe() {
         Form fm = new Form("siteAboutMe", "关于我们", "/admin/aboutMe");
         TextAreaField taf = new TextAreaField("aboutMe", "内容", siteService.getString("site.aboutMe"));
-        taf.setHtml(true);
         fm.addField(taf);
         fm.setOk(true);
         return fm;

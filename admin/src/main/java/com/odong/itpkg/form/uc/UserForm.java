@@ -1,6 +1,7 @@
 package com.odong.itpkg.form.uc;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -13,6 +14,7 @@ public class UserForm implements Serializable {
     private static final long serialVersionUID = 6947724168333929320L;
     private Long user;
     @NotNull
+    @Size(min = 2, max = 20)
     private String username;
     private String qq;
     private String fax;

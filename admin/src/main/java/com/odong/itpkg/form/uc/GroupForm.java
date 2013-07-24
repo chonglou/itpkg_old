@@ -1,6 +1,7 @@
 package com.odong.itpkg.form.uc;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -13,6 +14,7 @@ public class GroupForm implements Serializable {
     private static final long serialVersionUID = 3133741646492631673L;
     private Integer id;
     @NotNull
+    @Size(min = 2, max = 20)
     private String name;
     private String details;
 

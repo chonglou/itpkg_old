@@ -6,6 +6,7 @@ $(document).ready(function () {
 
 function clear_root_div() {
     $("div#gl_root").html("");
+    $("div#gl_message").html("");
 }
 
 function bind_left_nav_click() {
@@ -16,6 +17,7 @@ function bind_left_nav_click() {
                 $(this).parent().removeClass("active");
             });
             $(this).parent().addClass("active");
+            clear_root_div();
             new Ajax($(this).attr('id').split('-')[1]);
         });
     });

@@ -26,6 +26,7 @@ public class LogServiceImpl implements LogService {
         log.setType(type);
         log.setMessage(message);
         log.setAccount(account);
+        log.setCreated(new Date());
         logDao.insert(log);
     }
 

@@ -61,12 +61,19 @@ public class PersonalController {
         if (c == null) {
             c = new Contact();
         }
-        fm.addField(new TextField<>("qq", "QQ号", c.getQq()));
-        fm.addField(new TextField<>("tel", "电话", c.getTel()));
-        fm.addField(new TextField<>("fax", "传真", u));
-        fm.addField(new TextAreaField("address", "地址", c.getAddress()));
-        fm.addField(new TextField<>("weixin", "微信", c.getWeixin()));
-        fm.addField(new TextField<>("web", "个人站点", c.getWeb()));
+        String[] ss = new String[]{
+                "qq", "QQ号", c.getQq(),
+                "tel", "电话", c.getTel(),
+                "fax", "传真", c.getFax(),
+                "address", "地址", c.getAddress(),
+                "weixin", "微信", c.getWeixin(),
+                "web", "个人站点", c.getWeb()
+        };
+        for(int i=0; i<ss.length; i+=3){
+            TextField<String> tf = new TextField<>(ss[i], ss[i+1], ss[i+2]);
+            tf.setRequired(false);
+            fm.addField(tf);
+        }
         TextAreaField taf = new TextAreaField("details", "详细信息", c.getDetails());
         taf.setHtml(true);
         fm.addField(taf);
@@ -90,7 +97,7 @@ public class PersonalController {
             accountService.setAccountInfo(si.getAccountId(), form.getUsername(), c);
             si.setUsername(form.getUsername());
             ri.setType(ResponseItem.Type.redirect);
-            ri.addData("/personal");
+            ri.addData("/personal/self");
             logService.add(si.getAccountId(), "更新个人信息", Log.Type.INFO);
         }
         return ri;
@@ -132,9 +139,27 @@ public class PersonalController {
     }
 
 
+    @RequestMapping(value = "/log", method = RequestMethod.GET)
+    String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si){
+        map.put("logs", logService.list(si.getAccountId()));
+        return "personal/log";
+    }
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @ResponseBody
+    ResponseItem getLogout(HttpSession session) {
+        SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
+        logService.add(si.getAccountId(), "注销登陆", Log.Type.INFO);
+        session.invalidate();
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
+        ri.addData("/");
+        ri.setOk(true);
+        return ri;
+    }
+
+
     @RequestMapping(value = "/resetPwd/{code}", method = RequestMethod.GET)
     @ResponseBody
-    ResponseItem activateResetPwd(@PathVariable String code) {
+    ResponseItem getActivateResetPwdCode(@PathVariable String code) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         try {
             Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
@@ -204,7 +229,7 @@ public class PersonalController {
 
     @RequestMapping(value = "/active/{code}", method = RequestMethod.GET)
     @ResponseBody
-    ResponseItem activateRegister(@PathVariable String code) {
+    ResponseItem getActivateRegisterCode(@PathVariable String code) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         try {
             Map<String, String> map = jsonHelper.json2map(code, String.class, String.class);
@@ -289,18 +314,6 @@ public class PersonalController {
         return ri;
     }
 
-    private void sendActiveEmail(String email) {
-        String domain = siteService.getString("site.domain");
-        Map<String, String> map = new HashMap<>();
-        map.put("email", email);
-        map.put("created", jsonHelper.object2json(new Date()));
-        emailHelper.send(email, "您在[" + domain + "]上的账户创建了账户，请激活",
-                "<a href='http://" + domain +
-                        "/personal/active/" + jsonHelper.object2json(map) +
-                        "' target='_blank'>请点击此链接激活账户</a>。<br/>如果不是您的操作，请忽略该邮件。",
-                true);
-    }
-
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ResponseBody
     Form getLogin() {
@@ -344,6 +357,7 @@ public class PersonalController {
                             session.setAttribute(SessionItem.KEY, si);
                             accountService.setAccountLastLogin(u.getId());
                             logService.add(u.getId(), "用户登陆", Log.Type.INFO);
+                            //logger.debug("SessionItem {}", jsonHelper.object2json(si));
                             break;
                         case DISABLE:
                             ri.setOk(false);
@@ -367,18 +381,18 @@ public class PersonalController {
         return ri;
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    @ResponseBody
-    ResponseItem getLogout(HttpSession session) {
-        //ResponseItem logout(SessionStatus status) {
-        //status.setComplete();
-        SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
-        logService.add(si.getAccountId(), "注销登陆", Log.Type.INFO);
-        session.invalidate();
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
-        ri.addData("/");
-        ri.setOk(true);
-        return ri;
+
+
+    private void sendActiveEmail(String email) {
+        String domain = siteService.getString("site.domain");
+        Map<String, String> map = new HashMap<>();
+        map.put("email", email);
+        map.put("created", jsonHelper.object2json(new Date()));
+        emailHelper.send(email, "您在[" + domain + "]上的账户创建了账户，请激活",
+                "<a href='http://" + domain +
+                        "/personal/active/" + jsonHelper.object2json(map) +
+                        "' target='_blank'>请点击此链接激活账户</a>。<br/>如果不是您的操作，请忽略该邮件。",
+                true);
     }
 
 

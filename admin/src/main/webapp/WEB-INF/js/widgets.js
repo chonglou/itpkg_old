@@ -19,13 +19,20 @@ function Ajax(url, type, data, success, async) {
                         case "redirect":
                             window.location.href = result.data[0];
                             break;
+                        case "message":
+                            new MessageDialog("操作成功");
+                            break;
                         default:
                             new MessageDialog("尚未支持");
                     }
                 }
-                else {
+                else if(result.data){
                     new MessageDialog(result.data);
                 }
+                else{
+                    $("div#gl_root").html(result);
+                }
+
             }
         }
         if (async == undefined) {
@@ -37,7 +44,7 @@ function Ajax(url, type, data, success, async) {
             data: data,
             success: success,
             async: async,
-            dataType: "json",
+            //dataType: "json",
             cache: false,
             error: function () {
                 new MessageDialog("HTTP请求失败!");
@@ -46,6 +53,7 @@ function Ajax(url, type, data, success, async) {
     };
     _init();
 }
+
 
 function GridWindow(grid) {
     var _grid_id;
@@ -328,7 +336,7 @@ function FormWindow(form) {
                     case "text":
                     case "password":
                     case "textarea":
-                        $("input#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
+                        $("#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
                         break;
                     default:
                         break;
@@ -348,7 +356,7 @@ function FormWindow(form) {
                     case "text":
                     case "textarea":
                     case "password":
-                        data[field.id] = $('input#' + _id(field.id)).val();
+                        data[field.id] = $('#' + _id(field.id)).val();
                     default:
                         break;
                 }

@@ -49,7 +49,9 @@ public class SiteHelper {
             siteService.set("site.author", "zhengjitang@gmail.com");
 
             //SMTP
-            emailHelper.setup(new SmtpProfile());
+            SmtpProfile smtp = new SmtpProfile();
+            smtp.setPort(25);
+            emailHelper.setup(smtp);
             emailHelper.reload();
 
 

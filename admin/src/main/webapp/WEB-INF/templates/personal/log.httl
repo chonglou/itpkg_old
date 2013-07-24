@@ -1,0 +1,9 @@
+<fieldset>
+    #set(List<Log> logs)
+    <legend>日志列表[${logs.size}]</legend>
+    <ul>
+    #for(i : logs)
+        <li>${i.created}：${i.message}</li>
+    #end
+    </ul>
+</fieldset>

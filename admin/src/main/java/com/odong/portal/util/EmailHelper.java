@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.mail.AuthenticationFailedException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
@@ -34,7 +35,8 @@ public class EmailHelper {
 
     public void send(String to, String title, String body, boolean html, Map<String, String> attachs) {
         if (sender == null) {
-            throw new IllegalArgumentException("SMTP信息未配置");
+            logger.error("SMTP信息未配置");
+            return;
         }
         try {
             MimeMessage message = sender.createMimeMessage();
@@ -52,7 +54,7 @@ public class EmailHelper {
                 helper.addInline(attachs.get(file), new FileSystemResource(file));
             }
             sender.send(message);
-        } catch (MessagingException e) {
+        } catch (Exception  e) {
             logger.error("发送邮件失败", e);
         }
 

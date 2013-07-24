@@ -3,6 +3,7 @@ package com.odong.itpkg.form.uc;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -17,8 +18,10 @@ public class AccountAddForm implements Serializable {
     @NotNull
     private String email;
     @NotNull
+    @Size(min = 2, max = 20)
     private String username;
     @NotNull
+    @Size(min = 6, max = 20)
     private String password;
 
     public String getEmail() {

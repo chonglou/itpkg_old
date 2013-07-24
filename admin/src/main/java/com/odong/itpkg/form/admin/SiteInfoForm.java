@@ -1,5 +1,6 @@
 package com.odong.itpkg.form.admin;
 
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**

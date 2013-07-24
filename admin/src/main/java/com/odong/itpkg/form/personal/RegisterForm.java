@@ -3,6 +3,7 @@ package com.odong.itpkg.form.personal;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -14,15 +15,19 @@ import java.io.Serializable;
 public class RegisterForm implements Serializable {
     private static final long serialVersionUID = 2172735998888599738L;
     @NotNull
+    @Size(min = 2, max = 20)
     private String company;
     @Email
     @NotNull
     private String email;
     @NotNull
+    @Size(min = 2, max = 20)
     private String username;
     @NotNull
+    @Size(min = 6, max = 20)
     private String newPwd;
     @NotNull
+    @Size(min = 6, max = 20)
     private String rePwd;
     @NotNull
     private String captcha;
