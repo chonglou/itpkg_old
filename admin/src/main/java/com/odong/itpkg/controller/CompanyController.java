@@ -1,9 +1,12 @@
 package com.odong.itpkg.controller;
 
+import com.odong.itpkg.entity.net.Host;
+import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.entity.uc.User;
+import com.odong.itpkg.form.net.HostForm;
 import com.odong.itpkg.form.uc.AccountAddForm;
 import com.odong.itpkg.form.uc.AccountSetForm;
 import com.odong.itpkg.form.uc.CompanyForm;
@@ -18,10 +21,7 @@ import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.HiddenField;
-import com.odong.portal.web.form.TextAreaField;
-import com.odong.portal.web.form.TextField;
+import com.odong.portal.web.form.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +31,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -280,6 +281,129 @@ public class CompanyController {
         return ri;
     }
 
+    @RequestMapping(value = "/host/{host}", method = RequestMethod.GET)
+    @ResponseBody
+    Form getHostAddForm(@PathVariable long host, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        Form fm = new Form("host", "修改主机["+host+"]", "/company/host");
+        Host h = hostService.getHost(host);
+        if(h != null && h.getCompany().equals(si.getCompanyId())){
+            Ip wanIp = hostService.getIp(h.getWanIp());
+            fm.addField(new HiddenField<>("id", host));
+            SelectField<Ip.Type> type = new SelectField<Ip.Type>("type", "类型", wanIp.getType());
+            type.addOption("固定IP", Ip.Type.STATIC);
+            type.addOption("动态分配", Ip.Type.DHCP);
+            type.addOption("拨号上网", Ip.Type.PPPOE);
+            fm.addField(type);
+
+            String[] fields = new String[]{
+                    "name", "名称", h.getName(),
+                    "domain", "域", h.getDomain(),
+                    "wanMac", "WAN网卡MAC", h.getWanMac(),
+                    "address", "IP地址", wanIp.getAddress(),
+                    "netmask", "子网掩码", wanIp.getNetmask(),
+                    "gateway", "网关", wanIp.getGateway(),
+                    "dns1", "DNS1", wanIp.getDns1(),
+                    "dns2", "DNS2", wanIp.getDns2(),
+                    "lanMac", "LAN网卡MAC", h.getLanMac(),
+                    "lanNet", "LAN网段", h.getLanNet()
+            };
+            for(int i=0; i<fields.length; i+=3){
+                fm.addField(new TextField<String>(fields[i], fields[i+1], fields[i+2]));
+            }
+            fm.addField(new TextField<Integer>("rpcPort", "RPC端口"));
+
+            fm.addField(new TextAreaField("details", "详情"));
+            fm.setOk(true);
+        }
+        else {
+            fm.addData("主机["+host+"]不存在");
+        }
+        return fm;
+    }
+    @RequestMapping(value = "/host/add", method = RequestMethod.GET)
+    @ResponseBody
+    Form getHostEditForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
+        Form fm = new Form("host", "添加主机", "/company/host");
+        fm.addField(new HiddenField<Long>("id", null));
+
+        SelectField<Ip.Type> type = new SelectField<Ip.Type>("type", "类型");
+        type.addOption("固定IP", Ip.Type.STATIC);
+        type.addOption("动态分配", Ip.Type.DHCP);
+        type.addOption("拨号上网", Ip.Type.PPPOE);
+        fm.addField(type);
+
+        String[] fields = new String[]{
+                "name", "名称",
+                "domain", "域",
+                "wanMac", "WAN网卡MAC",
+                "address", "IP地址",
+                "netmask", "子网掩码",
+                "gateway", "网关",
+                "dns1", "DNS1",
+                "dns2", "DNS2",
+                "lanMac", "LAN网卡MAC",
+                "lanNet", "LAN网段"
+        };
+        for(int i=0; i<fields.length; i+=2){
+            fm.addField(new TextField<String>(fields[i], fields[i+1]));
+        }
+        fm.addField(new TextField<Integer>("rpcPort", "RPC端口"));
+
+        fm.addField(new TextAreaField("details", "详情"));
+        fm.setOk(true);
+        return fm;
+    }
+
+    @RequestMapping(value = "/host", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postHost(@Valid HostForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if(ri.isOk()){
+            if(form.getId() == null){
+                String wanIpId = UUID.randomUUID().toString();
+                switch (form.getType()){
+                    case STATIC:
+                        hostService.addIpStatic(wanIpId, form.getAddress(),form.getNetmask(),form.getGateway(),form.getDns1(),form.getDns2());
+                        break;
+                    case PPPOE:
+                        hostService.addIpPppoe(wanIpId, form.getUsername(), form.getPassword());
+                        break;
+                    case DHCP:
+                        hostService.addIpDhcp(wanIpId);
+                        break;
+                }
+                hostService.addHost(si.getCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), form.getLanNet(), form.getLanMac(), form.getDetails());
+                logService.add(si.getAccountId(), "添加主机["+form.getName()+"]", Log.Type.INFO);
+            }
+            else {
+                Host h = hostService.getHost(form.getId());
+                if(h!=null && h.getCompany().equals(si.getCompanyId())){
+                    hostService.setHostDomain(h.getId(), form.getDomain());
+                    hostService.setHostInfo(h.getId(), form.getName(), form.getDetails());
+                    hostService.setHostLan(h.getId(), form.getLanNet(), form.getLanMac());
+                    hostService.setHostWan(h.getId(), form.getRpcPort(), form.getWanMac());
+                    switch (form.getType()){
+                        case STATIC:
+                            hostService.setIpStatic(h.getWanIp(), form.getAddress(), form.getNetmask(), form.getGateway(),form.getDns1(),form.getDns2());
+                            break;
+                        case DHCP:
+                            hostService.setIpDhcp(h.getWanIp());
+                            break;
+                        case PPPOE:
+                            hostService.setIpPppoe(h.getWanIp(), form.getUsername(), form.getPassword());
+                            break;
+                    }
+                    logService.add(si.getAccountId(), "更新主机["+h.getId()+"]信息", Log.Type.INFO);
+
+                }
+                else {
+                    ri.setOk(false);
+                    ri.addData("主机[" + form.getId() + "]不存在");
+                }
+            }
+        }
+        return ri;
+    }
 
     /*
 

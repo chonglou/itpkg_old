@@ -132,11 +132,11 @@ public interface HostService {
 
     void setIpPppoe(String id, String username, String password);
 
-    void addIpStatic(long host, String id, String address, String netmask, String gateway, String dns1, String dns2);
+    void addIpStatic(String id, String address, String netmask, String gateway, String dns1, String dns2);
 
-    void addIpDhcp(long host, String id);
+    void addIpDhcp(String id);
 
-    void addIpPppoe(long host, String id, String username, String password);
+    void addIpPppoe(String id, String username, String password);
 
     void setHostInfo(long hostId, String name, String details);
 

@@ -24,8 +24,8 @@ public class Ip implements Serializable {
     @Id
     @Column(nullable = false, updatable = false, unique = true)
     private String id;
-    @Column(nullable = false, updatable = false)
-    private Long host;
+    //@Column(nullable = false, updatable = false)
+    //private Long host;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -57,13 +57,6 @@ public class Ip implements Serializable {
         this.id = id;
     }
 
-    public Long getHost() {
-        return host;
-    }
-
-    public void setHost(Long host) {
-        this.host = host;
-    }
 
     public int getVersion() {
         return version;

@@ -528,10 +528,9 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addIpStatic(long host, String id, String address, String netmask, String gateway, String dns1, String dns2) {
+    public void addIpStatic( String id, String address, String netmask, String gateway, String dns1, String dns2) {
         Ip ip = new Ip();
         ip.setId(id);
-        ip.setHost(host);
         ip.setAddress(address);
         ip.setNetmask(netmask);
         ip.setGateway(gateway);
@@ -543,20 +542,18 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addIpDhcp(long host, String id) {
+    public void addIpDhcp( String id) {
         Ip ip = new Ip();
         ip.setId(id);
-        ip.setHost(host);
         ip.setType(Ip.Type.DHCP);
         ip.setCreated(new Date());
         ipDao.insert(ip);
     }
 
     @Override
-    public void addIpPppoe(long host, String id, String username, String password) {
+    public void addIpPppoe( String id, String username, String password) {
         Ip ip = new Ip();
         ip.setId(id);
-        ip.setHost(host);
         ip.setUsername(username);
         ip.setPassword(password);
         ip.setType(Ip.Type.PPPOE);
@@ -646,6 +643,7 @@ public class HostServiceImpl implements HostService {
         h.setDetails(details);
         h.setState(Host.State.SUBMIT);
         h.setSignKey(encryptHelper.encode(stringHelper.random(Host.KEY_LEN)));
+        h.setSpace(60);
         h.setCreated(new Date());
         hostDao.insert(h);
     }

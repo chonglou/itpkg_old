@@ -1,9 +1,38 @@
 #set(List<Host> hostList)
 <fieldset>
-    <legend>主机列表[${hostList.size}]</legend>
+    <legend>
+    主机列表[${hostList.size}]
+    &nbsp; &nbsp;
+        <button id="refresh" class="btn btn-warning">刷新</button>
+        <button id="add" class="btn btn-success">新增</button>
+    </legend>
     <ul>
     #for(h : hostList)
         <li>h.name</li>
     #end
     </ul>
 </fieldset>
+
+<script type="text/javascript">
+    var btnId = "button[id^='account-']";
+    $(btnId).each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/company/host/state",
+            "POST",
+            {"account":ss[1], "state":ss[2]}
+            );
+        });
+    });
+
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/company/host");
+    });
+
+    $("button#add").click(function(){
+        clear_message_div();
+        new Ajax("/company/host/add");
+    });
+</script>

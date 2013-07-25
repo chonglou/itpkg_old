@@ -47,9 +47,9 @@ public class Host extends IdEntity {
     @Column(nullable = false)
     private int rpcPort;
     private boolean ping;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String wanMac;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String lanMac;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
