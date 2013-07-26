@@ -14,14 +14,14 @@ import java.io.Serializable;
  */
 public class AccountAddForm implements Serializable {
     private static final long serialVersionUID = -1643556979599003713L;
-    @Email
+    @Email(message = "{val.email}")
     @NotNull
     private String email;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20,message = "{val.name}")
     private String username;
     @NotNull
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 20,message = "{val.password}")
     private String password;
 
     public String getEmail() {

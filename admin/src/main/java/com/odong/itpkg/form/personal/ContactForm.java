@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class ContactForm implements Serializable {
     private static final long serialVersionUID = 4565457953139198392L;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String username;
     private String qq;
     private String fax;

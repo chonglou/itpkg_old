@@ -5,4 +5,9 @@ function bind_personal_bar_click() {
             new Ajax("/personal/" + $(this).attr("id").split('-')[1]);
         });
     });
+
 }
+
+$(document).ready(function(){
+    new Ajax("/personal/login");
+});

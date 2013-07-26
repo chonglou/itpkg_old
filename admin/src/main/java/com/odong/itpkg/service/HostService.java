@@ -138,7 +138,7 @@ public interface HostService {
 
     void addIpPppoe(String id, String username, String password);
 
-    void setHostInfo(long hostId, String name, String details);
+    void setHostInfo(long hostId, String name, String domain, String details);
 
     void setHostWan(long hostId, int rpcPort, String wanMac);
 
@@ -147,8 +147,6 @@ public interface HostService {
     void setHostDmz(long hostId, boolean enable);
 
     void setHostDmz(long hostId, String dmzNet, String dmzMac);
-
-    void setHostDomain(long hostId, String domain);
 
     List<Ip> listIpByHost(long hostId);
 

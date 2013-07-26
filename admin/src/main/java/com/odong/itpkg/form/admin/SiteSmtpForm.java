@@ -18,20 +18,20 @@ public class SiteSmtpForm implements Serializable {
     private static final long serialVersionUID = 1230919592219488330L;
     @NotNull
     private String from;
-    @Email
+    @Email(message = "{val.email}")
     @NotNull
     private String bcc;
     @NotNull
     private String host;
 
-    @Min(1)
-    @Max(65535)
+    @Min(value = 1, message = "{val.port}")
+    @Max(value = 65535, message = "{val.port}")
     private int port;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20,message = "{val.name}")
     private String username;
     @NotNull
-    @Size(min = 6, max = 20)
+    @Size(min = 1, max = 50,message = "{val.password}")
     private String password;
 
     public String getFrom() {

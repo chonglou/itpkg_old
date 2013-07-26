@@ -125,7 +125,7 @@ public class LinuxHelper {
                 sbW.append("Interface=wan");
                 sbW.append("Connection=pppoe");
                 sbW.append(String.format("User='%s'", wanIp.getUsername()));
-                sbW.append(String.format("Password='%s'", wanIp.getPassword()));
+                sbW.append(String.format("Password='%s'", encryptHelper.decode(wanIp.getPassword())));
                 sbW.append("ConnectionMode='persist'");
                 break;
         }

@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class ActiveForm implements Serializable {
     private static final long serialVersionUID = 3984126957427106838L;
-    @Email
+    @Email(message = "{val.email}")
     @NotNull
     private String email;
     @NotNull

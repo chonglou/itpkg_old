@@ -14,13 +14,13 @@ import java.io.Serializable;
  */
 public class LoginForm implements Serializable {
     private static final long serialVersionUID = -4177551343660318353L;
-    @Email
-    @NotNull
+    @Email(message = "{val.email}")
+    @NotNull(message = "{val.notnull}")
     private String email;
-    @NotNull
-    @Size(min = 6, max = 20)
+    @NotNull(message = "{val.notnull}")
+    @Size(min = 6, max = 20, message = "{val.password}")
     private String password;
-    @NotNull
+    @NotNull(message = "{val.captcha}")
     private String captcha;
 
     public String getEmail() {

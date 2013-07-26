@@ -14,11 +14,11 @@ import java.io.Serializable;
  */
 public class ResetPwdForm implements Serializable {
     private static final long serialVersionUID = 7407883826334282575L;
-    @Email
+    @Email(message = "{val.email}")
     @NotNull
     private String email;
     @NotNull
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 20,message = "{val.password}")
     private String newPwd;
     @NotNull
     private String rePwd;

@@ -14,9 +14,8 @@ import java.io.Serializable;
  * Date: 13-7-24
  * Time: 下午4:55
  */
-public class HostForm implements Serializable {
+public class HostAddForm implements Serializable {
     private static final long serialVersionUID = 1955486138712687874L;
-    private Integer id;
     @NotNull
     @Size(min = 2, max = 20)
     private String name;
@@ -41,14 +40,6 @@ public class HostForm implements Serializable {
     @Max(65535)
     private int rpcPort;
     private String details;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

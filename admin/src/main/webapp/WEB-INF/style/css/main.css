@@ -43,7 +43,9 @@ table {
 thead{
     font-weight:bold;
 }
-
+td{
+    vertical-align: text-top;
+}
 tr:hover {
     background-color: #cccccc;
 }

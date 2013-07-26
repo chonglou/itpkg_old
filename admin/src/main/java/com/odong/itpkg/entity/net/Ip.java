@@ -30,6 +30,7 @@ public class Ip implements Serializable {
     @Enumerated(EnumType.STRING)
     private Type type;
     private String username;
+    @Column(length = 1024)
     private String password;
     private String address;
     private String netmask;

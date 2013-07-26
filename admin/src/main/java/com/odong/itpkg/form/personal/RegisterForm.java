@@ -15,19 +15,18 @@ import java.io.Serializable;
 public class RegisterForm implements Serializable {
     private static final long serialVersionUID = 2172735998888599738L;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String company;
-    @Email
+    @Email(message = "{val.email}")
     @NotNull
     private String email;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20,message = "{val.name}")
     private String username;
     @NotNull
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 20,message = "{val.password}")
     private String newPwd;
     @NotNull
-    @Size(min = 6, max = 20)
     private String rePwd;
     @NotNull
     private String captcha;

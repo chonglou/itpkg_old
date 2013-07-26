@@ -522,7 +522,7 @@ public class HostServiceImpl implements HostService {
     public void setIpPppoe(String id, String username, String password) {
         Ip ip = ipDao.select(id);
         ip.setUsername(username);
-        ip.setPassword(password);
+        ip.setPassword(encryptHelper.encode(password));
         ip.setType(Ip.Type.PPPOE);
         ipDao.update(ip);
     }
@@ -555,16 +555,17 @@ public class HostServiceImpl implements HostService {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setUsername(username);
-        ip.setPassword(password);
+        ip.setPassword(encryptHelper.encode(password));
         ip.setType(Ip.Type.PPPOE);
         ip.setCreated(new Date());
         ipDao.insert(ip);
     }
 
     @Override
-    public void setHostInfo(long hostId, String name, String details) {
+    public void setHostInfo(long hostId, String name, String domain, String details) {
         Host h = hostDao.select(hostId);
         h.setName(name);
+        h.setDomain(domain);
         h.setDetails(details);
         hostDao.update(h);
     }
@@ -601,13 +602,6 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setHostDomain(long hostId, String domain) {
-        Host h = hostDao.select(hostId);
-        h.setDomain(domain);
-        hostDao.update(h);
-    }
-
-    @Override
     public List<Ip> listIpByHost(long hostId) {
         Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
@@ -618,7 +612,8 @@ public class HostServiceImpl implements HostService {
     public List<Host> listHost(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
-        return hostDao.list("SELECT i FROM Host i WHERE i.company=:company", map);
+        map.put("state", Host.State.DONE);
+        return hostDao.list("SELECT i FROM Host i WHERE i.company=:company AND i.state!=:state", map);
     }
 
     @Override
