@@ -55,8 +55,11 @@
 
     $("button[id^='user-delete']").each(function () {
         $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
             clear_message_div();
-            new Ajax("/company/user/"+$(this).attr('id').split('-')[2], "DELETE");
+            if( window.confirm("你确认要删除用户["+ss[2]+"]么？")){
+                new Ajax("/company/user/"+ss[2], "DELETE");
+            }
         });
     });
 

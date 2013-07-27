@@ -110,6 +110,11 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 return false;
             }
             String[] ss = url.split("/");
+            for(String s : new String[]{"host", "limit"}){
+                if(ss[1].equals(s)){
+                    return true;
+                }
+            }
 
             for (String s : new String[]{"bind8", "dhcp4", "firewall", "mac"}) {
                 if (ss[1].equals(s)) {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * Time: 上午11:28
  */
 @Controller
-@RequestMapping(value = "/net/mac")
+@RequestMapping(value = "/net/mac/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class MacController {
 }

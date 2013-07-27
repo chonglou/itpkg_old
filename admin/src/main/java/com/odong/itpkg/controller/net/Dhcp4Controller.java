@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  */
 
 @Controller
-@RequestMapping(value = "/net/dhcp4")
+@RequestMapping(value = "/net/dhcp4/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class Dhcp4Controller {
 }

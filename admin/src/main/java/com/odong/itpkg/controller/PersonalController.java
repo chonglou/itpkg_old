@@ -141,7 +141,7 @@ public class PersonalController {
 
     @RequestMapping(value = "/log", method = RequestMethod.GET)
     String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        map.put("logList", logService.list(si.getAccountId()));
+        map.put("logList", logService.list(si.getAccountId(), 100));
         return "personal/log";
     }
 

@@ -17,7 +17,7 @@ public interface LogService {
 
     void removeOld(int daysKeep);
 
-    List<Log> list(Long user);
+    List<Log> list(Long user, int size);
 
     List<Log> list(Date start, Date end);
 }

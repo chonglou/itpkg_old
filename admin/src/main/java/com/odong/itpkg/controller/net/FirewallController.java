@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * Time: 上午11:27
  */
 @Controller
-@RequestMapping(value = "/net/firewall")
+@RequestMapping(value = "/net/firewall/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class FirewallController {
 }

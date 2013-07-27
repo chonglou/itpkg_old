@@ -6,9 +6,8 @@ $!{extends("/layout.httl")}
 #end
 
 #macro(main)
-#end
-
 <script type="text/javascript">
 $("#left_nav-\\/personal\\/log").parent().addClass("active");
 new Ajax("/personal/log");
 </script>
+#end

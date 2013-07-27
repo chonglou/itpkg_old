@@ -29,10 +29,10 @@ import java.util.Map;
  * Time: 上午11:27
  */
 @Controller
-@RequestMapping(value = "/net/bind9")
+@RequestMapping(value = "/net/bind9/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class Bind9Controller {
-    @RequestMapping(value = "/{hostId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     String getIndex(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
 
         Map<Long, Object> domainMap = new HashMap<>();
@@ -44,7 +44,7 @@ public class Bind9Controller {
         return "net/bind9";
     }
 
-    @RequestMapping(value = "/{hostId}/zone", method = RequestMethod.GET)
+    @RequestMapping(value = "/zone", method = RequestMethod.GET)
     @ResponseBody
     Form getAddZoneAddFrom(@PathVariable long hostId) {
         Form fm = new Form("addZone", "添加主域名", "/net/bind9/" + hostId + "/zone");

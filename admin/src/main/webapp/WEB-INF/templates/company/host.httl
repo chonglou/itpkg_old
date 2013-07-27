@@ -30,18 +30,18 @@
                         <td>
                         #set(ip=ipMap.get(h.id))
                         ${h.wanMac}<br>
-                        ${ip.type}<br>
                         #if(ip.type.toString() == 'STATIC')
-                            ${ip.getAddress()};${ip.netmask};${ip.gateway};${ip.dns1};${ip.dns2}
+                            ${ip.getAddress()}
                         #else(ip.type.toString() == 'PPPOE')
                             ${ip.username}
                         #end
+                        @${ip.type}
                         </td>
-                        <td>${h.lanNet}<br/>${h.lanMac}</td>
+                        <td>${h.lanMac}<br/>${h.lanNet}</td>
                         <td>${h.rpcPort}</td>
                         <td>${h.details}</td>
                         <td>
-                            <button id="host-info-${h.id}" class="btn btn-primary">详情</button>
+                            <button id="host-info-${h.id}" class="btn btn-primary">INFO</button>
                             <button id="host-wan-${h.id}" class="btn btn-primary">WAN</button>
                             <button id="host-lan-${h.id}" class="btn btn-primary">LAN</button>
                             <button id="host-delete-${h.id}" class="btn btn-danger">删除</button>
@@ -59,30 +59,36 @@
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            new Ajax("/company/host/"+ss[2],
-                "DELETE"
-            );
+            if( window.confirm("你确认要删除主机["+ss[2]+"]么？")){
+                new Ajax("/net/host/"+ss[2],
+                    "DELETE"
+                );
+            }
         });
     });
     $("button[id^='host-info']").each(function () {
             $(this).click(function () {
                 var ss = $(this).attr('id').split('-');
                 clear_message_div();
-                new Ajax("/company/host/info/"+ss[2]);
+                new Ajax("/net/host/info/"+ss[2]);
             });
     });
     $("button[id^='host-wan']").each(function () {
             $(this).click(function () {
                 var ss = $(this).attr('id').split('-');
                 clear_message_div();
-                new Ajax("/company/host/wan/"+ss[2]);
+                new Ajax("/net/host/wan/"+ss[2], undefined,undefined,undefined,false);
+                $("select#fm-hostEdit-type").change(function () {
+                    show('hostEdit', $(this).val());
+                });
+                show('hostEdit', $("select#fm-hostEdit-type").val());
             });
     });
     $("button[id^='host-lan']").each(function () {
             $(this).click(function () {
                 var ss = $(this).attr('id').split('-');
                 clear_message_div();
-                new Ajax("/company/host/lan/"+ss[2]);
+                new Ajax("/net/host/lan/"+ss[2]);
             });
     });
 
@@ -95,7 +101,7 @@
 
     $("button#add").click(function(){
         clear_message_div();
-        new Ajax("/company/host/add", undefined,undefined,undefined,false);
+        new Ajax("/net/host/add", undefined,undefined,undefined,false);
         $("select#fm-hostAdd-type").change(function () {
             show('hostAdd', $(this).val());
         });

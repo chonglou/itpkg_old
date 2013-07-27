@@ -91,7 +91,7 @@ public class PageController {
         fillSiteInfo(map);
         map.put("title", "首页");
         map.put("top_nav_key", "main");
-        map.put("logList", logService.list(null));
+        map.put("logList", logService.list(null, 100));
         return "main";
     }
 
