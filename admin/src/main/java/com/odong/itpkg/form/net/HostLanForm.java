@@ -1,5 +1,8 @@
 package com.odong.itpkg.form.net;
 
+import com.odong.itpkg.validation.IpV4;
+import com.odong.itpkg.validation.Mac;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -13,8 +16,10 @@ public class HostLanForm implements Serializable {
     private static final long serialVersionUID = 4269287883307140035L;
     private int id;
     @NotNull
+    @Mac
     private String lanMac;
     @NotNull
+    @IpV4
     private String lanNet;
 
     public int getId() {

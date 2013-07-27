@@ -48,7 +48,7 @@ public interface AccountService {
 
     List<User> listUserByCompany(String companyId);
 
-    void addUser(String username, String unit,  Contact contact, String company);
+    void addUser(String username, String unit, Contact contact, String company);
 
     void delUser(long userId);
 

@@ -1,9 +1,9 @@
 package com.odong.itpkg.form.net;
 
 import com.odong.itpkg.entity.net.Ip;
+import com.odong.itpkg.validation.Mac;
+import com.odong.itpkg.validation.Port;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -17,6 +17,7 @@ public class HostWanForm implements Serializable {
     private static final long serialVersionUID = -4691463648032210054L;
     private int id;
     @NotNull
+    @Mac
     private String wanMac;
     private String address;
     private String netmask;
@@ -25,10 +26,10 @@ public class HostWanForm implements Serializable {
     private String dns2;
     private String username;
     private String password;
+    @NotNull
     private Ip.Type type;
 
-    @Min(1)
-    @Max(65535)
+    @Port
     private int rpcPort;
 
     public int getRpcPort() {

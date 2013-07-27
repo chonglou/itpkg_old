@@ -29,7 +29,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        for (String s : new String[]{"/", "/main", "/aboutMe", "/status","/captcha.jpg"}) {
+        for (String s : new String[]{"/", "/main", "/aboutMe", "/status", "/captcha.jpg"}) {
             if (url.equals(s)) {
                 return true;
             }
@@ -83,7 +83,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 login(response);
                 return false;
             }
-            if(url.startsWith("/company/manage/") && !si.isCompanyManager()){
+            if (url.startsWith("/company/manage/") && !si.isCompanyManager()) {
                 notFound(response);
                 return false;
             }
@@ -105,7 +105,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
         }
         //net
         if (url.startsWith("/net/")) {
-            if(si == null){
+            if (si == null) {
                 login(response);
                 return false;
             }
@@ -114,22 +114,21 @@ public class SecurityInterceptor implements HandlerInterceptor {
             for (String s : new String[]{"bind8", "dhcp4", "firewall", "mac"}) {
                 if (ss[1].equals(s)) {
                     Long hostId = Long.parseLong(ss[2]);
-                    if (    hostService.getHost(hostId).getCompany().equals(si.getCompanyId()) ){
-                            //rbacService.authCompany(si.getAccountId(), si.getCompanyId(), RbacService.OperationType.MANAGE, RbacService.OperationType.USE)){
-                            return true;
-                    }
-                    else {
+                    if (hostService.getHost(hostId).getCompany().equals(si.getCompanyId())) {
+                        //rbacService.authCompany(si.getAccountId(), si.getCompanyId(), RbacService.OperationType.MANAGE, RbacService.OperationType.USE)){
+                        return true;
+                    } else {
                         notFound(response);
                         return false;
                     }
                 }
             }
-            if(ss[1].equals("limit")){
+            if (ss[1].equals("limit")) {
                 Long limitId = Long.parseLong(ss[2]);
-                if(
-                        ("date".equals(ss[3]) && hostService.getFirewallDateLimit(limitId).getCompany().equals(si.getCompanyId()))||
-                        ("flow".equals(ss[3]) && hostService.getFirewallFlowLimit(limitId).getCompany().equals(si.getCompanyId()))
-                        ){
+                if (
+                        ("date".equals(ss[3]) && hostService.getFirewallDateLimit(limitId).getCompany().equals(si.getCompanyId())) ||
+                                ("flow".equals(ss[3]) && hostService.getFirewallFlowLimit(limitId).getCompany().equals(si.getCompanyId()))
+                        ) {
                     return true;
                 }
                 notFound(response);
@@ -138,8 +137,8 @@ public class SecurityInterceptor implements HandlerInterceptor {
             return true;
         }
         //search
-        if(url.equals("/search")){
-            if(si == null){
+        if (url.equals("/search")) {
+            if (si == null) {
                 login(response);
                 return false;
             }

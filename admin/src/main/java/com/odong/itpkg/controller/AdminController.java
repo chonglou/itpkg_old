@@ -1,12 +1,10 @@
 package com.odong.itpkg.controller;
 
-import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.admin.*;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.service.AccountService;
-import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,7 +50,7 @@ public class AdminController {
             ri.setOk(false);
         }
 
-        if(ri.isOk()){
+        if (ri.isOk()) {
             accountService.setCompanyState(form.getCompany(), form.getState());
             ri.setOk(true);
             logService.add(si.getAccountId(), "设置公司[" + form.getCompany() + "]状态[" + form.getState() + "]", Log.Type.INFO);
@@ -223,7 +220,7 @@ public class AdminController {
     @ResponseBody
     ResponseItem postCompress(@Valid CompressForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
-        if(form.getDays()<7){
+        if (form.getDays() < 7) {
             ri.setOk(false);
             ri.addData("至少要保留最近一周的历史数据");
         }

@@ -6,7 +6,6 @@ import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +51,7 @@ public class EmailHelper {
                 helper.addInline(attachs.get(file), new FileSystemResource(file));
             }
             sender.send(message);
-        } catch (Exception  e) {
+        } catch (Exception e) {
             logger.error("发送邮件失败", e);
         }
 

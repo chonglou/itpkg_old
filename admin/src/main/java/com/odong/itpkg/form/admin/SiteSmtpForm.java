@@ -28,10 +28,10 @@ public class SiteSmtpForm implements Serializable {
     @Max(value = 65535, message = "{val.port}")
     private int port;
     @NotNull
-    @Size(min = 2, max = 20,message = "{val.name}")
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String username;
     @NotNull
-    @Size(min = 1, max = 50,message = "{val.password}")
+    @Size(min = 1, max = 50, message = "{val.password}")
     private String password;
 
     public String getFrom() {

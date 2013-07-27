@@ -14,7 +14,7 @@ public class UserForm implements Serializable {
     private static final long serialVersionUID = 6947724168333929320L;
     private Long user;
     @NotNull
-    @Size(min = 2, max = 20,message = "{val.name}")
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String username;
     private String unit;
     private String qq;

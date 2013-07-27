@@ -92,14 +92,14 @@ public class Bind9Controller {
 
     @RequestMapping(value = "/{hostId}/zone/{zoneId}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem delZone(@PathVariable  long hostId, @PathVariable long zoneId) {
+    ResponseItem delZone(@PathVariable long hostId, @PathVariable long zoneId) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         Zone z = hostService.getDnsZone(zoneId);
-        if(z != null && z.getHost() == hostId){
+        if (z != null && z.getHost() == hostId) {
             hostService.delDnsZone(zoneId);
             ri.setOk(true);
         }
-        ri.addData("域名["+zoneId+"]不存在");
+        ri.addData("域名[" + zoneId + "]不存在");
         return ri;
     }
 

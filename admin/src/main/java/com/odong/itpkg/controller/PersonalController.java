@@ -69,8 +69,8 @@ public class PersonalController {
                 "weixin", "微信", c.getWeixin(),
                 "web", "个人站点", c.getWeb()
         };
-        for(int i=0; i<ss.length; i+=3){
-            TextField<String> tf = new TextField<>(ss[i], ss[i+1], ss[i+2]);
+        for (int i = 0; i < ss.length; i += 3) {
+            TextField<String> tf = new TextField<>(ss[i], ss[i + 1], ss[i + 2]);
             tf.setRequired(false);
             fm.addField(tf);
         }
@@ -140,10 +140,11 @@ public class PersonalController {
 
 
     @RequestMapping(value = "/log", method = RequestMethod.GET)
-    String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si){
+    String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         map.put("logList", logService.list(si.getAccountId()));
         return "personal/log";
     }
+
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     @ResponseBody
     ResponseItem getLogout(HttpSession session) {
@@ -237,7 +238,7 @@ public class PersonalController {
             Account u = accountService.getAccount(email);
             if (u != null && u.getState() == Account.State.SUBMIT) {
                 Company c = accountService.getCompany(u.getCompany());
-                switch (c.getState()){
+                switch (c.getState()) {
                     case SUBMIT:
                         accountService.setCompanyState(u.getCompany(), Company.State.ENABLE);
                         logService.add(u.getId(), "公司激活", Log.Type.INFO);
@@ -247,12 +248,12 @@ public class PersonalController {
                         logService.add(u.getId(), "账户激活", Log.Type.INFO);
                         emailHelper.send(
                                 u.getEmail(),
-                                "您在["+siteService.getString("site.title")+"]上的账户激活成功",
+                                "您在[" + siteService.getString("site.title") + "]上的账户激活成功",
                                 "欢迎使用",
                                 true);
                         break;
                     default:
-                        ri.addData("公司["+c.getName()+"]状态不对");
+                        ri.addData("公司[" + c.getName() + "]状态不对");
                         break;
                 }
 
@@ -398,7 +399,6 @@ public class PersonalController {
         }
         return ri;
     }
-
 
 
     private void sendActiveEmail(String email) {

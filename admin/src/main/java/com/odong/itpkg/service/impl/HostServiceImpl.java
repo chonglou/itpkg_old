@@ -528,7 +528,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addIpStatic( String id, String address, String netmask, String gateway, String dns1, String dns2) {
+    public void addIpStatic(String id, String address, String netmask, String gateway, String dns1, String dns2) {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setAddress(address);
@@ -542,7 +542,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addIpDhcp( String id) {
+    public void addIpDhcp(String id) {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setType(Ip.Type.DHCP);
@@ -551,7 +551,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addIpPppoe( String id, String username, String password) {
+    public void addIpPppoe(String id, String username, String password) {
         Ip ip = new Ip();
         ip.setId(id);
         ip.setUsername(username);

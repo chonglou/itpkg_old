@@ -17,6 +17,28 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component("formHelper")
 public class FormHelper {
+    public boolean checkIp(String ip) {
+        if (ip == null) {
+            return false;
+        }
+        String[] ss = ip.split("\\.");
+        if (ss.length != 4) {
+            return false;
+        }
+
+        try {
+            for (String s : ss) {
+                int i = Integer.parseInt(s);
+                if (i < 0 && i > 255) {
+                    return false;
+                }
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
     public ResponseItem check(BindingResult result) {
         return check(result, null, false);
     }

@@ -18,7 +18,7 @@ public class ResetPwdForm implements Serializable {
     @NotNull
     private String email;
     @NotNull
-    @Size(min = 6, max = 20,message = "{val.password}")
+    @Size(min = 6, max = 20, message = "{val.password}")
     private String newPwd;
     @NotNull
     private String rePwd;

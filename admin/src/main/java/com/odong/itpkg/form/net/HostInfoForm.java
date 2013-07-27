@@ -1,7 +1,5 @@
 package com.odong.itpkg.form.net;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -12,14 +10,14 @@ import java.io.Serializable;
  * Date: 13-7-26
  * Time: 上午9:56
  */
-public class HostInfoForm  implements Serializable{
+public class HostInfoForm implements Serializable {
     private static final long serialVersionUID = -7581069783459336124L;
     private int id;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String name;
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 20, message = "{val.domain}")
     private String domain;
     private String details;
 

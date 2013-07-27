@@ -32,7 +32,7 @@ public class Log extends IdEntity {
     @Enumerated(EnumType.STRING)
     private Type type;
     @Column(nullable = false, updatable = false)
-    private Date  created;
+    private Date created;
 
     public Date getCreated() {
         return created;

@@ -27,10 +27,10 @@ import java.util.Map;
 public class RbacServiceImpl implements RbacService {
     @Override
     public boolean authCompany(long account, String company, OperationType... types) {
-        for(OperationType t : types){
-               if(checkPermission(getRole(account), getOperation(t), getResource(getCompanyResourceName(company)))){
-                   return true;
-               }
+        for (OperationType t : types) {
+            if (checkPermission(getRole(account), getOperation(t), getResource(getCompanyResourceName(company)))) {
+                return true;
+            }
         }
         return false;
     }

@@ -14,7 +14,7 @@ public class GroupForm implements Serializable {
     private static final long serialVersionUID = 3133741646492631673L;
     private Integer id;
     @NotNull
-    @Size(min = 2, max = 20,message = "{val.name}")
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String name;
     private String details;
 

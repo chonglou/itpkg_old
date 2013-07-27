@@ -21,10 +21,10 @@ public class RegisterForm implements Serializable {
     @NotNull
     private String email;
     @NotNull
-    @Size(min = 2, max = 20,message = "{val.name}")
+    @Size(min = 2, max = 20, message = "{val.name}")
     private String username;
     @NotNull
-    @Size(min = 6, max = 20,message = "{val.password}")
+    @Size(min = 6, max = 20, message = "{val.password}")
     private String newPwd;
     @NotNull
     private String rePwd;
