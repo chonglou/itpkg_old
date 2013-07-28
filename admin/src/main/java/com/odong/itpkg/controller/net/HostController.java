@@ -3,10 +3,10 @@ package com.odong.itpkg.controller.net;
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.entity.uc.Log;
-import com.odong.itpkg.form.net.HostAddForm;
-import com.odong.itpkg.form.net.HostInfoForm;
-import com.odong.itpkg.form.net.HostLanForm;
-import com.odong.itpkg.form.net.HostWanForm;
+import com.odong.itpkg.form.net.host.HostAddForm;
+import com.odong.itpkg.form.net.host.HostInfoForm;
+import com.odong.itpkg.form.net.host.HostLanForm;
+import com.odong.itpkg.form.net.host.HostWanForm;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
@@ -37,7 +37,7 @@ public class HostController {
     Form getHostWanForm(@PathVariable long host, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("hostEdit", "修改主机[" + host + "]WAN信息", "/net/host/wan");
         Host h = hostService.getHost(host);
-        if (h != null && si.getCompanyId().equals(h.getCompany())) {
+        if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             Ip wanIp = hostService.getIp(h.getWanIp());
             fm.addField(new HiddenField<>("id", host));
             SelectField<Ip.Type> type = new SelectField<>("type", "类型", wanIp.getType());
@@ -98,7 +98,7 @@ public class HostController {
 
         if (ri.isOk()) {
             Host h = hostService.getHost(form.getId());
-            if (h != null && si.getCompanyId().equals(h.getCompany())) {
+            if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
                 Ip wan = hostService.getIp(h.getWanIp());
                 switch (form.getType()) {
                     case STATIC:
@@ -112,7 +112,7 @@ public class HostController {
                         break;
                 }
                 hostService.setHostWan(form.getId(), form.getRpcPort(), form.getWanMac());
-                logService.add(si.getAccountId(), "修改主机[" + form.getId() + "]WAN信息", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "修改主机[" + form.getId() + "]WAN信息", Log.Type.INFO);
             } else {
                 ri.setOk(false);
                 ri.addData("主机[" + form.getId() + "]不存在");
@@ -126,7 +126,7 @@ public class HostController {
     Form getHostLanForm(@PathVariable long host, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("hostEdit", "修改主机[" + host + "]LAN信息", "/net/host/lan");
         Host h = hostService.getHost(host);
-        if (h != null && si.getCompanyId().equals(h.getCompany())) {
+        if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             fm.addField(new HiddenField<>("id", host));
 
             String[] fields = new String[]{
@@ -155,9 +155,9 @@ public class HostController {
         }
         if (ri.isOk()) {
             Host h = hostService.getHost(form.getId());
-            if (h != null && si.getCompanyId().equals(h.getCompany())) {
+            if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
                 hostService.setHostLan(form.getId(), form.getLanNet(), form.getLanMac());
-                logService.add(si.getAccountId(), "修改主机[" + form.getId() + "]LAN信息", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "修改主机[" + form.getId() + "]LAN信息", Log.Type.INFO);
             } else {
                 ri.setOk(false);
                 ri.addData("主机[" + form.getId() + "]不存在");
@@ -171,7 +171,7 @@ public class HostController {
     Form getHostInfoForm(@PathVariable long host, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("hostEdit", "修改主机[" + host + "]基本信息", "/net/host/info");
         Host h = hostService.getHost(host);
-        if (h != null && si.getCompanyId().equals(h.getCompany())) {
+        if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             fm.addField(new HiddenField<>("id", host));
             String[] fields = new String[]{
                     "name", "名称", h.getName(),
@@ -195,9 +195,9 @@ public class HostController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             Host h = hostService.getHost(form.getId());
-            if (h != null && si.getCompanyId().equals(h.getCompany())) {
+            if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
                 hostService.setHostInfo(form.getId(), form.getName(), form.getDomain(), form.getDetails());
-                logService.add(si.getAccountId(), "修改主机[" + form.getId() + "]基本信息", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "修改主机[" + form.getId() + "]基本信息", Log.Type.INFO);
             } else {
                 ri.setOk(false);
                 ri.addData("主机[" + form.getId() + "]不存在");
@@ -288,8 +288,8 @@ public class HostController {
                     hostService.addIpDhcp(wanIpId);
                     break;
             }
-            hostService.addHost(si.getCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), form.getLanNet(), form.getLanMac(), form.getDetails());
-            logService.add(si.getAccountId(), "添加主机[" + form.getName() + "]", Log.Type.INFO);
+            hostService.addHost(si.getSsCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), form.getLanNet(), form.getLanMac(), form.getDetails());
+            logService.add(si.getSsAccountId(), "添加主机[" + form.getName() + "]", Log.Type.INFO);
 
         }
         return ri;
@@ -300,9 +300,9 @@ public class HostController {
     ResponseItem deleteHost(@PathVariable long host, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         Host h = hostService.getHost(host);
-        if (h != null && h.getCompany().equals(si.getCompanyId())) {
+        if (h != null && h.getCompany().equals(si.getSsCompanyId())) {
             hostService.setHostState(h.getId(), Host.State.DONE);
-            logService.add(si.getAccountId(), "删除主机[" + host + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除主机[" + host + "]", Log.Type.INFO);
             ri.setOk(true);
         }
         return ri;

@@ -24,17 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerMapping;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -61,7 +54,7 @@ public class PersonalController {
     @ResponseBody
     Form getInfo(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("info", "个人信息", "/personal/info");
-        Account u = accountService.getAccount(si.getAccountId());
+        Account u = accountService.getAccount(si.getSsAccountId());
         TextField<String> email = new TextField<>("email", "Email", u.getEmail());
         email.setReadonly(true);
         fm.addField(email);
@@ -104,11 +97,11 @@ public class PersonalController {
             c.setWeb(form.getWeb());
             c.setWeixin(form.getWeixin());
             c.setDetails(form.getDetails());
-            accountService.setAccountInfo(si.getAccountId(), form.getUsername(), c);
-            si.setUsername(form.getUsername());
+            accountService.setAccountInfo(si.getSsAccountId(), form.getUsername(), c);
+            si.setSsUsername(form.getUsername());
             ri.setType(ResponseItem.Type.redirect);
             ri.addData("/personal/self");
-            logService.add(si.getAccountId(), "更新个人信息", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "更新个人信息", Log.Type.INFO);
         }
         return ri;
 
@@ -135,12 +128,12 @@ public class PersonalController {
         }
         if (ri.isOk()) {
 
-            if (accountService.auth(si.getEmail(), form.getOldPwd()) == null) {
+            if (accountService.auth(si.getSsEmail(), form.getOldPwd()) == null) {
                 ri.setOk(false);
                 ri.addData("当前密码输入有误");
             } else {
-                accountService.setAccountPassword(si.getAccountId(), form.getNewPwd());
-                emailHelper.send(si.getEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
+                accountService.setAccountPassword(si.getSsAccountId(), form.getNewPwd());
+                emailHelper.send(si.getSsEmail(), "您在[" + siteService.getString("site.domain") + "]上的密码变更记录",
                         "如果不是您的操作，请忽略该邮件。", true);
             }
         }
@@ -151,7 +144,7 @@ public class PersonalController {
 
     @RequestMapping(value = "/log", method = RequestMethod.GET)
     String getLog(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        map.put("logList", logService.list(si.getAccountId(), 100));
+        map.put("logList", logService.list(si.getSsAccountId(), 100));
         return "personal/log";
     }
 
@@ -159,7 +152,7 @@ public class PersonalController {
     @ResponseBody
     ResponseItem getLogout(HttpSession session) {
         SessionItem si = (SessionItem) session.getAttribute(SessionItem.KEY);
-        logService.add(si.getAccountId(), "注销登陆", Log.Type.INFO);
+        logService.add(si.getSsAccountId(), "注销登陆", Log.Type.INFO);
         session.invalidate();
         ResponseItem ri = new ResponseItem(ResponseItem.Type.redirect);
         ri.addData("/");
@@ -265,7 +258,7 @@ public class PersonalController {
                 Map<String, String> map = new HashMap<>();
                 map.put("password", form.getNewPwd());
                 sendValidEmail(form.getEmail(), Type.RESET_PWD, map);
-                ri.setOk(true);
+                ri.addData("已向您的邮箱发送了密码重置链接，请进入邮箱进行操作。");
 
             } else {
                 ri.addData("用户[" + form.getEmail() + "]状态不对");
@@ -307,6 +300,7 @@ public class PersonalController {
             Account a = accountService.getAccount(form.getEmail());
             if (a != null && a.getState() == Account.State.SUBMIT) {
                 sendValidEmail(form.getEmail(), Type.REGISTER, new HashMap<String, String>());
+                ri.addData("已向您的邮箱发送了账户激活链接，请进入邮箱进行操作。");
             } else {
                 ri.setOk(false);
                 ri.addData("邮箱[" + form.getEmail() + "]状态不对");
@@ -348,6 +342,7 @@ public class PersonalController {
                 accountService.addCompany(companyId, form.getCompany(), "暂无");
                 accountService.addAccount(companyId, form.getEmail(), form.getUsername(), form.getNewPwd());
                 sendValidEmail(form.getEmail(), Type.REGISTER, new HashMap<String, String>());
+                ri.addData("已向您的邮箱发送一封激活邮件，请进入邮箱继续操作.");
             } else {
                 ri.setOk(false);
                 ri.addData("邮箱[" + form.getEmail() + "]已存在");
@@ -386,13 +381,13 @@ public class PersonalController {
                     switch (u.getState()) {
                         case ENABLE:
                             SessionItem si = new SessionItem();
-                            si.setUsername(u.getUsername());
-                            si.setEmail(u.getEmail());
-                            si.setAccountId(u.getId());
-                            si.setCompanyId(u.getCompany());
-                            si.setAdmin(rbacService.authAdmin(u.getId()));
-                            si.setCompanyManager(rbacService.authCompany(u.getId(), u.getCompany(), RbacService.OperationType.MANAGE));
-                            si.setCreated(new Date());
+                            si.setSsUsername(u.getUsername());
+                            si.setSsEmail(u.getEmail());
+                            si.setSsAccountId(u.getId());
+                            si.setSsCompanyId(u.getCompany());
+                            si.setSsAdmin(rbacService.authAdmin(u.getId()));
+                            si.setSsCompanyManager(rbacService.authCompany(u.getId(), u.getCompany(), RbacService.OperationType.MANAGE));
+                            si.setSsCreated(new Date());
 
                             ri.setType(ResponseItem.Type.redirect);
                             ri.addData("/personal/self");

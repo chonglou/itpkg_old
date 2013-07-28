@@ -60,7 +60,7 @@ public interface HostService {
 
     void setFirewallFlowLimitInfo(long flowLimitId, String name, String details);
 
-    void setFirewallFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil);
+    void setFirewallFlowLimitLine(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil);
 
     List<Mac> listMacByFirewallFlowLimit(long flowLimitId);
 

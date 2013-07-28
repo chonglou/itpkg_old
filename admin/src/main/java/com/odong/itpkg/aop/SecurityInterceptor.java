@@ -68,7 +68,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
             } else {
                 if (
                         url.equals("/js/non-login.js") ||
-                                (url.equals("/js/admin.js") && !si.isAdmin())
+                                (url.equals("/js/admin.js") && !si.isSsAdmin())
                         ) {
                     notFound(response);
                     return false;
@@ -82,7 +82,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 login(response);
                 return false;
             }
-            if (url.startsWith("/company/manage/") && !si.isCompanyManager()) {
+            if (url.startsWith("/company/manage/") && !si.isSsCompanyManager()) {
                 notFound(response);
                 return false;
             }
@@ -96,7 +96,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 return false;
 
             }
-            if (si.isAdmin()) {
+            if (si.isSsAdmin()) {
                 return true;
             }
             notFound(response);
@@ -118,7 +118,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
             for (String s : new String[]{"bind9", "dhcp4", "firewall", "mac"}) {
                 if (ss[2].equals(s)) {
                     Long hostId = Long.parseLong(ss[3]);
-                    if (hostService.getHost(hostId).getCompany().equals(si.getCompanyId())) {
+                    if (hostService.getHost(hostId).getCompany().equals(si.getSsCompanyId())) {
                         return true;
                     } else {
                         notFound(response);

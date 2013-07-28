@@ -11,70 +11,70 @@ import java.util.Date;
  */
 public class SessionItem implements Serializable {
     private static final long serialVersionUID = 7022196605186543132L;
-    private Long accountId;
-    private String companyId;
-    private String username;
-    private String email;
-    private Date created;
-    private boolean admin;
-    private boolean companyManager;
+    private Long ssAccountId;
+    private String ssCompanyId;
+    private String ssUsername;
+    private String ssEmail;
+    private Date ssCreated;
+    private boolean ssAdmin;
+    private boolean ssCompanyManager;
 
     public final static String KEY = "d1s7e0wp";
 
-    public boolean isCompanyManager() {
-        return companyManager;
+
+    public Long getSsAccountId() {
+        return ssAccountId;
     }
 
-    public void setCompanyManager(boolean companyManager) {
-        this.companyManager = companyManager;
+    public void setSsAccountId(Long ssAccountId) {
+        this.ssAccountId = ssAccountId;
     }
 
-    public String getCompanyId() {
-        return companyId;
+    public String getSsCompanyId() {
+        return ssCompanyId;
     }
 
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public void setSsCompanyId(String ssCompanyId) {
+        this.ssCompanyId = ssCompanyId;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public String getSsUsername() {
+        return ssUsername;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setSsUsername(String ssUsername) {
+        this.ssUsername = ssUsername;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public String getSsEmail() {
+        return ssEmail;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setSsEmail(String ssEmail) {
+        this.ssEmail = ssEmail;
     }
 
-    public String getUsername() {
-        return username;
+    public Date getSsCreated() {
+        return ssCreated;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSsCreated(Date ssCreated) {
+        this.ssCreated = ssCreated;
     }
 
-    public String getEmail() {
-        return email;
+    public boolean isSsAdmin() {
+        return ssAdmin;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSsAdmin(boolean ssAdmin) {
+        this.ssAdmin = ssAdmin;
     }
 
-    public Date getCreated() {
-        return created;
+    public boolean isSsCompanyManager() {
+        return ssCompanyManager;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setSsCompanyManager(boolean ssCompanyManager) {
+        this.ssCompanyManager = ssCompanyManager;
     }
-
 }

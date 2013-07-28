@@ -26,7 +26,7 @@ $!{extends("/frame.httl")}
     #if(gl_session)
         #set(personal_bar_items=["self":"用户中心","logout":"安全退出"])
         #set(personal_bar_sort=["self", "logout"])
-        #set(personal_bar_name="欢迎你，"+gl_session.username+"。")
+        #set(personal_bar_name="欢迎你，"+gl_session.ssUsername+"。")
     #else
         #set(personal_bar_items=["login":"用户登录", "register":"账户注册", "active":"账户激活", "resetPwd":"重置密码"])
         #set(personal_bar_sort=["login", "register", "active", "resetPwd"])

@@ -77,14 +77,14 @@ public class Bind9Controller {
             if (form.getZone() == null) {
                 if (hostService.getDnsZone(form.getName(), hostId) == null) {
                     hostService.addDnsZone(hostId, form.getName(), form.getDetails());
-                    logService.add(si.getAccountId(), "添加主域名[" + form.getName() + "]", Log.Type.INFO);
+                    logService.add(si.getSsAccountId(), "添加主域名[" + form.getName() + "]", Log.Type.INFO);
                 } else {
                     ri.setOk(false);
                     ri.addData("主域名[" + form.getName() + "]已存在");
                 }
             } else {
                 hostService.setDnsZone(form.getZone(), form.getDetails());
-                logService.add(si.getAccountId(), "更新主域名[" + form.getName() + "]信息", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "更新主域名[" + form.getName() + "]信息", Log.Type.INFO);
             }
         }
         return ri;

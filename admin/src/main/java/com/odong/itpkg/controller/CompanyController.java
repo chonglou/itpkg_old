@@ -46,14 +46,14 @@ import java.util.Map;
 public class CompanyController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     String getInfo(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        map.put("company", accountService.getCompany(si.getCompanyId()));
+        map.put("company", accountService.getCompany(si.getSsCompanyId()));
         return "company/info";
     }
 
     @RequestMapping(value = "/host", method = RequestMethod.GET)
     String getHost(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Map<Long, Ip> ipMap = new HashMap<>();
-        List<Host> hostList = hostService.listHost(si.getCompanyId());
+        List<Host> hostList = hostService.listHost(si.getSsCompanyId());
         for (Host h : hostList) {
             ipMap.put(h.getId(), hostService.getIp(h.getWanIp()));
         }
@@ -64,15 +64,15 @@ public class CompanyController {
 
     @RequestMapping(value = "/limit", method = RequestMethod.GET)
     String getLimit(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        map.put("dateLimitList", hostService.listFirewallDateLimit(si.getCompanyId()));
-        map.put("flowLimitList", hostService.listFirewallFlowLimit(si.getCompanyId()));
+        map.put("dateLimitList", hostService.listFirewallDateLimit(si.getSsCompanyId()));
+        map.put("flowLimitList", hostService.listFirewallFlowLimit(si.getSsCompanyId()));
         return "company/limit";
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     String getUser(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Map<Long, Contact> contactMap = new HashMap<>();
-        List<User> userList = accountService.listUserByCompany(si.getCompanyId());
+        List<User> userList = accountService.listUserByCompany(si.getSsCompanyId());
         for (User u : userList) {
             contactMap.put(u.getId(), jsonHelper.json2object(u.getContact(), Contact.class));
         }
@@ -83,7 +83,7 @@ public class CompanyController {
 
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     String getAccount(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        map.put("accountList", accountService.listAccount(si.getCompanyId()));
+        map.put("accountList", accountService.listAccount(si.getSsCompanyId()));
         return "company/account";
     }
 
@@ -92,14 +92,14 @@ public class CompanyController {
     ResponseItem postAccountSetForm(@Valid AccountSetForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
-            if (form.getAccount() == si.getAccountId()) {
+            if (form.getAccount() == si.getSsAccountId()) {
                 ri.setOk(false);
                 ri.addData("不能删除自己");
             } else {
                 Account a = accountService.getAccount(form.getAccount());
-                if (a != null && a.getCompany().equals(si.getCompanyId()) && a.getState() != Account.State.SUBMIT) {
+                if (a != null && a.getCompany().equals(si.getSsCompanyId()) && a.getState() != Account.State.SUBMIT) {
                     accountService.setAccountState(form.getAccount(), form.getState());
-                    logService.add(si.getAccountId(), form.getState() + "账户[" + a.getEmail() + "]", Log.Type.INFO);
+                    logService.add(si.getSsAccountId(), form.getState() + "账户[" + a.getEmail() + "]", Log.Type.INFO);
                 } else {
                     ri.setOk(false);
                     ri.addData("用户[" + form.getAccount() + "]不存在");
@@ -133,10 +133,10 @@ public class CompanyController {
         }
         if (ri.isOk()) {
             if (accountService.getAccount(form.getEmail()) == null) {
-                accountService.addAccount(si.getCompanyId(), form.getEmail(), form.getUsername(), form.getPassword());
+                accountService.addAccount(si.getSsCompanyId(), form.getEmail(), form.getUsername(), form.getPassword());
                 Account a = accountService.getAccount(form.getEmail());
-                rbacService.bindCompany(a.getId(), si.getCompanyId(), RbacService.OperationType.USE, true);
-                logService.add(si.getAccountId(), "添加新用户[" + form.getEmail() + "] 并赋予USE权限", Log.Type.INFO);
+                rbacService.bindCompany(a.getId(), si.getSsCompanyId(), RbacService.OperationType.USE, true);
+                logService.add(si.getSsAccountId(), "添加新用户[" + form.getEmail() + "] 并赋予USE权限", Log.Type.INFO);
             } else {
                 ri.setOk(false);
                 ri.addData("账户[" + form.getEmail() + "]已存在");
@@ -151,7 +151,7 @@ public class CompanyController {
     Form postCompanyInfo(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("companyInfo", "公司信息", "/company/manage/info");
 
-        Company c = accountService.getCompany(si.getCompanyId());
+        Company c = accountService.getCompany(si.getSsCompanyId());
 
         fm.addField(new TextField<>("name", "名称", c.getName()));
         TextAreaField taf = new TextAreaField("details", "详情", c.getDetails());
@@ -168,9 +168,9 @@ public class CompanyController {
         ResponseItem ri = formHelper.check(result);
 
         if (ri.isOk()) {
-            accountService.setCompanyInfo(si.getCompanyId(), form.getName(), form.getDetails());
+            accountService.setCompanyInfo(si.getSsCompanyId(), form.getName(), form.getDetails());
             ri.setOk(true);
-            logService.add(si.getAccountId(), "更新公司信息", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "更新公司信息", Log.Type.INFO);
         }
         return ri;
     }
@@ -208,7 +208,7 @@ public class CompanyController {
     Form getUserAddForm(@PathVariable long id, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         User u = accountService.getUser(id);
         Form fm = new Form("user", "修改用户[" + id + "]", "/company/user");
-        if (u != null && si.getCompanyId().equals(u.getCompany())) {
+        if (u != null && si.getSsCompanyId().equals(u.getCompany())) {
             Contact c = jsonHelper.json2object(u.getContact(), Contact.class);
             fm.addField(new HiddenField<>("user", u.getId()));
             fm.addField(new TextField<>("username", "用户名", u.getUsername()));
@@ -252,18 +252,18 @@ public class CompanyController {
             c.setQq(form.getQq());
 
             if (form.getUser() == null) {
-                accountService.addUser(form.getUsername(), form.getUnit(), c, si.getCompanyId());
-                logService.add(si.getAccountId(), "添加用户[" + form.getUsername() + "]", Log.Type.INFO);
+                accountService.addUser(form.getUsername(), form.getUnit(), c, si.getSsCompanyId());
+                logService.add(si.getSsAccountId(), "添加用户[" + form.getUsername() + "]", Log.Type.INFO);
 
             } else {
                 User user = accountService.getUser(form.getUser());
-                if (user == null || !user.getCompany().equals(si.getCompanyId())) {
+                if (user == null || !user.getCompany().equals(si.getSsCompanyId())) {
                     ri.setOk(false);
                     ri.addData("用户[" + form.getUser() + "]不存在");
 
                 } else {
                     accountService.setUserInfo(user.getId(), form.getUsername(), form.getUnit(), c);
-                    logService.add(si.getAccountId(), "更新用户[" + user.getId() + "]信息", Log.Type.INFO);
+                    logService.add(si.getSsAccountId(), "更新用户[" + user.getId() + "]信息", Log.Type.INFO);
 
                 }
             }
@@ -277,10 +277,10 @@ public class CompanyController {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
         User u = accountService.getUser(id);
-        if (u != null && si.getCompanyId().equals(u.getCompany())) {
+        if (u != null && si.getSsCompanyId().equals(u.getCompany())) {
             accountService.delUser(id);
             ri.setOk(true);
-            logService.add(si.getAccountId(), "删除用户[" + u.getUsername() + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除用户[" + u.getUsername() + "]", Log.Type.INFO);
         } else {
             ri.addData("用户[" + id + "]不存在");
         }
@@ -293,7 +293,7 @@ public class CompanyController {
  @RequestMapping(value = "/group/{group}", method = RequestMethod.GET)
     String getGroup(@PathVariable long group, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Group g = accountService.getGroup(group);
-        if(g != null && g.getCompany().equals(si.getCompanyId())){
+        if(g != null && g.getCompany().equals(si.getSsCompanyId())){
             map.put("group", g);
             map.put("userList", accountService.listUserByGroup(group));
         }
@@ -307,10 +307,10 @@ public class CompanyController {
         Form fm = new Form("bind", "关联用户和组", "/uc/company/bind");
         SelectField<Long> groups = new SelectField<>("group", "用户组");
         SelectField<Long> users = new SelectField<>("user", "用户");
-        for (Group g : accountService.listGroup(si.getCompanyId())) {
+        for (Group g : accountService.listGroup(si.getSsCompanyId())) {
             groups.addOption(g.getName(), g.getId());
         }
-        for (User u : accountService.listUserByCompany(si.getCompanyId())) {
+        for (User u : accountService.listUserByCompany(si.getSsCompanyId())) {
             users.addOption(String.format(u.getUsername()), u.getId());
         }
         RadioField<Boolean> bind = new RadioField<>("bind", "关联", false);
@@ -331,9 +331,9 @@ public class CompanyController {
         if (ri.isOk()) {
             Group g = accountService.getGroup(form.getGroup());
             User u = accountService.getUser(form.getUser());
-            if (u != null && g != null && si.getCompanyId().equals(g.getCompany()) && si.getCompanyId().equals(u.getCompany())) {
+            if (u != null && g != null && si.getSsCompanyId().equals(g.getCompany()) && si.getSsCompanyId().equals(u.getCompany())) {
                 accountService.setUserGroup(form.getUser(), form.getGroup(), form.isBind());
-                logService.add(si.getAccountId(), "绑定用户[" + u.getUsername() + "]到用户组[" + g.getName() + "]", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "绑定用户[" + u.getUsername() + "]到用户组[" + g.getName() + "]", Log.Type.INFO);
             } else {
                 ri.setOk(false);
                 ri.addData("用户[" + form.getUser() + "]或组[" + form.getGroup() + "]不存在");
@@ -363,7 +363,7 @@ public class CompanyController {
         Group g = accountService.getGroup(id);
 
         Form fm = new Form("editGroup", "修改用户组", "/uc/company/group");
-        if (si.getCompanyId().equals(g.getCompany())) {
+        if (si.getSsCompanyId().equals(g.getCompany())) {
             fm.addField(new HiddenField<>("id", id));
             fm.addField(new TextField<>("name", "名称", g.getName()));
             fm.addField(new TextField<>("details", "详情", g.getDetails()));
@@ -381,13 +381,13 @@ public class CompanyController {
 
         if (ri.isOk()) {
             if (form.getId() == null) {
-                accountService.addGroup(si.getCompanyId(), form.getName(), form.getDetails());
-                logService.add(si.getAccountId(), "添加用户组[" + form.getName() + "]", Log.Type.INFO);
+                accountService.addGroup(si.getSsCompanyId(), form.getName(), form.getDetails());
+                logService.add(si.getSsAccountId(), "添加用户组[" + form.getName() + "]", Log.Type.INFO);
             } else {
                 Group g = accountService.getGroup(form.getId());
-                if (g != null && g.getCompany().equals(si.getCompanyId())) {
+                if (g != null && g.getCompany().equals(si.getSsCompanyId())) {
                     accountService.setGroup(form.getId(), form.getName(), form.getDetails());
-                    logService.add(si.getAccountId(), "修改用户组[" + form.getId() + "]信息", Log.Type.INFO);
+                    logService.add(si.getSsAccountId(), "修改用户组[" + form.getId() + "]信息", Log.Type.INFO);
                 } else {
                     ri.setOk(false);
                     ri.addData("用户组[" + form.getId() + "]不存在");
@@ -403,9 +403,9 @@ public class CompanyController {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
         Group g = accountService.getGroup(id);
-        if (g != null && si.getCompanyId().equals(g.getCompany())) {
+        if (g != null && si.getSsCompanyId().equals(g.getCompany())) {
             accountService.delGroup(id);
-            logService.add(si.getAccountId(), "删除用户组[" + g.getName() + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除用户组[" + g.getName() + "]", Log.Type.INFO);
         } else {
             ri.addData("用户组[" + id + "]不存在");
         }

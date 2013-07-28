@@ -1,4 +1,4 @@
-package com.odong.itpkg.form.net;
+package com.odong.itpkg.form.net.host;
 
 import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.validation.Mac;

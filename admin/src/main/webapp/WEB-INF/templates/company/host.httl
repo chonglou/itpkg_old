@@ -11,6 +11,7 @@
      <table>
             <thead>
                 <tr>
+                    <td>ID</td>
                     <td>名称</td>
                     <td>状态</td>
                     <td>域</td>
@@ -24,6 +25,7 @@
             <tbody>
                 #for(h : hostList)
                     <tr>
+                        <td>${h.id}</td>
                         <td>${h.name}</td>
                         <td>${h.state}</td>
                         <td>${h.domain}</td>
@@ -52,7 +54,7 @@
         </table>
 
 </fieldset>
-
+<br/>
 <script type="text/javascript">
 
     $("button[id^='host-delete']").each(function () {

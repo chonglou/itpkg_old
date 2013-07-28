@@ -198,7 +198,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setFirewallFlowLimitTime(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil) {
+    public void setFirewallFlowLimitLine(long flowLimitId, int upRate, int upCeil, int downRate, int downCeil) {
         FlowLimit fl = flowLimitDao.select(flowLimitId);
         fl.setUpCeil(upCeil);
         fl.setUpRate(upRate);

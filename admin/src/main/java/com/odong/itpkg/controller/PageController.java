@@ -59,14 +59,14 @@ public class PageController {
         navBars.add(nbCompany);
 
         NavBar nbHost = new NavBar("主机列表");
-        for (Host h : hostService.listHost(si.getCompanyId())) {
+        for (Host h : hostService.listHost(si.getSsCompanyId())) {
             nbHost.add("主机-" + h.getName(), "/net/host/" + h.getId());
         }
         nbHost.setAjax(true);
         navBars.add(nbHost);
 
         //logger.debug("SessionItem {}", jsonHelper.object2json(si));
-        if (si.isAdmin()) {
+        if (si.isSsAdmin()) {
             NavBar nbSite = new NavBar("站点管理");
             nbSite.add("公司列表", "/admin/company");
             nbSite.add("邮件设置", "/admin/smtp");

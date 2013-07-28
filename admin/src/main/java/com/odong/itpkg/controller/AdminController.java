@@ -45,7 +45,7 @@ public class AdminController {
     ResponseItem postCompany(@Valid CompanyStateForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
 
-        if (si.getCompanyId().equals(form.getCompany())) {
+        if (si.getSsCompanyId().equals(form.getCompany())) {
             ri.addData("管理员公司");
             ri.setOk(false);
         }
@@ -53,7 +53,7 @@ public class AdminController {
         if (ri.isOk()) {
             accountService.setCompanyState(form.getCompany(), form.getState());
             ri.setOk(true);
-            logService.add(si.getAccountId(), "设置公司[" + form.getCompany() + "]状态[" + form.getState() + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "设置公司[" + form.getCompany() + "]状态[" + form.getState() + "]", Log.Type.INFO);
         }
         return ri;
     }
@@ -93,7 +93,7 @@ public class AdminController {
             profile.setPort(form.getPort());
             profile.setSsl(form.isSsl());
             siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
-            logService.add(si.getAccountId(), "设置SMTP信息", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "设置SMTP信息", Log.Type.INFO);
             emailHelper.reload();
 
         }
@@ -126,7 +126,7 @@ public class AdminController {
             siteService.set("site.keywords", form.getKeywords());
             siteService.set("site.description", form.getDescription());
             siteService.set("site.copyright", form.getCopyright());
-            logService.add(si.getAccountId(), "设置站点基本信息", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "设置站点基本信息", Log.Type.INFO);
             ri.setType(ResponseItem.Type.redirect);
             ri.addData("/personal/self");
         }
@@ -150,7 +150,7 @@ public class AdminController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.aboutMe", form.getAboutMe());
-            logService.add(si.getAccountId(), "设置关于我们信息", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "设置关于我们信息", Log.Type.INFO);
         }
         return ri;
 
@@ -173,7 +173,7 @@ public class AdminController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             siteService.set("site.regProtocol", form.getRegProtocol());
-            logService.add(si.getAccountId(), "设置用户注册协议", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "设置用户注册协议", Log.Type.INFO);
         }
         return ri;
 
@@ -202,7 +202,7 @@ public class AdminController {
         if (ri.isOk()) {
             siteService.set("site.allowLogin", form.isAllowLogin());
             siteService.set("site.allowRegister", form.isAllowRegister());
-            logService.add(si.getAccountId(), "设置站点权限[登陆," + form.isAllowLogin() + "][注册," + form.isAllowRegister() + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "设置站点权限[登陆," + form.isAllowLogin() + "][注册," + form.isAllowRegister() + "]", Log.Type.INFO);
         }
         return ri;
 
@@ -231,7 +231,7 @@ public class AdminController {
         }
         if (ri.isOk()) {
             dbHelper.compress(form.getDays());
-            logService.add(si.getAccountId(), "压缩数据库，只保留最近[" + form.getDays() + "]天的数据", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "压缩数据库，只保留最近[" + form.getDays() + "]天的数据", Log.Type.INFO);
         }
         return ri;
 

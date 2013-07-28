@@ -1,4 +1,4 @@
-package com.odong.itpkg.form.net;
+package com.odong.itpkg.form.net.host;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

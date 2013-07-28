@@ -251,7 +251,7 @@ function FormWindow(form) {
                     }
                     break;
                 case "select":
-                    input = "<select style='width: " + field.width + "px' id='" + _id(field.id) + "' ";
+                    input = "<select  id='" + _id(field.id) + "' ";
                     if (field.readonly) {
                         input += "disabled "
                     }
@@ -263,7 +263,7 @@ function FormWindow(form) {
                         if (item.value == field.value) {
                             input += "selected='selected'"
                         }
-                        input += ">" + item.label + "</option>";
+                        input += ">" + item.label + " &nbsp; </option>";
 
                     }
                     input += "</select>";

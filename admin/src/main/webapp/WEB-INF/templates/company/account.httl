@@ -4,7 +4,7 @@
 <fieldset>
     <legend>
     账户列表[${accountList.size}]
-    #if(gl_session.companyManager)
+    #if(gl_session.ssCompanyManager)
     &nbsp; &nbsp;
         <button id="refresh" class="btn btn-warning">刷新</button>
         <button id="add" class="btn btn-success">新增</button>
@@ -13,12 +13,13 @@
     <table>
         <thead>
             <tr>
+                <td>ID</td>
                 <td>邮箱</td>
                 <td>用户名</td>
                 <td>状态</td>
                 <td>上次登录</td>
                 <td>创建日期</td>
-                #if(gl_session.companyManager)
+                #if(gl_session.ssCompanyManager)
                     <td>操作</td>
                 #end
             </tr>
@@ -26,15 +27,16 @@
         <tbody>
             #for(a : accountList)
             <tr>
+                <td>${a.id}</td>
                 <td>${a.email}</td>
                 <td>${a.username}</td>
                 <td>${a.state}</td>
                 <td>${a.lastLogin}</td>
                 <td>${a.created}</td>
 
-                #if(gl_session.companyManager)
+                #if(gl_session.ssCompanyManager)
                     <td>
-                    #if(a.id == gl_session.accountId)
+                    #if(a.id == gl_session.ssAccountId)
                         <button class="btn btn-inverse">自己</button>
                     #else(a.state.toString() == "ENABLE")
                         <button id="account-${a.id}-DISABLE" class="btn btn-danger">禁用</button>
@@ -51,9 +53,9 @@
     </table>
 
 </fieldset>
+ <br/>
 
-
-#if(gl_session.companyManager)
+#if(gl_session.ssCompanyManager)
 <script type="text/javascript">
     var btnId = "button[id^='account-']";
     $(btnId).each(function () {
