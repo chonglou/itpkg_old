@@ -9,6 +9,7 @@ function bind_personal_bar_click() {
 
 }
 
-$(document).ready(function(){
+$(document).ready(function () {
     new Ajax("/personal/login");
+
 });

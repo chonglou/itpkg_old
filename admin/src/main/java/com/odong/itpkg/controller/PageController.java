@@ -74,6 +74,7 @@ public class PageController {
             nbSite.add("关于我们", "/admin/aboutMe");
             nbSite.add("注册协议", "/admin/regProtocol");
             nbSite.add("站点状态", "/admin/state");
+            nbSite.add("验证码", "/admin/captcha");
             nbSite.add("数据压缩", "/admin/compress");
             nbSite.setAjax(true);
             navBars.add(nbSite);

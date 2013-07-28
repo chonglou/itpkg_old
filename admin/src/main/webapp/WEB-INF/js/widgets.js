@@ -26,10 +26,10 @@ function Ajax(url, type, data, success, async) {
                             new MessageDialog("尚未支持");
                     }
                 }
-                else if(result.data){
+                else if (result.data) {
                     new MessageDialog(result.data);
                 }
-                else{
+                else {
                     $("div#gl_root").html(result);
                 }
 
@@ -186,10 +186,10 @@ function FormWindow(form) {
     };
     var _hidden_field = function (id, value) {
         var s = "<input type='hidden' id='" + _id(id) + "'";
-            if(value != undefined){
-                s +="value='" + value + "'";
-            }
-        s+= "/>";
+        if (value != undefined) {
+            s += "value='" + value + "'";
+        }
+        s += "/>";
         return   s;
     };
 
@@ -321,14 +321,27 @@ function FormWindow(form) {
         }
 
         if (form.captcha) {
-            var input = "<input type='text'  style='width: 80px;' id='" + _id("captcha") + "'/>* &nbsp;";
-            input += "<img id='" + _id('captcha_img') + "' src='/captcha.jpg?_=" + Math.random() + "' alt='点击更换验证码'/>";
+            var input = "";
+            switch (gl_captcha) {
+                case "kaptcha":
+                    input += "<input type='text'  style='width: 80px;' id='" + _id("captcha") + "'/>* &nbsp;";
+                    input += "<img id='" + _id('captcha_img') + "' src='/captcha?_=" + Math.random() + "' alt='点击更换验证码'/>";
+                    break;
+                case "reCaptcha":
+                    input += "<div id='" + _id('captcha') + "'></div>";
+                    break;
+            }
+
             content += _field("captcha", "验证码", input);
 
         }
 
         var reload_captcha = function () {
-            $('img#' + _id('captcha_img')).attr("src", "/captcha.jpg?_=" + Math.random());
+            switch (gl_captcha) {
+                case "kaptcha":
+                    $('img#' + _id('captcha_img')).attr("src", "/captcha?_=" + Math.random());
+                    break;
+            }
         };
 
         content += _button_group(form.buttons);
@@ -336,7 +349,18 @@ function FormWindow(form) {
         //alert(content);
         new HtmlDiv("fm-" + form.id, content);
 
-        $('img#' + _id('captcha_img')).click(reload_captcha);
+        if (form.captcha) {
+            switch (gl_captcha) {
+                case "kaptcha":
+                    $('img#' + _id('captcha_img')).click(reload_captcha);
+                    break;
+                case "reCaptcha":
+                    showRecaptcha(_id("captcha"));
+                    break;
+            }
+        }
+
+
         $('button#' + _id("reset")).click(function () {
             for (var i in form.fields) {
                 var field = form.fields[i];
@@ -349,7 +373,7 @@ function FormWindow(form) {
                         $("textarea#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
                         break;
                     case "radio":
-                        $("input:radio[name='"+_id(field.id)+"'][value='"+field.value+"']").prop('checked', true);
+                        $("input:radio[name='" + _id(field.id) + "'][value='" + field.value + "']").prop('checked', true);
                         break;
                     case "select":
                         $("select#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
@@ -359,8 +383,15 @@ function FormWindow(form) {
                 }
             }
             if (form.captcha) {
-                $("input#" + _id("captcha")).val('');
-                reload_captcha();
+                switch (gl_captcha) {
+                    case "kaptcha":
+                        $("input#" + _id("captcha")).val('');
+                        reload_captcha();
+                        break;
+                    case "reCaptcha":
+                        $("input#recaptcha_response_field").val('');
+                        break;
+                }
             }
         });
 
@@ -378,7 +409,7 @@ function FormWindow(form) {
                         data[field.id] = $('textarea#' + _id(field.id)).val();
                         break;
                     case "radio":
-                        data[field.id] = $("input[name='"+_id(field.id)+"']:checked").val();
+                        data[field.id] = $("input[name='" + _id(field.id) + "']:checked").val();
                         break;
                     case "select":
                         data[field.id] = $('select#' + _id(field.id)).val();
@@ -388,7 +419,15 @@ function FormWindow(form) {
                 }
             }
             if (form.captcha) {
-                data['captcha'] = $('input#' + _id('captcha')).val();
+                switch (gl_captcha) {
+                    case "kaptcha":
+                        data['captcha'] = $('input#' + _id('captcha')).val();
+                        break;
+                    case "reCaptcha":
+                        data['challenge'] = $('input#recaptcha_challenge_field').val();
+                        data['captcha'] = $('input#recaptcha_response_field').val();
+                        break;
+                }
             }
             new Ajax(form.action, "POST", data);
             reload_captcha();
@@ -431,7 +470,7 @@ function MessageDialog(messages, type) {
             type = "error";
         }
         $("div#gl_message").html("<div class='alert alert-block'><button type='button' class='close' data-dismiss='alert'>&times;</button><h4>" +
-            name+"[" +new Date() + "]：</h4>" + (messages instanceof Array ? messages.join("<br/>") : messages) + "</div>");
+            name + "[" + new Date() + "]：</h4>" + (messages instanceof Array ? messages.join("<br/>") : messages) + "</div>");
 
     };
     _init();

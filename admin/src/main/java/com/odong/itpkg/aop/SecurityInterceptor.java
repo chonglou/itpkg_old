@@ -29,7 +29,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        for (String s : new String[]{"/", "/main", "/aboutMe", "/status", "/captcha.jpg"}) {
+        for (String s : new String[]{"/", "/main", "/aboutMe", "/status", "/captcha"}) {
             if (url.equals(s)) {
                 return true;
             }
@@ -39,7 +39,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
         if (url.startsWith("/personal")) {
             boolean notNeedLogin = false;
             String[] ss = url.split("/");
-            for (String s : new String[]{"login", "register", "resetPwd","active", "valid"}) {
+            for (String s : new String[]{"login", "register", "resetPwd", "active", "valid"}) {
                 if (s.equals(ss[2])) {
                     notNeedLogin = true;
                     break;

@@ -1,0 +1,37 @@
+
+<script type="text/javascript">
+    new Ajax("/admin/captchaFM", undefined, undefined, undefined, false);
+    $("input[name='fm-captcha-mode']").change(function () {
+        show();
+    });
+    show();
+
+    function show() {
+        var mode = $("input[name='fm-captcha-mode']:checked").val();
+
+        var kFS = ['width', 'height', 'length', 'chars'];
+        var rFS = ['publicKey', 'privateKey'];
+        var showF = function (fields, flag) {
+            for (var i in fields) {
+                var fid = $("input#fm-captcha-" + fields[i]).parent().parent();
+                if (flag) {
+                    fid.show();
+                } else {
+                    fid.hide();
+                }
+            }
+        };
+        showF(kFS, false);
+        showF(rFS, false);
+
+        switch (mode) {
+            case "kaptcha":
+                showF(kFS, true);
+                break;
+            case "reCaptcha":
+                showF(rFS, true);
+                break;
+
+        }
+    }
+</script>

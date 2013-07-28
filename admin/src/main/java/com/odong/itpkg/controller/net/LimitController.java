@@ -60,7 +60,7 @@ public class LimitController {
                     "sun", "七", dl.isSun()
             };
             for (int i = 0; i < week.length; i += 3) {
-                RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期"+(String) week[i+1], (Boolean) week[i+2]);
+                RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期" + (String) week[i + 1], (Boolean) week[i + 2]);
                 rf.addOption("启动", true);
                 rf.addOption("停止", false);
                 fm.addField(rf);
@@ -86,7 +86,7 @@ public class LimitController {
         SelectField<String> end = new SelectField<>("end", "截止时间", "18:30");
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 4; j++) {
-                String time = time(i, j*15);
+                String time = time(i, j * 15);
                 begin.addOption(time, time);
                 end.addOption(time, time);
             }
@@ -103,7 +103,7 @@ public class LimitController {
                 "sun", "七", false
         };
         for (int i = 0; i < week.length; i += 3) {
-            RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期"+(String) week[i+1], (Boolean) week[i+2]);
+            RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期" + (String) week[i + 1], (Boolean) week[i + 2]);
             rf.addOption("启动", true);
             rf.addOption("停止", false);
             fm.addField(rf);
@@ -179,7 +179,7 @@ public class LimitController {
             };
 
             for (int i = 0; i < rules.length; i += 3) {
-                SelectField<Integer> sf = new SelectField<>((String) rules[i], (String) rules[i+1], (Integer) rules[i+2]);
+                SelectField<Integer> sf = new SelectField<>((String) rules[i], (String) rules[i + 1], (Integer) rules[i + 2]);
                 for (int j = 1; j < 10; j++) {
                     sf.addOption(String.format("%dK", j * 100), j * 100);
                 }
@@ -210,7 +210,7 @@ public class LimitController {
         };
 
         for (int i = 0; i < rules.length; i += 3) {
-            SelectField<Integer> sf = new SelectField<>((String) rules[i], (String) rules[i+1], (Integer) rules[i+2]);
+            SelectField<Integer> sf = new SelectField<>((String) rules[i], (String) rules[i + 1], (Integer) rules[i + 2]);
             for (int j = 1; j < 10; j++) {
                 sf.addOption(String.format("%dK", j * 100), j * 100);
             }
@@ -271,6 +271,7 @@ public class LimitController {
     private String time(int hour, int minute) {
         return String.format("%02d:%02d", hour, minute);
     }
+
     @Resource
     private HostService hostService;
     @Resource

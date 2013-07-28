@@ -160,7 +160,7 @@ public class PersonalController {
         return ri;
     }
 
-    private void activeAccount(long userId, String email){
+    private void activeAccount(long userId, String email) {
         accountService.setAccountState(userId, Account.State.ENABLE);
         logService.add(userId, "账户激活", Log.Type.INFO);
         emailHelper.send(
@@ -445,14 +445,14 @@ public class PersonalController {
         try {
             emailHelper.send(
                     email,
-                    "您在[" + domain + "("+siteService.getString("site.title")+")]上" + title + "，请激活",
+                    "您在[" + domain + "(" + siteService.getString("site.title") + ")]上" + title + "，请激活",
                     "<a href='http://" + domain + "/personal/valid?code=" +
                             URLEncoder.encode(encryptHelper.encode(jsonHelper.object2json(args)), "UTF-8")
 
                             + "' target='_blank'>请点击此链接以" + content + "(" + linkValid + "分钟内有效)</a>。" +
                             "<br/>如果不是您的操作，请忽略该邮件。",
                     true);
-        } catch ( UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             logger.error("不支持编码", e);
         }
     }

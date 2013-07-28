@@ -2,15 +2,13 @@ package com.odong.portal.controller;
 
 
 import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
-import net.tanesha.recaptcha.ReCaptcha;
-import net.tanesha.recaptcha.ReCaptchaFactory;
+import com.odong.portal.service.SiteService;
+import com.odong.portal.util.CaptchaHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -29,24 +27,35 @@ import java.io.IOException;
 
 @Controller
 public class CaptchaController {
-    @RequestMapping(value = "/captcha.html", method = RequestMethod.GET)
-    void getReCaptcha(HttpServletRequest request, HttpServletResponse response){
-
-
-
-        try(
-            ServletOutputStream out = response.getOutputStream()
-            )
-        {
-            out.print(reCaptcha.createRecaptchaHtml(request.getParameter("error"), null));
-            out.flush();
+    @RequestMapping(value = "/captcha", method = RequestMethod.GET)
+    void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        switch (siteService.getString("site.captcha")) {
+            case "reCaptcha":
+                buildReCaptcha(request, response);
+                break;
+            case "kaptcha":
+                buildKaptcha(request, response);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                break;
         }
-        catch (IOException e){
+    }
+
+    private void buildReCaptcha(HttpServletRequest request, HttpServletResponse response) {
+
+        try (
+                ServletOutputStream out = response.getOutputStream()
+        ) {
+            out.print(captchaHelper.getReCaptcha().createRecaptchaHtml(request.getParameter("error"), null));
+            out.flush();
+        } catch (IOException e) {
             logger.error("生成验证码出错", e);
         }
     }
-    @RequestMapping(value = "/captcha.jpg", method = RequestMethod.GET)
-    void getKaptcha(HttpServletRequest request, HttpServletResponse response) {
+
+
+    private void buildKaptcha(HttpServletRequest request, HttpServletResponse response) {
         // Set to expire far in the past.
         response.setDateHeader("Expires", 0);
         // Set standard HTTP/1.1 no-cache headers.
@@ -60,13 +69,13 @@ public class CaptchaController {
         response.setContentType("image/jpeg");
 
         // create the text for the image
-        String capText = captchaProducer.createText();
+        String capText = captchaHelper.getKaptcha().createText();
 
         // store the text in the session
         request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
 
         // create the image with the text
-        BufferedImage bi = captchaProducer.createImage(capText);
+        BufferedImage bi = captchaHelper.getKaptcha().createImage(capText);
 
         try {
             ServletOutputStream out = response.getOutputStream();
@@ -85,17 +94,17 @@ public class CaptchaController {
     }
 
     @Resource
-    private Producer captchaProducer;
+    private SiteService siteService;
     @Resource
-    private ReCaptcha reCaptcha;
+    private CaptchaHelper captchaHelper;
     private final static Logger logger = LoggerFactory.getLogger(CaptchaController.class);
 
-
-    public void setReCaptcha(ReCaptcha reCaptcha) {
-        this.reCaptcha = reCaptcha;
+    public void setCaptchaHelper(CaptchaHelper captchaHelper) {
+        this.captchaHelper = captchaHelper;
     }
 
-    public void setCaptchaProducer(Producer captchaProducer) {
-        this.captchaProducer = captchaProducer;
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
     }
+
 }

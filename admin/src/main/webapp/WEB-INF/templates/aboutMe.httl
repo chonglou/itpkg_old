@@ -4,5 +4,9 @@ $!{extends("/layout.httl")}
 <fieldset>
     <legend>关于我们</legend>
     ${aboutMe}
+    <div id="recaptcha_div"></div>
 </fieldset>
+<script type="text/javascript">
+showRecaptcha("recaptcha_div");
+</script>
 #end

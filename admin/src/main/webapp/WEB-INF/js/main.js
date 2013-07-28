@@ -7,7 +7,7 @@ $(document).ready(function () {
 function clear_root_div() {
     $("div#gl_root").html("");
 }
-function clear_message_div(){
+function clear_message_div() {
     $("div#gl_message").html("");
 }
 

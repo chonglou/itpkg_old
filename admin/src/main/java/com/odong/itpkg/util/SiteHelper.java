@@ -63,10 +63,8 @@ public class SiteHelper {
             kaptcha.setHeight(56);
             kaptcha.setWidth(100);
             siteService.set("site.kaptcha", kaptcha);
-
             //RECAPTCHA
-            ReCaptchaProfile reCaptcha = new ReCaptchaProfile();
-            siteService.set("site.reCaptcha", reCaptcha);
+            siteService.set("site.reCaptcha", new ReCaptchaProfile());
             siteService.set("site.captcha", "kaptcha");
 
 
@@ -87,7 +85,6 @@ public class SiteHelper {
         }
 
         GlobalResolver.put("gl_debug", appDebug);
-
         File base = new File(appStoreDir);
         if (base.exists()) {
             if (!base.isDirectory() || !base.canWrite()) {
