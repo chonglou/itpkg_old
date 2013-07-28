@@ -1,4 +1,4 @@
-package com.odong.portal.util;
+package com.odong.portal.email;
 
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.util.EncryptHelper;
@@ -6,17 +6,13 @@ import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,29 +27,14 @@ public class EmailHelper {
     }
 
     public void send(String to, String title, String body, boolean html, Map<String, String> attachs) {
-        if (sender == null) {
+        if (profile == null) {
             logger.error("SMTP信息未配置");
             return;
         }
-        try {
-            MimeMessage message = sender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setSubject(title);
-            helper.setTo(to);
-            if (profile.getFrom() != null) {
-                helper.setFrom(profile.getFrom());
-            }
-            if (profile.getBcc() != null) {
-                helper.setBcc(profile.getBcc());
-            }
-            helper.setText(body, html);
-            for (String file : attachs.keySet()) {
-                helper.addInline(attachs.get(file), new FileSystemResource(file));
-            }
-            sender.send(message);
-        } catch (Exception e) {
-            logger.error("发送邮件失败", e);
-        }
+        taskExecutor.execute(new EmailSender(
+                profile.getHost(), profile.getPort(), profile.getUsername(), profile.getPassword(), profile.isSsl(), profile.getBcc(),
+                to, title, body, html, attachs));
+
 
     }
 
@@ -65,26 +46,9 @@ public class EmailHelper {
 
     @PostConstruct
     public void reload() {
-        sender = null;
         profile = jsonHelper.json2object(encryptHelper.decode(siteService.getString("site.smtp")), SmtpProfile.class);
-        if (profile != null) {
-            try {
-                sender = new JavaMailSenderImpl();
-                sender.setHost(profile.getHost());
-                sender.setUsername(profile.getUsername());
-                sender.setPassword(profile.getPassword());
-                sender.setDefaultEncoding("UTF-8");
-                Properties props = new Properties();
-                props.put("mail.smtp.auth", true);
-                props.put("mail.smtp.timeout", 25000);
-                sender.setJavaMailProperties(props);
-            } catch (Exception e) {
-                logger.error("邮件配置有误", e);
-            }
-        }
     }
 
-    private JavaMailSenderImpl sender;
 
     @Resource
     private JsonHelper jsonHelper;
@@ -92,9 +56,15 @@ public class EmailHelper {
     private SiteService siteService;
     @Resource
     private EncryptHelper encryptHelper;
+    @Resource
+    private TaskExecutor taskExecutor;
     private SmtpProfile profile;
 
     private final static Logger logger = LoggerFactory.getLogger(EmailHelper.class);
+
+    public void setTaskExecutor(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
 
     public void setJsonHelper(JsonHelper jsonHelper) {
         this.jsonHelper = jsonHelper;

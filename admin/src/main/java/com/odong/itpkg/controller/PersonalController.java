@@ -11,8 +11,8 @@ import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.service.RbacService;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
+import com.odong.portal.email.EmailHelper;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.util.TimeHelper;
 import com.odong.portal.web.ResponseItem;
@@ -22,14 +22,24 @@ import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.HandlerMapping;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -157,34 +167,89 @@ public class PersonalController {
         return ri;
     }
 
-
-    @RequestMapping(value = "/resetPwd/{code}", method = RequestMethod.GET)
-    @ResponseBody
-    ResponseItem getActivateResetPwdCode(@PathVariable String code) {
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try {
-            Map<String, String> map = jsonHelper.json2map(encryptHelper.decode(code), String.class, String.class);
-            String email = map.get("email");
-            Account account = accountService.getAccount(email);
-            if (account.getState() == Account.State.ENABLE) {
-                if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(map.get("created"), Date.class), 60 * 30)) <= 0) {
-                    accountService.setAccountPassword(account.getId(), map.get("password"));
-                    ri.setOk(true);
-                    logService.add(account.getId(), "重置密码", Log.Type.INFO);
-                    emailHelper.send(email, "您在[" + siteService.getString("site.domain") + "]上的密码重置记录",
-                            "如果不是您的操作，请忽略该邮件。", true);
-                } else {
-                    ri.addData("链接已失效");
-                }
-            } else {
-                ri.addData("用户[" + account.getEmail() + "]状态不对");
-            }
-        } catch (Exception e) {
-            logger.error("重置密码错误", e);
-        }
-
-        return ri;
+    private void activeAccount(long userId, String email){
+        accountService.setAccountState(userId, Account.State.ENABLE);
+        logService.add(userId, "账户激活", Log.Type.INFO);
+        emailHelper.send(
+                email,
+                "您在[" + siteService.getString("site.title") + "]上的激活了账户",
+                "欢迎使用",
+                true);
     }
+
+    @RequestMapping(value = "/valid", method = RequestMethod.GET)
+    String getValidCode(HttpServletRequest request, Map<String, Object> map) {
+
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        Map<String, String> mapA = jsonHelper.json2map(encryptHelper.decode(request.getParameter("code")), String.class, String.class);
+        String email = mapA.get("email");
+        String type = mapA.get("type");
+        String created = mapA.get("created");
+
+        if (email == null || type == null || created == null) {
+            ri.addData("链接信息不全");
+        } else if (timeHelper.plus(new Date(Long.parseLong(created)), 60 * linkValid).compareTo(new Date()) < 0
+                ) {
+            ri.addData("链接失效，请重新申请。");
+        } else {
+            Account u = accountService.getAccount(email);
+            switch (Type.valueOf(type)) {
+                case REGISTER:
+                    if (u != null && u.getState() == Account.State.SUBMIT) {
+                        Company c = accountService.getCompany(u.getCompany());
+
+                        switch (c.getState()) {
+                            case SUBMIT:
+                                accountService.setCompanyState(u.getCompany(), Company.State.ENABLE);
+                                logService.add(u.getId(), "公司激活", Log.Type.INFO);
+                                activeAccount(u.getId(), u.getEmail());
+                                rbacService.bindCompany(u.getId(), u.getCompany(), RbacService.OperationType.MANAGE, true);
+                                logService.add(u.getId(), "授予自己公司管理员权限", Log.Type.INFO);
+                                ri.setOk(true);
+                                ri.addData("您成功激活了公司和用户");
+                                break;
+                            case ENABLE:
+                                activeAccount(u.getId(), u.getEmail());
+                                rbacService.bindCompany(u.getId(), u.getCompany(), RbacService.OperationType.USE, true);
+                                logService.add(u.getId(), "授予公司用户权限", Log.Type.INFO);
+                                ri.setOk(true);
+                                ri.addData("您成功激活了账户");
+                                break;
+                            default:
+                                ri.addData("公司[" + c.getName() + "]状态不对");
+                                break;
+                        }
+
+
+                    } else {
+                        ri.addData("账户[" + email + "]状态不对");
+                    }
+                    break;
+                case RESET_PWD:
+                    if (u.getState() == Account.State.ENABLE) {
+                        if (new Date().compareTo(timeHelper.plus(jsonHelper.json2object(mapA.get("created"), Date.class), 60 * 30)) <= 0) {
+                            accountService.setAccountPassword(u.getId(), mapA.get("password"));
+                            logService.add(u.getId(), "重置密码", Log.Type.INFO);
+                            emailHelper.send(email, "您在[" + siteService.getString("site.domain") + "]上的成功重置了密码",
+                                    "如果不是您的操作，请忽略该邮件。", true);
+                            ri.setOk(true);
+                            ri.addData("您成功重置了密码");
+                        } else {
+                            ri.addData("链接已失效");
+                        }
+                    } else {
+                        ri.addData("用户[" + u.getEmail() + "]状态不对");
+                    }
+                    break;
+                default:
+                    ri.addData("未知的操作");
+                    break;
+            }
+        }
+        map.put("item", ri);
+        return "message";
+    }
+
 
     @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
     @ResponseBody
@@ -197,19 +262,14 @@ public class PersonalController {
         if (ri.isOk()) {
             Account u = accountService.getAccount(form.getEmail());
             if (u != null && u.getState() == Account.State.ENABLE) {
-
                 Map<String, String> map = new HashMap<>();
-                map.put("email", form.getEmail());
                 map.put("password", form.getNewPwd());
-                map.put("created", jsonHelper.object2json(new Date()));
-                String domain = siteService.getString("site.domain");
-                emailHelper.send(form.getEmail(), "您在[" + domain + "]上的密码重置",
-                        "<a href='http://" + domain +
-                                "/personal/resetPwd/" + jsonHelper.object2json(map) +
-                                "' target='_blank'>请点击此链接重置密码</a>。<br/>如果不是您的操作，请忽略该邮件。",
-                        true);
+                sendValidEmail(form.getEmail(), Type.RESET_PWD, map);
+                ri.setOk(true);
+
             } else {
                 ri.addData("用户[" + form.getEmail() + "]状态不对");
+                ri.setOk(false);
             }
         }
         return ri;
@@ -221,51 +281,13 @@ public class PersonalController {
     Form getResetPwd() {
         Form fm = new Form("resetPwd", "找回密码", "/personal/resetPwd");
         fm.addField(new TextField("email", "邮箱"));
-        fm.addField(new PasswordField("password", "新密码"));
-        fm.addField(new PasswordField("re_password", "再次输入"));
+        fm.addField(new PasswordField("newPwd", "新密码"));
+        fm.addField(new PasswordField("rePwd", "再次输入"));
         fm.setCaptcha(true);
         fm.setOk(true);
         return fm;
     }
 
-    @RequestMapping(value = "/active/{code}", method = RequestMethod.GET)
-    @ResponseBody
-    ResponseItem getActivateCode(@PathVariable String code) {
-        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try {
-            Map<String, String> map = jsonHelper.json2map(code, String.class, String.class);
-            String email = map.get("email");
-            Account u = accountService.getAccount(email);
-            if (u != null && u.getState() == Account.State.SUBMIT) {
-                Company c = accountService.getCompany(u.getCompany());
-                switch (c.getState()) {
-                    case SUBMIT:
-                        accountService.setCompanyState(u.getCompany(), Company.State.ENABLE);
-                        logService.add(u.getId(), "公司激活", Log.Type.INFO);
-                    case ENABLE:
-                        accountService.setAccountState(u.getId(), Account.State.ENABLE);
-                        ri.setOk(true);
-                        logService.add(u.getId(), "账户激活", Log.Type.INFO);
-                        emailHelper.send(
-                                u.getEmail(),
-                                "您在[" + siteService.getString("site.title") + "]上的账户激活成功",
-                                "欢迎使用",
-                                true);
-                        break;
-                    default:
-                        ri.addData("公司[" + c.getName() + "]状态不对");
-                        break;
-                }
-
-
-            } else {
-                ri.addData("账户[" + email + "]状态不对");
-            }
-        } catch (Exception e) {
-            logger.error("激活账户失败", e);
-        }
-        return ri;
-    }
 
     @RequestMapping(value = "/active", method = RequestMethod.GET)
     @ResponseBody
@@ -284,7 +306,7 @@ public class PersonalController {
         if (ri.isOk()) {
             Account a = accountService.getAccount(form.getEmail());
             if (a != null && a.getState() == Account.State.SUBMIT) {
-                sendActiveEmail(form.getEmail());
+                sendValidEmail(form.getEmail(), Type.REGISTER, new HashMap<String, String>());
             } else {
                 ri.setOk(false);
                 ri.addData("邮箱[" + form.getEmail() + "]状态不对");
@@ -299,8 +321,9 @@ public class PersonalController {
         Form fm = new Form("register", "注册账户", "/personal/register");
         fm.addField(new TextField("company", "公司名称"));
         fm.addField(new TextField("email", "邮箱"));
-        fm.addField(new PasswordField("password", "登陆密码"));
-        fm.addField(new PasswordField("re_password", "再次输入"));
+        fm.addField(new TextField("username", "用户名"));
+        fm.addField(new PasswordField("newPwd", "登陆密码"));
+        fm.addField(new PasswordField("rePwd", "再次输入"));
         fm.setCaptcha(true);
         fm.setOk(true);
         return fm;
@@ -322,9 +345,9 @@ public class PersonalController {
             Account u = accountService.getAccount(form.getEmail());
             if (u == null) {
                 String companyId = UUID.randomUUID().toString();
-                accountService.addCompany(companyId, form.getCompany(), "");
+                accountService.addCompany(companyId, form.getCompany(), "暂无");
                 accountService.addAccount(companyId, form.getEmail(), form.getUsername(), form.getNewPwd());
-                sendActiveEmail(form.getEmail());
+                sendValidEmail(form.getEmail(), Type.REGISTER, new HashMap<String, String>());
             } else {
                 ri.setOk(false);
                 ri.addData("邮箱[" + form.getEmail() + "]已存在");
@@ -376,7 +399,6 @@ public class PersonalController {
                             session.setAttribute(SessionItem.KEY, si);
                             accountService.setAccountLastLogin(u.getId());
                             logService.add(u.getId(), "用户登陆", Log.Type.INFO);
-                            //logger.debug("SessionItem {}", jsonHelper.object2json(si));
                             break;
                         case DISABLE:
                             ri.setOk(false);
@@ -401,16 +423,43 @@ public class PersonalController {
     }
 
 
-    private void sendActiveEmail(String email) {
+    enum Type {
+        REGISTER, RESET_PWD
+    }
+
+    private void sendValidEmail(String email, Type type, Map<String, String> args) {
         String domain = siteService.getString("site.domain");
-        Map<String, String> map = new HashMap<>();
-        map.put("email", email);
-        map.put("created", jsonHelper.object2json(new Date()));
-        emailHelper.send(email, "您在[" + domain + "]上的账户创建了账户，请激活",
-                "<a href='http://" + domain +
-                        "/personal/active/" + jsonHelper.object2json(map) +
-                        "' target='_blank'>请点击此链接激活账户</a>。<br/>如果不是您的操作，请忽略该邮件。",
-                true);
+        args.put("email", email);
+        args.put("type", type.toString());
+        args.put("created", jsonHelper.object2json(new Date()));
+
+        String title = "";
+        String content = "";
+        switch (type) {
+            case REGISTER:
+                title = "创建了账户";
+                content = "激活账户";
+                break;
+            case RESET_PWD:
+                title = "重置了密码";
+                content = "重置密码";
+                break;
+        }
+
+
+        try {
+            emailHelper.send(
+                    email,
+                    "您在[" + domain + "("+siteService.getString("site.title")+")]上" + title + "，请激活",
+                    "<a href='http://" + domain + "/personal/valid?code=" +
+                            URLEncoder.encode(encryptHelper.encode(jsonHelper.object2json(args)), "UTF-8")
+
+                            + "' target='_blank'>请点击此链接以" + content + "(" + linkValid + "分钟内有效)</a>。" +
+                            "<br/>如果不是您的操作，请忽略该邮件。",
+                    true);
+        } catch ( UnsupportedEncodingException e) {
+            logger.error("不支持编码", e);
+        }
     }
 
 
@@ -432,7 +481,13 @@ public class PersonalController {
     private RbacService rbacService;
     @Resource
     private LogService logService;
+    @Value("${link.valid}")
+    private int linkValid;
     private final static Logger logger = LoggerFactory.getLogger(PersonalController.class);
+
+    public void setLinkValid(int linkValid) {
+        this.linkValid = linkValid;
+    }
 
     public void setRbacService(RbacService rbacService) {
         this.rbacService = rbacService;

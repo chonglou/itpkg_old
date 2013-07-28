@@ -42,7 +42,7 @@ public class LogServiceImpl implements LogService {
     public List<Log> list(Long accountId, int size) {
         Map<String, Object> map = new HashMap<>();
         map.put("account", accountId);
-        return logDao.list(1, size,"SELECT i FROM Log i WHERE i.account = :account ORDER BY i.id DESC", map);
+        return logDao.list(1, size, "SELECT i FROM Log i WHERE i.account = :account ORDER BY i.id DESC", map);
 
     }
 

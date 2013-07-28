@@ -6,10 +6,6 @@ import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.entity.uc.User;
-import com.odong.itpkg.form.net.HostAddForm;
-import com.odong.itpkg.form.net.HostInfoForm;
-import com.odong.itpkg.form.net.HostLanForm;
-import com.odong.itpkg.form.net.HostWanForm;
 import com.odong.itpkg.form.uc.AccountAddForm;
 import com.odong.itpkg.form.uc.AccountSetForm;
 import com.odong.itpkg.form.uc.CompanyForm;
@@ -24,7 +20,10 @@ import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.*;
+import com.odong.portal.web.form.Form;
+import com.odong.portal.web.form.HiddenField;
+import com.odong.portal.web.form.TextAreaField;
+import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +33,6 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.

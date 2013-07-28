@@ -149,7 +149,7 @@ public class HostController {
     ResponseItem postHostLan(@Valid HostLanForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         String[] ss = form.getLanNet().split("\\.");
-        if (ss.length!=4 || Integer.parseInt(ss[3]) != 0) {
+        if (ss.length != 4 || Integer.parseInt(ss[3]) != 0) {
             ri.setOk(false);
             ri.addData("LAN网段格式不正确");
         }
@@ -271,7 +271,7 @@ public class HostController {
         }
 
         String[] ss = form.getLanNet().split("\\.");
-        if (ss.length!=4 || Integer.parseInt(ss[3]) != 0) {
+        if (ss.length != 4 || Integer.parseInt(ss[3]) != 0) {
             ri.setOk(false);
             ri.addData("LAN网段格式不正确");
         }

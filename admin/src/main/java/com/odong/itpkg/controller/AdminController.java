@@ -9,8 +9,8 @@ import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.itpkg.util.JsonHelper;
+import com.odong.portal.email.EmailHelper;
 import com.odong.portal.service.SiteService;
-import com.odong.portal.util.EmailHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.*;
@@ -72,9 +72,14 @@ public class AdminController {
         fm.addField(new TextField<>("host", "主机", profile.getHost()));
         fm.addField(new TextField<>("port", "端口", profile.getPort()));
         fm.addField(new TextField<>("username", "用户名", profile.getUsername()));
-        fm.addField(new TextField<>("password", "密码", profile.getPassword()));
-        fm.addField(new TextField<>("from", "发信人", profile.getFrom()));
-        fm.addField(new TextField<>("bcc", "密送", profile.getBcc()));
+        fm.addField(new TextField<>("password", "密码"));
+        RadioField<Boolean> ssl = new RadioField<>("ssl", "启用SSL", profile.isSsl());
+        ssl.addOption("是", true);
+        ssl.addOption("否", false);
+        fm.addField(ssl);
+        TextField<String> bcc = new TextField<>("bcc", "密送", profile.getBcc());
+        bcc.setRequired(false);
+        fm.addField(bcc);
         fm.setOk(true);
         return fm;
     }
@@ -86,7 +91,7 @@ public class AdminController {
         if (ri.isOk()) {
             SmtpProfile profile = new SmtpProfile(form.getHost(), form.getUsername(), form.getPassword(), form.getBcc());
             profile.setPort(form.getPort());
-            profile.setFrom(form.getFrom());
+            profile.setSsl(form.isSsl());
             siteService.set("site.smtp", encryptHelper.encode(jsonHelper.object2json(profile)));
             logService.add(si.getAccountId(), "设置SMTP信息", Log.Type.INFO);
             emailHelper.reload();

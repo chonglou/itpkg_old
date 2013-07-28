@@ -37,11 +37,10 @@ public class SecurityInterceptor implements HandlerInterceptor {
         SessionItem si = (SessionItem) request.getSession().getAttribute(SessionItem.KEY);
         //personal
         if (url.startsWith("/personal")) {
-
             boolean notNeedLogin = false;
-
-            for (String s : new String[]{"login", "register", "resetPwd", "active"}) {
-                if (url.startsWith("/personal/" + s)) {
+            String[] ss = url.split("/");
+            for (String s : new String[]{"login", "register", "resetPwd","active", "valid"}) {
+                if (s.equals(ss[2])) {
                     notNeedLogin = true;
                     break;
                 }
@@ -110,34 +109,22 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 return false;
             }
             String[] ss = url.split("/");
-            for(String s : new String[]{"host", "limit"}){
-                if(ss[1].equals(s)){
+            for (String s : new String[]{"host", "limit"}) {
+                if (ss[2].equals(s)) {
                     return true;
                 }
             }
 
-            for (String s : new String[]{"bind8", "dhcp4", "firewall", "mac"}) {
-                if (ss[1].equals(s)) {
-                    Long hostId = Long.parseLong(ss[2]);
+            for (String s : new String[]{"bind9", "dhcp4", "firewall", "mac"}) {
+                if (ss[2].equals(s)) {
+                    Long hostId = Long.parseLong(ss[3]);
                     if (hostService.getHost(hostId).getCompany().equals(si.getCompanyId())) {
-                        //rbacService.authCompany(si.getAccountId(), si.getCompanyId(), RbacService.OperationType.MANAGE, RbacService.OperationType.USE)){
                         return true;
                     } else {
                         notFound(response);
                         return false;
                     }
                 }
-            }
-            if (ss[1].equals("limit")) {
-                Long limitId = Long.parseLong(ss[2]);
-                if (
-                        ("date".equals(ss[3]) && hostService.getFirewallDateLimit(limitId).getCompany().equals(si.getCompanyId())) ||
-                                ("flow".equals(ss[3]) && hostService.getFirewallFlowLimit(limitId).getCompany().equals(si.getCompanyId()))
-                        ) {
-                    return true;
-                }
-                notFound(response);
-                return false;
             }
             return true;
         }
