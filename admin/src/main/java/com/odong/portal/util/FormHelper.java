@@ -1,12 +1,17 @@
 package com.odong.portal.util;
 
 import com.google.code.kaptcha.Constants;
+import com.odong.portal.service.SiteService;
 import com.odong.portal.web.ResponseItem;
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -43,18 +48,43 @@ public class FormHelper {
         return check(result, null, false);
     }
 
-    public boolean checkCaptcha(HttpServletRequest request) {
+    public boolean checkKaptcha(HttpServletRequest request) {
 
         String captchaS = (String) request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
         String captchaR = request.getParameter("captcha");
         return StringUtils.equals(captchaS, captchaR);
     }
 
+    public boolean checkReCaptcha(ResponseItem item, HttpServletRequest request) {
+        ReCaptchaResponse response = reCaptcha.checkAnswer(request.getRemoteAddr(), request.getParameter("recaptcha_challenge_field"), request.getParameter("recaptcha_response_field"));
+        if(response.isValid()){
+           return true;
+        }
+        item.addData(response.getErrorMessage());
+        return false;
+    }
+
     public ResponseItem check(BindingResult result, HttpServletRequest request, boolean captcha) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        if (captcha && !checkCaptcha(request)) {
-            ri.addData("验证码输入不正确");
+        if (captcha) {
+            switch (this.captcha) {
+                case "kaptcha":
+                    if (!checkKaptcha(request)) {
+                        ri.addData("验证码输入不正确");
+                    }
+                    break;
+                case "reCaptcha":
+                    if (!checkReCaptcha(ri,request)) {
+                        ri.addData("验证码输入不正确");
+                    }
+                    break;
+                default:
+                    ri.addData("未知的验证码引擎");
+
+                    break;
+            }
         }
+
 
         for (ObjectError error : result.getAllErrors()) {
             ri.addData(error.getDefaultMessage());
@@ -65,4 +95,22 @@ public class FormHelper {
         return ri;
     }
 
+    @PostConstruct
+    public void reload() {
+        captcha = siteService.getString("site.captcha");
+    }
+
+    @Resource
+    private ReCaptcha reCaptcha;
+    @Resource
+    private SiteService siteService;
+    private String captcha;
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    public void setReCaptcha(ReCaptcha reCaptcha) {
+        this.reCaptcha = reCaptcha;
+    }
 }

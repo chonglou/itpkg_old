@@ -3,6 +3,8 @@ package com.odong.portal.controller;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -27,8 +29,24 @@ import java.io.IOException;
 
 @Controller
 public class CaptchaController {
+    @RequestMapping(value = "/captcha.html", method = RequestMethod.GET)
+    void getReCaptcha(HttpServletRequest request, HttpServletResponse response){
+
+
+
+        try(
+            ServletOutputStream out = response.getOutputStream()
+            )
+        {
+            out.print(reCaptcha.createRecaptchaHtml(request.getParameter("error"), null));
+            out.flush();
+        }
+        catch (IOException e){
+            logger.error("生成验证码出错", e);
+        }
+    }
     @RequestMapping(value = "/captcha.jpg", method = RequestMethod.GET)
-    ModelAndView getCaptcha(HttpServletRequest request, HttpServletResponse response) {
+    void getKaptcha(HttpServletRequest request, HttpServletResponse response) {
         // Set to expire far in the past.
         response.setDateHeader("Expires", 0);
         // Set standard HTTP/1.1 no-cache headers.
@@ -63,13 +81,19 @@ public class CaptchaController {
         } catch (IOException e) {
             logger.error("生成验证码出错", e);
         }
-        return null;
+
     }
 
     @Resource
     private Producer captchaProducer;
+    @Resource
+    private ReCaptcha reCaptcha;
     private final static Logger logger = LoggerFactory.getLogger(CaptchaController.class);
 
+
+    public void setReCaptcha(ReCaptcha reCaptcha) {
+        this.reCaptcha = reCaptcha;
+    }
 
     public void setCaptchaProducer(Producer captchaProducer) {
         this.captchaProducer = captchaProducer;

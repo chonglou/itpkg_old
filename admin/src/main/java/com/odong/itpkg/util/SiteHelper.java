@@ -3,6 +3,8 @@ package com.odong.itpkg.util;
 import com.odong.itpkg.entity.Task;
 import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.entity.uc.Company;
+import com.odong.itpkg.model.KaptchaProfile;
+import com.odong.itpkg.model.ReCaptchaProfile;
 import com.odong.itpkg.model.SmtpProfile;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.RbacService;
@@ -53,6 +55,19 @@ public class SiteHelper {
             smtp.setPort(25);
             emailHelper.setup(smtp);
             emailHelper.reload();
+
+            //KAPTCHA
+            KaptchaProfile kaptcha = new KaptchaProfile();
+            kaptcha.setLength(4);
+            kaptcha.setChars("0123456789");
+            kaptcha.setHeight(56);
+            kaptcha.setWidth(100);
+            siteService.set("site.kaptcha", kaptcha);
+
+            //RECAPTCHA
+            ReCaptchaProfile reCaptcha = new ReCaptchaProfile();
+            siteService.set("site.reCaptcha", reCaptcha);
+            siteService.set("site.captcha", "kaptcha");
 
 
             String email = "flamen@0-dong.com";
