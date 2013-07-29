@@ -108,7 +108,7 @@
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            if( window.confirm("你确认要删除时间规则["+ss[2]+"]么？")){
+            if( window.confirm("你确认要删除流量规则["+ss[2]+"]么？")){
                 new Ajax("/net/limit/flow/"+ss[2], "DELETE");
             }
         });

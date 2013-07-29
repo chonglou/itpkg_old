@@ -70,7 +70,7 @@ public class EmailSender implements Runnable {
                 helper.addInline(attachs.get(file), new FileSystemResource(file));
             }
             sender.send(message);
-            logger.debug("发送邮件成功[" + to + "]");
+            logger.debug("发送邮件成功[{},{}]", to, title);
         } catch (Exception e) {
             logger.error("发送邮件失败", e);
         }

@@ -1,9 +1,13 @@
 package com.odong.itpkg.controller.net;
 
 import com.odong.itpkg.model.SessionItem;
+import com.odong.itpkg.service.HostService;
+import com.odong.itpkg.service.LogService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,4 +19,24 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @RequestMapping(value = "/net/firewall/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class FirewallController {
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    String getIndex(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        map.put("outList", hostService.listFirewallOutputByHost(hostId));
+        map.put("inList", hostService.listFirewallInput(hostId));
+        map.put("natList", hostService.listFirewallNat(hostId));
+        return "net/firewall";
+    }
+
+    @Resource
+    private LogService logService;
+    @Resource
+    private HostService hostService;
+
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
+    public void setHostService(HostService hostService) {
+        this.hostService = hostService;
+    }
 }

@@ -1,5 +1,7 @@
 package com.odong.itpkg.controller.net;
 
+import com.odong.itpkg.entity.net.Host;
+import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
@@ -7,22 +9,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-7-18
- * Time: 上午11:27
+ * Date: 13-7-28
+ * Time: 下午4:41
  */
-
 @Controller
-@RequestMapping(value = "/net/dhcp4/{hostId}")
+@RequestMapping(value = "/net/state/{hostId}")
 @SessionAttributes(SessionItem.KEY)
-public class Dhcp4Controller {
+public class StateController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getIndex(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        return "net/dhcp4";
+        Host host = hostService.getHost(hostId);
+        return "net/state";
     }
 
     @Resource

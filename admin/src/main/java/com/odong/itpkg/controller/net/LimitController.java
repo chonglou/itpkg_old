@@ -57,7 +57,7 @@ public class LimitController {
                     "thur", "四", dl.isThur(),
                     "fri", "五", dl.isFri(),
                     "sat", "六", dl.isSat(),
-                    "sun", "七", dl.isSun()
+                    "sun", "日", dl.isSun()
             };
             for (int i = 0; i < week.length; i += 3) {
                 RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期" + (String) week[i + 1], (Boolean) week[i + 2]);
@@ -100,7 +100,7 @@ public class LimitController {
                 "thur", "四", true,
                 "fri", "五", true,
                 "sat", "六", false,
-                "sun", "七", false
+                "sun", "日", false
         };
         for (int i = 0; i < week.length; i += 3) {
             RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期" + (String) week[i + 1], (Boolean) week[i + 2]);

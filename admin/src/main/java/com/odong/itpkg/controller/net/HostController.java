@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -31,6 +32,18 @@ import java.util.UUID;
 @RequestMapping(value = "/net/host")
 @SessionAttributes(SessionItem.KEY)
 public class HostController {
+
+    @RequestMapping(value = "/{host}", method = RequestMethod.GET)
+    String getHost(@PathVariable long host,Map<String,Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si){
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        Host h = hostService.getHost(host);
+        if(h!=null&&h.getCompany().equals(si.getSsCompanyId())){
+            Ip wanIp = hostService.getIp(h.getWanIp());
+            map.put("wanIp", wanIp);
+            map.put("host", h);
+        }
+        return "net/host";
+    }
 
     @RequestMapping(value = "/wan/{host}", method = RequestMethod.GET)
     @ResponseBody

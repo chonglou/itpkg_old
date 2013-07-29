@@ -115,7 +115,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
                 }
             }
 
-            for (String s : new String[]{"bind9", "dhcp4", "firewall", "mac"}) {
+            for (String s : new String[]{"bind9", "dhcp4", "firewall", "mac", "state"}) {
                 if (ss[2].equals(s)) {
                     Long hostId = Long.parseLong(ss[3]);
                     if (hostService.getHost(hostId).getCompany().equals(si.getSsCompanyId())) {

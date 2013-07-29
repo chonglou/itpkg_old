@@ -106,7 +106,6 @@ public class PageController {
     }
 
     private void fillSiteInfo(Map<String, Object> map) {
-        //TODO 需要Cache缓存
         Map<String, Object> site = new HashMap<>();
         for (String s : new String[]{"title", "description", "copyright", "keywords", "author"}) {
             site.put(s, siteService.getString("site." + s));

@@ -1,4 +1,4 @@
-function Ajax(url, type, data, success, async) {
+function Ajax(url, type, data, success, async, parent) {
     var _init = function () {
         if (type == undefined) {
             type = "GET";
@@ -6,15 +6,18 @@ function Ajax(url, type, data, success, async) {
         if (data == undefined) {
             data = [];
         }
+        if(parent == undefined){
+            parent = "gl_root";
+        }
         if (success == undefined) {
             success = function (result) {
                 if (result.ok) {
                     switch (result.type) {
                         case "form":
-                            new FormWindow(result);
+                            new FormWindow(result, parent);
                             break;
                         case "grid":
-                            new GridWindow(result);
+                            new GridWindow(result, parent);
                             break;
                         case "redirect":
                             window.location.href = result.data[0];
@@ -30,7 +33,7 @@ function Ajax(url, type, data, success, async) {
                     new MessageDialog(result.data);
                 }
                 else {
-                    $("div#gl_root").html(result);
+                    $("div#"+parent).html(result);
                 }
 
             }
@@ -55,7 +58,7 @@ function Ajax(url, type, data, success, async) {
 }
 
 
-function GridWindow(grid) {
+function GridWindow(grid, parent) {
     var _grid_id;
     var _id = function (id) {
         return "grid-" + _grid_id + "-" + id;
@@ -122,7 +125,7 @@ function GridWindow(grid) {
         }
         content += "</tbody></table>";
 
-        new HtmlDiv("grid-" + grid.id, content);
+        new HtmlDiv("grid-" + grid.id, content, parent);
 
         if (grid.action != undefined) {
             if (grid.add) {
@@ -162,7 +165,7 @@ function GridWindow(grid) {
     _init();
 }
 
-function FormWindow(form) {
+function FormWindow(form, parent) {
     var _form_id;
     var _field = function (id, label, input) {
         if (label == undefined) {
@@ -347,7 +350,7 @@ function FormWindow(form) {
         content += _button_group(form.buttons);
         content += "</fieldset></form>";
         //alert(content);
-        new HtmlDiv("fm-" + form.id, content);
+        new HtmlDiv("fm-" + form.id, content, parent);
 
         if (form.captcha) {
             switch (gl_captcha) {
@@ -438,11 +441,11 @@ function FormWindow(form) {
     _init();
 }
 
-function HtmlDiv(id, content) {
+function HtmlDiv(id, content, parent) {
     var _init = function () {
         var root = "div#" + id;
         if ($(root).length == 0) {
-            $("div#gl_root").append("<div id='" + id + "'></div>");
+            $("div#"+parent).append("<div id='" + id + "'></div>");
         }
         $(root).html(content);
     };

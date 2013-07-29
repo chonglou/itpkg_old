@@ -395,7 +395,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.0.3.v20130506</version>
+                <version>9.0.4.v20130625</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <reload>automatic</reload>
