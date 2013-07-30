@@ -6,7 +6,7 @@ function Ajax(url, type, data, success, async, parent) {
         if (data == undefined) {
             data = [];
         }
-        if(parent == undefined){
+        if (parent == undefined) {
             parent = "gl_root";
         }
         if (success == undefined) {
@@ -33,7 +33,7 @@ function Ajax(url, type, data, success, async, parent) {
                     new MessageDialog(result.data);
                 }
                 else {
-                    $("div#"+parent).html(result);
+                    $("div#" + parent).html(result);
                 }
 
             }
@@ -240,6 +240,7 @@ function FormWindow(form, parent) {
                     }
                     break;
                 case "textarea":
+
                     input = "<textarea id='" + _id(field.id) + "' style='width: " + field.width + "px;height: " + field.height + "px;' ";
                     if (field.readonly) {
                         input += "readonly ";
@@ -315,6 +316,12 @@ function FormWindow(form, parent) {
                         k++;
                     }
                     break;
+                case "agree":
+                    //input = "<textarea disabled style='width: 400px;height: 100px' >" + field.text + "</textarea>";
+                    //input += "<br/>"
+                    input = "<fieldset>"+field.text+"</fieldset>";
+                    input += "<input id='" + _id(field.id) + "' type='checkbox'>我同意";
+                    break;
 
                 default:
                     input = _hidden_field(field.id, field.value);
@@ -352,6 +359,7 @@ function FormWindow(form, parent) {
         //alert(content);
         new HtmlDiv("fm-" + form.id, content, parent);
 
+
         if (form.captcha) {
             switch (gl_captcha) {
                 case "kaptcha":
@@ -362,7 +370,14 @@ function FormWindow(form, parent) {
                     break;
             }
         }
-
+        for (var i in form.fields) {
+            var field = form.fields[i];
+            if(field.type=="textarea" && field.html){
+                var editor = new UE.ui.Editor();
+                editor.render(_id(field.id));
+                //UE.getEditor('myEditor')
+            }
+        }
 
         $('button#' + _id("reset")).click(function () {
             for (var i in form.fields) {
@@ -380,6 +395,9 @@ function FormWindow(form, parent) {
                         break;
                     case "select":
                         $("select#" + _id(field.id)).val(field.value == undefined ? "" : field.value);
+                        break;
+                    case "agree":
+                        $("input#" + _id(field.id)).prop('checked', false);
                         break;
                     default:
                         break;
@@ -417,6 +435,11 @@ function FormWindow(form, parent) {
                     case "select":
                         data[field.id] = $('select#' + _id(field.id)).val();
                         break;
+                    case "agree":
+                        if ($("input#" + _id(field.id)).is(':checked')) {
+                            data[field.id] = true;
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -445,7 +468,7 @@ function HtmlDiv(id, content, parent) {
     var _init = function () {
         var root = "div#" + id;
         if ($(root).length == 0) {
-            $("div#"+parent).append("<div id='" + id + "'></div>");
+            $("div#" + parent).append("<div id='" + id + "'></div>");
         }
         $(root).html(content);
     };

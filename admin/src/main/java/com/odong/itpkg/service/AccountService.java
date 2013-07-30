@@ -71,7 +71,7 @@ public interface AccountService {
     void setAccountLastLogin(long accountId);
 
     void setAccountPassword(long accountId, String password);
-
+    void delAccount(long accountId);
 
     GroupUser getGroupUser(long groupId, long userId);
 

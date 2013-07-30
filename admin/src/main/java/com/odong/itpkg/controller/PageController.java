@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +31,7 @@ import java.util.Map;
  * Date: 13-7-23
  * Time: 下午1:26
  */
-@Controller
+@Controller("c.page")
 @SessionAttributes(SessionItem.KEY)
 public class PageController {
     @RequestMapping(value = "/search", method = RequestMethod.POST)
@@ -50,11 +54,11 @@ public class PageController {
         navBars.add(nbInfo);
 
         NavBar nbCompany = new NavBar("公司信息");
-        nbCompany.add("基本信息", "/company/info");
-        nbCompany.add("账户管理", "/company/account");
-        nbCompany.add("用户管理", "/company/user");
-        nbCompany.add("主机信息", "/company/host");
-        nbCompany.add("规则模板", "/company/limit");
+        nbCompany.add("基本信息", "/uc/company/");
+        nbCompany.add("账户管理", "/uc/account/");
+        nbCompany.add("用户管理", "/uc/user/");
+        nbCompany.add("主机信息", "/uc/host/");
+        nbCompany.add("规则模板", "/uc/limit/");
         nbCompany.setAjax(true);
         navBars.add(nbCompany);
 
@@ -68,14 +72,14 @@ public class PageController {
         //logger.debug("SessionItem {}", jsonHelper.object2json(si));
         if (si.isSsAdmin()) {
             NavBar nbSite = new NavBar("站点管理");
-            nbSite.add("公司列表", "/admin/company");
-            nbSite.add("邮件设置", "/admin/smtp");
-            nbSite.add("站点信息", "/admin/info");
-            nbSite.add("关于我们", "/admin/aboutMe");
-            nbSite.add("注册协议", "/admin/regProtocol");
-            nbSite.add("站点状态", "/admin/state");
-            nbSite.add("验证码", "/admin/captcha");
-            nbSite.add("数据压缩", "/admin/compress");
+            nbSite.add("公司列表", "/admin/company/");
+            nbSite.add("邮件设置", "/admin/smtp/");
+            nbSite.add("站点信息", "/admin/site/info");
+            nbSite.add("关于我们", "/admin/site/aboutMe");
+            nbSite.add("注册协议", "/admin/site/regProtocol");
+            nbSite.add("站点状态", "/admin/site/state");
+            nbSite.add("验证码", "/admin/captcha/");
+            nbSite.add("数据压缩", "/admin/compress/");
             nbSite.setAjax(true);
             navBars.add(nbSite);
         }
@@ -92,7 +96,17 @@ public class PageController {
         fillSiteInfo(map);
         map.put("title", "首页");
         map.put("top_nav_key", "main");
-        map.put("logList", logService.list(null, 100));
+        List<String> logList = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))){
+            String line;
+            while ((line=br.readLine())!=null){
+                logList.add(line);
+            }
+        }
+        catch (IOException e){
+            logger.error("加载大事记文件出错", e);
+        }
+        map.put("logList", logList);
         return "main";
     }
 
@@ -123,24 +137,15 @@ public class PageController {
     @Resource
     private SiteService siteService;
     @Resource
-    private LogService logService;
-    @Resource
     private HostService hostService;
-    @Resource
-    private JsonHelper jsonHelper;
     private final static Logger logger = LoggerFactory.getLogger(PageController.class);
 
-    public void setJsonHelper(JsonHelper jsonHelper) {
-        this.jsonHelper = jsonHelper;
-    }
+
 
     public void setHostService(HostService hostService) {
         this.hostService = hostService;
     }
 
-    public void setLogService(LogService logService) {
-        this.logService = logService;
-    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

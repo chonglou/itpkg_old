@@ -3,7 +3,7 @@ $!{extends("/layout.httl")}
 #macro(main)
 <fieldset>
     #set(List<String> logList)
-    <legend>更新日志[${logList.size}]</legend>
+    <legend>大事记[${logList.size}]</legend>
     <ul>
     #for(i : logList)
         <li>${i}</li>

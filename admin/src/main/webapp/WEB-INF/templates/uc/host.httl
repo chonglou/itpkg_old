@@ -1,0 +1,109 @@
+#set(List<Host> hostList)
+#set(Map<Long,Ip> ipMap)
+<fieldset>
+    <legend>
+    主机列表[${hostList.size}]
+    &nbsp; &nbsp;
+        <button id="refresh" class="btn btn-warning">刷新</button>
+        <button id="add" class="btn btn-success">新增</button>
+    </legend>
+
+     <table>
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>名称</td>
+                    <td>状态</td>
+                    <td>域</td>
+                    <td>WAN</td>
+                    <td>LAN</td>
+                    <td>端口(TCP)</td>
+                    <td>详细信息</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                #for(h : hostList)
+                    <tr>
+                        <td>${h.id}</td>
+                        <td>${h.name}</td>
+                        <td>${h.state}</td>
+                        <td>${h.domain}</td>
+                        <td>
+                        #set(ip=ipMap.get(h.id))
+                        ${h.wanMac}<br>
+                        #if(ip.type.toString() == 'STATIC')
+                            ${ip.getAddress()}
+                        #else(ip.type.toString() == 'PPPOE')
+                            ${ip.username}
+                        #end
+                        @${ip.type}
+                        </td>
+                        <td>${h.lanMac}<br/>${h.lanNet}</td>
+                        <td>${h.rpcPort}</td>
+                        <td>${h.details}</td>
+                        <td>
+                            <button id="host-delete-${h.id}" class="btn btn-danger">删除</button>
+                        </td>
+                    </tr>
+                #end
+            </tbody>
+        </table>
+
+</fieldset>
+<br/>
+<script type="text/javascript">
+
+    $("button[id^='host-delete']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            if( window.confirm("你确认要删除主机["+ss[2]+"]么？")){
+                new Ajax("/uc/host/"+ss[2],
+                    "DELETE"
+                );
+            }
+        });
+    });
+
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/uc/host/");
+    });
+
+    $("button#add").click(function(){
+        clear_message_div();
+        new Ajax("/uc/host/add", undefined,undefined,undefined,false);
+        $("select#fm-hostAdd-type").change(function () {
+            show('hostAdd', $(this).val());
+        });
+        show('hostAdd', $("select#fm-hostAdd-type").val());
+    });
+
+    function show(id, type){
+        var staticFS = ['address', 'netmask', 'gateway', 'dns1', 'dns2'];
+        var pppoeFS = ['username', 'password'];
+        var showF = function(fields, flag){
+            for(var i in fields){
+                var fid = $("input#fm-"+id+"-"+fields[i]).parent().parent();
+                if(flag){
+                    fid.show();
+                }else{
+                    fid.hide();
+                }
+            }
+        };
+        showF(staticFS, false);
+        showF(pppoeFS, false);
+        switch (type){
+            case 'STATIC':
+                showF(staticFS, true);
+                break;
+            case 'DHCP':
+                break;
+            case "PPPOE":
+                showF(pppoeFS, true);
+                break;
+        }
+    }
+</script>

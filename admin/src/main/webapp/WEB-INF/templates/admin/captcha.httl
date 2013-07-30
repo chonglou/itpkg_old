@@ -1,6 +1,22 @@
-
+<fieldset>
+<legend>当前验证码 <button id="refresh" class="btn btn-warning">刷新</button></legend>
+#if(gl_captcha == "reCaptcha")
+<div id="reCaptcha"></div>
 <script type="text/javascript">
-    new Ajax("/admin/captchaFM", undefined, undefined, undefined, false);
+show("reCaptcha");
+</script>
+#else(gl_captcha == "kaptcha")
+<img src="/captcha?_=${random()}"/>
+#end
+</fieldset>
+<br/>
+<script type="text/javascript">
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/admin/captcha/");
+    });
+
+    new Ajax("/admin/captcha/info", undefined, undefined, undefined, false);
     $("input[name='fm-captcha-mode']").change(function () {
         show();
     });
@@ -21,8 +37,18 @@
                 }
             }
         };
+        var showR = function(flag){
+                var fid = $("input:radio[name='fm-captcha-includeNoScript']").parent().parent();
+                if (flag) {
+                    fid.show();
+                } else {
+                    fid.hide();
+                }
+        };
+
         showF(kFS, false);
         showF(rFS, false);
+        showR(false);
 
         switch (mode) {
             case "kaptcha":
@@ -30,6 +56,7 @@
                 break;
             case "reCaptcha":
                 showF(rFS, true);
+                showR(true);
                 break;
 
         }

@@ -14,7 +14,7 @@ import java.util.Date;
  * Time: 上午9:26
  */
 @Entity
-@Table(name = "netMac")
+@Table(name = "netRouter")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Router extends IdEntity {
     private static final long serialVersionUID = 8425622395905007499L;

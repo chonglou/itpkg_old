@@ -30,6 +30,15 @@ public class RegisterForm implements Serializable {
     private String rePwd;
     @NotNull
     private String captcha;
+    private boolean agree;
+
+    public boolean isAgree() {
+        return agree;
+    }
+
+    public void setAgree(boolean agree) {
+        this.agree = agree;
+    }
 
     public String getUsername() {
         return username;

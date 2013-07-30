@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +25,7 @@ public class Database {
             Class.forName(driver);
             try (Connection conn = DriverManager.getConnection(url.substring(0, url.lastIndexOf('/')), username, password);
                  Statement stat = conn.createStatement()) {
-                stat.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName + " CHARACTER SET  utf8");
+                stat.executeUpdate(String.format("CREATE DATABASE IF NOT EXISTS %s CHARACTER SET  utf8", dbName));
             }
             return;
         }
@@ -38,6 +35,23 @@ public class Database {
 
     public boolean isMysql() {
         return "com.mysql.jdbc.Driver".equals(driver);
+    }
+
+    public String getSize() {
+        if (isMysql()) {
+
+            try (Connection conn = DriverManager.getConnection(url.substring(0, url.lastIndexOf('/')) + "/information_schema", username, password);
+                 Statement stat = conn.createStatement()) {
+                ResultSet rs = stat.executeQuery(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM TABLES WHERE table_schema='%s'", dbName));
+                if(rs.next()){
+                    return rs.getString("data");
+                }
+
+            } catch (SQLException e) {
+                logger.error("查询数据库大小出错", e);
+            }
+        }
+        return null;
     }
 
 

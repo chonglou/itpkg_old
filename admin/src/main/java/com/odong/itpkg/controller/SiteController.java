@@ -24,7 +24,7 @@ import java.util.Map;
  * Date: 13-7-16
  * Time: 下午9:30
  */
-@Controller
+@Controller("c.site")
 public class SiteController {
 
 

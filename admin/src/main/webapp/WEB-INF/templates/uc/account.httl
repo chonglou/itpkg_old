@@ -1,0 +1,85 @@
+#set(SessionItem gl_session=session.d1s7e0wp)
+#set(List<Account> accountList)
+
+<fieldset>
+    <legend>
+    账户列表[${accountList.size}]
+    &nbsp; &nbsp;
+        <button id="refresh" class="btn btn-warning">刷新</button>
+    #if(gl_session.ssCompanyManager)
+        <button id="add" class="btn btn-success">新增</button>
+    #end
+    </legend>
+    <table>
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>邮箱</td>
+                <td>用户名</td>
+                <td>状态</td>
+                <td>上次登录</td>
+                <td>创建日期</td>
+                #if(gl_session.ssCompanyManager)
+                    <td>操作</td>
+                #end
+            </tr>
+        </head>
+        <tbody>
+            #for(a : accountList)
+            <tr>
+                <td>${a.id}</td>
+                <td>${a.email}</td>
+                <td>${a.username}</td>
+                <td>${a.state}</td>
+                <td>${a.lastLogin}</td>
+                <td>${a.created}</td>
+
+                #if(gl_session.ssCompanyManager)
+                    <td>
+                    #if(a.id == gl_session.ssAccountId)
+                        <button class="btn btn-inverse">自己</button>
+                    #else(a.state.toString() == "ENABLE")
+                        <button id="account-${a.id}-DISABLE" class="btn btn-danger">禁用</button>
+                    #else(a.state.toString() == "DISABLE")
+                        <button id="account-${a.id}-ENABLE" class="btn btn-primary">启用</button>
+                    #else
+                        <button class="btn btn-inverse">未激活</button>
+                        <button id="account-${a.id}-DONE" class="btn btn-danger">删除</button>
+                    #end
+                    </td>
+                #end
+            </tr>
+            #end
+        </tbody>
+    </table>
+
+</fieldset>
+ <br/>
+
+<script type="text/javascript">
+#if(gl_session.ssCompanyManager)
+    var btnId = "button[id^='account-']";
+    $(btnId).each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/uc/account/state",
+            "POST",
+            {"account":ss[1], "state":ss[2]}
+            );
+        });
+    });
+
+
+    $("button#add").click(function(){
+        clear_message_div();
+        new Ajax("/uc/account/add");
+    });
+#end
+
+
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/uc/account/");
+    });
+</script>

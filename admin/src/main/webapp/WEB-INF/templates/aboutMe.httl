@@ -3,10 +3,7 @@ $!{extends("/layout.httl")}
 #macro(main)
 <fieldset>
     <legend>关于我们</legend>
-    ${aboutMe}
+    $!{aboutMe}
     <div id="recaptcha_div"></div>
 </fieldset>
-<script type="text/javascript">
-showRecaptcha("recaptcha_div");
-</script>
 #end

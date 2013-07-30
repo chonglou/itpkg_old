@@ -11,7 +11,9 @@
     <title>${gl_site.title}#if(title)-${title}#end</title>
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/js/config.js#if(gl_debug)?_=${random()}#end"></script>
     <script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
     <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
     #if(gl_captcha == "reCaptcha")

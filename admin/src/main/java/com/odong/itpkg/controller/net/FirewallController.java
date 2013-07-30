@@ -3,6 +3,7 @@ package com.odong.itpkg.controller.net;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
+import com.odong.portal.util.FormHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  * Date: 13-7-18
  * Time: 上午11:27
  */
-@Controller
+@Controller("c.net.firewall")
 @RequestMapping(value = "/net/firewall/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class FirewallController {
@@ -28,15 +29,21 @@ public class FirewallController {
     }
 
     @Resource
+    private HostService hostService;
+    @Resource
     private LogService logService;
     @Resource
-    private HostService hostService;
+    private FormHelper formHelper;
+
+    public void setHostService(HostService hostService) {
+        this.hostService = hostService;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;
     }
 
-    public void setHostService(HostService hostService) {
-        this.hostService = hostService;
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
     }
 }

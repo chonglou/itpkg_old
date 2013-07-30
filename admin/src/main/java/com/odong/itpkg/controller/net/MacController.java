@@ -7,6 +7,7 @@ import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
 import com.odong.portal.service.SiteService;
+import com.odong.portal.util.FormHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ import java.util.Map;
  * Date: 13-7-18
  * Time: 上午11:28
  */
-@Controller
+@Controller("c.net.mac")
 @RequestMapping(value = "/net/mac/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class MacController {
@@ -37,15 +38,21 @@ public class MacController {
     }
 
     @Resource
+    private HostService hostService;
+    @Resource
     private LogService logService;
     @Resource
-    private HostService hostService;
+    private FormHelper formHelper;
+
+    public void setHostService(HostService hostService) {
+        this.hostService = hostService;
+    }
 
     public void setLogService(LogService logService) {
         this.logService = logService;
     }
 
-    public void setHostService(HostService hostService) {
-        this.hostService = hostService;
+    public void setFormHelper(FormHelper formHelper) {
+        this.formHelper = formHelper;
     }
 }

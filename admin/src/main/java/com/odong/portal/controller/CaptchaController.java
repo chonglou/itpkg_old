@@ -25,7 +25,7 @@ import java.io.IOException;
  * Time: 下午11:30
  */
 
-@Controller
+@Controller("captcha")
 public class CaptchaController {
     @RequestMapping(value = "/captcha", method = RequestMethod.GET)
     void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {

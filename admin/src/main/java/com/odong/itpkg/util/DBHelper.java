@@ -28,6 +28,9 @@ import java.util.Date;
  */
 @Component
 public class DBHelper {
+    public String getSize(){
+        return database.getSize();
+    }
     public void compress(int keepDays) {
         taskService.removeInvalid(keepDays);
         logService.removeOld(keepDays);
@@ -56,6 +59,7 @@ public class DBHelper {
             }
         }
     }
+
 
     @PostConstruct
     void init() {

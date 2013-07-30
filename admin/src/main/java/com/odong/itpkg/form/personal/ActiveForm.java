@@ -18,6 +18,15 @@ public class ActiveForm implements Serializable {
     private String email;
     @NotNull
     private String captcha;
+    private boolean agree;
+
+    public boolean isAgree() {
+        return agree;
+    }
+
+    public void setAgree(boolean agree) {
+        this.agree = agree;
+    }
 
     public String getEmail() {
         return email;

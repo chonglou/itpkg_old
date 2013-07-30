@@ -1,5 +1,4 @@
 $!{extends("/frame.httl")}
-
 #macro(left_nav_bar(List<NavBar> navBars))
 #if(navBars)
 <div class="well sidebar-nav">

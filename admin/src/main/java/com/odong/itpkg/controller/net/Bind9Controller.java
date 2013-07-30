@@ -28,7 +28,7 @@ import java.util.Map;
  * Date: 13-7-18
  * Time: 上午11:27
  */
-@Controller
+@Controller("c.net.bind9")
 @RequestMapping(value = "/net/bind9/{hostId}")
 @SessionAttributes(SessionItem.KEY)
 public class Bind9Controller {

@@ -223,6 +223,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void delAccount(long accountId) {
+        accountDao.delete(accountId);
+    }
+
+    @Override
     public void setUserGroup(long userId, long groupId, boolean bind) {
         if (bind) {
             GroupUser gu = new GroupUser();
