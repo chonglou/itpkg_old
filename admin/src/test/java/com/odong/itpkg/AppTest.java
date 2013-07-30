@@ -2,6 +2,7 @@ package com.odong.itpkg;
 
 
 import com.odong.itpkg.model.Rpc;
+import com.odong.itpkg.router.Type;
 import com.odong.itpkg.rpc.Callback;
 import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.util.JsonHelper;
@@ -16,7 +17,7 @@ import java.util.List;
 public class AppTest {
     @Test
     public void testFormat(){
-        log(String.format("%02d:%02d", 1, 1));
+        log(Type.TPLINK_WR841N.name());
     }
     //@Test
     public void testClient() {
