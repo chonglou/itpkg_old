@@ -124,8 +124,8 @@ public class SecurityInterceptor implements HandlerInterceptor {
             }
             return true;
         }
-        //search
-        if (url.equals("/search")) {
+        //search or editor
+        if (url.equals("/search") || url.startsWith("/editor/")) {
             if (si == null) {
                 login(response);
                 return false;
@@ -133,6 +133,10 @@ public class SecurityInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        //附件下载
+        if(url.startsWith("/attachments/")){
+            return true;
+        }
         notFound(response);
         return false;  //
     }
