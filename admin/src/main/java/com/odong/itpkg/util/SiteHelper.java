@@ -39,7 +39,7 @@ public class SiteHelper {
         if (siteService.getObject("site.init", Date.class) == null) {
             siteService.set("site.init", new Date());
             siteService.set("site.version", "v20130716");
-            siteService.set("site.title", "IT-PACKAGE(企业信息化管理系统)");
+            siteService.set("site.title", "IT-PACKAGE");
             siteService.set("site.description", "itpkg");
             siteService.set("site.keywords", "itpkg");
             siteService.set("site.domain", "www.0-dong.com");

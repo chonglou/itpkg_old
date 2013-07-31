@@ -2,6 +2,7 @@ package com.odong.itpkg.controller.uc;
 
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
+import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.host.HostAddForm;
 import com.odong.itpkg.model.SessionItem;
@@ -35,7 +36,7 @@ public class HostController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getHost(Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Map<Long, Ip> ipMap = new HashMap<>();
-        List<Host> hostList = hostService.listHost(si.getSsCompanyId());
+        List<Host> hostList = hostService.listHostByCompany(si.getSsCompanyId());
         for (Host h : hostList) {
             ipMap.put(h.getId(), hostService.getIp(h.getWanIp()));
         }
@@ -48,38 +49,51 @@ public class HostController {
     @ResponseBody
     Form getHostAddForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("hostAdd", "添加主机", "/uc/host/add");
-        fm.addField(new HiddenField<Long>("id", null));
-
-        SelectField<Ip.Type> type = new SelectField<>("type", "类型", Ip.Type.STATIC);
-        type.addOption("固定IP", Ip.Type.STATIC);
-        type.addOption("动态分配", Ip.Type.DHCP);
-        type.addOption("拨号上网", Ip.Type.PPPOE);
-        fm.addField(type);
-
-        String[] fields = new String[]{
-                "name", "名称",
-                "domain", "域",
-                "wanMac", "WAN MAC",
-                "address", "IP地址",
-                "netmask", "子网掩码",
-                "gateway", "网关",
-                "dns1", "DNS1",
-                "dns2", "DNS2",
-                "username", "用户名",
-                "password", "密码",
-                "lanMac", "LAN MAC",
-                "lanNet", "LAN网段"
-        };
-        for (int i = 0; i < fields.length; i += 2) {
-            fm.addField(new TextField<String>(fields[i], fields[i + 1]));
+        List<FlowLimit> flowLimits = hostService.listFirewallFlowLimit(si.getSsCompanyId());
+        if (flowLimits.size() == 0) {
+            fm.addData("没有限速规则");
+        } else {
+            fm.setOk(true);
         }
+        if (fm.isOk()) {
+            fm.addField(new HiddenField<Long>("id", null));
 
-        TextField<Integer> rpcPort = new TextField<>("rpcPort", "RPC端口", 9999);
-        rpcPort.setWidth(100);
-        fm.addField(rpcPort);
+            SelectField<Ip.Type> type = new SelectField<>("type", "类型", Ip.Type.STATIC);
+            type.addOption("固定IP", Ip.Type.STATIC);
+            type.addOption("动态分配", Ip.Type.DHCP);
+            type.addOption("拨号上网", Ip.Type.PPPOE);
+            fm.addField(type);
 
-        fm.addField(new TextAreaField("details", "详情"));
-        fm.setOk(true);
+            String[] fields = new String[]{
+                    "name", "名称",
+                    "domain", "域",
+                    "wanMac", "WAN MAC",
+                    "address", "IP地址",
+                    "netmask", "子网掩码",
+                    "gateway", "网关",
+                    "dns1", "DNS1",
+                    "dns2", "DNS2",
+                    "username", "用户名",
+                    "password", "密码",
+                    "lanMac", "LAN MAC",
+                    "lanNet", "LAN网段"
+            };
+            for (int i = 0; i < fields.length; i += 2) {
+                fm.addField(new TextField<String>(fields[i], fields[i + 1]));
+            }
+
+            SelectField<Long> defFl = new SelectField<Long>("defFlowLimit", "默认限速规则");
+            for (FlowLimit fl : flowLimits) {
+                defFl.addOption(fl.getName(), fl.getId());
+            }
+            fm.addField(defFl);
+
+            TextField<Integer> rpcPort = new TextField<>("rpcPort", "RPC端口", 9999);
+            rpcPort.setWidth(100);
+            fm.addField(rpcPort);
+
+            fm.addField(new TextAreaField("details", "详情"));
+        }
         return fm;
     }
 
@@ -116,6 +130,12 @@ public class HostController {
             ri.setOk(false);
             ri.addData("LAN网段格式不正确");
         }
+        FlowLimit fl = hostService.getFirewallFlowLimit(form.getDefFlowLimit());
+        if(fl == null || !fl.getCompany().equals(si.getSsCompanyId())){
+            ri.setOk(false);
+            ri.addData("限速规则["+form.getDefFlowLimit()+"]不存在");
+        }
+
         if (ri.isOk()) {
             String wanIpId = UUID.randomUUID().toString();
             switch (form.getType()) {
@@ -129,7 +149,7 @@ public class HostController {
                     hostService.addIpDhcp(wanIpId);
                     break;
             }
-            hostService.addHost(si.getSsCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), form.getLanNet(), form.getLanMac(), form.getDetails());
+            hostService.addHost(si.getSsCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), ss[0]+"."+ss[1]+"."+ss[2],  form.getLanMac(),form.getDefFlowLimit(), form.getDetails());
             logService.add(si.getSsAccountId(), "添加主机[" + form.getName() + "]", Log.Type.INFO);
 
         }

@@ -519,3 +519,12 @@ function MessageDialog(messages, type) {
     };
     _init();
 }
+
+
+function showRecaptcha(element) {
+    Recaptcha.create(
+        gl_reCaptcha_key, element, {
+            theme: "red",
+            callback: Recaptcha.focus_response_field}
+    );
+}

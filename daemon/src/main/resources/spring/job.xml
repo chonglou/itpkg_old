@@ -10,7 +10,7 @@
     </bean>
     <bean id="taskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="taskJobDetail"/>
-        <property name="cronExpression" value="* 0/${server.space} * * * ?"/>
+        <property name="cronExpression" value="0 0/${server.space} * * * ?"/>
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

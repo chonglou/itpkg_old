@@ -579,10 +579,11 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setHostLan(long hostId, String lanNet, String lanMac) {
+    public void setHostLan(long hostId, String lanNet, String lanMac, long defFlowLimit) {
         Host h = hostDao.select(hostId);
         h.setLanNet(lanNet);
         h.setLanMac(lanMac);
+        h.setDefFlowLimit(defFlowLimit);
         hostDao.update(h);
     }
 
@@ -609,7 +610,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public List<Host> listHost(String companyId) {
+    public List<Host> listHostByCompany(String companyId) {
         Map<String, Object> map = new HashMap<>();
         map.put("company", companyId);
         map.put("state", Host.State.DONE);
@@ -622,9 +623,17 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
+    public List<Host> listHostByFlowLimit(long flowLimitId) {
+        Map<String, Object> map = new HashMap<>();
+       map.put("defFlowLimit", flowLimitId);
+        return hostDao.list("SELECT i FROM Host i WHERE i.defFlowLimit=:defFlowLimit",map);
+    }
+
+    @Override
     public void addHost(String companyId, String name, String domain,
                         String wanIp, String wanMac, int rpcPort,
                         String lanNet, String lanMac,
+                        long defFlowLimit,
                         String details) {
         Host h = new Host();
         h.setCompany(companyId);
@@ -636,6 +645,7 @@ public class HostServiceImpl implements HostService {
         h.setLanNet(lanNet);
         h.setLanMac(lanMac);
         h.setDetails(details);
+        h.setDefFlowLimit(defFlowLimit);
         h.setState(Host.State.SUBMIT);
         h.setSignKey(encryptHelper.encode(stringHelper.random(Host.KEY_LEN)));
         h.setSpace(60);
@@ -674,6 +684,14 @@ public class HostServiceImpl implements HostService {
     @Override
     public Mac getMac(long macId) {
         return macDao.select(macId);  //
+    }
+
+    @Override
+    public Mac getMac(long hostId, String serial) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("host", hostId);
+        map.put("serial", serial);
+        return macDao.select("SELECT i FROM Mac i WHERE i.host=:host AND i.serial=:serial", map);
     }
 
     @Override

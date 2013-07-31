@@ -22,6 +22,8 @@ import java.util.List;
  * Time: 下午2:39
  */
 public class Client {
+
+
     public Client(String key) {
         this.ste = new StrongTextEncryptor();
         ste.setPassword(key);
@@ -31,20 +33,27 @@ public class Client {
     }
 
 
-    public Rpc.Request command(List<String> lines) {
+    public Rpc.Request command(String... lines) {
         return builder(Rpc.Type.COMMAND, lines).build();
     }
+    public Rpc.Request command(List<String> lines) {
+        return command(lines.toArray(new String[1]));
 
-    public Rpc.Request file(String name, String owner, String mode, List<String> lines) {
+    }
+
+    public Rpc.Request file(String name, String owner, String mode, String... lines) {
         return builder(Rpc.Type.FILE, lines).setName(name).setOwner(owner).setMode(mode).build();
+    }
+    public Rpc.Request file(String name, String owner, String mode, List<String>lines) {
+        return file(name, owner, mode, lines.toArray(new String[1]));
     }
 
     public Rpc.Request heart() {
-        return builder(Rpc.Type.HEART, null).build();
+        return builder(Rpc.Type.HEART).build();
     }
 
     public Rpc.Request bye() {
-        return builder(Rpc.Type.BYE, null).build();
+        return builder(Rpc.Type.BYE).build();
     }
 
     public String decode(String encrypt) {
@@ -64,6 +73,7 @@ public class Client {
         } catch (InterruptedException e) {
             throw new IllegalArgumentException("连接服务器[" + host + ":" + port + "]错误", e);
         }
+
     }
 
     public void close() {
@@ -91,7 +101,7 @@ public class Client {
     }
 
 
-    private Rpc.Request.Builder builder(Rpc.Type type, List<String> lines) {
+    private Rpc.Request.Builder builder(Rpc.Type type, String... lines) {
         Rpc.Request.Builder builder = Rpc.Request.newBuilder();
         if (lines != null) {
             for (String line : lines) {

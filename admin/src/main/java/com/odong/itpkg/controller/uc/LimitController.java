@@ -1,7 +1,10 @@
 package com.odong.itpkg.controller.uc;
 
+import com.odong.itpkg.entity.net.Host;
+import com.odong.itpkg.entity.net.Mac;
 import com.odong.itpkg.entity.net.firewall.DateLimit;
 import com.odong.itpkg.entity.net.firewall.FlowLimit;
+import com.odong.itpkg.entity.net.firewall.Output;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.limit.DateLimitForm;
 import com.odong.itpkg.form.net.limit.FlowLimitForm;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -161,13 +165,18 @@ public class LimitController {
 
     @RequestMapping(value = "/date/{limit}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem deleteDateLimitAdd(@PathVariable long limit, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem deleteDateLimit(@PathVariable long limit, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         DateLimit dl = hostService.getFirewallDateLimit(limit);
         if (dl != null && dl.getCompany().equals(si.getSsCompanyId())) {
-            hostService.delFirewallDateLimit(limit);
-            logService.add(si.getSsAccountId(), "删除日期规则[" + limit + "]", Log.Type.INFO);
-            ri.setOk(true);
+            List<Output> outputs = hostService.listFirewallOutputByDateLimit(dl.getId());
+            if (outputs.size() == 0) {
+                hostService.delFirewallDateLimit(limit);
+                logService.add(si.getSsAccountId(), "删除日期规则[" + limit + "]", Log.Type.INFO);
+                ri.setOk(true);
+            } else {
+                ri.addData("日期规则[" + limit + "]正在使用，不能删除");
+            }
         } else {
             ri.addData("日期规则[" + limit + "]不存在");
         }
@@ -195,6 +204,9 @@ public class LimitController {
                     sf.addOption(String.format("%dK", j * 100), j * 100);
                 }
                 sf.addOption("1M", 1000);
+                sf.addOption("1M", 1000);
+                sf.addOption("1.5M", 1500);
+                sf.addOption("2M", 2000);
                 fm.addField(sf);
             }
             fm.addField(new TextAreaField("details", "详情", fl.getDetails()));
@@ -226,6 +238,8 @@ public class LimitController {
                 sf.addOption(String.format("%dK", j * 100), j * 100);
             }
             sf.addOption("1M", 1000);
+            sf.addOption("1.5M", 1500);
+            sf.addOption("2M", 2000);
             fm.addField(sf);
         }
         fm.addField(new TextAreaField("details", "详情"));
@@ -266,13 +280,20 @@ public class LimitController {
 
     @RequestMapping(value = "/flow/{limit}", method = RequestMethod.DELETE)
     @ResponseBody
-    ResponseItem deleteFlowLimitAdd(@PathVariable long limit, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem deleteFlowLimit(@PathVariable long limit, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        FlowLimit dl = hostService.getFirewallFlowLimit(limit);
-        if (dl != null && dl.getCompany().equals(si.getSsCompanyId())) {
-            hostService.delFirewallFlowLimit(limit);
-            logService.add(si.getSsAccountId(), "删除流量规则[" + limit + "]", Log.Type.INFO);
-            ri.setOk(true);
+        FlowLimit fl = hostService.getFirewallFlowLimit(limit);
+        if (fl != null && fl.getCompany().equals(si.getSsCompanyId())) {
+            List<Mac> macList = hostService.listMacByFirewallFlowLimit(fl.getId());
+            List<Host> hostList = hostService.listHostByFlowLimit(fl.getId());
+            if (macList.size() == 0 && hostList.size()==0) {
+                hostService.delFirewallFlowLimit(limit);
+                logService.add(si.getSsAccountId(), "删除流量规则[" + limit + "]", Log.Type.INFO);
+                ri.setOk(true);
+            } else {
+                ri.addData("流量规则[" + limit + "]正在使用，不能删除");
+            }
+
         } else {
             ri.addData("流量规则[" + limit + "]不存在");
         }

@@ -21,6 +21,15 @@ public class HostLanForm implements Serializable {
     @NotNull
     @IpV4
     private String lanNet;
+    private long defFlowLimit;
+
+    public long getDefFlowLimit() {
+        return defFlowLimit;
+    }
+
+    public void setDefFlowLimit(long defFlowLimit) {
+        this.defFlowLimit = defFlowLimit;
+    }
 
     public int getId() {
         return id;

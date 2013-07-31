@@ -1,1 +1,32 @@
-state
+<div class="panel">
+    #set(Host host)
+    #set(Ip wanIp)
+    #set(FlowLimit defFlowLimit)
+    <div class="panel-heading">主机[${host.name}]</div>
+    $!{host.details}
+    <ul class="list-group  list-group-flush">
+        <li class="list-group-item">
+            域：${host.domain}
+        </li>
+        <li class="list-group-item">
+            状态：${host.state}
+        </li>
+        <li class="list-group-item">
+            WAN信息：
+            MAC=${host.wanMac}
+            IP=${wanIp.getAddress()},
+            子网掩码=${wanIp.netmask},
+            网关=${wanIp.gateway},
+            主DNS=${wanIp.dns1},
+            备用DNS=${wanIp.dns2},
+            网络类型=${wanIp.type}
+        </li>
+        <li class="list-group-item">
+            LAN信息：MAC=${host.lanMac}, 网络=${host.lanNet}.0, 默认限速规则=${defFlowLimit.name}</li>
+
+        <li class="list-group-item">
+            RPC端口:${host.rpcPort}
+        </li>
+
+    </ul>
+</div>

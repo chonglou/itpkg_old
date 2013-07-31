@@ -43,7 +43,16 @@ public class HostAddForm implements Serializable {
     private String lanNet;
     @Port
     private int rpcPort;
+    private Long defFlowLimit;
     private String details;
+
+    public Long getDefFlowLimit() {
+        return defFlowLimit;
+    }
+
+    public void setDefFlowLimit(Long defFlowLimit) {
+        this.defFlowLimit = defFlowLimit;
+    }
 
     public String getName() {
         return name;

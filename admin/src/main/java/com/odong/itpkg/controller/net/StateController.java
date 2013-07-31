@@ -24,6 +24,9 @@ public class StateController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getIndex(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Host host = hostService.getHost(hostId);
+        map.put("wanIp", hostService.getIp(host.getWanIp()));
+        map.put("defFlowLimit", hostService.getFirewallFlowLimit(host.getDefFlowLimit()));
+        map.put("host", host);
         return "net/state";
     }
 

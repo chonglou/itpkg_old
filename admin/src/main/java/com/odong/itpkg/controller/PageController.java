@@ -60,7 +60,7 @@ public class PageController {
         navBars.add(nbCompany);
 
         NavBar nbHost = new NavBar("主机列表");
-        for (Host h : hostService.listHost(si.getSsCompanyId())) {
+        for (Host h : hostService.listHostByCompany(si.getSsCompanyId())) {
             nbHost.add("主机-" + h.getName(), "/net/host/" + h.getId() + "/");
         }
         nbHost.setAjax(true);
@@ -76,7 +76,7 @@ public class PageController {
             nbSite.add("注册协议", "/admin/site/regProtocol");
             nbSite.add("站点状态", "/admin/site/state");
             nbSite.add("验证码", "/admin/captcha/");
-            nbSite.add("数据压缩", "/admin/compress/");
+            nbSite.add("数据库", "/admin/database/");
             nbSite.setAjax(true);
             navBars.add(nbSite);
         }

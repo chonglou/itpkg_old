@@ -5,7 +5,8 @@
     #if(gl_captcha == "reCaptcha")
     <div id="reCaptcha"></div>
     <script type="text/javascript">
-        show("reCaptcha");
+        gl_reCaptcha_key = "${gl_reCaptcha_key}";
+        showRecaptcha("reCaptcha");
     </script>
     #else(gl_captcha == "kaptcha")
     <img src="/captcha?_=${random()}"/>

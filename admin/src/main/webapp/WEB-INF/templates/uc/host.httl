@@ -4,7 +4,8 @@
     <legend>
         主机列表[${hostList.size}]
         &nbsp; &nbsp;
-        <button id="refresh" class="btn btn-warning">刷新</button>
+        <button id="refresh-list" class="btn btn-warning">刷新列表</button>
+        <button id="refresh-page" class="btn btn-info">刷新页面</button>
         <button id="add" class="btn btn-success">新增</button>
     </legend>
 
@@ -39,7 +40,7 @@
                 #end
                 @${ip.type}
             </td>
-            <td>${h.lanMac}<br/>${h.lanNet}</td>
+            <td>${h.lanMac}<br/>${h.lanNet}.0</td>
             <td>${h.rpcPort}</td>
             <td>$!{h.details}</td>
             <td>
@@ -66,18 +67,22 @@
         });
     });
 
-    $("button#refresh").click(function () {
+    $("button#refresh-list").click(function () {
         clear_message_div();
         new Ajax("/uc/host/");
+    });
+    $("button#refresh-page").click(function () {
+        window.location.href="/personal/self";
     });
 
     $("button#add").click(function () {
         clear_message_div();
         new Ajax("/uc/host/add", undefined, undefined, undefined, false);
-        $("select#fm-hostAdd-type").change(function () {
+        var fType = $("select#fm-hostAdd-type");
+        fType.change(function () {
             showHostWanFields('hostAdd', $(this).val());
         });
-        showHostWanFields('hostAdd', $("select#fm-hostAdd-type").val());
+        showHostWanFields('hostAdd', fType.val());
     });
 
 

@@ -1,0 +1,20 @@
+<fieldset>
+    <legend>数据库状态
+        <button id="refresh" class="btn btn-warning">刷新</button>
+        <button id="backup" class="btn btn-info">备份</button>
+    </legend>
+    <b>大小：${dbSize}, 上次备份在：${lastBackup || "暂无"}，上次压缩在：${lastCompress || "暂无"}。</b>
+</fieldset>
+<br/>
+<script type="text/javascript">
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/admin/database/");
+    });
+    $("button#backup").click(function () {
+        clear_message_div();
+        new Ajax("/admin/database/backup", "POST");
+    });
+
+    new Ajax("/admin/database/compress", undefined, undefined, undefined, false);
+</script>

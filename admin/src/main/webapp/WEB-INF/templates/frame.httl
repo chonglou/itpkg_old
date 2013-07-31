@@ -14,21 +14,11 @@
     <script type="text/javascript" src="/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/ueditor/ueditor.all.min.js"></script>
     <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-    <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
-    <!--#if(gl_captcha == "reCaptcha") -->
     <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
-    <script type="text/javascript">
-        function showRecaptcha(element) {
-            Recaptcha.create(
-                    "${gl_reCaptcha_key}", element, {
-                        theme: "red",
-                        callback: Recaptcha.focus_response_field}
-            );
-        }
-    </script>
-    <!--#end-->
+    <link href="/style/css/main.css#if(gl_debug)?_=${random()}#end" rel="stylesheet"/>
     <script type="text/javascript">
         var gl_captcha = "${gl_captcha}";
+        var gl_reCaptcha_key = "${gl_reCaptcha_key}";
     </script>
     <script type="text/javascript" src="/js/widgets.js#if(gl_debug)?_=${random()}#end"></script>
     <script type="text/javascript" src="/js/main.js#if(gl_debug)?_=${random()}#end"></script>

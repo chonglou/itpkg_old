@@ -2,6 +2,7 @@ package com.odong.itpkg.controller.net;
 
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
+import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.host.HostInfoForm;
 import com.odong.itpkg.form.net.host.HostLanForm;
@@ -144,11 +145,16 @@ public class HostController {
 
             String[] fields = new String[]{
                     "lanMac", "LAN MAC", h.getLanMac(),
-                    "lanNet", "LAN网络", h.getLanNet()
+                    "lanNet", "LAN网络", h.getLanNet()+".0"
             };
             for (int i = 0; i < fields.length; i += 3) {
                 fm.addField(new TextField<>(fields[i], fields[i + 1], fields[i + 2]));
             }
+            SelectField<Long> defFl = new SelectField<Long>("defFlowLimit", "默认限速规则");
+            for (FlowLimit fl : hostService.listFirewallFlowLimit(si.getSsCompanyId())) {
+                defFl.addOption(fl.getName(), fl.getId());
+            }
+            fm.addField(defFl);
 
             fm.setOk(true);
         } else {
@@ -166,10 +172,15 @@ public class HostController {
             ri.setOk(false);
             ri.addData("LAN网段格式不正确");
         }
+        FlowLimit fl = hostService.getFirewallFlowLimit(form.getDefFlowLimit());
+        if(fl == null || !fl.getCompany().equals(si.getSsCompanyId())){
+            ri.setOk(false);
+            ri.addData("限速规则["+form.getDefFlowLimit()+"]不存在");
+        }
         if (ri.isOk()) {
             Host h = hostService.getHost(form.getId());
             if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
-                hostService.setHostLan(form.getId(), form.getLanNet(), form.getLanMac());
+                hostService.setHostLan(form.getId(), ss[0]+"."+ss[1]+"."+ss[2], form.getLanMac(), form.getDefFlowLimit());
                 logService.add(si.getSsAccountId(), "修改主机[" + form.getId() + "]LAN信息", Log.Type.INFO);
             } else {
                 ri.setOk(false);

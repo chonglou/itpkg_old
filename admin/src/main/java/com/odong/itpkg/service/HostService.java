@@ -142,7 +142,7 @@ public interface HostService {
 
     void setHostWan(long hostId, int rpcPort, String wanMac);
 
-    void setHostLan(long hostId, String lanNet, String lanMac);
+    void setHostLan(long hostId, String lanNet, String lanMac, long defFlowLimit);
 
     void setHostDmz(long hostId, boolean enable);
 
@@ -150,13 +150,14 @@ public interface HostService {
 
     List<Ip> listIpByHost(long hostId);
 
-    List<Host> listHost(String companyId);
+    List<Host> listHostByCompany(String companyId);
 
     List<Host> listHost();
+    List<Host> listHostByFlowLimit(long flowLimitId);
 
     void addHost(String companyId, String name, String domain,
                  String wanIp, String wanMac, int rpcPort,
-                 String lanNet, String lanMac,
+                 String lanNet, String lanMac, long defFlowLimit,
                  String details);
 
     String resetHostSignKey(long hostId);
@@ -168,6 +169,8 @@ public interface HostService {
     DateLimit getFirewallDateLimit(long dateLimitId);
 
     Mac getMac(long macId);
+
+    Mac getMac(long hostId, String serial);
 
     Output getFirewallOutput(long outputId);
 

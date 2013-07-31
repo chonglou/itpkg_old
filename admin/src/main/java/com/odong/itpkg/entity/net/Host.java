@@ -56,10 +56,21 @@ public class Host extends IdEntity {
     private State state;
     @Column(nullable = false)
     private int space;
+    @Column(nullable = false)
+    private long defFlowLimit;
     @Column(nullable = false, updatable = false)
     private Date created;
     @Version
     private int version;
+
+
+    public long getDefFlowLimit() {
+        return defFlowLimit;
+    }
+
+    public void setDefFlowLimit(long defFlowLimit) {
+        this.defFlowLimit = defFlowLimit;
+    }
 
     public boolean isDmz() {
         return dmz;
