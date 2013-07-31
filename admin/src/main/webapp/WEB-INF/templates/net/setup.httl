@@ -1,0 +1,23 @@
+<div class="btn-group">
+    <button id="host-info-${hostId}" class="btn btn-default">基本信息</button>
+    <button id="host-wan-${hostId}" class="btn btn-primary">WAN网口</button>
+    <button id="host-lan-${hostId}" class="btn btn-success">LAN网口</button>
+</div>
+<p>&nbsp;</p>
+<div id="setup-root"></div>
+<script type="text/javascript">
+    var id = "button[id^='host-']";
+    $(id).each(function () {
+        $(this).click(function(){
+            clear_message_div();
+            var ss = $(this).attr('id').split("-");
+            new Ajax("/net/host/"+ss[2]+"/"+ss[1],undefined, undefined, undefined, false, "setup-root");
+            if(ss[1]=="wan"){
+                $("select#fm-hostEdit-type").change(function () {
+                    showHostWanFields('hostEdit', $(this).val());
+                });
+                showHostWanFields('hostEdit', $("select#fm-hostEdit-type").val());
+            }
+        });
+    });
+</script>

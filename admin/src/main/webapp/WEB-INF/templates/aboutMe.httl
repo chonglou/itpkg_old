@@ -1,9 +1,9 @@
 $!{extends("/layout.httl")}
 
 #macro(main)
+<br/>
 <fieldset>
     <legend>关于我们</legend>
     $!{aboutMe}
-    <div id="recaptcha_div"></div>
 </fieldset>
 #end

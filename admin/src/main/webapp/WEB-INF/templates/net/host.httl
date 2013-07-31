@@ -1,34 +1,48 @@
 #set(Host host)
 #set(Ip wanIp)
 <ul class="nav nav-tabs">
-#set(tabs=["state":"当前状态","dhcp4":"DHCP服务", "bind9":"DNS服务", "firewall":"防火墙规则", "mac":"MAC列表"])
-#set(items=["state","mac","dhcp4","bind9","firewall"])
-#for(i : items)
+    #set(tabs=["state":"当前状态", "setup":"参数设置","dhcp4":"DHCP服务", "bind9":"DNS服务", "firewall":"防火墙规则", "limit":"限速规则",
+    "mac":"MAC列表"])
+    #set(items=["state","setup", "mac","dhcp4","bind9","firewall", "limit"])
+    #for(i : items)
     <li><a id="host-tab-${host.id}-${i}">${tabs[i]}</a></li>
-#end
+    #end
 </ul>
+<br/>
 <div id="host-root"></div>
 <script type="text/javascript">
-$(document).ready(function () {
-    bind_host_tab_click();
-    $("a#host-tab-"+${host.id}+"-state").parent().addClass("active");
-    new Ajax("/net/state/"+${host.id}+"/", undefined, undefined, undefined, undefined, "host-root");
-});
-
-function bind_host_tab_click() {
-    var id = "a[id^='host-tab-']";
-    $(id).each(function () {
-        $(this).click(function () {
-            $(id).each(function () {
-                $(this).parent().removeClass("active");
-            });
-            $(this).parent().addClass("active");
-            //clear_root_div();
-            clear_message_div();
-            var ss = $(this).attr('id').split('-');
-            new Ajax("/net/"+ss[3]+"/"+ss[2]+"/", undefined, undefined, undefined, undefined, "host-root");
-        });
+    $(document).ready(function () {
+        bind_host_tab_click();
+        $("a#host-tab-" + ${host.id} +"-state").parent().addClass("active");
+        new Ajax("/net/state/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "host-root");
     });
-}
+
+    function bind_host_tab_click() {
+        var id = "a[id^='host-tab-']";
+        $(id).each(function () {
+            $(this).click(function () {
+                $(id).each(function () {
+                    $(this).parent().removeClass("active");
+                });
+                $(this).parent().addClass("active");
+                //clear_root_div();
+                clear_message_div();
+                var ss = $(this).attr('id').split('-');
+                var url;
+                switch (ss[3]) {
+                    case "info":
+                    case "wan":
+                    case "lan":
+                        url = "/net/host/" + ss[2] + "/" + ss[3];
+                        break;
+                    default:
+                        url = "/net/" + ss[3] + "/" + ss[2] + "/";
+                        break;
+                }
+                $("div#host-root").html("");
+                new Ajax(url, undefined, undefined, undefined, undefined, "host-root");
+            });
+        });
+    }
 </script>
 

@@ -64,7 +64,7 @@ public class PageController {
 
         NavBar nbHost = new NavBar("主机列表");
         for (Host h : hostService.listHost(si.getSsCompanyId())) {
-            nbHost.add("主机-" + h.getName(), "/net/host/" + h.getId());
+            nbHost.add("主机-" + h.getName(), "/net/host/" + h.getId()+"/");
         }
         nbHost.setAjax(true);
         navBars.add(nbHost);

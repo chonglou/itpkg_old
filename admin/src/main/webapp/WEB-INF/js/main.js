@@ -17,8 +17,10 @@ function bind_left_nav_click() {
         $(this).click(function () {
             $(id).each(function () {
                 $(this).parent().removeClass("active");
+                $(this).parent().parent().parent().removeClass("active");
             });
             $(this).parent().addClass("active");
+            $(this).parent().parent().parent().addClass("active");
             clear_root_div();
             clear_message_div();
             new Ajax($(this).attr('id').split('-')[1]);

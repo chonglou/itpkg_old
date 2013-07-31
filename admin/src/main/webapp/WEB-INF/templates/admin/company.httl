@@ -1,37 +1,37 @@
 <fieldset>
-    #set(List<Company> companyList)
+    <!--#set(List<Company> companyList)-->
     <legend>
-    公司列表[${companyList.size}]
+        公司列表[${companyList.size}]
         &nbsp; &nbsp;
         <button id="refresh" class="btn btn-warning">刷新</button>
     </legend>
 
-     <table width="98%">
-            <thead>
-            <tr>
-                <td>名称</td>
-                <td>详细信息</td>
-                <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            #for(c : companyList)
-            <tr>
-                <td>${c.name}</td>
-                <td>${c.details}</td>
-                <td>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <td>名称</td>
+            <td>详细信息</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(c : companyList)
+        <tr>
+            <td>${c.name}</td>
+            <td>$!{c.details}</td>
+            <td>
                 #if(c.state.toString() == "ENABLE")
-                    <button id="company_${c.id}_DISABLE" class="btn btn-danger">禁用</button>
+                <button id="company_${c.id}_DISABLE" class="btn btn-danger">禁用</button>
                 #else(c.state.toString() == "DISABLE")
-                    <button id="company_${c.id}_ENABLE" class="btn btn-primary">启用</button>
+                <button id="company_${c.id}_ENABLE" class="btn btn-primary">启用</button>
                 #else
-                    <button class="btn btn-inverse">未激活</button>
+                <button class="btn btn-inverse">未激活</button>
                 #end
-                </td>
-            </tr>
-            #end
-            </tbody>
-        </table>
+            </td>
+        </tr>
+        #end
+        </tbody>
+    </table>
 </fieldset>
 <script type="text/javascript">
     var btnId = "button[id^='company_']";
@@ -40,13 +40,13 @@
             var ss = $(this).attr('id').split('_');
             clear_message_div();
             new Ajax("/admin/company/state",
-            "POST",
-            {"company":ss[1], "state":ss[2]}
+                    "POST",
+                    {"company": ss[1], "state": ss[2]}
             );
         });
     });
 
-    $("button#refresh").click(function(){
+    $("button#refresh").click(function () {
         clear_message_div();
         new Ajax("/admin/company/");
     });

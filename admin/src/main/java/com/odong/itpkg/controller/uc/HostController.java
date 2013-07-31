@@ -76,7 +76,10 @@ public class HostController {
         for (int i = 0; i < fields.length; i += 2) {
             fm.addField(new TextField<String>(fields[i], fields[i + 1]));
         }
-        fm.addField(new TextField<>("rpcPort", "RPC端口", 9999));
+
+        TextField<Integer> rpcPort = new TextField<>("rpcPort", "RPC端口", 9999);
+        rpcPort.setWidth(100);
+        fm.addField(rpcPort);
 
         fm.addField(new TextAreaField("details", "详情"));
         fm.setOk(true);

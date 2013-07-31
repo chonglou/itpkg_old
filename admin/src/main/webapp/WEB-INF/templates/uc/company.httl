@@ -2,14 +2,14 @@
 #set(Company company)
 #if(gl_session.ssCompanyManager)
 <script type="text/javascript">
-$(document).ready(function () {
-    new Ajax("/uc/company/info");
-});
+    $(document).ready(function () {
+        new Ajax("/uc/company/info");
+    });
 </script>
 #else
 <fieldset>
     <legend>${company.name}</legend>
-    ${company.details}
+    $!{company.details}
 </fieldset>
 <br/>
 #end

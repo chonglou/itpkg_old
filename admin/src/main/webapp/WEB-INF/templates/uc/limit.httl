@@ -1,29 +1,29 @@
-#set(List<DateLimit> dateLimitList)
-#set(List<FlowLimit> flowLimitList)
+<!--#set(List<DateLimit> dateLimitList)-->
+<!--#set(List<FlowLimit> flowLimitList)-->
 <fieldset>
     <legend>时间规则[${dateLimitList.size}]
-     &nbsp; &nbsp;
-            <button id="refresh" class="btn btn-warning">刷新</button>
-            <button id="date-add" class="btn btn-success">新增</button>
+        &nbsp; &nbsp;
+        <button id="date-refresh" class="btn btn-warning">刷新</button>
+        <button id="date-add" class="btn btn-success">新增</button>
     </legend>
-    <table>
+    <table class="table table-bordered table-hover">
         <thead>
-            <tr>
+        <tr>
             <td>ID</td>
             <td>名称</td>
             <td>时刻</td>
             <td>工作日</td>
             <td>详情</td>
             <td>操作</td>
-            </tr>
+        </tr>
         </thead>
         <tbody>
-            #for(dl : dateLimitList)
-            <tr>
-                <td>${dl.id}</td>
-                <td>${dl.name}</td>
-                <td>${dl.beginHour}:${dl.beginMinute}~${dl.endHour}:${dl.endMinute}</td>
-                <td>
+        #for(dl : dateLimitList)
+        <tr>
+            <td>${dl.id}</td>
+            <td>${dl.name}</td>
+            <td>${dl.beginHour}:${dl.beginMinute}~${dl.endHour}:${dl.endMinute}</td>
+            <td>
                 #if(dl.mon)星期一&nbsp;#end
                 #if(dl.tues)星期二&nbsp;#end
                 #if(dl.wed)星期三&nbsp;#end
@@ -31,49 +31,49 @@
                 #if(dl.fri)星期五&nbsp;#end
                 #if(dl.sat)星期六&nbsp;#end
                 #if(dl.sun)星期日&nbsp;#end
-                </td>
-                <td>${dl.details}</td>
-                <td>
-                    <button id="date-edit-${dl.id}" class="btn btn-primary">编辑</button>
-                    <button id="date-delete-${dl.id}" class="btn btn-danger">删除</button>
-                </td>
-            </tr>
-            #end
+            </td>
+            <td>$!{dl.details}</td>
+            <td>
+                <button id="date-edit-${dl.id}" class="btn btn-primary">编辑</button>
+                <button id="date-delete-${dl.id}" class="btn btn-danger">删除</button>
+            </td>
+        </tr>
+        #end
         </tbody>
     </table>
 </fieldset>
 <br/>
 <fieldset>
     <legend>限速规则[${flowLimitList.size}]
-     &nbsp; &nbsp;
-            <button id="refresh" class="btn btn-warning">刷新</button>
-            <button id="flow-add" class="btn btn-success">新增</button>
+        &nbsp; &nbsp;
+        <button id="flow-refresh" class="btn btn-warning">刷新</button>
+        <button id="flow-add" class="btn btn-success">新增</button>
     </legend>
-    <table>
+    <table class="table table-bordered table-hover">
         <thead>
-            <tr>
-                <td>ID</td>
-                <td>名称</td>
-                <td>上行(KB)</td>
-                <td>下行(KB)</td>
-                <td>详情</td>
-                <td>操作</td>
-            </tr>
+        <tr>
+            <td>ID</td>
+            <td>名称</td>
+            <td>上行(KB)</td>
+            <td>下行(KB)</td>
+            <td>详情</td>
+            <td>操作</td>
+        </tr>
         </thead>
         <tbody>
-            #for(fl : flowLimitList)
-            <tr>
-                <td>${fl.id}</td>
-                <td>${fl.name}</td>
-                <td>${fl.upRate}~${fl.upCeil}</td>
-                <td>${fl.downRate}~${fl.downCeil}</td>
-                <td>${fl.details}</td>
-                <td>
-                    <button id="flow-edit-${fl.id}" class="btn btn-primary">编辑</button>
-                    <button id="flow-delete-${fl.id}" class="btn btn-danger">删除</button>
-                </td>
-            </tr>
-            #end
+        #for(fl : flowLimitList)
+        <tr>
+            <td>${fl.id}</td>
+            <td>${fl.name}</td>
+            <td>${fl.upRate}~${fl.upCeil}</td>
+            <td>${fl.downRate}~${fl.downCeil}</td>
+            <td>$!{fl.details}</td>
+            <td>
+                <button id="flow-edit-${fl.id}" class="btn btn-primary">编辑</button>
+                <button id="flow-delete-${fl.id}" class="btn btn-danger">删除</button>
+            </td>
+        </tr>
+        #end
         </tbody>
     </table>
 
@@ -83,23 +83,23 @@
     $("button[id^='date-edit']").each(function () {
         $(this).click(function () {
             clear_message_div();
-            new Ajax("/uc/limit/date/"+$(this).attr('id').split('-')[2]);
+            new Ajax("/uc/limit/date/" + $(this).attr('id').split('-')[2]);
         });
     });
     $("button[id^='flow-edit']").each(function () {
-            $(this).click(function () {
-                clear_message_div();
-                new Ajax("/uc/limit/flow/"+$(this).attr('id').split('-')[2]);
-            });
+        $(this).click(function () {
+            clear_message_div();
+            new Ajax("/uc/limit/flow/" + $(this).attr('id').split('-')[2]);
         });
+    });
 
 
     $("button[id^='date-delete']").each(function () {
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            if( window.confirm("你确认要删除时间规则["+ss[2]+"]么？")){
-                new Ajax("/uc/limit/date/"+ss[2], "DELETE");
+            if (window.confirm("你确认要删除时间规则[" + ss[2] + "]么？")) {
+                new Ajax("/uc/limit/date/" + ss[2], "DELETE");
             }
         });
     });
@@ -108,23 +108,23 @@
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            if( window.confirm("你确认要删除流量规则["+ss[2]+"]么？")){
-                new Ajax("/uc/limit/flow/"+ss[2], "DELETE");
+            if (window.confirm("你确认要删除流量规则[" + ss[2] + "]么？")) {
+                new Ajax("/uc/limit/flow/" + ss[2], "DELETE");
             }
         });
     });
 
-    $("button#refresh").click(function(){
+    $("button[id$='refresh']").click(function () {
         clear_message_div();
         new Ajax("/uc/limit/");
     });
 
-    $("button#date-add").click(function(){
+    $("button#date-add").click(function () {
         clear_message_div();
         new Ajax("/uc/limit/date/add");
     });
-    $("button#flow-add").click(function(){
-            clear_message_div();
-            new Ajax("/uc/limit/flow/add");
-        });
+    $("button#flow-add").click(function () {
+        clear_message_div();
+        new Ajax("/uc/limit/flow/add");
+    });
 </script>

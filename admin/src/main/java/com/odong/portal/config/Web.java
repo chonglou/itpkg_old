@@ -20,7 +20,7 @@ public class Web extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/jquery/**").addResourceLocations("/WEB-INF/jquery/");
-        registry.addResourceHandler("/bootstrap/**").addResourceLocations("/WEB-INF/bootstrap-2.3.2/");
+        registry.addResourceHandler("/bootstrap/**").addResourceLocations("/WEB-INF/bs-v3.0.0-rc1/");
         registry.addResourceHandler("/ueditor/**").addResourceLocations("/WEB-INF/ueditor1_2_6_1-utf8/");
         registry.addResourceHandler("/highcharts/**").addResourceLocations("/WEB-INF/Highcharts-3.0.1/");
         registry.addResourceHandler("/style/**").addResourceLocations("/WEB-INF/style/");

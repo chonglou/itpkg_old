@@ -1,10 +1,12 @@
 <fieldset>
-<legend>当前数据库大小 <button id="refresh" class="btn btn-warning">刷新</button></legend>
-<b>${dbSize}</b>
+    <legend>当前数据库大小
+        <button id="refresh" class="btn btn-warning">刷新</button>
+    </legend>
+    <b>${dbSize}</b>
 </fieldset>
 <br/>
 <script type="text/javascript">
-    $("button#refresh").click(function(){
+    $("button#refresh").click(function () {
         clear_message_div();
         new Ajax("/admin/compress/");
     });

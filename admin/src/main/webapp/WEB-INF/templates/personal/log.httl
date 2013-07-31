@@ -1,9 +1,9 @@
-<fieldset>
-    #set(List<Log> logList)
-    <legend>日志列表[${logList.size}]</legend>
-    <ul>
-    #for(i : logList)
-        <li>${i.created}：${i.message}</li>
-    #end
+<!--#set(List<Log> logList)-->
+<div class="panel">
+    <div class="panel-heading">日志列表[${logList.size}]</div>
+    <ul class="list-group  list-group-flush">
+        #for(i : logList)
+        <li class="list-group-item">${i.created}：${i.message}</li>
+        #end
     </ul>
-</fieldset>
+</div>

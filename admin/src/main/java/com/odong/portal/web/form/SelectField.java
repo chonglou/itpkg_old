@@ -22,7 +22,7 @@ public final class SelectField<T> extends Field<T> {
     public SelectField(String id, String name, T value, String tooltip) {
         super(id, name, "select", value, true, tooltip);
         this.options = new ArrayList<>();
-        this.width = 80;
+        this.width = 160;
     }
 
     public void addOption(String label, T value) {

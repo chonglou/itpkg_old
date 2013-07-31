@@ -1,66 +1,82 @@
 $!{extends("/frame.httl")}
-#macro(left_nav_bar(List<NavBar> navBars))
-#if(navBars)
-<div class="well sidebar-nav">
-    <ul class="nav nav-list">
-        #for(NavBar i:navBars)
-            <li class="nav-header">${i.title}</li>
-            #if(i.ajax)
-                #for(Page j: i.pages)
-                    <li><a id="left_nav-${j.url}">${j.name}</a></li>
-                #end
-            #else
-                #for(Page j: i.pages)
-                <li><a href="${j.url}" target="_blank">${j.name}</a></li>
-                #end
-            #end
-        #end
-    </ul>
-</div>
-#end
-#end
 
-#macro(personal_bar)
-    #set(SessionItem gl_session)
-    #if(gl_session)
-        #set(personal_bar_items=["self":"用户中心","logout":"安全退出"])
-        #set(personal_bar_sort=["self", "logout"])
-        #set(personal_bar_name="欢迎你，"+gl_session.ssUsername+"。")
+<!--#macro(top_left_bar)-->
+<ul class="nav navbar-nav">
+    <!--#set(Map<String,Object> gl_site)-->
+    <!--#set(Map<String,String> topNavs=gl_site.topNavs)-->
+    #for(i : ["main", "personal/self", "aboutMe"])
+    #if(top_nav_key == i)
+    <li class="active"><a href="/${i}">${topNavs.get(i)}</a></li>
     #else
-        #set(personal_bar_items=["login":"用户登录", "register":"账户注册", "active":"账户激活", "resetPwd":"重置密码"])
-        #set(personal_bar_sort=["login", "register", "active", "resetPwd"])
-        #set(personal_bar_name="登录/注册")
+    <li><a href="/${i}">${topNavs.get(i)}</a></li>
     #end
+    #end
+    <form method="post" target="_blank" action="/search" class="navbar-form form-inline pull-left">
+        <input class="form-control col-lg-8" name="keyword" type="text" placeholder="点击此处进行搜索">
+    </form>
+</ul>
+<!--#end-->
 
-    <div class="btn-group pull-right">
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-        <i class="icon-user">&nbsp;</i> ${personal_bar_name}
-        <span class="caret">&nbsp;</span>
-    </a>
-    <ul class="dropdown-menu">
-        #for(i : personal_bar_sort)
+<!--#macro(top_right_bar)-->
+#set(SessionItem gl_session)
+#if(gl_session)
+#set(personal_bar_items=["self":"用户中心","logout":"安全退出"])
+#set(personal_bar_sort=["self", "logout"])
+#set(personal_bar_name="欢迎你，"+gl_session.ssUsername+"。")
+#else
+#set(personal_bar_items=["login":"用户登录", "register":"账户注册", "active":"账户激活", "resetPwd":"重置密码"])
+#set(personal_bar_sort=["login", "register", "active", "resetPwd"])
+#set(personal_bar_name="登录/注册")
+#end
+<ul class="nav navbar-nav pull-right">
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            ${personal_bar_name} <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            #for(i : personal_bar_sort)
             <li><a id="personal_bar-${i}">${personal_bar_items[i]}</a></li>
             #if(!for.last)
-            <li class="divider">&nbsp;</li>
+            <li class="divider"></li>
             #end
-        #end
-    </ul>
-    </div>
-#end
-#macro(top_nav_bar(String top_nav_key, Map<String,Object> gl_site))
-    <div class="nav-collapse">
-        <ul class="nav">
-            #set(Map<String,String> topNavs=gl_site.topNavs)
-            #for(i : ["main", "personal/self", "aboutMe"])
-                <li
-                #if(top_nav_key == i)
-                class="active"
-                #end
-                ><a href="/${i}">${topNavs.get(i)}</a><li>
             #end
         </ul>
-        <form method="post" target="_blank" action="/search" class="navbar-search pull-left">
-            <input type="text" name="keyword" class="search-query" placeholder="点击此处进行搜索">
-        </form>
-    </div>
+    </li>
+</ul>
+<!--#end-->
+
+<!--#macro(left_nav_bar)-->
+<!--#set(List<NavBar> navBars)-->
+#for(NavBar i:navBars)
+<ul class="nav nav-pills nav-stacked">
+    #if(i.pages.size == 0)
+    <li><a>${i.title}</a></li>
+    #else
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">
+            ${i.title}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            #if(i.ajax)
+            #for(Page j: i.pages)
+            <li><a id="left_nav-${j.url}">${j.name}</a></li>
+            #end
+            #else
+            #for(Page j: i.pages)
+            <li><a href="${j.url}" target="_blank">${j.name}</a></li>
+            #end
+            #end
+        </ul>
+    </li>
+    #end
+</ul>
 #end
+<!--#end-->
+
+<!--#macro(mainGL)-->
+<br/>
+<div id="gl_message"></div>
+<div id="gl_root"></div>
+<br/>
+<!--#end-->

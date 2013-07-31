@@ -1,0 +1,8 @@
+<div class="btn-group">
+    <button id="btn-status" class="btn btn-primary" type="button">当前状态</button>
+    <button id="btn-sync" class="btn btn-warning" type="button">保存配置</button>
+    <button id="btn-stop" class="btn btn-danger" type="button">清空规则</button>
+    <button id="btn-start" class="btn btn-success" type="button">应用规则</button>
+</div>
+<p>&nbsp;</p>
+<div id="limit-root"></div>

@@ -171,16 +171,14 @@ function FormWindow(form, parent) {
         if (label == undefined) {
             return input;
         }
-        var content = "<div class='control-group'>";
-        content += "<label class='control-label' ";
+        var content = "<div class='form-group'><label ";
         if (id != undefined) {
-            content += " for='fm-" + _form_id + "-" + id + "'";
+            content += " for='fm-" + _form_id + "-" + id + "' ";
         }
-        content += ">" + label + "：</label>";
-        content += "<div class='controls'>";
+        content += " class='col-lg-2 control-label'>" + label + "：</label>";
+        content += "<div class='col-lg-10'>";
         content += input;
-        content += "</div>";
-        content += "</div>";
+        content += "</div></div>";
         return content;
     };
 
@@ -205,14 +203,15 @@ function FormWindow(form, parent) {
         return btn;
     };
     var _button_group = function (buttons) {
-        var content = "<div class='form-actions'>";
+        var content = "<div class='form-group'><div class='col-lg-2'></div>";
+        content += "<div class='col-lg-10 btn-group'>";
         content += _button("submit", "提交", "danger");
         content += _button("reset", "重写", "info");
         for (var i in buttons) {
             var btn = form.buttons[i];
             content += _button(btn.id, btn.label, btn.type);
         }
-        content += "</div>";
+        content += "</div></div>";
         return content;
     };
     var _init = function () {
@@ -220,14 +219,13 @@ function FormWindow(form, parent) {
 
         var content = "<form class='form-horizontal' method='" + form.method + "'  action='" + form.action + "'>";
         content += "<fieldset><legend>" + form.title + "</legend>";
-        content += "<div id='" + _id("alert") + "'></div>";
         content += _hidden_field("created", form.created);
         for (var i in form.fields) {
             var field = form.fields[i];
             var input;
             switch (field.type) {
                 case "text":
-                    input = "<input class='input-xlarge focused' style='width: " + field.width + "px' type='text' id='" + _id(field.id) + "' ";
+                    input = "<input class='form-control' style='width: " + field.width + "px' type='text' id='" + _id(field.id) + "' ";
                     if (field.value != undefined) {
                         input += "value='" + field.value + "' ";
                     }
@@ -236,12 +234,16 @@ function FormWindow(form, parent) {
                     }
                     input += " />";
                     if (field.required) {
-                        input += " *";
+                        field.label += "(*)";
                     }
                     break;
                 case "textarea":
 
-                    input = "<textarea id='" + _id(field.id) + "' style='width: " + field.width + "px;height: " + field.height + "px;' ";
+                    input = "<textarea ";
+                    if (!field.html) {
+                        input += "class='form-control'";
+                    }
+                    input += " id='" + _id(field.id) + "' style='width: " + field.width + "px;height: " + field.height + "px;' ";
                     if (field.readonly) {
                         input += "readonly ";
                     }
@@ -251,11 +253,14 @@ function FormWindow(form, parent) {
                     }
                     input += "</textarea>";
                     if (field.required) {
-                        input += " *";
+                        field.label += "(*)";
                     }
                     break;
                 case "select":
-                    input = "<select  id='" + _id(field.id) + "' ";
+                    input = "<select style='width: "
+                        +field.width
+                        +"px;' class='form-control' id='"
+                        + _id(field.id) + "' ";
                     if (field.readonly) {
                         input += "disabled "
                     }
@@ -273,11 +278,15 @@ function FormWindow(form, parent) {
                     input += "</select>";
                     break;
                 case "password":
-                    input = "<input type='password' id='" + _id(field.id) + "' ";
+                    input = "<input style='width: " +
+                        field.width +
+                        "px' class='form-control' type='password' id='"
+                        + _id(field.id) + "' ";
                     if (field.value != undefined) {
                         input += "value='" + field.value + "' ";
                     }
-                    input += " /> *";
+                    input += " />";
+                    field.label += "(*)";
                     break;
                 case "radio":
                     //input = _hidden_field(field.id, field.value);
@@ -285,11 +294,11 @@ function FormWindow(form, parent) {
                     var k = 1;
                     for (var j in field.options) {
                         var item = field.options[j];
-                        input += "<input type='radio' name='" + _id(field.id) + "'  value='" + item.value + "' ";
+                        input += "<label class='radio-inline'><input class='form-control' type='radio' name='" + _id(field.id) + "'  value='" + item.value + "' ";
                         if (item.value == field.value) {
                             input += "checked='true' ";
                         }
-                        input += "/>" + item.label + " &nbsp;"
+                        input += "/>" + item.label + "</label>";
 
                         if (k % field.cols == 0) {
                             input += "<br/>"
@@ -304,11 +313,11 @@ function FormWindow(form, parent) {
                     var k = 1;
                     for (var j in field.options) {
                         var item = field.options[j];
-                        input += "<input type='checkbox' name='" + _id(field.id) + "' value='" + item.value + "' ";
+                        input += "<label class='checkbox-inline'><input  type='checkbox' name='" + _id(field.id) + "' value='" + item.value + "' ";
                         if (item.selected) {
                             input += "checked='true' ";
                         }
-                        input += "/>" + item.label + " &nbsp;";
+                        input += "/>" + item.label + " </label>";
 
                         if (k % field.cols == 0) {
                             input += "<br/>"
@@ -319,8 +328,11 @@ function FormWindow(form, parent) {
                 case "agree":
                     //input = "<textarea disabled style='width: 400px;height: 100px' >" + field.text + "</textarea>";
                     //input += "<br/>"
-                    input = "<fieldset>"+field.text+"</fieldset>";
-                    input += "<input id='" + _id(field.id) + "' type='checkbox'>我同意";
+                    input = field.text;
+                    input += "<div class='checkbox'><label><input id='"
+                        + _id(field.id)
+                        + "' type='checkbox'>我同意</label></div>";
+                    field.label +="(*)";
                     break;
 
                 default:
@@ -331,18 +343,24 @@ function FormWindow(form, parent) {
         }
 
         if (form.captcha) {
-            var input = "";
+            var input = "<div class='form-group'>";
+            input += "<label class='col-lg-2 control-label' for='"+_id('captcha')+"'>验证码(*)：</label>";
             switch (gl_captcha) {
                 case "kaptcha":
-                    input += "<input type='text'  style='width: 80px;' id='" + _id("captcha") + "'/>* &nbsp;";
-                    input += "<img id='" + _id('captcha_img') + "' src='/captcha?_=" + Math.random() + "' alt='点击更换验证码'/>";
+                    input += "<div class='col-lg-1'><input class='form-control' type='text'  style='width: 80px;' id='"
+                        + _id("captcha") + "'/></div>";
+                    input += "<div class='col-lg-9'><img id='"
+                        + _id('captcha_img')
+                        + "' src='/captcha?_="
+                        + Math.random()
+                        + "' alt='点击更换验证码'/></div>";
                     break;
                 case "reCaptcha":
-                    input += "<div id='" + _id('captcha') + "'></div>";
+                    input += "<div class='col-lg-10' id='" + _id('captcha') + "'></div>";
                     break;
             }
-
-            content += _field("captcha", "验证码", input);
+            input+="</div>";
+            content += input;
 
         }
 
@@ -372,7 +390,7 @@ function FormWindow(form, parent) {
         }
         for (var i in form.fields) {
             var field = form.fields[i];
-            if(field.type=="textarea" && field.html){
+            if (field.type == "textarea" && field.html) {
                 var editor = new UE.ui.Editor();
                 editor.render(_id(field.id));
                 //UE.getEditor('myEditor')

@@ -1,13 +1,15 @@
-
 $!{extends("/layout.httl")}
 
-#macro(left)
-   ${left_nav_bar}
-#end
 
-#macro(main)
-<script type="text/javascript">
-$("#left_nav-\\/personal\\/log").parent().addClass("active");
-new Ajax("/personal/log");
-</script>
-#end
+<!--#macro(main)-->
+<div class="col-lg-3">
+    ${left_nav_bar}
+</div>
+<div class="col-lg-9">
+    ${mainGL}
+    <script type="text/javascript">
+        $("#left_nav-\\/personal\\/log").parent().addClass("active");
+        new Ajax("/personal/log");
+    </script>
+</div>
+<!--#end-->
