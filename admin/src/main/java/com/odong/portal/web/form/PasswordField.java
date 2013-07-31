@@ -16,7 +16,7 @@ public final class PasswordField extends Field<String> {
 
     public PasswordField(String id, String label, String tooltip) {
         super(id, label, "password", null, true, tooltip);
-        this.width  = 300;
+        this.width = 300;
     }
 
     public int getWidth() {

@@ -1,6 +1,5 @@
 package com.odong.itpkg.controller.net;
 
-import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;

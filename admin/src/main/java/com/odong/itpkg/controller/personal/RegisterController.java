@@ -5,7 +5,6 @@ import com.odong.itpkg.form.personal.ActiveForm;
 import com.odong.itpkg.form.personal.RegisterForm;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.AccountService;
-import com.odong.itpkg.service.LogService;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
@@ -53,7 +52,7 @@ public class RegisterController extends EmailController {
     @ResponseBody
     ResponseItem postActive(@Valid ActiveForm form, BindingResult result, HttpServletRequest request) {
         ResponseItem ri = formHelper.check(result, request, true);
-        if(!form.isAgree()){
+        if (!form.isAgree()) {
             ri.setOk(false);
             ri.addData("您需要同意用户协议才能继续");
         }
@@ -97,7 +96,7 @@ public class RegisterController extends EmailController {
             ri.setOk(false);
             ri.addData("站点禁止注册新账户");
         }
-        if(!form.isAgree()){
+        if (!form.isAgree()) {
             ri.setOk(false);
             ri.addData("您需要同意用户协议才能继续");
         }

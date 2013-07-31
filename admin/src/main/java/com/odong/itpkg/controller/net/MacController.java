@@ -1,12 +1,10 @@
 package com.odong.itpkg.controller.net;
 
 import com.odong.itpkg.entity.net.Host;
-import com.odong.itpkg.entity.net.dns.Domain;
 import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
-import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +26,8 @@ public class MacController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     String getIndex(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Host host = hostService.getHost(hostId);
-        Map<Long,FlowLimit> flowLimitMap = new HashMap<>();
-        for(FlowLimit fl : hostService.listFirewallFlowLimit(host.getCompany())){
+        Map<Long, FlowLimit> flowLimitMap = new HashMap<>();
+        for (FlowLimit fl : hostService.listFirewallFlowLimit(host.getCompany())) {
             flowLimitMap.put(fl.getId(), fl);
         }
         map.put("flowLimitMap", flowLimitMap);

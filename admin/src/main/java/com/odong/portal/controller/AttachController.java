@@ -29,14 +29,13 @@ import java.util.List;
 public class AttachController {
     @RequestMapping(value = "/attachments/**", method = RequestMethod.GET)
     @ResponseBody
-    FileSystemResource attachments(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    FileSystemResource attachments(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        try{
+        try {
             request.setCharacterEncoding("utf-8");
             response.setCharacterEncoding("utf-8");
-        return new FileSystemResource(new Uploader(realPath, request).getPhysicalPath(request.getRequestURI().substring("/attachments/".length())));
-        }
-        catch (IOException e){
+            return new FileSystemResource(new Uploader(realPath, request).getPhysicalPath(request.getRequestURI().substring("/attachments/".length())));
+        } catch (IOException e) {
             logger.error("下载文件出错", e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

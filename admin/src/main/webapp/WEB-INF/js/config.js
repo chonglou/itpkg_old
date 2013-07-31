@@ -168,8 +168,7 @@ window.UEDITOR_HOME_URL = "/ueditor/";
         //屏幕截图配置区
         , snapscreenHost: location.hostname                                 //屏幕截图的server端文件所在的网站地址或者ip，请不要加http://
         , snapscreenServerUrl: URL + "../editor/imageUp" //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
-        , snapscreenPath: URL + "../attachments/"
-        , snapscreenServerPort: location.port                                   //屏幕截图的server端端口
+        , snapscreenPath: URL + "../attachments/", snapscreenServerPort: location.port                                   //屏幕截图的server端端口
         //,snapscreenImgAlign: ''                                //截图的图片默认的排版方式
 
         //word转存配置区

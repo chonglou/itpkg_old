@@ -50,6 +50,7 @@ public class CompanyController {
         }
         return ri;
     }
+
     @Resource
     private AccountService accountService;
     @Resource

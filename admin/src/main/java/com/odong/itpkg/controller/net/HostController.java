@@ -32,9 +32,9 @@ import java.util.Map;
 public class HostController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    String getHost(@PathVariable long hostId,Map<String,Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si){
+    String getHost(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Host h = hostService.getHost(hostId);
-        if(h!=null&&h.getCompany().equals(si.getSsCompanyId())){
+        if (h != null && h.getCompany().equals(si.getSsCompanyId())) {
             Ip wanIp = hostService.getIp(h.getWanIp());
             map.put("wanIp", wanIp);
             map.put("host", h);
@@ -46,7 +46,7 @@ public class HostController {
     @RequestMapping(value = "/wan", method = RequestMethod.GET)
     @ResponseBody
     Form getHostWanForm(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("hostEdit", "修改主机[" + hostId + "]WAN信息", "/net/host/"+hostId+"/wan");
+        Form fm = new Form("hostEdit", "修改主机[" + hostId + "]WAN信息", "/net/host/" + hostId + "/wan");
         Host h = hostService.getHost(hostId);
         if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             Ip wanIp = hostService.getIp(h.getWanIp());
@@ -137,7 +137,7 @@ public class HostController {
     @RequestMapping(value = "/lan", method = RequestMethod.GET)
     @ResponseBody
     Form getHostLanForm(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("hostEdit", "修改主机[" + hostId + "]LAN信息", "/net/host/"+hostId+"/lan");
+        Form fm = new Form("hostEdit", "修改主机[" + hostId + "]LAN信息", "/net/host/" + hostId + "/lan");
         Host h = hostService.getHost(hostId);
         if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             fm.addField(new HiddenField<>("id", hostId));
@@ -182,7 +182,7 @@ public class HostController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     Form getHostInfoForm(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("hostEdit", "修改主机[" + hostId + "]基本信息", "/net/host/"+ hostId +"/info");
+        Form fm = new Form("hostEdit", "修改主机[" + hostId + "]基本信息", "/net/host/" + hostId + "/info");
         Host h = hostService.getHost(hostId);
         if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             fm.addField(new HiddenField<>("id", hostId));

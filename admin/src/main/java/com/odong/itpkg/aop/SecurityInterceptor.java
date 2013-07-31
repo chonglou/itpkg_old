@@ -134,7 +134,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
         }
 
         //附件下载
-        if(url.startsWith("/attachments/")){
+        if (url.startsWith("/attachments/")) {
             return true;
         }
         notFound(response);

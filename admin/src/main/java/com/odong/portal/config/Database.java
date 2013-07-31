@@ -43,7 +43,7 @@ public class Database {
             try (Connection conn = DriverManager.getConnection(url.substring(0, url.lastIndexOf('/')) + "/information_schema", username, password);
                  Statement stat = conn.createStatement()) {
                 ResultSet rs = stat.executeQuery(String.format("SELECT concat(round(sum(DATA_LENGTH/1024/1024),2),'MB') as data FROM TABLES WHERE table_schema='%s'", dbName));
-                if(rs.next()){
+                if (rs.next()) {
                     return rs.getString("data");
                 }
 

@@ -1,21 +1,25 @@
 package com.odong.itpkg.controller.admin;
 
 import com.odong.itpkg.entity.uc.Log;
-import com.odong.itpkg.form.admin.*;
+import com.odong.itpkg.form.admin.SiteAboutMeForm;
+import com.odong.itpkg.form.admin.SiteInfoForm;
+import com.odong.itpkg.form.admin.SiteRegProtocolForm;
+import com.odong.itpkg.form.admin.SiteStateForm;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.LogService;
-import com.odong.itpkg.util.DBHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
-import com.odong.portal.web.form.*;
+import com.odong.portal.web.form.Form;
+import com.odong.portal.web.form.RadioField;
+import com.odong.portal.web.form.TextAreaField;
+import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -136,7 +140,6 @@ public class SiteController {
         return ri;
 
     }
-
 
 
     @Resource

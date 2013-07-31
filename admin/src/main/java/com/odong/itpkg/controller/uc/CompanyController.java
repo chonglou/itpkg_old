@@ -1,27 +1,14 @@
 package com.odong.itpkg.controller.uc;
 
-import com.odong.itpkg.entity.net.Host;
-import com.odong.itpkg.entity.net.Ip;
-import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
-import com.odong.itpkg.entity.uc.User;
-import com.odong.itpkg.form.uc.AccountAddForm;
-import com.odong.itpkg.form.uc.AccountSetForm;
 import com.odong.itpkg.form.uc.CompanyForm;
-import com.odong.itpkg.form.uc.UserForm;
-import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.AccountService;
-import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
-import com.odong.itpkg.service.RbacService;
-import com.odong.itpkg.util.JsonHelper;
-import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
-import com.odong.portal.web.form.HiddenField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
 import org.springframework.stereotype.Controller;
@@ -30,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,16 +39,15 @@ public class CompanyController {
     @ResponseBody
     Form postCompanyInfo(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("companyInfo", "公司信息", "/uc/company/info");
-        if(si.isSsCompanyManager()){
-        Company c = accountService.getCompany(si.getSsCompanyId());
+        if (si.isSsCompanyManager()) {
+            Company c = accountService.getCompany(si.getSsCompanyId());
 
-        fm.addField(new TextField<>("name", "名称", c.getName()));
-        TextAreaField taf = new TextAreaField("details", "详情", c.getDetails());
-        taf.setHtml(true);
-        fm.addField(taf);
-        fm.setOk(true);
-        }
-        else {
+            fm.addField(new TextField<>("name", "名称", c.getName()));
+            TextAreaField taf = new TextAreaField("details", "详情", c.getDetails());
+            taf.setHtml(true);
+            fm.addField(taf);
+            fm.setOk(true);
+        } else {
             fm.addData("您不是公司管理员");
         }
 
@@ -74,7 +58,7 @@ public class CompanyController {
     @ResponseBody
     ResponseItem postCompanyInfo(@Valid CompanyForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
-        if(!si.isSsCompanyManager()){
+        if (!si.isSsCompanyManager()) {
             ri.setOk(false);
             ri.addData("您不是公司管理员");
         }

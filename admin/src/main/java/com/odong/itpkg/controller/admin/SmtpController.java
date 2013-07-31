@@ -73,6 +73,7 @@ public class SmtpController {
         return ri;
 
     }
+
     @Resource
     private SiteService siteService;
     @Resource

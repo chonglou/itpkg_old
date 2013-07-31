@@ -15,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -109,7 +111,7 @@ public class Uploader {
     /**
      * 接受并保存以base64格式上传的文件
      *
-     * @param fieldName  field name
+     * @param fieldName field name
      */
     public void uploadBase64(String fieldName) {
         String savePath = this.getFolder(this.savePath);
@@ -117,7 +119,7 @@ public class Uploader {
         this.fileName = this.getName("test.png");
         this.url = savePath + "/" + this.fileName;
 
-        try(OutputStream ro = new FileOutputStream(new File(this.getPhysicalPath(this.url)))) {
+        try (OutputStream ro = new FileOutputStream(new File(this.getPhysicalPath(this.url)))) {
             ro.write(Base64.decodeBase64(base64Data));
             ro.flush();
             this.state = this.errorInfo.get("SUCCESS");
@@ -134,7 +136,7 @@ public class Uploader {
      * @return true false
      */
     private boolean checkFileType(String fileName) {
-        for(String ext : allowFiles){
+        for (String ext : allowFiles) {
             if (fileName.toLowerCase().endsWith(ext)) {
                 return true;
             }
@@ -157,7 +159,7 @@ public class Uploader {
      * @return 新文件名
      */
     private String getName(String fileName) {
-        return UUID.randomUUID().toString()+ getFileExt(fileName);
+        return UUID.randomUUID().toString() + getFileExt(fileName);
     }
 
     /**
@@ -171,7 +173,7 @@ public class Uploader {
         path += "/" + format.format(new Date());
         File dir = new File(this.getPhysicalPath(path));
         if (!dir.exists()) {
-            if(dir.mkdirs()){
+            if (dir.mkdirs()) {
                 this.state = this.errorInfo.get("DIR");
                 return "";
             }

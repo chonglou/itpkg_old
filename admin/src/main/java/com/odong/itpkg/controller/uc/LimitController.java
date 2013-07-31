@@ -67,12 +67,15 @@ public class LimitController {
                     "sat", "六", dl.isSat(),
                     "sun", "日", dl.isSun()
             };
+
+
             for (int i = 0; i < week.length; i += 3) {
                 RadioField<Boolean> rf = new RadioField<>((String) week[i], "星期" + (String) week[i + 1], (Boolean) week[i + 2]);
                 rf.addOption("启动", true);
                 rf.addOption("停止", false);
                 fm.addField(rf);
             }
+
 
             fm.addField(new TextAreaField("details", "详情", dl.getDetails()));
             fm.setOk(true);

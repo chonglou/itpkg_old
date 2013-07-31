@@ -32,7 +32,7 @@ import java.util.Map;
 @Controller("c.personal.resetPwd")
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
-public class ResetPasswordController extends EmailController{
+public class ResetPasswordController extends EmailController {
 
     @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
     @ResponseBody
@@ -70,6 +70,7 @@ public class ResetPasswordController extends EmailController{
         fm.setOk(true);
         return fm;
     }
+
     @Resource
     private FormHelper formHelper;
     @Resource

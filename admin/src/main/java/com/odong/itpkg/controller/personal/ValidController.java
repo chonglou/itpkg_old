@@ -28,7 +28,7 @@ import java.util.Map;
 @Controller("c.personal.valid")
 @RequestMapping(value = "/personal")
 @SessionAttributes(SessionItem.KEY)
-public class ValidController extends EmailController{
+public class ValidController extends EmailController {
 
     @RequestMapping(value = "/valid", method = RequestMethod.GET)
     String getValidCode(HttpServletRequest request, Map<String, Object> map) {
@@ -102,7 +102,6 @@ public class ValidController extends EmailController{
         map.put("item", ri);
         return "message";
     }
-
 
 
     private void activeAccount(long userId, String email) {

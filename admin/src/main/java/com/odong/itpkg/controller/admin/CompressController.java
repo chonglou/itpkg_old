@@ -5,7 +5,6 @@ import com.odong.itpkg.form.admin.CompressForm;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.util.DBHelper;
-import com.odong.portal.service.SiteService;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import com.odong.portal.web.form.Form;
@@ -30,7 +29,7 @@ import java.util.Map;
 public class CompressController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    String getCompress(Map<String,Object> map){
+    String getCompress(Map<String, Object> map) {
 
         map.put("dbSize", dbHelper.getSize());
         return "admin/compress";

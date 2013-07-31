@@ -6,7 +6,7 @@ package com.odong.portal.web.form;
  * Date: 13-7-30
  * Time: 下午2:27
  */
-public class AgreeField extends Field<Boolean>  {
+public class AgreeField extends Field<Boolean> {
     private static final long serialVersionUID = 2572220499336454266L;
 
     public AgreeField(String id, String label, String text) {

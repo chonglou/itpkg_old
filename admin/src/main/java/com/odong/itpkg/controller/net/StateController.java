@@ -1,7 +1,6 @@
 package com.odong.itpkg.controller.net;
 
 import com.odong.itpkg.entity.net.Host;
-import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

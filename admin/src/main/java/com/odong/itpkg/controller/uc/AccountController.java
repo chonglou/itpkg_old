@@ -46,27 +46,27 @@ public class AccountController {
             ri.setOk(false);
             ri.addData("不能自杀");
         }
-        if(!si.isSsCompanyManager()){
+        if (!si.isSsCompanyManager()) {
             ri.setOk(false);
             ri.addData("您不是公司管理员");
         }
         Account a = accountService.getAccount(form.getAccount());
         if (a != null && a.getCompany().equals(si.getSsCompanyId())) {
-            switch (a.getState()){
+            switch (a.getState()) {
                 case ENABLE:
-                    if(form.getState() != Account.State.DISABLE){
+                    if (form.getState() != Account.State.DISABLE) {
                         ri.setOk(false);
                         ri.addData("账户只能被禁用");
                     }
                     break;
                 case DISABLE:
-                    if(form.getState() != Account.State.ENABLE){
+                    if (form.getState() != Account.State.ENABLE) {
                         ri.setOk(false);
                         ri.addData("账户只能被启用");
                     }
                     break;
                 case SUBMIT:
-                    if(form.getState() == Account.State.DONE){
+                    if (form.getState() == Account.State.DONE) {
                         accountService.delAccount(form.getAccount());
                         return ri;
                     }
@@ -85,7 +85,7 @@ public class AccountController {
 
         if (ri.isOk()) {
             accountService.setAccountState(form.getAccount(), form.getState());
-            logService.add(si.getSsAccountId(), "账户[" + form.getAccount() + "] => "+form.getState(), Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "账户[" + form.getAccount() + "] => " + form.getState(), Log.Type.INFO);
         }
         return ri;
     }
@@ -94,13 +94,12 @@ public class AccountController {
     @ResponseBody
     Form getAccountAddForm(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("addAccount", "添加账户", "/uc/account/add");
-        if(si.isSsCompanyManager()){
+        if (si.isSsCompanyManager()) {
             fm.addField(new TextField<>("email", "邮箱"));
             fm.addField(new TextField<>("username", "用户名"));
             fm.addField(new TextField<>("password", "密码"));
             fm.setOk(true);
-        }
-        else {
+        } else {
             fm.addData("您不是公司管理员");
         }
 
@@ -116,7 +115,7 @@ public class AccountController {
             ri.setOk(false);
             ri.addData("站点禁止注册新账户");
         }
-        if(!si.isSsCompanyManager()){
+        if (!si.isSsCompanyManager()) {
             ri.setOk(false);
             ri.addData("您不是公司管理员");
         }
@@ -133,6 +132,7 @@ public class AccountController {
         }
         return ri;
     }
+
     @Resource
     private AccountService accountService;
     @Resource

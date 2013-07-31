@@ -60,9 +60,10 @@ public class CacheHelperImpl implements CacheHelper {
         }
     }
 
-    private String key(String key){
-        return "cache://"+appName+"/"+key;
+    private String key(String key) {
+        return "cache://" + appName + "/" + key;
     }
+
     @Resource
     private MemcachedClient client;
     @Value("${app.name}")

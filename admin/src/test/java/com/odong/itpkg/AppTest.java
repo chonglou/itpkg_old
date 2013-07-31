@@ -8,6 +8,7 @@ import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.util.JsonHelper;
 import com.odong.itpkg.util.StringHelper;
 import com.odong.itpkg.util.impl.JsonHelperImpl;
+import com.odong.portal.util.IPSeeker;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class AppTest {
     @Test
     public void testFormat(){
-        log(Type.TPLINK_WR841N.name());
+
     }
     //@Test
     public void testClient() {

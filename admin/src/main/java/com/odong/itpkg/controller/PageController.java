@@ -3,8 +3,6 @@ package com.odong.itpkg.controller;
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
-import com.odong.itpkg.service.LogService;
-import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.web.NavBar;
 import org.slf4j.Logger;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +61,7 @@ public class PageController {
 
         NavBar nbHost = new NavBar("主机列表");
         for (Host h : hostService.listHost(si.getSsCompanyId())) {
-            nbHost.add("主机-" + h.getName(), "/net/host/" + h.getId()+"/");
+            nbHost.add("主机-" + h.getName(), "/net/host/" + h.getId() + "/");
         }
         nbHost.setAjax(true);
         navBars.add(nbHost);
@@ -97,13 +94,12 @@ public class PageController {
         map.put("title", "首页");
         map.put("top_nav_key", "main");
         List<String> logList = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))){
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/Change-Logs")))) {
             String line;
-            while ((line=br.readLine())!=null){
+            while ((line = br.readLine()) != null) {
                 logList.add(line);
             }
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             logger.error("加载大事记文件出错", e);
         }
         map.put("logList", logList);
@@ -139,7 +135,6 @@ public class PageController {
     @Resource
     private HostService hostService;
     private final static Logger logger = LoggerFactory.getLogger(PageController.class);
-
 
 
     public void setHostService(HostService hostService) {

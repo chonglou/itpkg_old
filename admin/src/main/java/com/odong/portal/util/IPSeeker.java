@@ -11,115 +11,89 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * 读取QQwry.dat文件
+ * 纯真IP数据库格式详解：
+ * http://lumaqq.linuxsir.org/article/qqwry_format_detail.html
  * <p/>
- * 一. 文件头，共8字节
- * 1. 第一个起始IP的绝对偏移， 4字节
- * 2. 最后一个起始IP的绝对偏移， 4字节
- * 二. "结束地址/国家/区域"记录区
- * 四字节ip地址后跟的每一条记录分成两个部分
- * 1. 国家记录
- * 2. 地区记录
- * 但是地区记录是不一定有的。而且国家记录和地区记录都有两种形式
- * 1. 以0结束的字符串
- * 2. 4个字节，一个字节可能为0x1或0x2
- * a. 为0x1时，表示在绝对偏移后还跟着一个区域的记录，注意是绝对偏移之后，而不是这四个字节之后
- * b. 为0x2时，表示在绝对偏移后没有区域记录
- * 不管为0x1还是0x2，后三个字节都是实际国家名的文件内绝对偏移
- * 如果是地区记录，0x1和0x2的含义不明，但是如果出现这两个字节，也肯定是跟着3个字节偏移，如果不是
- * 则为0结尾字符串
- * 三. "起始地址/结束地址偏移"记录区
- * 1. 每条记录7字节，按照起始地址从小到大排列
- * a. 起始IP地址，4字节
- * b. 结束ip地址的绝对偏移，3字节
  * Created with IntelliJ IDEA.
  * User: flamen
  * Date: 13-7-31
  * Time: 上午12:35
  */
 @Component
-public class CZ88Helper {
+public class IPSeeker {
+    /**
+     * 对原始字符串进行编码转换，如果失败，返回原始的字符串
+     *
+     * @param s            原始字符串
+     * @param srcEncoding  源编码方式
+     * @param destEncoding 目标编码方式
+     * @return 转换编码后的字符串，失败返回原始字符串
+     */
+    public String getString(String s, String srcEncoding, String destEncoding) {
+        try {
+            return new String(s.getBytes(srcEncoding), destEncoding);
+        } catch (UnsupportedEncodingException e) {
+            return s;
+        }
+    }
+
+    /**
+     * 根据某种编码方式将字节数组转换成字符串
+     *
+     * @param b        字节数组
+     * @param offset   要转换的起始位置
+     * @param len      要转换的长度
+     * @param encoding 编码方式
+     * @return 如果encoding不支持，返回一个缺省编码的字符串
+     */
+    public String getString(byte[] b, int offset, int len, String encoding) {
+        try {
+            return new String(b, offset, len, encoding);
+        } catch (UnsupportedEncodingException e) {
+            return new String(b, offset, len);
+        }
+    }
 
 
     /**
-     * 给定一个地点的不完全名字，得到一系列包含s子串的IP范围记录
-     *
-     * @param s 地点子串
-     * @return 包含IPEntry类型的List
+     * @param ip ip的字节数组形式
+     * @return 字符串形式的ip
      */
-    public List<IPEntry> getIPEntries(String s) {
-        List<IPEntry> ret = new ArrayList<>();
-        try {
-            // 映射IP信息文件到内存中
-            if (mbb == null) {
-                FileChannel fc = ipFile.getChannel();
-                mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, ipFile.length());
-                mbb.order(ByteOrder.LITTLE_ENDIAN);
-            }
+    public String getIpStringFromBytes(byte[] ip) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ip[0] & 0xFF);
+        sb.append('.');
+        sb.append(ip[1] & 0xFF);
+        sb.append('.');
+        sb.append(ip[2] & 0xFF);
+        sb.append('.');
+        sb.append(ip[3] & 0xFF);
+        return sb.toString();
+    }
 
-            int endOffset = (int) ipEnd;
-            for (int offset = (int) ipBegin + 4; offset <= endOffset; offset += IP_RECORD_LENGTH) {
-                int temp = readInt3(offset);
-                if (temp != -1) {
-                    IPLocation loc = getIPLocation(temp);
-                    // 判断是否这个地点里面包含了s子串，如果包含了，添加这个记录到List中，如果没有，继续
-                    if (loc.country.contains(s) || loc.area.contains(s)) {
-                        String country = loc.country;
-                        String area = loc.area;
-                        // 得到起始IP
-                        readIP(offset - 4, b4);
-                        String beginIp = getIpStringFromBytes(b4);
-                        // 得到结束IP
-                        readIP(temp, b4);
-                        String endIp = getIpStringFromBytes(b4);
-                        // 添加该记录
-                        ret.add(new IPEntry(beginIp, endIp, country, area));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            logger.error("获得ip段错误", e);
+    /**
+     * 从ip的字符串形式得到字节数组形式
+     *
+     * @param ip 字符串形式的ip
+     * @return 字节数组形式的ip
+     */
+    public byte[] getIpByteArrayFromString(String ip) {
+        byte[] ret = new byte[4];
+        StringTokenizer st = new StringTokenizer(ip, ".");
+        try {
+            ret[0] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
+            ret[1] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
+            ret[2] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
+            ret[3] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         return ret;
     }
 
-
-    /**
-     * 根据IP得到国家名
-     *
-     * @param ip ip的字节数组形式
-     * @return 国家名字符串
-     */
-    public String getCountry(byte[] ip) {
-
-        // 保存ip，转换ip字节数组为字符串形式
-        String ipStr = getIpStringFromBytes(ip);
-        // 先检查cache中是否已经包含有这个ip的结果，没有再搜索文件
-        if (ipCache.containsKey(ipStr)) {
-            IPLocation loc = ipCache.get(ipStr);
-            return loc.country;
-        } else {
-            IPLocation loc = getIPLocation(ip);
-            ipCache.put(ipStr, loc);
-            return loc.country;
-        }
-    }
-
-    /**
-     * 根据IP得到国家名
-     *
-     * @param ip IP的字符串形式
-     * @return 国家名字符串
-     */
-    public String getCountry(String ip) {
-        return getCountry(getIpByteArrayFromString(ip));
-    }
 
     /**
      * 根据IP得到地区名
@@ -128,17 +102,19 @@ public class CZ88Helper {
      * @return 地区名字符串
      */
     public String getArea(byte[] ip) {
-
+        // 检查ip地址文件是否正常
+        if (ipFile == null)
+            return bad_ip_file;
         // 保存ip，转换ip字节数组为字符串形式
         String ipStr = getIpStringFromBytes(ip);
         // 先检查cache中是否已经包含有这个ip的结果，没有再搜索文件
         if (ipCache.containsKey(ipStr)) {
-            IPLocation loc = ipCache.get(ipStr);
-            return loc.area;
+            IPLocation ipLoc = ipCache.get(ipStr);
+            return ipLoc.area;
         } else {
-            IPLocation loc = getIPLocation(ip);
-            ipCache.put(ipStr, loc);
-            return loc.area;
+            IPLocation ipLoc = getIPLocation(ip);
+            ipCache.put(ipStr, ipLoc.getCopy());
+            return ipLoc.area;
         }
     }
 
@@ -153,43 +129,102 @@ public class CZ88Helper {
     }
 
     /**
-     * 从内存映射文件的offset位置开始的3个字节读取一个int
+     * 根据IP得到国家名
      *
-     * @param offset
-     * @return
+     * @param ip ip的字节数组形式
+     * @return 国家名字符串
      */
-    private int readInt3(int offset) {
-        mbb.position(offset);
-        return mbb.getInt() & 0x00FFFFFF;
+    public String getCountry(byte[] ip) {
+        // 检查ip地址文件是否正常
+        if (ipFile == null)
+            return bad_ip_file;
+        // 保存ip，转换ip字节数组为字符串形式
+        String ipStr = getIpStringFromBytes(ip);
+        // 先检查cache中是否已经包含有这个ip的结果，没有再搜索文件
+        if (ipCache.containsKey(ipStr)) {
+            IPLocation ipLoc = ipCache.get(ipStr);
+            return ipLoc.country;
+        } else {
+            IPLocation ipLoc = getIPLocation(ip);
+            ipCache.put(ipStr, ipLoc.getCopy());
+            return ipLoc.country;
+        }
     }
 
     /**
-     * 从内存映射文件的当前位置开始的3个字节读取一个int
+     * 根据IP得到国家名
      *
-     * @return
+     * @param ip IP的字符串形式
+     * @return 国家名字符串
      */
-    private int readInt3() {
-        return mbb.getInt() & 0x00FFFFFF;
+    public String getCountry(String ip) {
+        return getCountry(getIpByteArrayFromString(ip));
     }
 
+
     /**
-     * 从ip的字符串形式得到字节数组形式
+     * 给定一个地点的不完全名字，得到一系列包含s子串的IP范围记录
      *
-     * @param ip 字符串形式的ip
-     * @return 字节数组形式的ip
+     * @param s 地点子串
+     * @return 包含IPEntry类型的List
      */
-    private byte[] getIpByteArrayFromString(String ip) {
-        byte[] ret = new byte[4];
-        java.util.StringTokenizer st = new java.util.StringTokenizer(ip, ".");
+    public List<IPEntry> getIPEntries(String s) {
+        List<IPEntry> ret = new ArrayList<IPEntry>();
         try {
-            ret[0] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
-            ret[1] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
-            ret[2] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
-            ret[3] = (byte) (Integer.parseInt(st.nextToken()) & 0xFF);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            // 映射IP信息文件到内存中
+            if (mbb == null) {
+                FileChannel fc = ipFile.getChannel();
+                mbb = fc.map(FileChannel.MapMode.READ_ONLY, 0, ipFile.length());
+                mbb.order(ByteOrder.LITTLE_ENDIAN);
+            }
+
+            int endOffset = (int) ipEnd;
+            for (int offset = (int) ipBegin + 4; offset <= endOffset; offset += IP_RECORD_LENGTH) {
+                int temp = readInt3(offset);
+                if (temp != -1) {
+                    IPLocation ipLoc = getIPLocation(temp);
+                    // 判断是否这个地点里面包含了s子串，如果包含了，添加这个记录到List中，如果没有，继续
+                    if (ipLoc.country.contains(s) || ipLoc.area.contains(s)) {
+                        IPEntry entry = new IPEntry();
+                        entry.country = ipLoc.country;
+                        entry.area = ipLoc.area;
+                        // 得到起始IP
+                        readIP(offset - 4, b4);
+                        entry.beginIp = getIpStringFromBytes(b4);
+                        // 得到结束IP
+                        readIP(temp, b4);
+                        entry.endIp = getIpStringFromBytes(b4);
+                        // 添加该记录
+                        ret.add(entry);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
         return ret;
+    }
+
+
+    @PostConstruct
+    void init() {
+        ipCache = new HashMap<>();
+        loc = new IPLocation();
+        buf = new byte[100];
+        b4 = new byte[4];
+        b3 = new byte[3];
+        try {
+            ipFile = new RandomAccessFile(this.getClass().getResource("/qqwry.dat").getFile(), "r");
+            ipBegin = readLong4(0);
+            ipEnd = readLong4(4);
+            if (ipBegin == -1 || ipEnd == -1) {
+                ipFile.close();
+                ipFile = null;
+            }
+        } catch (IOException e) {
+            log.error("IP地址信息文件格式有错误，IP显示功能将无法使用", e);
+            ipFile = null;
+        }
     }
 
     /**
@@ -201,20 +236,40 @@ public class CZ88Helper {
     private IPLocation getIPLocation(byte[] ip) {
         IPLocation info = null;
         long offset = locateIP(ip);
-        if (offset != -1) {
+        if (offset != -1)
             info = getIPLocation(offset);
-        }
         if (info == null) {
-            info = new IPLocation("未知国家", "未知地区");
+            info = new IPLocation();
+            info.country = unknown_country;
+            info.area = unknown_area;
         }
         return info;
+    }
+
+    /*
+    * 从内存映射文件的offset位置开始的3个字节读取一个int
+    * @param offset
+    * @return
+            */
+    private int readInt3(int offset) {
+        mbb.position(offset);
+        return mbb.getInt() & 0x00FFFFFF;
+    }
+
+    /**
+     * 从内存映射文件的当前位置开始的3个字节读取一个int
+     *
+     * @return int
+     */
+    private int readInt3() {
+        return mbb.getInt() & 0x00FFFFFF;
     }
 
     /**
      * 从offset位置读取4个字节为一个long，因为java为big-endian格式，所以没办法
      * 用了这么一个函数来做转换
      *
-     * @param offset
+     * @param offset 偏移量
      * @return 读取的long值，返回-1表示读取文件失败
      */
     private long readLong4(long offset) {
@@ -235,7 +290,7 @@ public class CZ88Helper {
      * 从offset位置读取3个字节为一个long，因为java为big-endian格式，所以没办法
      * 用了这么一个函数来做转换
      *
-     * @param offset
+     * @param offset 整数的起始偏移
      * @return 读取的long值，返回-1表示读取文件失败
      */
     private long readLong3(long offset) {
@@ -255,7 +310,7 @@ public class CZ88Helper {
     /**
      * 从当前位置读取3个字节转换成long
      *
-     * @return
+     * @return 读取的long值，返回-1表示读取文件失败
      */
     private long readLong3() {
         long ret = 0;
@@ -288,7 +343,7 @@ public class CZ88Helper {
             ip[1] = ip[2];
             ip[2] = temp;
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -400,8 +455,8 @@ public class CZ88Helper {
     /**
      * 给定一个ip国家地区记录的偏移，返回一个IPLocation结构
      *
-     * @param offset
-     * @return
+     * @param offset 国家记录的起始偏移
+     * @return IPLocation对象
      */
     private IPLocation getIPLocation(long offset) {
         try {
@@ -409,83 +464,82 @@ public class CZ88Helper {
             ipFile.seek(offset + 4);
             // 读取第一个字节判断是否标志字节
             byte b = ipFile.readByte();
-            String country, area;
-            if (b == AREA_FOLLOWED) {
+            if (b == REDIRECT_MODE_1) {
                 // 读取国家偏移
                 long countryOffset = readLong3();
                 // 跳转至偏移处
                 ipFile.seek(countryOffset);
                 // 再检查一次标志字节，因为这个时候这个地方仍然可能是个重定向
                 b = ipFile.readByte();
-                if (b == NO_AREA) {
-                    country = readString(readLong3());
+                if (b == REDIRECT_MODE_2) {
+                    loc.country = readString(readLong3());
                     ipFile.seek(countryOffset + 4);
-                } else {
-                    country = readString(countryOffset);
-                }
+                } else
+                    loc.country = readString(countryOffset);
                 // 读取地区标志
-                area = readArea(ipFile.getFilePointer());
-            } else if (b == NO_AREA) {
-                country = readString(readLong3());
-                area = readArea(offset + 8);
+                loc.area = readArea(ipFile.getFilePointer());
+            } else if (b == REDIRECT_MODE_2) {
+                loc.country = readString(readLong3());
+                loc.area = readArea(offset + 8);
             } else {
-                country = readString(ipFile.getFilePointer() - 1);
-                area = readArea(ipFile.getFilePointer());
+                loc.country = readString(ipFile.getFilePointer() - 1);
+                loc.area = readArea(ipFile.getFilePointer());
             }
-            return new IPLocation(country, area);
+            return loc;
         } catch (IOException e) {
             return null;
         }
     }
 
     /**
-     * @param offset
-     * @return
+     * 给定一个ip国家地区记录的偏移，返回一个IPLocation结构，此方法应用与内存映射文件方式
+     *
+     * @param offset 国家记录的起始偏移
+     * @return IPLocation对象
      */
     private IPLocation getIPLocation(int offset) {
         // 跳过4字节ip
         mbb.position(offset + 4);
         // 读取第一个字节判断是否标志字节
         byte b = mbb.get();
-        String country, area;
-        if (b == AREA_FOLLOWED) {
+        if (b == REDIRECT_MODE_1) {
             // 读取国家偏移
             int countryOffset = readInt3();
             // 跳转至偏移处
             mbb.position(countryOffset);
             // 再检查一次标志字节，因为这个时候这个地方仍然可能是个重定向
             b = mbb.get();
-            if (b == NO_AREA) {
-                country = readString(readInt3());
+            if (b == REDIRECT_MODE_2) {
+                loc.country = readString(readInt3());
                 mbb.position(countryOffset + 4);
             } else
-                country = readString(countryOffset);
+                loc.country = readString(countryOffset);
             // 读取地区标志
-            area = readArea(mbb.position());
-        } else if (b == NO_AREA) {
-            country = readString(readInt3());
-            area = readArea(offset + 8);
+            loc.area = readArea(mbb.position());
+        } else if (b == REDIRECT_MODE_2) {
+            loc.country = readString(readInt3());
+            loc.area = readArea(offset + 8);
         } else {
-            country = readString(mbb.position() - 1);
-            area = readArea(mbb.position());
+            loc.country = readString(mbb.position() - 1);
+            loc.area = readArea(mbb.position());
         }
-        return new IPLocation(country, area);
+        return loc;
     }
 
     /**
      * 从offset偏移开始解析后面的字节，读出一个地区名
      *
-     * @param offset
+     * @param offset 地区记录的起始偏移
      * @return 地区名字符串
      * @throws IOException
      */
     private String readArea(long offset) throws IOException {
         ipFile.seek(offset);
         byte b = ipFile.readByte();
-        if (b == 0x01 || b == 0x02) {
+        if (b == REDIRECT_MODE_1 || b == REDIRECT_MODE_2) {
             long areaOffset = readLong3(offset + 1);
             if (areaOffset == 0)
-                return "未知地区";
+                return unknown_area;
             else
                 return readString(areaOffset);
         } else
@@ -493,16 +547,16 @@ public class CZ88Helper {
     }
 
     /**
-     * @param offset
-     * @return
+     * @param offset 地区记录的起始偏移
+     * @return 地区名字符串
      */
     private String readArea(int offset) {
         mbb.position(offset);
         byte b = mbb.get();
-        if (b == 0x01 || b == 0x02) {
+        if (b == REDIRECT_MODE_1 || b == REDIRECT_MODE_2) {
             int areaOffset = readInt3();
             if (areaOffset == 0)
-                return "未知地区";
+                return unknown_area;
             else
                 return readString(areaOffset);
         } else
@@ -512,7 +566,7 @@ public class CZ88Helper {
     /**
      * 从offset偏移处读取一个以0结束的字符串
      *
-     * @param offset
+     * @param offset 字符串起始偏移
      * @return 读取的字符串，出错返回空字符串
      */
     private String readString(long offset) {
@@ -523,7 +577,7 @@ public class CZ88Helper {
             if (i != 0)
                 return getString(buf, 0, i, "GBK");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }
         return "";
     }
@@ -531,8 +585,8 @@ public class CZ88Helper {
     /**
      * 从内存映射文件的offset位置得到一个0结尾字符串
      *
-     * @param offset
-     * @return
+     * @param offset 字符串起始偏移
+     * @return 读取的字符串，出错返回空字符串
      */
     private String readString(int offset) {
         try {
@@ -542,106 +596,20 @@ public class CZ88Helper {
             if (i != 0)
                 return getString(buf, 0, i, "GBK");
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }
         return "";
-    }
-
-    public String getAddress(String ip) {
-        String country = getCountry(ip).equals(" CZ88.NET") ? "" : getCountry(ip);
-        String area = getArea(ip).equals(" CZ88.NET") ? "" : getArea(ip);
-        String address = country + " " + area;
-        return address.trim();
-    }
-
-
-    @PostConstruct
-    void init() throws IOException {
-        ipCache = new HashMap<>();
-        buf = new byte[100];
-        b4 = new byte[4];
-        b3 = new byte[3];
-
-        ipFile = new RandomAccessFile(this.getClass().getResource("/QQWry.dat").toString(), "r");
-
-
-        ipBegin = readLong4(0);
-        ipEnd = readLong4(4);
-        if (ipBegin == -1 || ipEnd == -1) {
-            ipFile.close();
-            throw new IOException("IP文件格式不正确");
-        }
-    }
-
-    /**
-     * 对原始字符串进行编码转换，如果失败，返回原始的字符串
-     *
-     * @param s            原始字符串
-     * @param srcEncoding  源编码方式
-     * @param destEncoding 目标编码方式
-     * @return 转换编码后的字符串，失败返回原始字符串
-     */
-    private String getString(String s, String srcEncoding, String destEncoding) {
-        try {
-            return new String(s.getBytes(srcEncoding), destEncoding);
-        } catch (UnsupportedEncodingException e) {
-            return s;
-        }
-    }
-
-    /**
-     * 根据某种编码方式将字节数组转换成字符串
-     *
-     * @param b        字节数组
-     * @param encoding 编码方式
-     * @return 如果encoding不支持，返回一个缺省编码的字符串
-     */
-    private String getString(byte[] b, String encoding) {
-        try {
-            return new String(b, encoding);
-        } catch (UnsupportedEncodingException e) {
-            return new String(b);
-        }
-    }
-
-    /**
-     * 根据某种编码方式将字节数组转换成字符串
-     *
-     * @param b        字节数组
-     * @param offset   要转换的起始位置
-     * @param len      要转换的长度
-     * @param encoding 编码方式
-     * @return 如果encoding不支持，返回一个缺省编码的字符串
-     */
-    private String getString(byte[] b, int offset, int len, String encoding) {
-        try {
-            return new String(b, offset, len, encoding);
-        } catch (UnsupportedEncodingException e) {
-            return new String(b, offset, len);
-        }
-    }
-
-    /**
-     * @param ip ip的字节数组形式
-     * @return 字符串形式的ip
-     */
-    private String getIpStringFromBytes(byte[] ip) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(ip[0] & 0xFF);
-        sb.append('.');
-        sb.append(ip[1] & 0xFF);
-        sb.append('.');
-        sb.append(ip[2] & 0xFF);
-        sb.append('.');
-        sb.append(ip[3] & 0xFF);
-        return sb.toString();
     }
 
 
     // 一些固定常量，比如记录长度等等
     private static final int IP_RECORD_LENGTH = 7;
-    private static final byte AREA_FOLLOWED = 0x01;
-    private static final byte NO_AREA = 0x2;
+    private static final byte REDIRECT_MODE_1 = 0x01;
+    private static final byte REDIRECT_MODE_2 = 0x02;
+
+    private static final String unknown_area = "未知地区";
+    private static final String unknown_country = "未知国家";
+    private static final String bad_ip_file = "错误文件";
 
     // 用来做为cache，查询一个ip时首先查看cache，以减少不必要的重复查找
     private Map<String, IPLocation> ipCache;
@@ -651,40 +619,40 @@ public class CZ88Helper {
     private MappedByteBuffer mbb;
     // 起始地区的开始和结束的绝对偏移
     private long ipBegin, ipEnd;
+    // 为提高效率而采用的临时变量
+    private IPLocation loc;
     private byte[] buf;
     private byte[] b4;
     private byte[] b3;
+    private final static Logger log = LoggerFactory.getLogger(IPSeeker.class);
 
-    private final static Logger logger = LoggerFactory.getLogger(CZ88Helper.class);
 
-    /**
-     * ip相关信息
-     */
-    public class IPLocation {
-        public IPLocation(String country, String area) {
-            this.country = country;
-            this.area = area;
-        }
-
-        public final String country;
-        public final String area;
-
-    }
-
-    /**
-     * IP范围记录
-     */
     public class IPEntry {
-        public IPEntry(String beginIp, String endIp, String country, String area) {
-            this.beginIp = beginIp;
-            this.endIp = endIp;
-            this.country = country;
-            this.area = area;
+        public IPEntry() {
         }
 
-        public final String beginIp;
-        public final String endIp;
-        public final String country;
-        public final String area;
+        public String beginIp;
+        public String endIp;
+        public String country;
+        public String area;
+
     }
+
+
+    private class IPLocation {
+        public String country;
+        public String area;
+
+        public IPLocation() {
+            country = area = "";
+        }
+
+        public IPLocation getCopy() {
+            IPLocation ret = new IPLocation();
+            ret.country = country;
+            ret.area = area;
+            return ret;
+        }
+    }
+
 }

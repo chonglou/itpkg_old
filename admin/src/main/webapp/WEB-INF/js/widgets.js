@@ -258,8 +258,8 @@ function FormWindow(form, parent) {
                     break;
                 case "select":
                     input = "<select style='width: "
-                        +field.width
-                        +"px;' class='form-control' id='"
+                        + field.width
+                        + "px;' class='form-control' id='"
                         + _id(field.id) + "' ";
                     if (field.readonly) {
                         input += "disabled "
@@ -332,7 +332,7 @@ function FormWindow(form, parent) {
                     input += "<div class='checkbox'><label><input id='"
                         + _id(field.id)
                         + "' type='checkbox'>我同意</label></div>";
-                    field.label +="(*)";
+                    field.label += "(*)";
                     break;
 
                 default:
@@ -344,7 +344,7 @@ function FormWindow(form, parent) {
 
         if (form.captcha) {
             var input = "<div class='form-group'>";
-            input += "<label class='col-lg-2 control-label' for='"+_id('captcha')+"'>验证码(*)：</label>";
+            input += "<label class='col-lg-2 control-label' for='" + _id('captcha') + "'>验证码(*)：</label>";
             switch (gl_captcha) {
                 case "kaptcha":
                     input += "<div class='col-lg-1'><input class='form-control' type='text'  style='width: 80px;' id='"
@@ -359,7 +359,7 @@ function FormWindow(form, parent) {
                     input += "<div class='col-lg-10' id='" + _id('captcha') + "'></div>";
                     break;
             }
-            input+="</div>";
+            input += "</div>";
             content += input;
 
         }
