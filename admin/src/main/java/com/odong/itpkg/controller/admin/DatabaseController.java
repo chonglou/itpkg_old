@@ -43,13 +43,12 @@ public class DatabaseController {
     @ResponseBody
     ResponseItem postBackup(@ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try{
+        try {
             dbHelper.backup();
             siteService.set("site.lastBackup", new Date());
             logService.add(si.getSsAccountId(), "备份数据库", Log.Type.INFO);
             ri.setOk(true);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ri.setOk(false);
             ri.addData(e.getMessage());
         }

@@ -286,7 +286,7 @@ public class LimitController {
         if (fl != null && fl.getCompany().equals(si.getSsCompanyId())) {
             List<Mac> macList = hostService.listMacByFirewallFlowLimit(fl.getId());
             List<Host> hostList = hostService.listHostByFlowLimit(fl.getId());
-            if (macList.size() == 0 && hostList.size()==0) {
+            if (macList.size() == 0 && hostList.size() == 0) {
                 hostService.delFirewallFlowLimit(limit);
                 logService.add(si.getSsAccountId(), "删除流量规则[" + limit + "]", Log.Type.INFO);
                 ri.setOk(true);

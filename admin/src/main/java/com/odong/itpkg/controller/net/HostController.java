@@ -116,7 +116,7 @@ public class HostController {
                 Ip wan = hostService.getIp(h.getWanIp());
                 switch (form.getType()) {
                     case STATIC:
-                        hostService.setIpStatic(wan.getId(), wan.getAddress(), wan.getNetmask(), wan.getGateway(), wan.getDns1(), wan.getDns2());
+                        hostService.setIpStatic(wan.getId(), form.getAddress(), form.getNetmask(), form.getGateway(), form.getDns1(), form.getDns2());
                         break;
                     case PPPOE:
                         hostService.setIpPppoe(wan.getId(), form.getUsername(), form.getPassword());
@@ -145,7 +145,7 @@ public class HostController {
 
             String[] fields = new String[]{
                     "lanMac", "LAN MAC", h.getLanMac(),
-                    "lanNet", "LAN网络", h.getLanNet()+".0"
+                    "lanNet", "LAN网络", h.getLanNet() + ".0"
             };
             for (int i = 0; i < fields.length; i += 3) {
                 fm.addField(new TextField<>(fields[i], fields[i + 1], fields[i + 2]));
@@ -173,14 +173,14 @@ public class HostController {
             ri.addData("LAN网段格式不正确");
         }
         FlowLimit fl = hostService.getFirewallFlowLimit(form.getDefFlowLimit());
-        if(fl == null || !fl.getCompany().equals(si.getSsCompanyId())){
+        if (fl == null || !fl.getCompany().equals(si.getSsCompanyId())) {
             ri.setOk(false);
-            ri.addData("限速规则["+form.getDefFlowLimit()+"]不存在");
+            ri.addData("限速规则[" + form.getDefFlowLimit() + "]不存在");
         }
         if (ri.isOk()) {
             Host h = hostService.getHost(form.getId());
             if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
-                hostService.setHostLan(form.getId(), ss[0]+"."+ss[1]+"."+ss[2], form.getLanMac(), form.getDefFlowLimit());
+                hostService.setHostLan(form.getId(), ss[0] + "." + ss[1] + "." + ss[2], form.getLanMac(), form.getDefFlowLimit());
                 logService.add(si.getSsAccountId(), "修改主机[" + form.getId() + "]LAN信息", Log.Type.INFO);
             } else {
                 ri.setOk(false);

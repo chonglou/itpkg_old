@@ -1,3 +1,4 @@
+<div id="host"></div>
 <div class="panel">
     #set(Host host)
     #set(Ip wanIp)
@@ -10,6 +11,10 @@
         </li>
         <li class="list-group-item">
             状态：${host.state}
+        </li>
+        <li class="list-group-item button-group">
+            <button id="install" class="btn btn-danger">量产系统盘</button>
+            <button id="reboot" class="btn btn-primary">重启主机</button>
         </li>
         <li class="list-group-item">
             WAN信息：
@@ -30,3 +35,13 @@
 
     </ul>
 </div>
+<script type="text/javascript">
+    $("button#install").click(function(){
+       new Ajax("/net/state/${host.id}/install", undefined, undefined, undefined, undefined,"host");
+    });
+    $("button#reboot").click(function(){
+        if(confirm("你确定要重启主机么？")){
+            new Ajax("/net/state/${host.id}/reboot", "POST");
+        }
+    });
+</script>

@@ -2,7 +2,7 @@ package com.odong.itpkg.controller;
 
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
-import com.odong.itpkg.rpc.Client;
+import com.odong.itpkg.rpc.RpcHelper;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.portal.service.SiteService;
@@ -48,8 +48,7 @@ public class SiteController {
                 throw new IllegalArgumentException("主机不存在");
             }
             Ip wanIp = hostService.getIp(host.getWanIp());
-            Client client = new Client(encryptHelper.decode(host.getSignKey()));
-            String[] ip = client.decode(code).split(" ");
+            String[] ip = rpcHelper.decode(host.getId(), code).split(" ");
             if (ip.length != 5) {
                 throw new IllegalArgumentException("IP地址格式不正确");
             }
@@ -92,6 +91,12 @@ public class SiteController {
     private HostService hostService;
     @Resource
     private EncryptHelper encryptHelper;
+    @Resource
+    private RpcHelper rpcHelper;
+
+    public void setRpcHelper(RpcHelper rpcHelper) {
+        this.rpcHelper = rpcHelper;
+    }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;

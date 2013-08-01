@@ -6,7 +6,6 @@ import com.odong.itpkg.entity.net.Mac;
 import com.odong.itpkg.entity.net.dns.Domain;
 import com.odong.itpkg.entity.net.dns.Zone;
 import com.odong.itpkg.entity.net.firewall.*;
-import com.odong.itpkg.linux.EtcFile;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.portal.service.SiteService;
@@ -25,24 +24,26 @@ import java.util.*;
  */
 @Component
 public class ArchHelper {
-    public EtcFile ffProfile(long hostId){
+    public EtcFile ffProfile(long hostId) {
         StringBuilder sb = new StringBuilder();
         sb.append("#!/bin/sh\n");
-        for(String s : ffApply(hostId)){
+        for (String s : ffApply(hostId)) {
             sb.append(s);
             sb.append("\n");
         }
         return new EtcFile("/opt/itpkgd/ff.sh", "root:root", "500", sb.toString());
     }
-    public EtcFile tcProfile(long hostId){
+
+    public EtcFile tcProfile(long hostId) {
         StringBuilder sb = new StringBuilder();
         sb.append("#!/bin/sh\n");
-        for(String s : tcApply(hostId)){
+        for (String s : tcApply(hostId)) {
             sb.append(s);
             sb.append("\n");
         }
         return new EtcFile("/opt/itpkgd/tc.sh", "root:root", "500", sb.toString());
     }
+
     public String saveFf() {
         return "iptables-save > /etc/iptables/iptables.rules";
     }
@@ -198,7 +199,7 @@ public class ArchHelper {
             lines.add("iptables -A INPUT -i wan -p icmp --icmp-type 8 -j ACCEPT");
         }
         //防火墙放开的TCP端口
-        for(int i:new int[]{22,host.getRpcPort()}){
+        for (int i : new int[]{22, host.getRpcPort()}) {
             lines.add(String.format("iptables -A INPUT -p TCP -d %s --dport %d -j ACCEPT", wanIp.getAddress(), i));
         }
         //INPUT
@@ -276,7 +277,7 @@ public class ArchHelper {
         lines.add("iptables -P OUTPUT ACCEPT");
         lines.add("iptables -P FORWARD ACCEPT");
         lines.add(String.format("iptables -t nat -A POSTROUTING -o wan -s %s.0/24 -j MASQUERADE", host.getLanNet()));
-        if(host.isDmz()){
+        if (host.isDmz()) {
             lines.add(String.format("iptables -t nat -A POSTROUTING -o wan -s %s.0/24 -j MASQUERADE", host.getDmzNet()));
         }
         return lines;

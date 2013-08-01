@@ -88,6 +88,7 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                 } catch (Exception e) {
                     code = Rpc.Code.FAIL;
                     lines.add("异常：" + e.getMessage());
+                    logger.error("执行命令出错", e);
                 }
 
                 break;
@@ -108,6 +109,7 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                 } catch (Exception e) {
                     code = Rpc.Code.FAIL;
                     lines.add("异常：" + e.getMessage());
+                    logger.error("写入文件出错", e);
                 }
                 break;
             case BYE:

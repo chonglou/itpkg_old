@@ -1,7 +1,7 @@
 package com.odong.itpkg.job;
 
 import com.odong.itpkg.entity.Task;
-import com.odong.itpkg.service.HostService;
+import com.odong.itpkg.rpc.RpcHelper;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
@@ -23,15 +23,17 @@ public class TaskJob {
         for (Task t : taskService.listTimerTask()) {
             taskExecutor.execute(new TaskRunner(
                     t.getId(),
+                    taskService,
                     jsonHelper,
                     encryptHelper,
-                    taskService,
-                    hostService,
+                    rpcHelper,
                     dbHelper)
             );
         }
     }
 
+    @Resource
+    private RpcHelper rpcHelper;
     @Resource
     private TaskService taskService;
     @Resource
@@ -41,16 +43,10 @@ public class TaskJob {
     @Resource
     private DBHelper dbHelper;
     @Resource
-    private HostService hostService;
-    @Resource
     private EncryptHelper encryptHelper;
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {
         this.encryptHelper = encryptHelper;
-    }
-
-    public void setHostService(HostService hostService) {
-        this.hostService = hostService;
     }
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {

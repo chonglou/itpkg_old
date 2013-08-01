@@ -1,6 +1,7 @@
 package com.odong.portal.util;
 
 import com.google.code.kaptcha.Constants;
+import com.odong.itpkg.model.Rpc;
 import com.odong.portal.service.SiteService;
 import com.odong.portal.web.ResponseItem;
 import net.tanesha.recaptcha.ReCaptchaResponse;
@@ -20,6 +21,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component("formHelper")
 public class FormHelper {
+    public ResponseItem fill(Rpc.Response response, ResponseItem ri) {
+        if (response.getCode() != Rpc.Code.SUCCESS) {
+            ri.setOk(false);
+        }
+        ri.addData(response.getLinesList());
+        return ri;
+    }
+
     public boolean checkIp(String ip) {
         if (ip == null) {
             return false;

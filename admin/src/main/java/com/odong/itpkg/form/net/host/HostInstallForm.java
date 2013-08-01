@@ -1,7 +1,6 @@
 package com.odong.itpkg.form.net.host;
 
 import com.odong.itpkg.validation.IpV4;
-import com.odong.itpkg.validation.Mac;
 import com.odong.itpkg.validation.Port;
 
 import javax.validation.constraints.NotNull;

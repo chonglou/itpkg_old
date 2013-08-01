@@ -131,9 +131,9 @@ public class HostController {
             ri.addData("LAN网段格式不正确");
         }
         FlowLimit fl = hostService.getFirewallFlowLimit(form.getDefFlowLimit());
-        if(fl == null || !fl.getCompany().equals(si.getSsCompanyId())){
+        if (fl == null || !fl.getCompany().equals(si.getSsCompanyId())) {
             ri.setOk(false);
-            ri.addData("限速规则["+form.getDefFlowLimit()+"]不存在");
+            ri.addData("限速规则[" + form.getDefFlowLimit() + "]不存在");
         }
 
         if (ri.isOk()) {
@@ -149,7 +149,7 @@ public class HostController {
                     hostService.addIpDhcp(wanIpId);
                     break;
             }
-            hostService.addHost(si.getSsCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), ss[0]+"."+ss[1]+"."+ss[2],  form.getLanMac(),form.getDefFlowLimit(), form.getDetails());
+            hostService.addHost(si.getSsCompanyId(), form.getName(), form.getDomain(), wanIpId, form.getWanMac(), form.getRpcPort(), ss[0] + "." + ss[1] + "." + ss[2], form.getLanMac(), form.getDefFlowLimit(), form.getDetails());
             logService.add(si.getSsAccountId(), "添加主机[" + form.getName() + "]", Log.Type.INFO);
 
         }

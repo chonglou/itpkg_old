@@ -1,19 +1,11 @@
 package com.odong.itpkg;
 
 
-import com.odong.itpkg.model.Rpc;
-import com.odong.itpkg.router.Type;
-import com.odong.itpkg.rpc.Callback;
-import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.util.JsonHelper;
 import com.odong.itpkg.util.StringHelper;
 import com.odong.itpkg.util.impl.JsonHelperImpl;
-import com.odong.portal.util.IPSeeker;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AppTest {
 

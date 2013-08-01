@@ -625,8 +625,8 @@ public class HostServiceImpl implements HostService {
     @Override
     public List<Host> listHostByFlowLimit(long flowLimitId) {
         Map<String, Object> map = new HashMap<>();
-       map.put("defFlowLimit", flowLimitId);
-        return hostDao.list("SELECT i FROM Host i WHERE i.defFlowLimit=:defFlowLimit",map);
+        map.put("defFlowLimit", flowLimitId);
+        return hostDao.list("SELECT i FROM Host i WHERE i.defFlowLimit=:defFlowLimit", map);
     }
 
     @Override
@@ -688,7 +688,7 @@ public class HostServiceImpl implements HostService {
 
     @Override
     public Mac getMac(long hostId, String serial) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("host", hostId);
         map.put("serial", serial);
         return macDao.select("SELECT i FROM Mac i WHERE i.host=:host AND i.serial=:serial", map);

@@ -153,6 +153,7 @@ public interface HostService {
     List<Host> listHostByCompany(String companyId);
 
     List<Host> listHost();
+
     List<Host> listHostByFlowLimit(long flowLimitId);
 
     void addHost(String companyId, String name, String domain,

@@ -1,12 +1,9 @@
 package com.odong.itpkg.job;
 
 import com.odong.itpkg.entity.Task;
-import com.odong.itpkg.entity.net.Host;
-import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.rpc.Callback;
-import com.odong.itpkg.rpc.Client;
-import com.odong.itpkg.service.HostService;
+import com.odong.itpkg.rpc.RpcHelper;
 import com.odong.itpkg.service.TaskService;
 import com.odong.itpkg.util.DBHelper;
 import com.odong.itpkg.util.EncryptHelper;
@@ -14,7 +11,6 @@ import com.odong.itpkg.util.JsonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,27 +41,24 @@ public class TaskRunner implements Runnable {
         }
 
         taskService.setBegin(taskId);
-        Client client;
         try {
 
+            long hostId;
             switch (task.getType()) {
                 case RPC_COMMAND:
                     List<String> commands = jsonHelper.json2List(task.getRequest(), String.class);
-                    client = createClient(Long.parseLong(commands.get(0)), taskId);
-                    client.send(client.command(commands.subList(1, commands.size())));
-                    client.send(client.bye());
+                    hostId = Long.parseLong(commands.get(0));
+                    rpcHelper.command(hostId, commands.subList(1, commands.size()).toArray(new String[1]), getRpcCallback(hostId));
                     break;
                 case RPC_FILE:
                     List<String> lines = jsonHelper.json2List(task.getRequest(), String.class);
-                    client = createClient(Long.parseLong(lines.get(0)), taskId);
-                    client.send(client.file(lines.get(1), lines.get(2), lines.get(3), lines.subList(4, lines.size())));
-                    client.send(client.bye());
+                    hostId = Long.parseLong(lines.get(0));
+                    rpcHelper.file(hostId, lines.get(1), lines.get(2), lines.get(3), lines.subList(4, lines.size()).toArray(new String[1]), getRpcCallback(hostId));
                     break;
                 case RPC_HEART:
                     List<String> heart = jsonHelper.json2List(task.getRequest(), String.class);
-                    client = createClient(Long.parseLong(heart.get(0)), taskId);
-                    client.send(client.heart());
-                    client.send(client.bye());
+                    hostId = Long.parseLong(heart.get(0));
+                    rpcHelper.heart(hostId, getRpcCallback(hostId));
                     break;
                 case DB_BACKUP:
                     dbHelper.backup();
@@ -84,44 +77,35 @@ public class TaskRunner implements Runnable {
 
     }
 
-    private Client createClient(long hostId, final String taskId) {
-        Host host = hostService.getHost(hostId);
-        Ip wan = hostService.getIp(host.getWanIp());
-        final Client client = new Client(encryptHelper.decode(host.getSignKey()));
-
-        client.open(wan.getAddress(), host.getRpcPort(), new Callback() {
+    private Callback getRpcCallback(final long hostId) {
+        return new Callback() {
             @Override
             public void execute(Rpc.Response response) {
-                List<String> lines = new ArrayList<>();
-                lines.add(response.getCode().toString());
-                for (String line : response.getLinesList()) {
-                    lines.add(client.decode(line));
-                }
-                taskService.setEnd(taskId, jsonHelper.object2json(lines));
+                taskService.setEnd(taskId, rpcHelper.decode(hostId, response).toString());
             }
-        });
-        return client;
+        };
     }
 
+
     public TaskRunner(String taskId,
+                      TaskService taskService,
                       JsonHelper jsonHelper,
                       EncryptHelper encryptHelper,
-                      TaskService taskService,
-                      HostService hostService,
+                      RpcHelper rpcHelper,
                       DBHelper dbHelper) {
         this.taskId = taskId;
         this.jsonHelper = jsonHelper;
         this.encryptHelper = encryptHelper;
         this.taskService = taskService;
-        this.hostService = hostService;
         this.dbHelper = dbHelper;
+        this.rpcHelper = rpcHelper;
     }
 
+    private RpcHelper rpcHelper;
     private String taskId;
     private JsonHelper jsonHelper;
     private EncryptHelper encryptHelper;
     private TaskService taskService;
-    private HostService hostService;
     private DBHelper dbHelper;
     private final static Logger logger = LoggerFactory.getLogger(TaskRunner.class);
 }
