@@ -43,6 +43,7 @@ public class SiteHelper {
             siteService.set("site.description", "itpkg");
             siteService.set("site.keywords", "itpkg");
             siteService.set("site.domain", "www.0-dong.com");
+            siteService.set("site.ip", "192.168.1.10");
             siteService.set("site.copyright", "&copy;2013");
             siteService.set("site.allowRegister", true);
             siteService.set("site.allowLogin", true);

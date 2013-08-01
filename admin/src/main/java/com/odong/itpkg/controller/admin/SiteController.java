@@ -116,6 +116,7 @@ public class SiteController {
     @ResponseBody
     Form getSiteState() {
         Form fm = new Form("siteState", "网站状态", "/admin/site/state");
+        fm.addField(new TextField<>("ip", "服务器IP", siteService.getString("site.ip")));
         RadioField<Boolean> login = new RadioField<>("allowLogin", "登陆", siteService.getBoolean("site.allowLogin"));
         login.addOption("允许", true);
         login.addOption("禁止", false);
@@ -133,6 +134,7 @@ public class SiteController {
     ResponseItem postSiteState(@Valid SiteStateForm form, BindingResult result, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
+            siteService.set("site.ip", form.getIp());
             siteService.set("site.allowLogin", form.isAllowLogin());
             siteService.set("site.allowRegister", form.isAllowRegister());
             logService.add(si.getSsAccountId(), "设置站点权限[登陆," + form.isAllowLogin() + "][注册," + form.isAllowRegister() + "]", Log.Type.INFO);

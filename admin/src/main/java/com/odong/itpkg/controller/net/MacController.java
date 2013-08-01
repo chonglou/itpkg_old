@@ -11,7 +11,7 @@ import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.util.EncryptHelper;
-import com.odong.itpkg.util.LinuxHelper;
+import com.odong.itpkg.linux.ArchHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
 import org.springframework.stereotype.Controller;
@@ -53,7 +53,7 @@ public class MacController {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         Host host = hostService.getHost(hostId);
         try {
-            Rpc.Response response = rpcHelper.command(hostId, linuxHelper.macScan());
+            Rpc.Response response = rpcHelper.command(hostId, archHelper.macScan());
             if (response.getCode() == Rpc.Code.SUCCESS) {
                 List<String> list = response.getLinesList();
                 ri.addData("共扫描到[" + (list.size() - 1) + "]记录");
@@ -83,7 +83,7 @@ public class MacController {
     }
 
     @Resource
-    private LinuxHelper linuxHelper;
+    private ArchHelper archHelper;
     @Resource
     private HostService hostService;
     @Resource
@@ -101,8 +101,8 @@ public class MacController {
         this.rpcHelper = rpcHelper;
     }
 
-    public void setLinuxHelper(LinuxHelper linuxHelper) {
-        this.linuxHelper = linuxHelper;
+    public void setArchHelper(ArchHelper archHelper) {
+        this.archHelper = archHelper;
     }
 
     public void setEncryptHelper(EncryptHelper encryptHelper) {

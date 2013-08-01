@@ -1,5 +1,6 @@
 package com.odong.itpkg;
 
+import com.odong.itpkg.util.CommandHelper;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -7,6 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
+import java.net.URL;
 
 public class App implements Daemon {
     @Override
@@ -20,6 +25,20 @@ public class App implements Daemon {
 
         if (!"root".equals(System.getProperty("user.name"))) {
             logger.warn("调试启动");
+        }
+
+        logger.info("正在启动防火墙及限速规则");
+        try{
+            for(String s : new String[]{"ff", "tc"}){
+                URL url = this.getClass().getResource("/"+s+".sh");
+                if(url != null){
+                    CommandHelper.execute(url.toString());
+                }
+            }
+            logger.info("成功启动防火墙及限速规则");
+        }
+        catch (Exception e){
+            logger.error("初始化防火墙及限速规则失败", e);
         }
 
     }

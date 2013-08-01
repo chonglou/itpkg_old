@@ -1,4 +1,4 @@
-package com.odong.itpkg.util;
+package com.odong.itpkg.linux;
 
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
@@ -6,8 +6,9 @@ import com.odong.itpkg.entity.net.Mac;
 import com.odong.itpkg.entity.net.dns.Domain;
 import com.odong.itpkg.entity.net.dns.Zone;
 import com.odong.itpkg.entity.net.firewall.*;
-import com.odong.itpkg.model.EtcFile;
+import com.odong.itpkg.linux.EtcFile;
 import com.odong.itpkg.service.HostService;
+import com.odong.itpkg.util.EncryptHelper;
 import com.odong.portal.service.SiteService;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +24,26 @@ import java.util.*;
  * Time: 下午8:29
  */
 @Component
-public class LinuxHelper {
-    public String saveIptables() {
+public class ArchHelper {
+    public EtcFile ffProfile(long hostId){
+        StringBuilder sb = new StringBuilder();
+        sb.append("#!/bin/sh\n");
+        for(String s : ffApply(hostId)){
+            sb.append(s);
+            sb.append("\n");
+        }
+        return new EtcFile("/opt/itpkgd/ff.sh", "root:root", "500", sb.toString());
+    }
+    public EtcFile tcProfile(long hostId){
+        StringBuilder sb = new StringBuilder();
+        sb.append("#!/bin/sh\n");
+        for(String s : tcApply(hostId)){
+            sb.append(s);
+            sb.append("\n");
+        }
+        return new EtcFile("/opt/itpkgd/tc.sh", "root:root", "500", sb.toString());
+    }
+    public String saveFf() {
         return "iptables-save > /etc/iptables/iptables.rules";
     }
 
@@ -51,7 +70,7 @@ public class LinuxHelper {
         sb.append(String.format("server.port=%d", host.getRpcPort()));
         sb.append(String.format("server.space=%d", host.getSpace()));
         sb.append(String.format("server.http=http://%s", siteService.getString("site.domain")));
-        return new EtcFile("/opt/netmgrd/config.properties", "root:root", "400", sb.toString());
+        return new EtcFile("/opt/itpkgd/config.properties", "root:root", "400", sb.toString());
     }
 
     public String reboot() {
@@ -71,7 +90,7 @@ public class LinuxHelper {
         return "systemctl restart named";
     }
 
-    public List<String> enableNetwork(long hostId) {
+    public List<String> enableService(long hostId) {
         Host host = hostService.getHost(hostId);
         List<String> lines = new ArrayList<>();
         lines.add("udevadm trigger");
@@ -178,6 +197,10 @@ public class LinuxHelper {
         if (host.isPing()) {
             lines.add("iptables -A INPUT -i wan -p icmp --icmp-type 8 -j ACCEPT");
         }
+        //防火墙放开的TCP端口
+        for(int i:new int[]{22,host.getRpcPort()}){
+            lines.add(String.format("iptables -A INPUT -p TCP -d %s --dport %d -j ACCEPT", wanIp.getAddress(), i));
+        }
         //INPUT
         for (Input in : hostService.listFirewallInput(hostId)) {
             lines.add(in.getsIp() == null ?
@@ -242,7 +265,8 @@ public class LinuxHelper {
         return lines;
     }
 
-    public List<String> ffClear() {
+    public List<String> ffClear(long hostId) {
+        Host host = hostService.getHost(hostId);
         List<String> lines = ffPrepare();
         lines.add("iptables -F");
         lines.add("iptables -X");
@@ -251,7 +275,10 @@ public class LinuxHelper {
         lines.add("iptables -P INPUT ACCEPT");
         lines.add("iptables -P OUTPUT ACCEPT");
         lines.add("iptables -P FORWARD ACCEPT");
-        lines.add("iptables -t nat -A POSTROUTING -o %s -s %s.0/24 -j MASQUERADE");
+        lines.add(String.format("iptables -t nat -A POSTROUTING -o wan -s %s.0/24 -j MASQUERADE", host.getLanNet()));
+        if(host.isDmz()){
+            lines.add(String.format("iptables -t nat -A POSTROUTING -o wan -s %s.0/24 -j MASQUERADE", host.getDmzNet()));
+        }
         return lines;
     }
 

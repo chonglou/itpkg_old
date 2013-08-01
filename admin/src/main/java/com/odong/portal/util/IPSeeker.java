@@ -62,7 +62,7 @@ public class IPSeeker {
      * @param ip ip的字节数组形式
      * @return 字符串形式的ip
      */
-    public String getIpStringFromBytes(byte[] ip) {
+    public String bytes2Ip(byte[] ip) {
         StringBuilder sb = new StringBuilder();
         sb.append(ip[0] & 0xFF);
         sb.append('.');
@@ -80,7 +80,7 @@ public class IPSeeker {
      * @param ip 字符串形式的ip
      * @return 字节数组形式的ip
      */
-    public byte[] getIpByteArrayFromString(String ip) {
+    public byte[] ip2bytes(String ip) {
         byte[] ret = new byte[4];
         StringTokenizer st = new StringTokenizer(ip, ".");
         try {
@@ -106,7 +106,7 @@ public class IPSeeker {
         if (ipFile == null)
             return bad_ip_file;
         // 保存ip，转换ip字节数组为字符串形式
-        String ipStr = getIpStringFromBytes(ip);
+        String ipStr = bytes2Ip(ip);
         // 先检查cache中是否已经包含有这个ip的结果，没有再搜索文件
         if (ipCache.containsKey(ipStr)) {
             IPLocation ipLoc = ipCache.get(ipStr);
@@ -125,7 +125,7 @@ public class IPSeeker {
      * @return 地区名字符串
      */
     public String getArea(String ip) {
-        return getArea(getIpByteArrayFromString(ip));
+        return getArea(ip2bytes(ip));
     }
 
     /**
@@ -139,7 +139,7 @@ public class IPSeeker {
         if (ipFile == null)
             return bad_ip_file;
         // 保存ip，转换ip字节数组为字符串形式
-        String ipStr = getIpStringFromBytes(ip);
+        String ipStr = bytes2Ip(ip);
         // 先检查cache中是否已经包含有这个ip的结果，没有再搜索文件
         if (ipCache.containsKey(ipStr)) {
             IPLocation ipLoc = ipCache.get(ipStr);
@@ -158,7 +158,7 @@ public class IPSeeker {
      * @return 国家名字符串
      */
     public String getCountry(String ip) {
-        return getCountry(getIpByteArrayFromString(ip));
+        return getCountry(ip2bytes(ip));
     }
 
 
@@ -190,10 +190,10 @@ public class IPSeeker {
                         entry.area = ipLoc.area;
                         // 得到起始IP
                         readIP(offset - 4, b4);
-                        entry.beginIp = getIpStringFromBytes(b4);
+                        entry.beginIp = bytes2Ip(b4);
                         // 得到结束IP
                         readIP(temp, b4);
-                        entry.endIp = getIpStringFromBytes(b4);
+                        entry.endIp = bytes2Ip(b4);
                         // 添加该记录
                         ret.add(entry);
                     }

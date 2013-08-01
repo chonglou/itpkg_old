@@ -1,4 +1,4 @@
-package com.odong.itpkg.model;
+package com.odong.itpkg.linux;
 
 /**
  * Created with IntelliJ IDEA.

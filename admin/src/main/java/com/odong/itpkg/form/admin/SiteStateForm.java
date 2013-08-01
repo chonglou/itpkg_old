@@ -1,5 +1,8 @@
 package com.odong.itpkg.form.admin;
 
+import com.odong.itpkg.validation.IpV4;
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -10,8 +13,19 @@ import java.io.Serializable;
  */
 public class SiteStateForm implements Serializable {
     private static final long serialVersionUID = 7267535797961055521L;
+    @NotNull
+    @IpV4
+    private String ip;
     private boolean allowLogin;
     private boolean allowRegister;
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 
     public boolean isAllowLogin() {
         return allowLogin;

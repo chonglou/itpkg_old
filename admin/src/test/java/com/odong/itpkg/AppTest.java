@@ -17,7 +17,10 @@ import java.util.List;
 
 public class AppTest {
 
-    //@Test
+    @Test
+    public void setName(){
+
+    }
 
     public void testClient() {
 

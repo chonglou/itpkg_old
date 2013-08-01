@@ -2,9 +2,11 @@ package com.odong.itpkg.rpc;
 
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Ip;
+import com.odong.itpkg.linux.EtcFile;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.util.EncryptHelper;
+import com.odong.portal.web.ResponseItem;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,52 +23,66 @@ import java.util.Map;
  */
 @Component
 public class RpcHelper {
+    public Rpc.Response file(long hostId, EtcFile file) {
+        return send(hostId, Rpc.Type.FILE, file.getName(), file.getOwner(), file.getMode(), file.getData());
+    }
 
-    public  Rpc.Response file(long hostId,String name, String mode, String owner, String...commands){
-        return send(hostId, Rpc.Type.FILE, name, mode, owner,commands);
+    public Rpc.Response file(long hostId, String name, String owner, String mode, String... commands) {
+        return send(hostId, Rpc.Type.FILE, name, owner, mode, commands);
     }
-    public  Rpc.Response command(long hostId, String...commands){
-        return send(hostId, Rpc.Type.COMMAND, null, null, null,commands);
+
+    public Rpc.Response command(long hostId, String... commands) {
+        return send(hostId, Rpc.Type.COMMAND, null, null, null, commands);
     }
-    public  Rpc.Response heart(long hostId){
+
+    public Rpc.Response heart(long hostId) {
         return send(hostId, Rpc.Type.HEART, null, null, null);
     }
-    public  Rpc.Response bye(long hostId){
+
+    public Rpc.Response bye(long hostId) {
         return send(hostId, Rpc.Type.BYE, null, null, null);
     }
 
-    public synchronized void pop(long hostId){
+    public void fill(Rpc.Response response, ResponseItem ri) {
+        ri.setOk(response.getCode() == Rpc.Code.SUCCESS);
+        ri.getData().addAll(response.getLinesList());
+    }
+
+
+    public synchronized void pop(long hostId) {
         clientMap.remove(hostId);
     }
 
+
     @PostConstruct
-    void init(){
+    void init() {
         clientMap = new HashMap<>();
     }
+
     @PreDestroy
-    void destroy(){
+    void destroy() {
         clientMap.clear();
     }
 
-    private synchronized Connection getConnection(long hostId){
+    private synchronized Connection getConnection(long hostId) {
         Connection c = clientMap.get(hostId);
-        if(c == null){
+        if (c == null) {
             Host host = hostService.getHost(hostId);
             Ip wanIp = hostService.getIp(host.getWanIp());
-            c = new Connection(wanIp.getId(), host.getRpcPort(),encryptHelper.decode(host.getSignKey()));
+            c = new Connection(wanIp.getId(), host.getRpcPort(), encryptHelper.decode(host.getSignKey()));
             clientMap.put(hostId, c);
         }
         return c;
     }
 
-    private  Rpc.Response send(long hostId, Rpc.Type type, String name, String mode, String owner, String...lines){
+    private Rpc.Response send(long hostId, Rpc.Type type, String name, String owner, String mode, String... lines) {
         final Rpc.Response.Builder builder = Rpc.Response.newBuilder();
         Connection c = getConnection(hostId);
         final Client client = new Client(c.key);
         client.open(c.host, c.port, new Callback() {
             @Override
             public void execute(Rpc.Response response) {
-                for(String s : response.getLinesList()){
+                for (String s : response.getLinesList()) {
                     builder.addLines(client.decode(s));
                 }
                 builder.addAllLines(response.getLinesList());
@@ -76,7 +92,7 @@ public class RpcHelper {
             }
         });
         Rpc.Request request;
-        switch (type){
+        switch (type) {
             case COMMAND:
                 request = client.command(lines);
                 break;
@@ -84,30 +100,30 @@ public class RpcHelper {
                 request = client.file(name, mode, owner, lines);
                 break;
             case HEART:
-                request  = client.heart();
+                request = client.heart();
                 break;
             default:
                 request = client.bye();
         }
         client.send(request);
-        while (builder.getCreated() == 0){
-            try{
+        while (builder.getCreated() == 0) {
+            try {
                 Thread.sleep(1000);
-            }
-            catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         client.close();
         return builder.build();
     }
-    private  Map<Long, Connection> clientMap;
+
+    private Map<Long, Connection> clientMap;
     @Resource
     private HostService hostService;
     @Resource
     private EncryptHelper encryptHelper;
 
-    class Connection{
+    class Connection {
         Connection(String host, int port, String key) {
             this.host = host;
             this.port = port;
