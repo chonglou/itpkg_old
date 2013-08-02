@@ -650,6 +650,7 @@ public class HostServiceImpl implements HostService {
         h.setSignKey(encryptHelper.encode(stringHelper.random(Host.KEY_LEN)));
         h.setSpace(60);
         h.setCreated(new Date());
+        h.setPing(true);
         hostDao.insert(h);
     }
 

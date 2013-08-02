@@ -6,8 +6,12 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.compression.SnappyFramedDecoder;
+import io.netty.handler.codec.compression.SnappyFramedEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,25 +20,23 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
  * Time: 下午2:43
  */
 public class Initializer extends ChannelInitializer<SocketChannel> {
-    public Initializer(Callback callback) {
+    public Initializer() {
         super();
-        this.callback = callback;
     }
 
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
-        //pipeline.addLast("deflater", ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
-        //pipeline.addLast("inflater", ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
+        pipeline.addLast("deflater", new SnappyFramedEncoder());
+        pipeline.addLast("inflater", new SnappyFramedDecoder());
 
-        pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
+        pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
         pipeline.addLast("protobufDecoder", new ProtobufDecoder(Rpc.Response.getDefaultInstance()));
 
-        pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+        pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
         pipeline.addLast("protobufEncoder", new ProtobufEncoder());
 
-        pipeline.addLast("handler", new Handler(callback));
+        pipeline.addLast("handler", new Handler());
     }
 
-    private Callback callback;
 }

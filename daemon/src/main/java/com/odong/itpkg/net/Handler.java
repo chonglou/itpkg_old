@@ -9,6 +9,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,13 +101,20 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                 try {
 
                     FileHelper.write(filename, getLines(request).toArray(new String[1]));
-                    for (String s : CommandHelper.execute(
-                            String.format("chown %s %s", request.getOwner(), filename),
-                            String.format("chmod %s %s", request.getMode(), filename))) {
-                        lines.add(s);
+                    if(!debug){
+                        for (String s : CommandHelper.execute(
+                                String.format("chown %s %s", request.getOwner(), filename),
+                                String.format("chmod %s %s", request.getMode(), filename))) {
+                            lines.add(s);
+                        }
                     }
                     code = Rpc.Code.SUCCESS;
-                } catch (Exception e) {
+                }
+                catch (EncryptionOperationNotPossibleException e){
+                    code = Rpc.Code.FAIL;
+                    lines.add("密钥不对");
+                }
+                catch (Exception e) {
                     code = Rpc.Code.FAIL;
                     lines.add("异常：" + e.getMessage());
                     logger.error("写入文件出错", e);

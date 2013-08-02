@@ -20,7 +20,6 @@ public class HostInstallForm implements Serializable {
     @NotNull
     @Port
     private int port;
-    @NotNull(message = "{valid.notnull}")
     private String key;
 
     public String getHost() {

@@ -24,6 +24,20 @@ import java.util.*;
  */
 @Component
 public class ArchHelper {
+    public EtcFile clearProfile(long hostId){
+        StringBuilder sb = new StringBuilder();
+        sb.append("#!/bin/sh\n");
+        for(String s : ffClear(hostId)){
+            sb.append(s);
+            sb.append("\n");
+        }
+        for(String s : tcClear()){
+            sb.append(s);
+            sb.append("\n");
+        }
+        return new EtcFile("/opt/itpkgd/clear.sh", "root:root", "500", sb.toString());
+
+    }
     public EtcFile ffProfile(long hostId) {
         StringBuilder sb = new StringBuilder();
         sb.append("#!/bin/sh\n");
@@ -67,10 +81,10 @@ public class ArchHelper {
     public EtcFile daemonProfile(long hostId) {
         Host host = hostService.getHost(hostId);
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("server.key=%s", encryptHelper.decode(host.getSignKey())));
-        sb.append(String.format("server.port=%d", host.getRpcPort()));
-        sb.append(String.format("server.space=%d", host.getSpace()));
-        sb.append(String.format("server.http=http://%s", siteService.getString("site.domain")));
+        sb.append(String.format("server.key=%s\n", encryptHelper.decode(host.getSignKey())));
+        sb.append(String.format("server.port=%d\n", host.getRpcPort()));
+        sb.append(String.format("server.space=%d\n", host.getSpace()));
+        sb.append(String.format("server.http=http://%s\n", siteService.getString("site.domain")));
         return new EtcFile("/opt/itpkgd/config.properties", "root:root", "400", sb.toString());
     }
 
@@ -112,17 +126,17 @@ public class ArchHelper {
         List<EtcFile> etcs = new ArrayList<>();
 
         StringBuilder sbU = new StringBuilder();
-        sbU.append(String.format("SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"%s\", NAME=\"wan\"", host.getWanMac()));
-        sbU.append(String.format("SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"%s\", NAME=\"lan\"", host.getLanMac()));
+        sbU.append(String.format("SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"%s\", NAME=\"wan\"\n", host.getWanMac()));
+        sbU.append(String.format("SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"%s\", NAME=\"lan\"\n", host.getLanMac()));
         etcs.add(new EtcFile("/etc/udev/rules.d/10-network.rules", "root:root", "444", sbU.toString()));
 
         StringBuilder sbW = new StringBuilder();
         switch (wanIp.getType()) {
             case STATIC:
-                sbW.append("Description='A static ethernet connection for wan'");
-                sbW.append("Interface=wan");
-                sbW.append("Connection=ethernet");
-                sbW.append("IP=static");
+                sbW.append("Description='A static ethernet connection for wan'\n");
+                sbW.append("Interface=wan\n");
+                sbW.append("Connection=ethernet\n");
+                sbW.append("IP=static\n");
                 sbU.append(String.format("Address=('%s/24'", wanIp.getAddress()));
                 if (host.isDmz()) {
                     for (Dmz d : hostService.listFirewallDmz(hostId)) {
@@ -130,33 +144,33 @@ public class ArchHelper {
                         sbU.append(String.format(" %s/24", dmzIp.getAddress()));
                     }
                 }
-                sbU.append(")");
-                sbW.append(String.format("Gateway='%s'", wanIp.getGateway()));
-                sbW.append(String.format("DNS=('%s %s')", wanIp.getDns1(), wanIp.getDns2()));
+                sbU.append(")\n");
+                sbW.append(String.format("Gateway='%s'\n", wanIp.getGateway()));
+                sbW.append(String.format("DNS=('%s %s')\n", wanIp.getDns1(), wanIp.getDns2()));
                 break;
             case DHCP:
-                sbW.append("Description='A dhcp ethernet connection for wan'");
-                sbW.append("Interface=wan");
-                sbW.append("Connection=ethernet");
-                sbW.append("IP=dhcp");
+                sbW.append("Description='A dhcp ethernet connection for wan'\n");
+                sbW.append("Interface=wan\n");
+                sbW.append("Connection=ethernet\n");
+                sbW.append("IP=dhcp\n");
                 break;
             case PPPOE:
-                sbW.append("Description='A PPPoE connection for wan'");
-                sbW.append("Interface=wan");
-                sbW.append("Connection=pppoe");
-                sbW.append(String.format("User='%s'", wanIp.getUsername()));
-                sbW.append(String.format("Password='%s'", encryptHelper.decode(wanIp.getPassword())));
-                sbW.append("ConnectionMode='persist'");
+                sbW.append("Description='A PPPoE connection for wan'\n");
+                sbW.append("Interface=wan\n");
+                sbW.append("Connection=pppoe\n");
+                sbW.append(String.format("User='%s'\n", wanIp.getUsername()));
+                sbW.append(String.format("Password='%s'\n", encryptHelper.decode(wanIp.getPassword())));
+                sbW.append("ConnectionMode='persist'\n");
                 break;
         }
         etcs.add(new EtcFile("/etc/netctl/wan", "root:root", "444", sbW.toString()));
 
         StringBuilder sbL = new StringBuilder();
-        sbL.append("Description='A static ethernet connection for lan'");
-        sbL.append("Interface=lan");
-        sbL.append("Connection=ethernet");
-        sbL.append("IP=static");
-        sbL.append(String.format("Address=('%s.1/24')", host.getLanNet()));
+        sbL.append("Description='A static ethernet connection for lan'\n");
+        sbL.append("Interface=lan\n");
+        sbL.append("Connection=ethernet\n");
+        sbL.append("IP=static\n");
+        sbL.append(String.format("Address=('%s.1/24')\n", host.getLanNet()));
         etcs.add(new EtcFile("/etc/netctl/lan", "root:root", "444", sbL.toString()));
 
         return etcs;
@@ -205,9 +219,9 @@ public class ArchHelper {
         //INPUT
         for (Input in : hostService.listFirewallInput(hostId)) {
             lines.add(in.getsIp() == null ?
-                    String.format("iptables -A INPUT -p %s -d %s --dport %d -j ACCEPT", in.getProtocol(), wanIp.getAddress(), in.getPort())
+                    String.format("iptables -A INPUT -p %s -i wan --dport %d -j ACCEPT", in.getProtocol(),  in.getPort())
                     :
-                    String.format("iptables -A INPUT -s %s -p %s -d %s --dport %d -j ACCEPT", in.getsIp(), in.getProtocol(), wanIp.getAddress(), in.getPort())
+                    String.format("iptables -A INPUT -s %s -p %s -i wan --dport %d -j ACCEPT", in.getsIp(), in.getProtocol(),  in.getPort())
             );
         }
         //LOOP
@@ -273,13 +287,29 @@ public class ArchHelper {
         lines.add("iptables -X");
         lines.add("iptables -t nat -F");
         lines.add("iptables -t nat -X");
-        lines.add("iptables -P INPUT ACCEPT");
+        lines.add("iptables -P INPUT DROP");
         lines.add("iptables -P OUTPUT ACCEPT");
         lines.add("iptables -P FORWARD ACCEPT");
         lines.add(String.format("iptables -t nat -A POSTROUTING -o wan -s %s.0/24 -j MASQUERADE", host.getLanNet()));
         if (host.isDmz()) {
             lines.add(String.format("iptables -t nat -A POSTROUTING -o wan -s %s.0/24 -j MASQUERADE", host.getDmzNet()));
         }
+        //ICMP
+        for (String p : new String[]{"0", "3", "3/4", "4", "11", "12", "14", "16", "18"}) {
+            lines.add(String.format("iptables -A INPUT -i wan -p icmp --icmp-type %s -j ACCEPT", p));
+        }
+        if (host.isPing()) {
+            lines.add("iptables -A INPUT -i wan -p icmp --icmp-type 8 -j ACCEPT");
+        }
+        //防火墙放开的TCP端口
+        for (int i : new int[]{22, host.getRpcPort()}) {
+            lines.add(String.format("iptables -A INPUT -p TCP -i wan --dport %d -j ACCEPT",  i));
+        }
+        //LOOP
+        lines.add("iptables -A INPUT -i lan -j ACCEPT");
+        lines.add("iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT");
+
+
         return lines;
     }
 

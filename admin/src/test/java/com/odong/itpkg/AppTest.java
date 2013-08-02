@@ -1,6 +1,7 @@
 package com.odong.itpkg;
 
 
+import com.odong.itpkg.rpc.Client;
 import com.odong.itpkg.util.JsonHelper;
 import com.odong.itpkg.util.StringHelper;
 import com.odong.itpkg.util.impl.JsonHelperImpl;
@@ -9,17 +10,15 @@ import org.testng.annotations.Test;
 
 public class AppTest {
 
-    @Test
-    public void setName(){
-
-    }
-
+    //@Test
     public void testClient() {
 
 
         String key = "Qui9eeghen5AN5quave4elix7ahc";
         String host = "192.168.1.102";
         int port = 9999;
+        Client client = new Client(host, port, key);
+        log(client.send(client.heart()).toString());
 
 
         /*

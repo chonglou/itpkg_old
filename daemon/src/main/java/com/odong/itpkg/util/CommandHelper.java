@@ -39,10 +39,10 @@ public final class CommandHelper {
                     }
                 } else {
                     while ((line = err.readLine()) != null) {
-                        logger.debug(line);
+                        logger.error(line);
                         lines.add(line);
                     }
-                    throw new IllegalArgumentException("出错，返回值[" + code + "]");
+                    throw new IllegalArgumentException("出错，运行["+cmd+"]返回值[" + code + "]");
                 }
                 out.close();
                 err.close();
