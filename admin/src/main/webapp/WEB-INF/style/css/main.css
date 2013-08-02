@@ -17,3 +17,13 @@ body {
         padding: 0;
     }
 }
+
+.lbl-submit{
+    color:black;
+}
+.lbl-disable{
+    color: red;
+}
+.lbl-enable{
+    color: green;
+}

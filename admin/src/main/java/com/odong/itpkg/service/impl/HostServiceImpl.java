@@ -409,6 +409,7 @@ public class HostServiceImpl implements HostService {
 
         Mac m = new Mac();
         m.setIp(ip);
+        m.setHost(hostId);
         m.setSerial(serial);
         m.setCreated(new Date());
         m.setState(Mac.State.SUBMIT);

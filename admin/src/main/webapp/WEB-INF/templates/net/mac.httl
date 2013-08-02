@@ -1,6 +1,81 @@
 <div class="btn-group">
-    <button id="btn-status" class="btn btn-primary" type="button">当前状态</button>
-    <button id="btn-start" class="btn btn-success" type="button">扫描LAN</button>
+    <button id="refresh" class="btn btn-primary" type="button">刷新列表</button>
+    <button id="scan" class="btn btn-success" type="button">扫描LAN</button>
+    #if(false)
+    <button id="test" class="btn btn-warning" type="button">填充测试数据</button>
+    #end
 </div>
 <p>&nbsp;</p>
 <div id="mac-root"></div>
+<p>&nbsp;</p>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>MAC</td>
+        <td>IP</td>
+        <td>用户</td>
+        <td>状态</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!--#set(Host host)-->
+    <!--#set(List<Mac> macList)-->
+    <!--#set(Map<Long,User> userMap)-->
+    #for(m : macList)
+    <tr>
+        <td>${m.serial}</td>
+        <td>${host.lanNet}.${m.ip}</td>
+        <td>${userMap.get(m.id).username}</td>
+        <td>
+            #if(m.state.toString() == "ENABLE")
+            <label class="lbl-enable">启用</label>
+            #else(m.state.toString()=="DISABLE")
+            <label class="lbl-disable">禁用</label>
+            #else
+            <label class="lbl-submit">提交</label>
+            #end
+        </td>
+        <td>
+            <button id="mac-edit-${m.id}" class="btn btn-primary" type="button">编辑</button>
+            <button id="mac-delete-${m.id}" class="btn btn-danger" type="button">删除</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
+<script type="text/javascript">
+    $("button#test").click(function () {
+        new Ajax("/net/mac/${host.id}/test", "POST");
+    });
+
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/net/mac/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "host-root");
+    });
+
+    $("button#scan").click(function(){
+        new Ajax("/net/mac/"+${host.id}+"/scan");
+    });
+
+    $("button[id^='mac-edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+
+            new Ajax("/net/mac/${host.id}/" + ss[2], undefined, undefined, undefined, undefined, "mac-root");
+
+        });
+    });
+    $("button[id^='mac-delete-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            if (window.confirm("你确认要删除MAC[" + ss[2] + "]么？")) {
+                new Ajax("/net/mac/${host.id}/" + ss[2],
+                        "DELETE"
+                );
+            }
+        });
+    });
+</script>

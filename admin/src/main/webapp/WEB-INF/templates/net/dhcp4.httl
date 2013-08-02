@@ -1,8 +1,77 @@
 <div class="btn-group">
-    <button id="btn-status" class="btn btn-primary" type="button">当前状态</button>
-    <button id="btn-sync" class="btn btn-warning" type="button">同步配置</button>
-    <button id="btn-stop" class="btn btn-danger" type="button">停止服务</button>
-    <button id="btn-start" class="btn btn-success" type="button">启动服务</button>
+    <button id="refresh" class="btn btn-primary" type="button">当前状态</button>
+    <button id="save" class="btn btn-warning" type="button">保存配置</button>
+    <button id="stop" class="btn btn-danger" type="button">停止服务</button>
+    <button id="start" class="btn btn-success" type="button">启动服务</button>
 </div>
 <p>&nbsp;</p>
 <div id="dhcp4-root"></div>
+<p>&nbsp;</p>
+<!--#set(List<String> logs)-->
+<div class="panel">
+    <div class="panel-heading">当前状态：[${new Date()}]</div>
+    <ul class="list-group  list-group-flush">
+        #for(i : logs)
+        <li class="list-group-item">${i}</li>
+        #end
+    </ul>
+</div>
+<p>&nbsp;</p>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>MAC</td>
+        <td>IP</td>
+        <td>类型</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!--#set(Host host)-->
+    <!--#set(List<Mac> macList)-->
+    <!--#set(Map<Long,User> userMap)-->
+    #for(m : macList)
+    <tr>
+        <td>${m.serial}</td>
+        <td>${host.lanNet}.${m.ip}</td>
+        <td>
+            #if(m.isBind())
+            <label class="lbl-enable">固定</label>
+            #else
+            <label class="lbl-submit">动态</label>
+            #end</td>
+        <td>
+            <button id="dhcp4-edit-${m.id}" class="btn btn-primary" type="button">编辑</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    $("button#refresh").click(function(){
+        clear_message_div();
+        new Ajax("/net/dhcp4/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "host-root");
+    });
+
+    $("button#save").click(function(){
+        new Ajax("/net/dhcp4/"+${host.id}+"/save", "POST");
+    });
+    $("button#start").click(function(){
+        new Ajax("/net/dhcp4/"+${host.id}+"/start", "POST");
+    });
+    $("button#stop").click(function(){
+        new Ajax("/net/dhcp4/"+${host.id}+"/stop", "POST");
+    });
+
+    $("button[id^='dhcp4-edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/net/dhcp4/${host.id}/" + ss[2], undefined, undefined, undefined, undefined, "dhcp4-root");
+
+        });
+    });
+
+</script>

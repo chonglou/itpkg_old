@@ -7,6 +7,7 @@ import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.host.HostInfoForm;
 import com.odong.itpkg.form.net.host.HostLanForm;
 import com.odong.itpkg.form.net.host.HostWanForm;
+import com.odong.itpkg.linux.ArchHelper;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
@@ -142,15 +143,13 @@ public class HostController {
         Host h = hostService.getHost(hostId);
         if (h != null && si.getSsCompanyId().equals(h.getCompany())) {
             fm.addField(new HiddenField<>("id", hostId));
-
-            String[] fields = new String[]{
-                    "lanMac", "LAN MAC", h.getLanMac(),
-                    "lanNet", "LAN网络", h.getLanNet() + ".0"
-            };
-            for (int i = 0; i < fields.length; i += 3) {
-                fm.addField(new TextField<>(fields[i], fields[i + 1], fields[i + 2]));
+            fm.addField(new TextField<>("lanMac", "MAC", h.getLanMac()));
+            SelectField<String> lanNet = new SelectField<>("lanNet", "网络", h.getLanNet() + ".0");
+            for(String s : archHelper.lanNetIdList()){
+                lanNet.addOption(s+"/24",s);
             }
-            SelectField<Long> defFl = new SelectField<Long>("defFlowLimit", "默认限速规则");
+            fm.addField(lanNet);
+            SelectField<Long> defFl = new SelectField<>("defFlowLimit", "默认限速规则", h.getDefFlowLimit());
             for (FlowLimit fl : hostService.listFirewallFlowLimit(si.getSsCompanyId())) {
                 defFl.addOption(fl.getName(), fl.getId());
             }
@@ -236,6 +235,12 @@ public class HostController {
     private LogService logService;
     @Resource
     private FormHelper formHelper;
+    @Resource
+    private ArchHelper archHelper;
+
+    public void setArchHelper(ArchHelper archHelper) {
+        this.archHelper = archHelper;
+    }
 
     public void setHostService(HostService hostService) {
         this.hostService = hostService;

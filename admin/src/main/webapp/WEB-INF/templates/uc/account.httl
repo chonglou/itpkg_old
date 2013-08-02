@@ -30,7 +30,15 @@
             <td>${a.id}</td>
             <td>${a.email}</td>
             <td>${a.username}</td>
-            <td>${a.state}</td>
+            <td>
+                #if(a.state.toString()=="ENABLE")
+                <label class="lbl-enable">启用</label>
+                #else(a.state.toString()=="DISABLE")
+                <label class="lbl-disable">禁用</label>
+                #else
+                <label class="lbl-submit">提交</label>
+                #end
+            </td>
             <td>${a.lastLogin}</td>
             <td>${a.created}</td>
 

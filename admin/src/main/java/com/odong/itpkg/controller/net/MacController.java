@@ -4,6 +4,7 @@ import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.net.Mac;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.entity.uc.User;
+import com.odong.itpkg.form.net.MacForm;
 import com.odong.itpkg.linux.ArchHelper;
 import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.model.SessionItem;
@@ -14,10 +15,15 @@ import com.odong.itpkg.service.LogService;
 import com.odong.itpkg.util.EncryptHelper;
 import com.odong.portal.util.FormHelper;
 import com.odong.portal.web.ResponseItem;
+import com.odong.portal.web.form.Form;
+import com.odong.portal.web.form.RadioField;
+import com.odong.portal.web.form.SelectField;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +50,79 @@ public class MacController {
         }
         map.put("macList", macList);
         map.put("userMap", userMap);
+        map.put("host", hostService.getHost(hostId));
         return "net/mac";
+    }
+
+    @RequestMapping(value = "/{macId}", method = RequestMethod.GET)
+    @ResponseBody
+    Form getMac(@PathVariable long hostId, @PathVariable long macId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        Form fm = new Form("mac", "编辑MAC[" + macId + "]", "/net/mac/" + hostId + "/" + macId);
+        Mac mac = hostService.getMac(macId);
+        if (mac != null && mac.getHost() == hostId) {
+            SelectField<Long> user = new SelectField<>("user", "用户", mac.getUser());
+            for (User u : accountService.listUserByCompany(si.getSsCompanyId())) {
+                user.addOption(u.getUsername(), u.getId());
+            }
+            fm.addField(user);
+            RadioField<Mac.State> state = new RadioField<Mac.State>("state", "状态", mac.getState());
+            state.addOption("提交", Mac.State.SUBMIT);
+            state.addOption("启用", Mac.State.ENABLE);
+            state.addOption("禁用", Mac.State.DISABLE);
+            fm.addField(state);
+            fm.setOk(true);
+        } else {
+            fm.addData("MAC[" + macId + "]不存在");
+        }
+        return fm;
+    }
+
+    @RequestMapping(value = "/{macId}", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postMac(@Valid MacForm form, BindingResult result, @PathVariable long hostId, @PathVariable long macId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = formHelper.check(result);
+        if (ri.isOk()) {
+            User u = accountService.getUser(form.getUser());
+            Mac m = hostService.getMac(macId);
+            if (u != null && m != null && m.getHost() == hostId && u.getCompany().equals(si.getSsCompanyId())) {
+                hostService.setMacState(macId, form.getState());
+                hostService.setMacUser(macId, form.getUser());
+                logService.add(si.getSsAccountId(), "修改MAC[" + macId + "]：用户" + u.getUsername() + "，状态" + form.getState(), Log.Type.INFO);
+
+            } else {
+                ri.setOk(false);
+                ri.addData("MAC[" + macId + "]不存在");
+            }
+        }
+        return ri;
+    }
+
+    @RequestMapping(value = "/{macId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    ResponseItem deleteMac(@PathVariable long hostId, @PathVariable long macId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        Mac mac = hostService.getMac(macId);
+        if (mac != null && mac.getHost() == hostId) {
+            hostService.delMac(macId);
+            logService.add(si.getSsAccountId(), "删除MAC[" + macId + "]", Log.Type.INFO);
+            ri.setOk(true);
+        } else {
+            ri.addData("MAC[" + macId + "]不存在");
+        }
+        return ri;
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem postTest(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        Host h = hostService.getHost(hostId);
+        for (int i = 100; i < 201; i++) {
+            hostService.addMac(hostId, "ff:ff:ff:ff:ff:" + Integer.toHexString(i), i, h.getDefFlowLimit());
+        }
+        logService.add(si.getSsAccountId(), "填充主机[" + hostId + "]测试数据", Log.Type.INFO);
+        ri.setOk(true);
+        return ri;
     }
 
     @RequestMapping(value = "/scan", method = RequestMethod.GET)

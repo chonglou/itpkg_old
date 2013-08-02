@@ -8,7 +8,9 @@ import com.odong.itpkg.entity.net.dns.Zone;
 import com.odong.itpkg.entity.net.firewall.*;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.util.EncryptHelper;
+import com.odong.itpkg.util.JsonHelper;
 import com.odong.portal.service.SiteService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,6 +26,26 @@ import java.util.*;
  */
 @Component
 public class ArchHelper {
+    public List<String> lanNetIdList(){
+        List<String> list = jsonHelper.json2List(lanNetExtends, String.class);
+        for(int i=0; i<255;i++){
+            list.add(i,"192.168."+i+".0");
+        }
+        /*
+        for(int i=16; i<32; i++){
+            for(int j=0; j<255;j++){
+                list.add("172."+i+"."+j+".0");
+            }
+        }
+        for(int i=0; i<255;i++){
+            for(int j=0; j<255; j++){
+                list.add("10."+i+"."+j+".0");
+            }
+        }
+        */
+        return list;
+    }
+
     public EtcFile clearProfile(long hostId){
         StringBuilder sb = new StringBuilder();
         sb.append("#!/bin/sh\n");
@@ -97,10 +119,28 @@ public class ArchHelper {
         return "ifconfig -a| grep ether | awk -F\" \" '{print $2}'";
     }
 
-    public String restartDncpd() {
+    public String restartDncp4() {
         return "systemctl restart dhcpd4";
     }
+    public String startDncp4() {
+        return "systemctl start dhcpd4";
+    }
+    public String stopDncp4() {
+        return "systemctl stop dhcpd4";
+    }
+    public String statusDncp4() {
+        return "systemctl status dhcpd4";
+    }
 
+    public String statusBind9(){
+        return "systemctl status named";
+    }
+    public String startBind9(){
+        return "systemctl start named";
+    }
+    public String stopBind9(){
+        return "systemctl stop named";
+    }
     public String restartBind() {
         return "systemctl restart named";
     }
@@ -515,6 +555,18 @@ public class ArchHelper {
     private HostService hostService;
     @Resource
     private EncryptHelper encryptHelper;
+    @Resource
+    private JsonHelper jsonHelper;
+    @Value("${lan.net.extends}")
+    private String lanNetExtends;
+
+    public void setJsonHelper(JsonHelper jsonHelper) {
+        this.jsonHelper = jsonHelper;
+    }
+
+    public void setLanNetExtends(String lanNetExtends) {
+        this.lanNetExtends = lanNetExtends;
+    }
 
     public void setSiteService(SiteService siteService) {
         this.siteService = siteService;

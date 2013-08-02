@@ -5,6 +5,7 @@ import com.odong.itpkg.entity.net.Ip;
 import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.host.HostAddForm;
+import com.odong.itpkg.linux.ArchHelper;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
@@ -75,12 +76,17 @@ public class HostController {
                     "dns2", "DNS2",
                     "username", "用户名",
                     "password", "密码",
-                    "lanMac", "LAN MAC",
-                    "lanNet", "LAN网段"
+                    "lanMac", "LAN MAC"
             };
             for (int i = 0; i < fields.length; i += 2) {
                 fm.addField(new TextField<String>(fields[i], fields[i + 1]));
             }
+
+            SelectField<String> lanNet = new SelectField<>("lanNet", "LAN网络");
+            for(String s : archHelper.lanNetIdList()){
+                lanNet.addOption(s+"/24",s);
+            }
+            fm.addField(lanNet);
 
             SelectField<Long> defFl = new SelectField<Long>("defFlowLimit", "默认限速规则");
             for (FlowLimit fl : flowLimits) {
@@ -175,6 +181,12 @@ public class HostController {
     private LogService logService;
     @Resource
     private FormHelper formHelper;
+    @Resource
+    private ArchHelper archHelper;
+
+    public void setArchHelper(ArchHelper archHelper) {
+        this.archHelper = archHelper;
+    }
 
     public void setHostService(HostService hostService) {
         this.hostService = hostService;

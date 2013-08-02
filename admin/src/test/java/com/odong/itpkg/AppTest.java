@@ -8,9 +8,18 @@ import com.odong.itpkg.util.impl.JsonHelperImpl;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AppTest {
 
-    //@Test
+    @Test
+    public void testStr(){
+        List<String> list = new ArrayList<>();
+        list.add("10.100.0.0");
+        list.add("10.100.1.0");
+        log(list);
+    }
     public void testClient() {
 
 

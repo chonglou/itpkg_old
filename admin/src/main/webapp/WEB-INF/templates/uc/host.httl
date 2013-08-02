@@ -28,7 +28,13 @@
         <tr>
             <td>${h.id}</td>
             <td>${h.name}</td>
-            <td>${h.state}</td>
+            <td>
+                #if(h.state.toString()=="RUNNING")
+                <label class="lbl-enable">运行</label>
+                #else
+                <label class="lbl-submit">提交</label>
+                #end
+            </td>
             <td>${h.domain}</td>
             <td>
                 #set(ip=ipMap.get(h.id))

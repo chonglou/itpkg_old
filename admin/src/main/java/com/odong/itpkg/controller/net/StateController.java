@@ -50,7 +50,13 @@ public class StateController {
     ResponseItem postReboot(@PathVariable long hostId) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
+        try{
             formHelper.fill(rpcHelper.command(hostId, archHelper.reboot()), ri);
+            ri.setOk(true);
+        }
+        catch (Exception e){
+            ri.addData(e.getMessage());
+        }
 
         return ri;
     }

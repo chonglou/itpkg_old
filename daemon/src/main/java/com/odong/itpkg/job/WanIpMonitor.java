@@ -29,14 +29,18 @@ public class WanIpMonitor implements Runnable {
     @Override
     public void run() {
         try {
-            String mac = CommandHelper.execute("ifconfig wlan | grep default | awk -F\" \" '{print $2}'").get(0);
-            String ip = CommandHelper.execute("ifconfig wlan | grep default | awk -F\" \" '{print $2,$4,$6}'").get(0);
+            String mac = CommandHelper.execute("ifconfig wlan | grep ether | awk -F\" \" '{print $2}'").get(0);
+            String ip = CommandHelper.execute("ifconfig wlan | grep inet | awk -F\" \" '{print $2,$4,$6}'").get(0);
             List<String> dns = CommandHelper.execute("cat /etc/resolv.conf | grep nameserver | awk -F\" \" '{print $2}'");
             HttpGet get = new HttpGet(url + "/status/" + mac + "/" + encryptHelper.encode(ip + " " + dns.get(0) + " " + dns.get(1)));
             logger.debug("GET {}", get.getURI());
             HttpResponse response = client.execute(get);
             logger.debug("RESPONSE {}", response);
-        } catch (IOException e) {
+        }
+        catch (IndexOutOfBoundsException e){
+            logger.error("采集ip信息出错", e);
+        }
+        catch (IOException e) {
             logger.error("HTTP错误", e);
         }
     }
