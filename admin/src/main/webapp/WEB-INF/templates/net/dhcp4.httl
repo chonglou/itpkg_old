@@ -1,6 +1,6 @@
 <div class="btn-group">
     <button id="refresh" class="btn btn-primary" type="button">当前状态</button>
-    <button id="save" class="btn btn-warning" type="button">保存配置</button>
+    <button id="save" class="btn btn-warning" type="button">同步配置</button>
     <button id="stop" class="btn btn-danger" type="button">停止服务</button>
     <button id="start" class="btn btn-success" type="button">启动服务</button>
 </div>

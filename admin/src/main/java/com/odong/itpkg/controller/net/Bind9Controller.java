@@ -4,7 +4,10 @@ import com.odong.itpkg.entity.net.dns.Domain;
 import com.odong.itpkg.entity.net.dns.Zone;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.DomainForm;
+import com.odong.itpkg.linux.ArchHelper;
+import com.odong.itpkg.linux.EtcFile;
 import com.odong.itpkg.model.SessionItem;
+import com.odong.itpkg.rpc.RpcHelper;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
 import com.odong.portal.util.FormHelper;
@@ -13,13 +16,17 @@ import com.odong.portal.web.form.Form;
 import com.odong.portal.web.form.HiddenField;
 import com.odong.portal.web.form.TextAreaField;
 import com.odong.portal.web.form.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,15 +46,24 @@ public class Bind9Controller {
         for (Domain d : hostService.listDnsDomainByHost(hostId)) {
             domainMap.put(d.getId(), d);
         }
+        List<String> logs = new ArrayList<>();
+        try{
+            logs.addAll(rpcHelper.command(hostId, archHelper.statusDncp4()).getLinesList());
+        }
+        catch (Exception e){
+            logs.add(e.getMessage());
+        }
+        map.put("logs", logs);
         map.put("zoneList", hostService.listDnsZone(hostId));
         map.put("domainMap", domainMap);
+        map.put("host", hostService.getHost(hostId));
         return "net/bind9";
     }
 
     @RequestMapping(value = "/zone", method = RequestMethod.GET)
     @ResponseBody
     Form getAddZoneAddFrom(@PathVariable long hostId) {
-        Form fm = new Form("addZone", "添加主域名", "/net/bind9/" + hostId + "/zone");
+        Form fm = new Form("zone", "添加主域名", "/net/bind9/" + hostId + "/zone");
         fm.addField(new HiddenField<Long>("zone", null));
         fm.addField(new TextField<>("name", "域名"));
         fm.addField(new TextAreaField("details", "详情"));
@@ -55,11 +71,11 @@ public class Bind9Controller {
         return fm;
     }
 
-    @RequestMapping(value = "/{hostId}/zone/{zoneId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/zone/{zoneId}", method = RequestMethod.GET)
     @ResponseBody
     Form getAddZoneEditForm(@PathVariable long hostId, @PathVariable long zoneId) {
         Zone z = hostService.getDnsZone(zoneId);
-        Form fm = new Form("setZone", "修改域名[" + z.getName() + "]", "/" + hostId + "/zone");
+        Form fm = new Form("zone", "修改域名[" + z.getName() + "]", "/" + hostId + "/zone");
         fm.addField(new HiddenField<>("zone", zoneId));
         TextField<String> name = new TextField<>("name", "域名");
         name.setReadonly(true);
@@ -103,12 +119,70 @@ public class Bind9Controller {
         return ri;
     }
 
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem saveBind9(@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        try{
+            for(EtcFile ef : archHelper.bind9Profile(hostId)){
+                rpcHelper.file(hostId, ef.getName(), ef.getOwner(), ef.getMode(), ef.getData());
+            }
+            ri.setOk(true);
+            logService.add(si.getSsAccountId(), "保存DNS配置", Log.Type.INFO);
+        }
+        catch (Exception e){
+            ri.addData(e.getMessage());
+        }
+        return ri;
+    }
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem startDhcp4(@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        try{
+            rpcHelper.command(hostId, archHelper.startBind9());
+            ri.setOk(true);
+            logService.add(si.getSsAccountId(), "启动DNS服务", Log.Type.INFO);
+        }
+        catch (Exception e){
+            ri.addData(e.getMessage());
+        }
+        return ri;
+    }
+    @RequestMapping(value = "/stop", method = RequestMethod.POST)
+    @ResponseBody
+    ResponseItem stopDhcp4(@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
+        try{
+            rpcHelper.command(hostId, archHelper.stopBind9());
+            ri.setOk(true);
+            logService.add(si.getSsAccountId(), "停止DNS服务", Log.Type.INFO);
+        }
+        catch (Exception e){
+            ri.addData(e.getMessage());
+        }
+        return ri;
+    }
+
     @Resource
     private FormHelper formHelper;
     @Resource
     private HostService hostService;
     @Resource
     private LogService logService;
+    @Resource
+    private ArchHelper archHelper;
+    @Resource
+    private RpcHelper rpcHelper;
+    private final static Logger logger = LoggerFactory.getLogger(Bind9Controller.class);
+
+    public void setArchHelper(ArchHelper archHelper) {
+        this.archHelper = archHelper;
+    }
+
+    public void setRpcHelper(RpcHelper rpcHelper) {
+        this.rpcHelper = rpcHelper;
+    }
 
     public void setFormHelper(FormHelper formHelper) {
         this.formHelper = formHelper;

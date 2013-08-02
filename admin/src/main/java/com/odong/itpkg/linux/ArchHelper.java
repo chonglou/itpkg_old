@@ -426,7 +426,7 @@ public class ArchHelper {
 
     }
 
-    public List<EtcFile> namedProfile(long hostId) {
+    public List<EtcFile> bind9Profile(long hostId) {
         Host host = hostService.getHost(hostId);
 
 
