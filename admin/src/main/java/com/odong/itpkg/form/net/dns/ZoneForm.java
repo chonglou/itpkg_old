@@ -1,4 +1,4 @@
-package com.odong.itpkg.form.net;
+package com.odong.itpkg.form.net.dns;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -6,22 +6,22 @@ import java.io.Serializable;
 /**
  * Created with IntelliJ IDEA.
  * User: flamen
- * Date: 13-7-21
- * Time: 下午5:10
+ * Date: 13-8-2
+ * Time: 下午5:24
  */
-public class DomainForm implements Serializable {
-    private static final long serialVersionUID = -4258150763062874208L;
-    private Long zone;
-    @NotNull
+public class ZoneForm implements Serializable {
+    private static final long serialVersionUID = 8085626383612134210L;
+    private Long id;
+    @NotNull(message = "{val.notNull}")
     private String name;
     private String details;
 
-    public Long getZone() {
-        return zone;
+    public Long getId() {
+        return id;
     }
 
-    public void setZone(Long zone) {
-        this.zone = zone;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -1,0 +1,9 @@
+<!--#set(List<String> logs)-->
+<div class="panel">
+    <div class="panel-heading">当前状态：[${new Date()}]</div>
+    <ul class="list-group  list-group-flush">
+        #for(i : logs)
+        <li class="list-group-item">${i}</li>
+        #end
+    </ul>
+</div>

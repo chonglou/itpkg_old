@@ -94,6 +94,9 @@ public interface HostService {
 
     void delDnsZone(long zoneId);
 
+    Domain getDnsDomain(long domain);
+    Domain getDnsDomain(String name, long zoneId);
+
     void addDnsDomainA(long zoneId, String name, String wanIp);
 
     void addDnsDomainA(long zoneId, String name, Integer lanIp);

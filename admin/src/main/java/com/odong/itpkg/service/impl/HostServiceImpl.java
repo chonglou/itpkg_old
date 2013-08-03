@@ -301,7 +301,7 @@ public class HostServiceImpl implements HostService {
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
         map.put("host", hostId);
-        return zoneDao.select("SELECT i FROM Zone i WHERE i.name=:nam AND i.host=:host", map);
+        return zoneDao.select("SELECT i FROM Zone i WHERE i.name=:name AND i.host=:host", map);
     }
 
     @Override
@@ -327,6 +327,19 @@ public class HostServiceImpl implements HostService {
         map.put("zone", zoneId);
         domainDao.delete("DELETE Domain i WHERE i.zone=:zone", map);
         zoneDao.delete(zoneId);
+    }
+
+    @Override
+    public Domain getDnsDomain(long domain) {
+        return domainDao.select(domain);  //
+    }
+
+    @Override
+    public Domain getDnsDomain(String name, long zoneId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("zone", zoneId);
+        return domainDao.select("SELECT i FROM Domain i WHERE i.name=:name AND i.zone=:zone", map);  //
     }
 
     @Override

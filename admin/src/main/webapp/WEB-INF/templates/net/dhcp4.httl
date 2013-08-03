@@ -4,19 +4,9 @@
     <button id="stop" class="btn btn-danger" type="button">停止服务</button>
     <button id="start" class="btn btn-success" type="button">启动服务</button>
 </div>
-<p>&nbsp;</p>
 <div id="dhcp4-root"></div>
 <p>&nbsp;</p>
-<!--#set(List<String> logs)-->
-<div class="panel">
-    <div class="panel-heading">当前状态：[${new Date()}]</div>
-    <ul class="list-group  list-group-flush">
-        #for(i : logs)
-        <li class="list-group-item">${i}</li>
-        #end
-    </ul>
-</div>
-<p>&nbsp;</p>
+${include("logs.httl")}
 <table class="table table-bordered table-hover">
     <thead>
     <tr>

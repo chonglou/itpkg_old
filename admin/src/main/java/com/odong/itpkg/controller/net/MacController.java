@@ -59,21 +59,27 @@ public class MacController {
     Form getMac(@PathVariable long hostId, @PathVariable long macId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         Form fm = new Form("mac", "编辑MAC[" + macId + "]", "/net/mac/" + hostId + "/" + macId);
         Mac mac = hostService.getMac(macId);
-        if (mac != null && mac.getHost() == hostId) {
-            SelectField<Long> user = new SelectField<>("user", "用户", mac.getUser());
-            for (User u : accountService.listUserByCompany(si.getSsCompanyId())) {
-                user.addOption(u.getUsername(), u.getId());
+        List<User> userList = accountService.listUserByCompany(si.getSsCompanyId());
+        if (userList.size() > 0) {
+            if (mac != null && mac.getHost() == hostId) {
+                SelectField<Long> user = new SelectField<>("user", "用户", mac.getUser());
+                for (User u : userList) {
+                    user.addOption(u.getUsername(), u.getId());
+                }
+                fm.addField(user);
+                RadioField<Mac.State> state = new RadioField<Mac.State>("state", "状态", mac.getState());
+                state.addOption("提交", Mac.State.SUBMIT);
+                state.addOption("启用", Mac.State.ENABLE);
+                state.addOption("禁用", Mac.State.DISABLE);
+                fm.addField(state);
+                fm.setOk(true);
+            } else {
+                fm.addData("MAC[" + macId + "]不存在");
             }
-            fm.addField(user);
-            RadioField<Mac.State> state = new RadioField<Mac.State>("state", "状态", mac.getState());
-            state.addOption("提交", Mac.State.SUBMIT);
-            state.addOption("启用", Mac.State.ENABLE);
-            state.addOption("禁用", Mac.State.DISABLE);
-            fm.addField(state);
-            fm.setOk(true);
         } else {
-            fm.addData("MAC[" + macId + "]不存在");
+            fm.addData("用户列表为空");
         }
+
         return fm;
     }
 

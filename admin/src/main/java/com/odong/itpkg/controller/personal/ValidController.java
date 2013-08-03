@@ -3,6 +3,7 @@ package com.odong.itpkg.controller.personal;
 import com.odong.itpkg.entity.uc.Account;
 import com.odong.itpkg.entity.uc.Company;
 import com.odong.itpkg.entity.uc.Log;
+import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.LogService;
@@ -58,6 +59,8 @@ public class ValidController extends EmailController {
                                 activeAccount(u.getId(), u.getEmail());
                                 rbacService.bindCompany(u.getId(), u.getCompany(), RbacService.OperationType.MANAGE, true);
                                 logService.add(u.getId(), "授予自己公司管理员权限", Log.Type.INFO);
+                                accountService.addUser("默认用户", "默认部门", new Contact(), u.getCompany());
+                                logService.add(u.getId(), "添加默认用户", Log.Type.INFO);
                                 ri.setOk(true);
                                 ri.addData("您成功激活了公司和用户");
                                 break;

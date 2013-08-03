@@ -6,7 +6,9 @@ import com.odong.itpkg.entity.net.firewall.FlowLimit;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.host.HostAddForm;
 import com.odong.itpkg.linux.ArchHelper;
+import com.odong.itpkg.model.Contact;
 import com.odong.itpkg.model.SessionItem;
+import com.odong.itpkg.service.AccountService;
 import com.odong.itpkg.service.HostService;
 import com.odong.itpkg.service.LogService;
 import com.odong.portal.util.FormHelper;
@@ -183,6 +185,7 @@ public class HostController {
     private FormHelper formHelper;
     @Resource
     private ArchHelper archHelper;
+
 
     public void setArchHelper(ArchHelper archHelper) {
         this.archHelper = archHelper;

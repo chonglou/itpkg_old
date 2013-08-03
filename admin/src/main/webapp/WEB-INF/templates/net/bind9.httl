@@ -1,29 +1,112 @@
 <div class="btn-group">
     <button id="refresh" class="btn btn-primary" type="button">当前状态</button>
+    <button id="zone-add" class="btn btn-default" type="button">添加主域名</button>
+    <button id="domain-add" class="btn btn-info" type="button">添加次域名</button>
     <button id="save" class="btn btn-warning" type="button">同步配置</button>
     <button id="stop" class="btn btn-danger" type="button">停止服务</button>
     <button id="start" class="btn btn-success" type="button">启动服务</button>
 </div>
 <p>&nbsp;</p>
 <div id="bind9-root"></div>
-<p>&nbsp;</p>
-
+${include("logs.httl")}
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>主域</td>
+        <td>二级域</td>
+        <td>详细信息</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!--#set(Host host)-->
+    <!--#set(List<Zone> zoneList)-->
+    <!--#set(Map<Long,Domain> domainMap)-->
+    #for(z : zoneList)
+    <tr>
+        <td>${z.name}</td>
+        <td>
+            <ul>
+                #for(d : domainMap)
+                #if(z.id == d.value.zone)
+                <li>
+                    ${d.value.name}.${z.name} =${d.value.type}=>
+                    #if(d.value.local)
+                    ${host.lanNet}.${d.value.lanIp}
+                    #else
+                    ${d.value.wanIp}
+                    #end
+                    <button id="domain-delete-${d.value.id}" class="btn btn-mini btn-danger" type="button">删除</button>
+                </li>
+                #end
+                #end
+            </ul>
+        </td>
+        <td>$!{z.details}</td>
+        <td>
+            <button id="bind9-edit-${z.id}" class="btn btn-primary" type="button">编辑</button>
+            <button id="bind9-delete-${z.id}" class="btn btn-danger" type="button">删除</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
 <script type="text/javascript">
+
+    $("button[id^='bind9-delete-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            if(confirm("你确认要删除主域["+ss[2]+"]么")){
+                new Ajax("/net/bind9/${host.id}/zone/" + ss[2], "DELETE");
+            }
+
+        });
+    });
+
+    $("button[id^='domain-delete-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            if(confirm("你确认要删除次域["+ss[2]+"]么")){
+                new Ajax("/net/bind9/${host.id}/domain/" + ss[2], "DELETE");
+            }
+
+
+        });
+    });
 
     $("button[id^='bind9-edit-']").each(function () {
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            new Ajax("/net/dhcp4/${host.id}/" + ss[2], undefined, undefined, undefined, undefined, "dhcp4-root");
+            new Ajax("/net/bind9/${host.id}/zone/" + ss[2], undefined, undefined, undefined, undefined, "bind9-root");
 
         });
     });
 
     $("button#refresh").click(function(){
         clear_message_div();
-        new Ajax("/net/bind9/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "bind9-root");
+        new Ajax("/net/bind9/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "host-root");
     });
 
+    $("button#zone-add").click(function(){
+        new Ajax("/net/bind9/"+${host.id}+"/zone/add", undefined, undefined, undefined, undefined, "bind9-root");
+    });
+    $("button#domain-add").click(function(){
+        new Ajax("/net/bind9/"+${host.id}+"/domain/add", undefined, undefined, undefined, false, "bind9-root");
+        var fType =$("select#fm-named-type");
+        fType.change(function () {
+            showDomainType($(this).val());
+        });
+        showDomainType(fType.val());
+        $("input[name='fm-named-local']").each(function(){
+           $(this).click(function(){
+               showIpType();
+           });
+        });
+        showIpType();
+    });
     $("button#save").click(function(){
         new Ajax("/net/bind9/"+${host.id}+"/save", "POST");
     });
@@ -34,5 +117,39 @@
         new Ajax("/net/bind9/"+${host.id}+"/stop", "POST");
     });
 
+    function showIpType(){
+
+            var lan = $("select#fm-named-lanIp").parent().parent();
+            var wan = $("input#fm-named-wanIp").parent().parent();
+            if($("input[name='fm-named-local']:checked").val() == "true"){
+                lan.show();
+                wan.hide();
+            }
+            else{
+                lan.hide();
+                wan.show();
+            }
+
+    }
+
+    function showDomainType(type){
+        var show = function(flag){
+            var f = $("select#fm-named-priority").parent().parent();
+            if(flag){
+                f.show();
+            }
+            else{
+                f.hide();
+            }
+        };
+        switch (type) {
+            case "MX":
+                    show(true);
+                break;
+            default:
+                    show(false);
+                break;
+        }
+    }
 
 </script>

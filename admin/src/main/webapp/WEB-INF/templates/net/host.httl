@@ -1,7 +1,7 @@
 #set(Host host)
 #set(Ip wanIp)
 <ul class="nav nav-tabs">
-    #set(tabs=["state":"当前状态", "setup":"参数设置","dhcp4":"DHCP服务", "bind9":"DNS服务", "firewall":"防火墙规则", "limit":"限速规则",
+    #set(tabs=["state":"主机状态", "setup":"参数设置","dhcp4":"DHCP服务", "bind9":"DNS服务", "firewall":"防火墙规则", "limit":"限速规则",
     "mac":"MAC列表"])
     #set(items=["state","setup", "mac","dhcp4","bind9","firewall", "limit"])
     #for(i : items)
