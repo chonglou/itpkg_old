@@ -1,8 +1,69 @@
 <div class="btn-group">
-    <button id="btn-status" class="btn btn-primary" type="button">当前状态</button>
-    <button id="btn-sync" class="btn btn-warning" type="button">保存配置</button>
-    <button id="btn-stop" class="btn btn-danger" type="button">清空规则</button>
-    <button id="btn-start" class="btn btn-success" type="button">应用规则</button>
+    <button id="refresh" class="btn btn-primary" type="button">当前状态</button>
+    <button id="save" class="btn btn-warning" type="button">保存配置</button>
+    <button id="clear" class="btn btn-danger" type="button">清空规则</button>
+    <button id="apply" class="btn btn-success" type="button">应用规则</button>
 </div>
 <p>&nbsp;</p>
 <div id="limit-root"></div>
+${include("logs.httl")}
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>MAC</td>
+        <td>IP</td>
+        <td>用户</td>
+        <td>限速规则(K)</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!--#set(Host host)-->
+    <!--#set(List<Mac> macList)-->
+    <!--#set(Map<Long,FlowLimit> flowLimitMap)-->
+    <!--#set(Map<Long,User> userMap)-->
+    #for(m : macList)
+    <tr>
+        <td>${m.id}</td>
+        <td>${m.serial}</td>
+        <td>${host.lanNet}.${m.ip}</td>
+        <td>${userMap.get(m.user).username}</td>
+        <td>
+            <!--#set(fl=flowLimitMap.get(m.flowLimit))-->
+            ${fl.name}：下行(${fl.downRate}~${fl.downCeil}) 上行((${fl.upRate}~${fl.upCeil}))
+        </td>
+        <td>
+            <button id="limit-edit-${m.id}" class="btn btn-primary" type="button">编辑</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
+<script type="text/javascript">
+
+    $("button[id^='limit-edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/net/limit/${host.id}/bind/" + ss[2], undefined, undefined, undefined, undefined, "limit-root");
+        });
+    });
+
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/net/limit/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "host-root");
+    });
+
+    $("button#save").click(function () {
+        new Ajax("/net/limit/" + ${host.id} +"/save", "POST");
+    });
+
+    $("button#clear").click(function () {
+        new Ajax("/net/limit/" + ${host.id} +"/clear", "POST");
+    });
+    $("button#apply").click(function () {
+        new Ajax("/net/limit/" + ${host.id} +"/apply", "POST");
+    });
+
+</script>

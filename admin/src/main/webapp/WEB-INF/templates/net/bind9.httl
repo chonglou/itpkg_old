@@ -12,6 +12,7 @@ ${include("logs.httl")}
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
+        <td>ID</td>
         <td>主域</td>
         <td>二级域</td>
         <td>详细信息</td>
@@ -24,6 +25,7 @@ ${include("logs.httl")}
     <!--#set(Map<Long,Domain> domainMap)-->
     #for(z : zoneList)
     <tr>
+        <td>${z.id}</td>
         <td>${z.name}</td>
         <td>
             <ul>

@@ -9,6 +9,7 @@
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
+            <td>ID</td>
             <td>名称</td>
             <td>详细信息</td>
             <td>操作</td>
@@ -17,6 +18,7 @@
         <tbody>
         #for(c : companyList)
         <tr>
+            <td>${c.id}</td>
             <td>${c.name}</td>
             <td>$!{c.details}</td>
             <td>

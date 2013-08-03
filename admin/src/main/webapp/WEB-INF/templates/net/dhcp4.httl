@@ -10,6 +10,7 @@ ${include("logs.httl")}
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
+        <td>ID</td>
         <td>MAC</td>
         <td>IP</td>
         <td>类型</td>
@@ -22,6 +23,7 @@ ${include("logs.httl")}
     <!--#set(Map<Long,User> userMap)-->
     #for(m : macList)
     <tr>
+        <td>${m.id}</td>
         <td>${m.serial}</td>
         <td>${host.lanNet}.${m.ip}</td>
         <td>

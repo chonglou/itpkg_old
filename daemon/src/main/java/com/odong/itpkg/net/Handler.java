@@ -86,7 +86,12 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                         }
                     }
                     code = Rpc.Code.SUCCESS;
-                } catch (Exception e) {
+                }
+                catch (EncryptionOperationNotPossibleException e){
+                    code = Rpc.Code.FAIL;
+                    lines.add("密钥不对");
+                }
+                catch (Exception e) {
                     code = Rpc.Code.FAIL;
                     lines.add("异常：" + e.getMessage());
                     logger.error("执行命令出错", e);

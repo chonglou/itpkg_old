@@ -84,6 +84,7 @@ public class ArchHelper {
         return "iptables-save > /etc/iptables/iptables.rules";
     }
 
+
     public List<String> getWanInfo() {
         List<String> lines = new ArrayList<>();
         lines.add("ifconfig wlan | grep inet |  awk -F\" \" '{print $2\"\\n\"$4}'");

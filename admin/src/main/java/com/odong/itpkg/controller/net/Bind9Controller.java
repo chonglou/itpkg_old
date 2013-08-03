@@ -270,7 +270,7 @@ public class Bind9Controller {
                 rpcHelper.file(hostId, ef.getName(), ef.getOwner(), ef.getMode(), ef.getData());
             }
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "保存DNS配置", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "保存主机["+hostId+"]DNS配置", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }
@@ -284,7 +284,7 @@ public class Bind9Controller {
         try {
             rpcHelper.command(hostId, archHelper.startBind9());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "启动DNS服务", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "启动主机["+hostId+"]DNS服务", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }
@@ -298,7 +298,7 @@ public class Bind9Controller {
         try {
             rpcHelper.command(hostId, archHelper.stopBind9());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "停止DNS服务", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "停止主机["+hostId+"]DNS服务", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }

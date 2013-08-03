@@ -133,7 +133,7 @@ public class Dhcp4Controller {
         try{
             rpcHelper.command(hostId, archHelper.startDncp4());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "启动DHCP服务", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "启动主机["+hostId+"]DHCP服务", Log.Type.INFO);
         }
         catch (Exception e){
             ri.addData(e.getMessage());
