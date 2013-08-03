@@ -4,8 +4,6 @@ import com.odong.itpkg.model.Rpc;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.compression.SnappyFramedDecoder;
 import io.netty.handler.codec.compression.SnappyFramedEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;

@@ -86,12 +86,10 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                         }
                     }
                     code = Rpc.Code.SUCCESS;
-                }
-                catch (EncryptionOperationNotPossibleException e){
+                } catch (EncryptionOperationNotPossibleException e) {
                     code = Rpc.Code.FAIL;
                     lines.add("密钥不对");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     code = Rpc.Code.FAIL;
                     lines.add("异常：" + e.getMessage());
                     logger.error("执行命令出错", e);
@@ -106,7 +104,7 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                 try {
 
                     FileHelper.write(filename, getLines(request).toArray(new String[1]));
-                    if(!debug){
+                    if (!debug) {
                         for (String s : CommandHelper.execute(
                                 String.format("chown %s %s", request.getOwner(), filename),
                                 String.format("chmod %s %s", request.getMode(), filename))) {
@@ -114,12 +112,10 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Request> {
                         }
                     }
                     code = Rpc.Code.SUCCESS;
-                }
-                catch (EncryptionOperationNotPossibleException e){
+                } catch (EncryptionOperationNotPossibleException e) {
                     code = Rpc.Code.FAIL;
                     lines.add("密钥不对");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     code = Rpc.Code.FAIL;
                     lines.add("异常：" + e.getMessage());
                     logger.error("写入文件出错", e);

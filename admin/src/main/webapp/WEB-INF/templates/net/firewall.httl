@@ -6,3 +6,32 @@
 </div>
 <p>&nbsp;</p>
 <div id="firewall-root"></div>
+${include("logs.httl")}
+<script type="text/javascript">
+
+    $("button[id^='limit-edit-']").each(function () {
+        $(this).click(function () {
+            var ss = $(this).attr('id').split('-');
+            clear_message_div();
+            new Ajax("/net/firewall/${host.id}/bind/" + ss[2], undefined, undefined, undefined, undefined, "limit-root");
+        });
+    });
+
+    $("button#refresh").click(function () {
+        clear_message_div();
+        new Ajax("/net/firewall/" + ${host.id} +"/", undefined, undefined, undefined, undefined, "host-root");
+    });
+
+    $("button#save").click(function () {
+        new Ajax("/net/firewall/" + ${host.id} +"/save", "POST");
+    });
+
+    $("button#clear").click(function () {
+        new Ajax("/net/firewall/" + ${host.id} +"/clear", "POST");
+    });
+    $("button#apply").click(function () {
+        new Ajax("/net/firewall/" + ${host.id} +"/apply", "POST");
+    });
+
+</script>
+

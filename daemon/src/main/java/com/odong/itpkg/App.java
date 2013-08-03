@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
 import java.net.URL;
 
 public class App implements Daemon {
@@ -28,16 +26,15 @@ public class App implements Daemon {
         }
 
         logger.info("正在启动防火墙及限速规则");
-        try{
-            for(String s : new String[]{"ff", "tc"}){
-                URL url = this.getClass().getResource("/"+s+".sh");
-                if(url != null){
+        try {
+            for (String s : new String[]{"ff", "tc"}) {
+                URL url = this.getClass().getResource("/" + s + ".sh");
+                if (url != null) {
                     CommandHelper.execute(url.toString());
                 }
             }
             logger.info("成功启动防火墙及限速规则");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error("初始化防火墙及限速规则失败", e);
         }
 

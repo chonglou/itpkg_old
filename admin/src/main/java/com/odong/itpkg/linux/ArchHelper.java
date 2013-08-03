@@ -26,10 +26,10 @@ import java.util.*;
  */
 @Component
 public class ArchHelper {
-    public List<String> lanNetIdList(){
+    public List<String> lanNetIdList() {
         List<String> list = jsonHelper.json2List(lanNetExtends, String.class);
-        for(int i=0; i<255;i++){
-            list.add(i,"192.168."+i+".0");
+        for (int i = 0; i < 255; i++) {
+            list.add(i, "192.168." + i + ".0");
         }
         /*
         for(int i=16; i<32; i++){
@@ -46,20 +46,21 @@ public class ArchHelper {
         return list;
     }
 
-    public EtcFile clearProfile(long hostId){
+    public EtcFile clearProfile(long hostId) {
         StringBuilder sb = new StringBuilder();
         sb.append("#!/bin/sh\n");
-        for(String s : ffClear(hostId)){
+        for (String s : ffClear(hostId)) {
             sb.append(s);
             sb.append("\n");
         }
-        for(String s : tcClear()){
+        for (String s : tcClear()) {
             sb.append(s);
             sb.append("\n");
         }
         return new EtcFile("/opt/itpkgd/clear.sh", "root:root", "500", sb.toString());
 
     }
+
     public EtcFile ffProfile(long hostId) {
         StringBuilder sb = new StringBuilder();
         sb.append("#!/bin/sh\n");
@@ -123,25 +124,31 @@ public class ArchHelper {
     public String restartDncp4() {
         return "systemctl restart dhcpd4";
     }
+
     public String startDncp4() {
         return "systemctl start dhcpd4";
     }
+
     public String stopDncp4() {
         return "systemctl stop dhcpd4";
     }
+
     public String statusDncp4() {
         return "systemctl status dhcpd4";
     }
 
-    public String statusBind9(){
+    public String statusBind9() {
         return "systemctl status named";
     }
-    public String startBind9(){
+
+    public String startBind9() {
         return "systemctl start named";
     }
-    public String stopBind9(){
+
+    public String stopBind9() {
         return "systemctl stop named";
     }
+
     public String restartBind() {
         return "systemctl restart named";
     }
@@ -260,9 +267,9 @@ public class ArchHelper {
         //INPUT
         for (Input in : hostService.listFirewallInput(hostId)) {
             lines.add(in.getsIp() == null ?
-                    String.format("iptables -A INPUT -p %s -i wan --dport %d -j ACCEPT", in.getProtocol(),  in.getPort())
+                    String.format("iptables -A INPUT -p %s -i wan --dport %d -j ACCEPT", in.getProtocol(), in.getPort())
                     :
-                    String.format("iptables -A INPUT -s %s -p %s -i wan --dport %d -j ACCEPT", in.getsIp(), in.getProtocol(),  in.getPort())
+                    String.format("iptables -A INPUT -s %s -p %s -i wan --dport %d -j ACCEPT", in.getsIp(), in.getProtocol(), in.getPort())
             );
         }
         //LOOP
@@ -344,7 +351,7 @@ public class ArchHelper {
         }
         //防火墙放开的TCP端口
         for (int i : new int[]{22, host.getRpcPort()}) {
-            lines.add(String.format("iptables -A INPUT -p TCP -i wan --dport %d -j ACCEPT",  i));
+            lines.add(String.format("iptables -A INPUT -p TCP -i wan --dport %d -j ACCEPT", i));
         }
         //LOOP
         lines.add("iptables -A INPUT -i lan -j ACCEPT");

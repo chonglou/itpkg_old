@@ -145,8 +145,8 @@ public class HostController {
             fm.addField(new HiddenField<>("id", hostId));
             fm.addField(new TextField<>("lanMac", "MAC", h.getLanMac()));
             SelectField<String> lanNet = new SelectField<>("lanNet", "网络", h.getLanNet() + ".0");
-            for(String s : archHelper.lanNetIdList()){
-                lanNet.addOption(s+"/24",s);
+            for (String s : archHelper.lanNetIdList()) {
+                lanNet.addOption(s + "/24", s);
             }
             fm.addField(lanNet);
             SelectField<Long> defFl = new SelectField<>("defFlowLimit", "默认限速规则", h.getDefFlowLimit());

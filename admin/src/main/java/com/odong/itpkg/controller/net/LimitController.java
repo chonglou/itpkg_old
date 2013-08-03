@@ -44,24 +44,23 @@ public class LimitController {
     String getHost(@PathVariable long hostId, Map<String, Object> map, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         List<Mac> macList = new ArrayList<>();
         Map<Long, FlowLimit> flowLimitMap = new HashMap<>();
-        Map<Long,User> userMap = new HashMap<>();
-        for(Mac m : hostService.listMacByHost(hostId)){
-            if(m.getState() == Mac.State.ENABLE){
+        Map<Long, User> userMap = new HashMap<>();
+        for (Mac m : hostService.listMacByHost(hostId)) {
+            if (m.getState() == Mac.State.ENABLE) {
                 macList.add(m);
-                if(flowLimitMap.get(m.getFlowLimit()) == null){
+                if (flowLimitMap.get(m.getFlowLimit()) == null) {
                     flowLimitMap.put(m.getFlowLimit(), hostService.getFirewallFlowLimit(m.getFlowLimit()));
                 }
-                if(userMap.get(m.getUser()) == null){
+                if (userMap.get(m.getUser()) == null) {
                     userMap.put(m.getUser(), accountService.getUser(m.getUser()));
 
                 }
             }
         }
         List<String> logs = new ArrayList<>();
-        try{
+        try {
             logs.addAll(rpcHelper.command(hostId, archHelper.tcStatus().toArray(new String[1])).getLinesList());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logs.add(e.getMessage());
         }
         map.put("logs", logs);
@@ -74,52 +73,51 @@ public class LimitController {
 
     @RequestMapping(value = "/bind/{macId}", method = RequestMethod.GET)
     @ResponseBody
-    Form getBindForm(@PathVariable long hostId, @PathVariable long macId, @ModelAttribute(SessionItem.KEY) SessionItem si){
-        Form fm = new Form("limit","修改MAC["+macId+"]的限速规则","/net/limit/"+hostId+"/bind");
+    Form getBindForm(@PathVariable long hostId, @PathVariable long macId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
+        Form fm = new Form("limit", "修改MAC[" + macId + "]的限速规则", "/net/limit/" + hostId + "/bind");
         Mac m = hostService.getMac(macId);
-        if(m!=null && m.getHost() == hostId){
-            fm.addField(new HiddenField<Long>("mac",m.getId()));
+        if (m != null && m.getHost() == hostId) {
+            fm.addField(new HiddenField<Long>("mac", m.getId()));
             SelectField<Long> limit = new SelectField<Long>("flLimit", "限速规则", m.getFlowLimit());
-            for(FlowLimit fl : hostService.listFirewallFlowLimit(si.getSsCompanyId())){
+            for (FlowLimit fl : hostService.listFirewallFlowLimit(si.getSsCompanyId())) {
                 limit.addOption(fl.getName(), fl.getId());
             }
             fm.addField(limit);
             fm.setOk(true);
-        }
-        else {
-            fm.addData("MAC["+macId+"]不存在");
+        } else {
+            fm.addData("MAC[" + macId + "]不存在");
         }
         return fm;
     }
+
     @RequestMapping(value = "/bind", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem postBindForm(@Valid BindForm form, BindingResult result,@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si){
+    ResponseItem postBindForm(@Valid BindForm form, BindingResult result, @PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = formHelper.check(result);
-        if(ri.isOk()){
+        if (ri.isOk()) {
             Mac m = hostService.getMac(form.getMac());
             FlowLimit fl = hostService.getFirewallFlowLimit(form.getFlLimit());
-            if(m!=null && fl!=null && m.getHost()==hostId && fl.getCompany().equals(si.getSsCompanyId())){
+            if (m != null && fl != null && m.getHost() == hostId && fl.getCompany().equals(si.getSsCompanyId())) {
                 hostService.setMacLimit(form.getMac(), form.getFlLimit());
-                logService.add(si.getSsAccountId(), "变更MAC["+form.getMac()+"]限速规则 => "+form.getFlLimit(), Log.Type.INFO);
-            }
-            else {
+                logService.add(si.getSsAccountId(), "变更MAC[" + form.getMac() + "]限速规则 => " + form.getFlLimit(), Log.Type.INFO);
+            } else {
                 ri.setOk(false);
-                ri.addData("限速规则["+form.getFlLimit()+"]不存在");
+                ri.addData("限速规则[" + form.getFlLimit() + "]不存在");
             }
         }
         return ri;
     }
 
 
-        @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     ResponseItem save(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
         try {
             EtcFile ef = archHelper.tcProfile(hostId);
-            rpcHelper.file(hostId, ef.getName(),ef.getOwner(), ef.getMode(), ef.getData());
+            rpcHelper.file(hostId, ef.getName(), ef.getOwner(), ef.getMode(), ef.getData());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "保存主机["+hostId+"]防火墙规则", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "保存主机[" + hostId + "]防火墙规则", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }
@@ -133,7 +131,7 @@ public class LimitController {
         try {
             rpcHelper.command(hostId, archHelper.tcClear().toArray(new String[1]));
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "清空主机["+hostId+"]防火墙规则", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "清空主机[" + hostId + "]防火墙规则", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }
@@ -147,7 +145,7 @@ public class LimitController {
         try {
             rpcHelper.command(hostId, archHelper.tcApply(hostId).toArray(new String[1]));
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "应用主机["+hostId+"]限速规则", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "应用主机[" + hostId + "]限速规则", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }

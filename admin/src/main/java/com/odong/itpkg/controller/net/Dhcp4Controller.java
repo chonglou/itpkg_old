@@ -6,7 +6,6 @@ import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.Dhcp4Form;
 import com.odong.itpkg.linux.ArchHelper;
 import com.odong.itpkg.linux.EtcFile;
-import com.odong.itpkg.model.Rpc;
 import com.odong.itpkg.model.SessionItem;
 import com.odong.itpkg.rpc.RpcHelper;
 import com.odong.itpkg.service.HostService;
@@ -48,10 +47,9 @@ public class Dhcp4Controller {
             }
         }
         List<String> logs = new ArrayList<>();
-        try{
+        try {
             logs.addAll(rpcHelper.command(hostId, archHelper.statusDncp4()).getLinesList());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logs.add(e.getMessage());
         }
         map.put("logs", logs);
@@ -91,10 +89,10 @@ public class Dhcp4Controller {
             Mac mac = hostService.getMac(macId);
             Host host = hostService.getHost(hostId);
             if (mac != null && mac.getHost() == hostId) {
-                for(Mac m : hostService.listMacByHost(hostId)){
-                    if(m.isBind() && m.getIp()==form.getIp()){
+                for (Mac m : hostService.listMacByHost(hostId)) {
+                    if (m.isBind() && m.getIp() == form.getIp()) {
                         ri.setOk(false);
-                        ri.addData("IP "+host.getLanNet()+"."+form.getIp()+"已占用");
+                        ri.addData("IP " + host.getLanNet() + "." + form.getIp() + "已占用");
                         break;
                     }
                 }
@@ -104,7 +102,7 @@ public class Dhcp4Controller {
             }
 
         }
-        if(ri.isOk()){
+        if (ri.isOk()) {
             hostService.bindIp2Mac(macId, form.getIp(), form.isBind());
             logService.add(si.getSsAccountId(), (form.isBind() ? "绑定" : "解邦") + macId, Log.Type.INFO);
         }
@@ -113,50 +111,49 @@ public class Dhcp4Controller {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem saveDhcp4(@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem saveDhcp4(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try{
+        try {
             EtcFile ef = archHelper.dhcpdProfile(hostId);
             rpcHelper.file(hostId, ef.getName(), ef.getOwner(), ef.getMode(), ef.getData());
             ri.setOk(true);
             logService.add(si.getSsAccountId(), "保存DHCP配置", Log.Type.INFO);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ri.addData(e.getMessage());
         }
         return ri;
     }
+
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem startDhcp4(@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem startDhcp4(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try{
+        try {
             rpcHelper.command(hostId, archHelper.startDncp4());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "启动主机["+hostId+"]DHCP服务", Log.Type.INFO);
-        }
-        catch (Exception e){
+            logService.add(si.getSsAccountId(), "启动主机[" + hostId + "]DHCP服务", Log.Type.INFO);
+        } catch (Exception e) {
             ri.addData(e.getMessage());
         }
         return ri;
     }
+
     @RequestMapping(value = "/stop", method = RequestMethod.POST)
     @ResponseBody
-    ResponseItem stopDhcp4(@PathVariable long hostId,  @ModelAttribute(SessionItem.KEY) SessionItem si) {
+    ResponseItem stopDhcp4(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
-        try{
+        try {
             rpcHelper.command(hostId, archHelper.stopDncp4());
             ri.setOk(true);
             logService.add(si.getSsAccountId(), "停止DHCP服务", Log.Type.INFO);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ri.addData(e.getMessage());
         }
         return ri;
     }
 
 
-        @Resource
+    @Resource
     private HostService hostService;
     @Resource
     private LogService logService;

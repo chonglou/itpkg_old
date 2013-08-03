@@ -20,20 +20,20 @@ public class Handler extends SimpleChannelInboundHandler<Rpc.Response> {
     public Handler() {
         super(false);
     }
-    public Rpc.Response getResponse(Rpc.Request request){
+
+    public Rpc.Response getResponse(Rpc.Request request) {
         channel.writeAndFlush(request);
         Rpc.Response response;
-        boolean interrupted=false;
-        for(;;){
-            try{
+        boolean interrupted = false;
+        for (; ; ) {
+            try {
                 response = answer.take();
                 break;
-            }
-            catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 interrupted = true;
             }
         }
-        if(interrupted){
+        if (interrupted) {
             Thread.currentThread().interrupt();
         }
         return response;

@@ -26,7 +26,7 @@ import java.util.Map;
 @Component
 public class RpcHelper {
 
-    public String decode(long hostId, String encrypt){
+    public String decode(long hostId, String encrypt) {
         return getClient(hostId).decode(encrypt);
     }
 
@@ -85,8 +85,7 @@ public class RpcHelper {
     }
 
 
-
-    private Rpc.Response send(long hostId, Rpc.Request request){
+    private Rpc.Response send(long hostId, Rpc.Request request) {
         return null;
     }
 

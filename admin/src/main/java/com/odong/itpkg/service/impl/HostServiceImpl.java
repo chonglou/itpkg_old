@@ -72,7 +72,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addFirewallInput(long hostId, String name, String sIp, int port, Protocol protocol) {
+    public void addFirewallInput(long hostId, String name, String sIp, Protocol protocol, int port) {
         Input i = new Input();
         i.setHost(hostId);
         i.setCreated(new Date());
@@ -91,7 +91,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void setFirewallInputRule(long inputId, String sIp, int port, Protocol protocol) {
+    public void setFirewallInputRule(long inputId, String sIp, Protocol protocol, int port) {
         Input i = inputDao.select(inputId);
         i.setsIp(sIp);
         i.setPort(port);
@@ -336,7 +336,7 @@ public class HostServiceImpl implements HostService {
 
     @Override
     public Domain getDnsDomain(String name, long zoneId) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("name", name);
         map.put("zone", zoneId);
         return domainDao.select("SELECT i FROM Domain i WHERE i.name=:name AND i.zone=:zone", map);  //
@@ -455,7 +455,7 @@ public class HostServiceImpl implements HostService {
     }
 
     @Override
-    public void addMac2Output(long macId, long outputId, boolean bind) {
+    public void bindMac2Output(long macId, long outputId, boolean bind) {
         Map<String, Object> map = new HashMap<>();
         map.put("mac", macId);
         map.put("output", outputId);
@@ -467,13 +467,9 @@ public class HostServiceImpl implements HostService {
                 mo.setMac(macId);
                 mo.setOutput(outputId);
                 macOutputDao.insert(mo);
-            } else {
-                throw new IllegalArgumentException("规则[" + macId + "," + outputId + "]不存在");
             }
         } else {
-            if (bind) {
-                throw new IllegalArgumentException("规则[" + macId + "," + outputId + "]已存在");
-            } else {
+            if (!bind) {
                 macOutputDao.delete(mo.getId());
             }
         }
@@ -712,6 +708,16 @@ public class HostServiceImpl implements HostService {
     @Override
     public Output getFirewallOutput(long outputId) {
         return outputDao.select(outputId);  //
+    }
+
+    @Override
+    public Nat getFirewallNat(long natId) {
+        return natDao.select(natId);  //
+    }
+
+    @Override
+    public Input getFirewallInput(long inputId) {
+        return inputDao.select(inputId);  //
     }
 
     @Override

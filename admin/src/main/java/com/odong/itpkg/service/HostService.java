@@ -28,11 +28,11 @@ public interface HostService {
 
     void delFirewallDmz(long dmzId);
 
-    void addFirewallInput(long hostId, String name, String sIp, int port, Protocol protocol);
+    void addFirewallInput(long hostId, String name, String sIp, Protocol protocol, int port);
 
     void setFirewallInputInfo(long inputId, String name);
 
-    void setFirewallInputRule(long inputId, String sIp, int port, Protocol protocol);
+    void setFirewallInputRule(long inputId, String sIp, Protocol protocol, int port);
 
     void delFirewallInput(long inputId);
 
@@ -95,6 +95,7 @@ public interface HostService {
     void delDnsZone(long zoneId);
 
     Domain getDnsDomain(long domain);
+
     Domain getDnsDomain(String name, long zoneId);
 
     void addDnsDomainA(long zoneId, String name, String wanIp);
@@ -119,7 +120,7 @@ public interface HostService {
 
     void bindIp2Mac(long macId, int ip, boolean bind);
 
-    void addMac2Output(long macId, long outputId, boolean bind);
+    void bindMac2Output(long macId, long outputId, boolean bind);
 
     void setMacLimit(long macId, long flowLimitId);
 
@@ -177,6 +178,10 @@ public interface HostService {
     Mac getMac(long hostId, String serial);
 
     Output getFirewallOutput(long outputId);
+
+    Nat getFirewallNat(long natId);
+
+    Input getFirewallInput(long inputId);
 
     FlowLimit getFirewallFlowLimit(long flowId);
 

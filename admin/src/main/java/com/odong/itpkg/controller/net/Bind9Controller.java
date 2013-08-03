@@ -122,7 +122,7 @@ public class Bind9Controller {
         Zone z = hostService.getDnsZone(zoneId);
         if (z != null && z.getHost() == hostId) {
             hostService.delDnsZone(zoneId);
-            logService.add(si.getSsAccountId(), "删除主域名["+z.getName()+"]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除主域名[" + z.getName() + "]", Log.Type.INFO);
             ri.setOk(true);
         } else {
             ri.addData("主域名[" + zoneId + "]不存在");
@@ -137,7 +137,7 @@ public class Bind9Controller {
         List<Zone> zoneList = hostService.listDnsZone(hostId);
         if (zoneList.size() > 0) {
             SelectField<Long> zone = new SelectField<Long>("zone", "主域名");
-            for (Zone z :zoneList) {
+            for (Zone z : zoneList) {
                 zone.addOption(z.getName(), z.getId());
             }
             fm.addField(zone);
@@ -151,8 +151,8 @@ public class Bind9Controller {
             fm.addField(type);
 
             SelectField<Integer> priority = new SelectField<>("priority", "优先级", 3);
-            for(int i=1; i<11;i++){
-                priority.addOption(""+i,i);
+            for (int i = 1; i < 11; i++) {
+                priority.addOption("" + i, i);
             }
             fm.addField(priority);
 
@@ -163,8 +163,8 @@ public class Bind9Controller {
 
             Host host = hostService.getHost(hostId);
             SelectField<Integer> lanIp = new SelectField<>("lanIp", "IP", 10);
-            for(int i=2; i<255; i++){
-                lanIp.addOption(host.getLanNet()+"."+i,i);
+            for (int i = 2; i < 255; i++) {
+                lanIp.addOption(host.getLanNet() + "." + i, i);
             }
             fm.addField(lanIp);
 
@@ -184,46 +184,41 @@ public class Bind9Controller {
         ResponseItem ri = formHelper.check(result);
         Zone z = hostService.getDnsZone(form.getZone());
 
-        if(z!=null && z.getHost()==hostId){
+        if (z != null && z.getHost() == hostId) {
             Domain d = hostService.getDnsDomain(form.getName(), form.getZone());
-            if(d != null){
+            if (d != null) {
                 ri.setOk(false);
-                ri.addData("域名"+d.getName()+"."+z.getName()+"已存在");
+                ri.addData("域名" + d.getName() + "." + z.getName() + "已存在");
             }
-        }
-        else {
+        } else {
             ri.setOk(false);
-            ri.addData("主域名["+form.getZone()+"]不存在");
+            ri.addData("主域名[" + form.getZone() + "]不存在");
         }
-        if(!form.isLocal()&&form.getWanIp().trim().equals("")){
+        if (!form.isLocal() && form.getWanIp().trim().equals("")) {
             ri.setOk(false);
             ri.addData("IP地址不能为空");
         }
 
         if (ri.isOk()) {
-            switch (form.getType()){
+            switch (form.getType()) {
                 case MX:
-                    if(form.isLocal()){
+                    if (form.isLocal()) {
                         hostService.addDnsDomainMX(form.getZone(), form.getName(), form.getLanIp(), form.getPriority());
-                    }
-                        else
-                    {
+                    } else {
                         hostService.addDnsDomainMX(form.getZone(), form.getName(), form.getWanIp(), form.getPriority());
                     }
                     break;
                 case A:
-                    if(form.isLocal()){
+                    if (form.isLocal()) {
                         hostService.addDnsDomainA(form.getZone(), form.getName(), form.getLanIp());
-                    }
-                    else {
+                    } else {
                         hostService.addDnsDomainA(form.getZone(), form.getName(), form.getWanIp());
                     }
                     break;
                 case NS:
-                    if(form.isLocal()){
+                    if (form.isLocal()) {
                         hostService.addDnsDomainNS(form.getZone(), form.getName(), form.getLanIp());
-                    }
-                    else {
+                    } else {
                         hostService.addDnsDomainNS(form.getZone(), form.getName(), form.getWanIp());
                     }
                     break;
@@ -236,8 +231,8 @@ public class Bind9Controller {
 
 
         }
-        if(ri.isOk()){
-            logService.add(si.getSsAccountId(), "添加次域名解析"+form.getName()+"@"+form.getZone(), Log.Type.INFO);
+        if (ri.isOk()) {
+            logService.add(si.getSsAccountId(), "添加次域名解析" + form.getName() + "@" + form.getZone(), Log.Type.INFO);
         }
         return ri;
     }
@@ -251,7 +246,7 @@ public class Bind9Controller {
             Zone z = hostService.getDnsZone(d.getZone());
             if (z != null && z.getHost() == hostId) {
                 hostService.delDnsDomain(domainId);
-                logService.add(si.getSsAccountId(), "删除次级域名"+d.getName()+"."+z.getName(), Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "删除次级域名" + d.getName() + "." + z.getName(), Log.Type.INFO);
                 ri.setOk(true);
             }
         }
@@ -270,7 +265,7 @@ public class Bind9Controller {
                 rpcHelper.file(hostId, ef.getName(), ef.getOwner(), ef.getMode(), ef.getData());
             }
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "保存主机["+hostId+"]DNS配置", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "保存主机[" + hostId + "]DNS配置", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }
@@ -284,7 +279,7 @@ public class Bind9Controller {
         try {
             rpcHelper.command(hostId, archHelper.startBind9());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "启动主机["+hostId+"]DNS服务", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "启动主机[" + hostId + "]DNS服务", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }
@@ -298,7 +293,7 @@ public class Bind9Controller {
         try {
             rpcHelper.command(hostId, archHelper.stopBind9());
             ri.setOk(true);
-            logService.add(si.getSsAccountId(), "停止主机["+hostId+"]DNS服务", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "停止主机[" + hostId + "]DNS服务", Log.Type.INFO);
         } catch (Exception e) {
             ri.addData(e.getMessage());
         }

@@ -23,7 +23,7 @@ import java.util.Date;
  */
 public final class Client {
 
-    public String decode(String encrypt){
+    public String decode(String encrypt) {
         return ste.decrypt(encrypt);
     }
 
@@ -71,17 +71,14 @@ public final class Client {
                 builder.addLines(ste.decrypt(s));
             }
 
-        }
-
-        catch ( Exception e) {
+        } catch (Exception e) {
             logger.error("网络出错", e);
             builder.setType(request.getType()).setCode(Rpc.Code.FAIL).setCreated(new Date().getTime());
-            if(e instanceof  EncryptionOperationNotPossibleException){
+            if (e instanceof EncryptionOperationNotPossibleException) {
                 throw new IllegalArgumentException("密钥不对");
             }
             throw new IllegalArgumentException("网络错误");
-        }
-        finally {
+        } finally {
             group.shutdownGracefully();
         }
         return builder.build();

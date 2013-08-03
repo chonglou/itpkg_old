@@ -36,11 +36,9 @@ public class WanIpMonitor implements Runnable {
             logger.debug("GET {}", get.getURI());
             HttpResponse response = client.execute(get);
             logger.debug("RESPONSE {}", response);
-        }
-        catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             logger.error("采集ip信息出错", e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("HTTP错误", e);
         }
     }

@@ -42,7 +42,7 @@ public final class CommandHelper {
                         logger.error(line);
                         lines.add(line);
                     }
-                    throw new IllegalArgumentException("出错，运行["+cmd+"]返回值[" + code + "]");
+                    throw new IllegalArgumentException("出错，运行[" + cmd + "]返回值[" + code + "]");
                 }
                 out.close();
                 err.close();

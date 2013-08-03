@@ -3,7 +3,6 @@ package com.odong.itpkg.controller.net;
 import com.odong.itpkg.entity.net.Host;
 import com.odong.itpkg.entity.uc.Log;
 import com.odong.itpkg.form.net.host.HostInstallForm;
-import com.odong.itpkg.form.net.host.RebootForm;
 import com.odong.itpkg.linux.ArchHelper;
 import com.odong.itpkg.linux.EtcFile;
 import com.odong.itpkg.model.SessionItem;
@@ -50,11 +49,10 @@ public class StateController {
     ResponseItem postReboot(@PathVariable long hostId) {
         ResponseItem ri = new ResponseItem(ResponseItem.Type.message);
 
-        try{
+        try {
             formHelper.fill(rpcHelper.command(hostId, archHelper.reboot()), ri);
             ri.setOk(true);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ri.addData(e.getMessage());
         }
 
@@ -79,7 +77,7 @@ public class StateController {
         if (ri.isOk()) {
             Host host = hostService.getHost(hostId);
             String key = form.getKey();
-            if("".equals(key.trim())){
+            if ("".equals(key.trim())) {
                 key = encryptHelper.decode(host.getSignKey());
             }
             Client client = new Client(form.getHost(), form.getPort(), key);
