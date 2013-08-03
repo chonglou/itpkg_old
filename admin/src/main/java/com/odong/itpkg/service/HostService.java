@@ -185,6 +185,8 @@ public interface HostService {
 
     FlowLimit getFirewallFlowLimit(long flowId);
 
+    List<MacOutput> listFirewallMacOutputByHost(long hostId);
+
     List<MacOutput> listFirewallMacOutputByMac(long macId);
 
     List<MacOutput> listFirewallMacOutputByOutput(long outputId);

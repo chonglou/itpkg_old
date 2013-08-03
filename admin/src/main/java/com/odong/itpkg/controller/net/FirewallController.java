@@ -47,16 +47,25 @@ public class FirewallController {
         for (DateLimit dl : hostService.listFirewallDateLimit(si.getSsCompanyId())) {
             dateLimitMap.put(dl.getId(), dl);
         }
+        Map<Long, Mac> macMap = new HashMap<>();
+        for(Mac m : hostService.listMacByHost(hostId)){
+            if(m.getState() == Mac.State.ENABLE){
+                macMap.put(m.getId(), m);
+            }
+        }
         List<String> logs = new ArrayList<>();
         try {
             logs.addAll(rpcHelper.command(hostId, archHelper.ffStatus().toArray(new String[1])).getLinesList());
         } catch (Exception e) {
             logs.add(e.getMessage());
         }
+
         map.put("logs", logs);
+        map.put("macMap", macMap);
+        map.put("macOutputList", hostService.listFirewallMacOutputByHost(hostId));
         map.put("dateLimitMap", dateLimitMap);
-        map.put("outList", hostService.listFirewallOutputByHost(hostId));
-        map.put("inList", hostService.listFirewallInput(hostId));
+        map.put("outputList", hostService.listFirewallOutputByHost(hostId));
+        map.put("inputList", hostService.listFirewallInput(hostId));
         map.put("natList", hostService.listFirewallNat(hostId));
         map.put("host", hostService.getHost(hostId));
         return "net/firewall";
@@ -65,7 +74,7 @@ public class FirewallController {
     @RequestMapping(value = "/nat", method = RequestMethod.GET)
     @ResponseBody
     Form getNatAdd(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("firewall", "新增NAT规则", "/net/firewall/" + hostId + "/nat");
+        Form fm = new Form("firewall", "新增防火墙映射规则", "/net/firewall/" + hostId + "/nat");
         fm.addField(new HiddenField<Long>("id", null));
         fm.addField(new TextField<String>("name", "名称"));
         fm.addField(new TextField<Integer>("sPort", "源端口"));
@@ -79,7 +88,7 @@ public class FirewallController {
     @RequestMapping(value = "/nat/{natId}", method = RequestMethod.GET)
     @ResponseBody
     Form getNatEdit(@PathVariable long hostId, @PathVariable long natId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("firewall", "修改NAT规则[" + natId + "]", "/net/firewall/" + hostId + "/nat");
+        Form fm = new Form("firewall", "修改防火墙映射规则[" + natId + "]", "/net/firewall/" + hostId + "/nat");
         Nat nat = hostService.getFirewallNat(natId);
         if (nat != null && nat.getHost() == hostId) {
             fm.addField(new HiddenField<>("nat", natId));
@@ -103,16 +112,16 @@ public class FirewallController {
         if (ri.isOk()) {
             if (form.getId() == null) {
                 hostService.addFirewallNat(hostId, form.getName(), form.getsPort(), form.getProtocol(), form.getdIp(), form.getdPort());
-                logService.add(si.getSsAccountId(), "添加主机[" + hostId + "]NAT规则", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "添加主机[" + hostId + "]防火墙映射规则", Log.Type.INFO);
             } else {
                 Nat nat = hostService.getFirewallNat(form.getId());
                 if (nat != null && nat.getHost() == hostId) {
                     hostService.setFirewallNatInfo(form.getId(), form.getName());
                     hostService.setFirewallNatRule(form.getId(), form.getsPort(), form.getProtocol(), form.getdIp(), form.getdPort());
-                    logService.add(si.getSsAccountId(), "修改主机[" + hostId + "]NAT规则[" + form.getId() + "]", Log.Type.INFO);
+                    logService.add(si.getSsAccountId(), "修改主机[" + hostId + "]防火墙映射规则[" + form.getId() + "]", Log.Type.INFO);
                 } else {
                     ri.setOk(false);
-                    ri.addData("NAT规则[" + form.getId() + "]不存在");
+                    ri.addData("防火墙映射规则[" + form.getId() + "]不存在");
                 }
             }
 
@@ -127,10 +136,10 @@ public class FirewallController {
         Nat rule = hostService.getFirewallNat(natId);
         if (rule != null && rule.getHost() == hostId) {
             hostService.delFirewallNat(natId);
-            logService.add(si.getSsAccountId(), "删除主机[" + hostId + "]的NAT规则[" + natId + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除主机[" + hostId + "]的防火墙映射规则[" + natId + "]", Log.Type.INFO);
             ri.setOk(true);
         } else {
-            ri.addData("NAT规则[" + natId + "]不存在");
+            ri.addData("防火墙映射规则[" + natId + "]不存在");
         }
         return ri;
     }
@@ -146,9 +155,9 @@ public class FirewallController {
             }
         }
         Host host = hostService.getHost(hostId);
-        Form fm = new Form("firewall", "OUPUT例外", "/net/firewall/" + hostId + "/macOutput");
+        Form fm = new Form("firewall", "出口规则例外", "/net/firewall/" + hostId + "/macOutput");
         if (outputs.size() > 0 && macs.size() > 0) {
-            SelectField<Long> output = new SelectField<Long>("output", "OUPUT规则");
+            SelectField<Long> output = new SelectField<Long>("output", "出口规则");
             for (Output out : outputs) {
                 output.addOption(out.getName(), out.getId());
             }
@@ -166,12 +175,13 @@ public class FirewallController {
             }
             fm.addField(mac);
 
-            RadioField<Boolean> enable = new RadioField<Boolean>("enable", "排除", true);
-            enable.addOption("是", true);
-            enable.addOption("否", false);
+            RadioField<Boolean> bind = new RadioField<Boolean>("bind", "例外", true);
+            bind.addOption("是", true);
+            bind.addOption("否", false);
+            fm.addField(bind);
             fm.setOk(true);
         } else {
-            fm.addData("OUTPUT规则或MAC列表信息不全");
+            fm.addData("防火墙出口规则或MAC列表信息不全");
         }
         return fm;
 
@@ -186,12 +196,12 @@ public class FirewallController {
             Mac m = hostService.getMac(form.getMac());
             if (m != null && out != null && m.getHost() == hostId && out.getHost() == hostId) {
 
-                hostService.bindMac2Output(form.getMac(), form.getOutput(), form.isEnable());
-                logService.add(si.getSsAccountId(), (form.isEnable() ? "增加" : "去掉") + "OUPUT[" + form.getOutput() + "]规则与MAC[" + form.getMac() + "]关联", Log.Type.INFO);
+                hostService.bindMac2Output(form.getMac(), form.getOutput(), form.isBind());
+                logService.add(si.getSsAccountId(), (form.isBind() ? "例外" : "解除") + "OUPUT[" + form.getOutput() + "]规则与MAC[" + form.getMac() + "]关联", Log.Type.INFO);
 
             } else {
                 ri.setOk(false);
-                ri.addData("OUTPUT规则或者MAC不存在");
+                ri.addData("防火墙出口规则或者MAC不存在");
             }
         }
         return ri;
@@ -200,7 +210,7 @@ public class FirewallController {
     @RequestMapping(value = "/output", method = RequestMethod.GET)
     @ResponseBody
     Form getOutputAdd(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("firewall", "新增OUTPUT规则", "/net/firewall/" + hostId + "/output");
+        Form fm = new Form("firewall", "新增防火墙出口规则", "/net/firewall/" + hostId + "/output");
         List<DateLimit> dateLimits = hostService.listFirewallDateLimit(si.getSsCompanyId());
         if (dateLimits.size() > 0) {
             fm.addField(new HiddenField<>("id", null));
@@ -218,10 +228,10 @@ public class FirewallController {
         return fm;
     }
 
-    @RequestMapping(value = "/output/${outId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/output/{outId}", method = RequestMethod.GET)
     @ResponseBody
     Form getOutputEdit(@PathVariable long hostId, @PathVariable long outId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("firewall", "修改OUTPUT规则[" + outId + "]", "/net/firewall/" + hostId + "/output/" + outId);
+        Form fm = new Form("firewall", "修改防火墙出口规则[" + outId + "]", "/net/firewall/" + hostId + "/output");
         List<DateLimit> dateLimits = hostService.listFirewallDateLimit(si.getSsCompanyId());
         Output out = hostService.getFirewallOutput(outId);
         if (dateLimits.size() > 0 && out != null && out.getHost() == hostId) {
@@ -247,17 +257,17 @@ public class FirewallController {
         ResponseItem ri = formHelper.check(result);
         if (ri.isOk()) {
             if (form.getId() == null) {
-                hostService.addFirewallOutput(hostId, form.getName(), form.getKey(), form.getDateLimit());
-                logService.add(si.getSsAccountId(), "添加主机[" + hostId + "]OUTPUT规则", Log.Type.INFO);
+                hostService.addFirewallOutput(hostId, form.getName(), form.getKey(), form.getDlLimit());
+                logService.add(si.getSsAccountId(), "添加主机[" + hostId + "]防火墙出口规则", Log.Type.INFO);
             } else {
                 Output out = hostService.getFirewallOutput(form.getId());
                 if (out != null && out.getHost() == hostId) {
                     hostService.setFirewallOutputInfo(form.getId(), form.getName());
-                    hostService.setFirewallOutputRule(form.getId(), form.getKey(), form.getDateLimit());
-                    logService.add(si.getSsAccountId(), "修改主机[" + hostId + "]OUTPUT规则[" + form.getId() + "]", Log.Type.INFO);
+                    hostService.setFirewallOutputRule(form.getId(), form.getKey(), form.getDlLimit());
+                    logService.add(si.getSsAccountId(), "修改主机[" + hostId + "]防火墙出口规则[" + form.getId() + "]", Log.Type.INFO);
                 } else {
                     ri.setOk(false);
-                    ri.addData("OUTPUT规则[" + form.getId() + "]不存在");
+                    ri.addData("防火墙出口规则[" + form.getId() + "]不存在");
                 }
             }
         }
@@ -272,10 +282,10 @@ public class FirewallController {
         Output rule = hostService.getFirewallOutput(outId);
         if (rule != null && rule.getHost() == hostId) {
             hostService.delFirewallOutput(outId);
-            logService.add(si.getSsAccountId(), "删除主机[" + hostId + "]的OUTPUT规则[" + outId + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除主机[" + hostId + "]的防火墙出口规则[" + outId + "]", Log.Type.INFO);
             ri.setOk(true);
         } else {
-            ri.addData("OUT规则[" + outId + "]不存在");
+            ri.addData("防火墙出口规则[" + outId + "]不存在");
         }
         return ri;
     }
@@ -283,7 +293,7 @@ public class FirewallController {
     @RequestMapping(value = "/input", method = RequestMethod.GET)
     @ResponseBody
     Form getInputAdd(@PathVariable long hostId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("firewall", "新增INPUT规则", "/net/firewall/" + hostId + "/input");
+        Form fm = new Form("firewall", "新增防火墙入口规则", "/net/firewall/" + hostId + "/input");
         fm.addField(new HiddenField<>("host", hostId));
         fm.addField(new TextField<String>("name", "名称"));
         fm.addField(new TextField<String>("sIp", "源IP"));
@@ -296,7 +306,7 @@ public class FirewallController {
     @RequestMapping(value = "/input/{inId}", method = RequestMethod.GET)
     @ResponseBody
     Form getInputAdd(@PathVariable long hostId, @PathVariable long inId, @ModelAttribute(SessionItem.KEY) SessionItem si) {
-        Form fm = new Form("firewall", "修改INPUT规则[" + inId + "]", "/net/firewall/" + hostId + "/input");
+        Form fm = new Form("firewall", "修改防火墙入口规则[" + inId + "]", "/net/firewall/" + hostId + "/input");
         Input in = hostService.getFirewallInput(inId);
         if (in != null && in.getHost() == hostId) {
             fm.addField(new HiddenField<>("id", inId));
@@ -307,7 +317,7 @@ public class FirewallController {
             fm.setOk(true);
         } else {
             fm.setOk(false);
-            fm.addData("INPUT规则[" + inId + "]不存在");
+            fm.addData("防火墙入口规则[" + inId + "]不存在");
         }
         return fm;
     }
@@ -320,16 +330,16 @@ public class FirewallController {
         if (ri.isOk()) {
             if (form.getId() == null) {
                 hostService.addFirewallInput(hostId, form.getName(), form.getsIp(), form.getProtocol(), form.getPort());
-                logService.add(si.getSsAccountId(), "添加主机[" + hostId + "]INPUT规则", Log.Type.INFO);
+                logService.add(si.getSsAccountId(), "添加主机[" + hostId + "]防火墙入口规则", Log.Type.INFO);
             } else {
                 Input in = hostService.getFirewallInput(form.getId());
                 if (in != null && in.getHost() == hostId) {
                     hostService.setFirewallInputInfo(form.getId(), form.getName());
                     hostService.setFirewallInputRule(form.getId(), form.getsIp(), form.getProtocol(), form.getPort());
-                    logService.add(si.getSsAccountId(), "修改主机[" + hostId + "]上的INPUT规则[" + form.getId() + "]", Log.Type.INFO);
+                    logService.add(si.getSsAccountId(), "修改主机[" + hostId + "]上的防火墙入口规则[" + form.getId() + "]", Log.Type.INFO);
                 } else {
                     ri.setOk(false);
-                    ri.addData("INPUT规则[" + form.getId() + "]不存在");
+                    ri.addData("防火墙入口规则[" + form.getId() + "]不存在");
 
                 }
             }
@@ -344,10 +354,10 @@ public class FirewallController {
         Input rule = hostService.getFirewallInput(inId);
         if (rule != null && rule.getHost() == hostId) {
             hostService.delFirewallInput(inId);
-            logService.add(si.getSsAccountId(), "删除主机[" + hostId + "]的IN规则[" + inId + "]", Log.Type.INFO);
+            logService.add(si.getSsAccountId(), "删除主机[" + hostId + "]的防火墙入口规则[" + inId + "]", Log.Type.INFO);
             ri.setOk(true);
         } else {
-            ri.addData("IN规则[" + inId + "]不存在");
+            ri.addData("防火墙入口规则[" + inId + "]不存在");
         }
         return ri;
     }

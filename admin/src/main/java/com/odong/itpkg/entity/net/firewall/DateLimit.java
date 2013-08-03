@@ -17,6 +17,38 @@ import java.util.Date;
 @Table(name = "ffDate")
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DateLimit extends IdEntity {
+    public String beginTime(){
+        return String.format("%02d:%02d",beginHour, beginMinute);
+    }
+    public String endTime(){
+        return String.format("%02d:%02d",endHour, endMinute);
+    }
+    public String cnWeeks(){
+        StringBuilder sb = new StringBuilder();
+        if (mon) {
+            sb.append("星期一");
+        }
+        if (tues) {
+            sb.append(",星期二");
+        }
+        if (wed) {
+            sb.append(",星期三");
+        }
+        if (thur) {
+            sb.append(",星期四");
+        }
+        if (fri) {
+            sb.append(",星期五");
+        }
+        if (sat) {
+            sb.append(",星期六");
+        }
+        if (sun) {
+            sb.append(",星期天");
+        }
+        return sb.toString();
+
+    }
     public String toWeeks() {
         StringBuilder sb = new StringBuilder();
         if (mon) {

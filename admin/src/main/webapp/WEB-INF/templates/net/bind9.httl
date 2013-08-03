@@ -93,9 +93,11 @@ ${include("logs.httl")}
     });
 
     $("button#zone-add").click(function(){
+        clear_message_div();
         new Ajax("/net/bind9/"+${host.id}+"/zone/add", undefined, undefined, undefined, undefined, "bind9-root");
     });
     $("button#domain-add").click(function(){
+        clear_message_div();
         new Ajax("/net/bind9/"+${host.id}+"/domain/add", undefined, undefined, undefined, false, "bind9-root");
         var fType =$("select#fm-named-type");
         fType.change(function () {

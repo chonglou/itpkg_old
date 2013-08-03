@@ -16,7 +16,7 @@ public class OutputForm implements Serializable {
     private String name;
     @NotNull(message = "{val.notNull}")
     private String key;
-    private long dateLimit;
+    private long dlLimit;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class OutputForm implements Serializable {
         this.key = key;
     }
 
-    public long getDateLimit() {
-        return dateLimit;
+    public long getDlLimit() {
+        return dlLimit;
     }
 
-    public void setDateLimit(long dateLimit) {
-        this.dateLimit = dateLimit;
+    public void setDlLimit(long dlLimit) {
+        this.dlLimit = dlLimit;
     }
 }

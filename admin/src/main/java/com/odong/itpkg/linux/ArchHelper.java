@@ -266,7 +266,7 @@ public class ArchHelper {
         }
         //INPUT
         for (Input in : hostService.listFirewallInput(hostId)) {
-            lines.add(in.getsIp() == null ?
+            lines.add(in.getsIp().equals("*") ?
                     String.format("iptables -A INPUT -p %s -i wan --dport %d -j ACCEPT", in.getProtocol(), in.getPort())
                     :
                     String.format("iptables -A INPUT -s %s -p %s -i wan --dport %d -j ACCEPT", in.getsIp(), in.getProtocol(), in.getPort())

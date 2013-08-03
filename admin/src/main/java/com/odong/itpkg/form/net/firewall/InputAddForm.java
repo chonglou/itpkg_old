@@ -18,6 +18,7 @@ public class InputAddForm implements Serializable {
     @NotNull(message = "{val.notNull}")
     private String name;
     private Protocol protocol;
+    @NotNull(message = "{val.notNull}")
     private String sIp;
     @Port
     private int port;

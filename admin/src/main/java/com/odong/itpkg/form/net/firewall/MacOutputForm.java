@@ -12,14 +12,14 @@ public class MacOutputForm implements Serializable {
     private static final long serialVersionUID = -3438456008396722991L;
     private long output;
     private long mac;
-    private boolean enable;
+    private boolean bind;
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isBind() {
+        return bind;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public void setBind(boolean bind) {
+        this.bind = bind;
     }
 
     public long getOutput() {

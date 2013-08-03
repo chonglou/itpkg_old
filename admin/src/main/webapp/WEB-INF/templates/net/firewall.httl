@@ -1,5 +1,9 @@
-<div class="btn-group">
+<div class="btn-group" xmlns="http://www.w3.org/1999/html">
     <button id="refresh" class="btn btn-primary" type="button">当前状态</button>
+    <button id="add-input" class="btn btn-default" type="button">新增入口规则</button>
+    <button id="add-output" class="btn btn-info" type="button">新增出口规则</button>
+    <button id="add-nat" class="btn btn-default" type="button">新增映射规则</button>
+    <button id="macOutput" class="btn btn-info" type="button">出口规则例外</button>
     <button id="save" class="btn btn-warning" type="button">保存配置</button>
     <button id="clear" class="btn btn-danger" type="button">清空规则</button>
     <button id="apply" class="btn btn-success" type="button">应用规则</button>
@@ -7,14 +11,147 @@
 <p>&nbsp;</p>
 <div id="firewall-root"></div>
 ${include("logs.httl")}
+<!--#set(Host host)-->
+<!--#set(List<Mac> macList)-->
+<!--#set(Map<Long,DateLimit> dateLimitMap)-->
+<!--#set(Map<Long,Mac> macMap)-->
+<!--#set(List<MacOutput> macOutputList)-->
+<!--#set(List<Output> outputList)-->
+<!--#set(List<Nat> natList)-->
+<!--#set(List<Input> inputList)-->
+<h4>入口规则</h4>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>名称</td>
+        <td>源IP</td>
+        <td>协议</td>
+        <td>目的端口</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    #for(in : inputList)
+    <tr>
+        <td>${in.id}</td>
+        <td>${in.name}</td>
+        <td>${in.getsIp()}</td>
+        <td>${in.protocol}</td>
+        <td>${in.port}</td>
+        <td>
+            <button id="firewall-input-edit-${in.id}" class="btn btn-primary" type="button">编辑</button>
+            <button id="firewall-input-delete-${in.id}" class="btn btn-danger" type="button">删除</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
+<h4>出口规则</h4>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>名称</td>
+        <td>关键字</td>
+        <td>生效时间</td>
+        <td>生效日期</td>
+        <td>例外</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    #for(out : outputList)
+    <tr>
+        <td>${out.id}</td>
+        <td>${out.name}</td>
+        <td>${out.key}</td>
+        #set(dl=dateLimitMap.get(out.dateLimit))
+        <td>${dl.beginTime()}~${dl.endTime}</td>
+        <td>${dl.cnWeeks()}</td>
+        <td>
+            <ul>
+            #for(mo : macOutputList)
+            #if(mo.output == out.id)
+                #set(m=macMap.get(mo.mac))
+                <li>${m.serial}-${host.lanNet}.${m.ip}</li>
+            #end
+            #end
+            </ul>
+        </td>
+        <td>
+            <button id="firewall-output-edit-${out.id}" class="btn btn-primary" type="button">编辑</button>
+            <button id="firewall-output-delete-${out.id}" class="btn btn-danger" type="button">删除</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
+<h4>映射规则</h4>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>名称</td>
+        <td>源端口</td>
+        <td>协议</td>
+        <td>目的IP</td>
+        <td>目的端口</td>
+        <td>操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    #for(nat : natList)
+    <tr>
+        <td>${nat.id}</td>
+        <td>${nat.name}</td>
+        <td>${nat.getsPort()}</td>
+        <td>${nat.protocol}</td>
+        <td>${host.lanNet}.${nat.getdIp()}</td>
+        <td>${nat.getdPort()}</td>
+        <td>
+            <button id="firewall-nat-edit-${nat.id}" class="btn btn-primary" type="button">编辑</button>
+            <button id="firewall-nat-delete-${nat.id}" class="btn btn-danger" type="button">删除</button>
+        </td>
+    </tr>
+    #end
+    </tbody>
+</table>
 <script type="text/javascript">
 
-    $("button[id^='limit-edit-']").each(function () {
+    $("button[id^='firewall-']").each(function () {
         $(this).click(function () {
             var ss = $(this).attr('id').split('-');
             clear_message_div();
-            new Ajax("/net/firewall/${host.id}/bind/" + ss[2], undefined, undefined, undefined, undefined, "limit-root");
+            switch(ss[2]){
+                case "edit":
+                    new Ajax("/net/firewall/${host.id}/"+ss[1]+"/" + ss[3], undefined, undefined, undefined, undefined, "firewall-root");
+                    break;
+                case "delete":
+                    if(confirm("您确认要删除防火墙规则["+ss[3]+"]么？")){
+                        new Ajax("/net/firewall/${host.id}/"+ss[1]+"/"+ss[3], "DELETE");
+                    }
+                    break;
+            }
+
         });
+    });
+
+    $("button#add-input").click(function(){
+        clear_message_div();
+        new Ajax("/net/firewall/${host.id}/input", undefined, undefined, undefined, undefined, "firewall-root");
+    });
+    $("button#add-output").click(function(){
+        clear_message_div();
+        new Ajax("/net/firewall/${host.id}/output", undefined, undefined, undefined, undefined, "firewall-root");
+    });
+    $("button#add-nat").click(function(){
+        clear_message_div();
+        new Ajax("/net/firewall/${host.id}/nat", undefined, undefined, undefined, undefined, "firewall-root");
+    });
+    $("button#macOutput").click(function(){
+        clear_message_div();
+        new Ajax("/net/firewall/${host.id}/macOutput", undefined, undefined, undefined, undefined, "firewall-root");
     });
 
     $("button#refresh").click(function () {

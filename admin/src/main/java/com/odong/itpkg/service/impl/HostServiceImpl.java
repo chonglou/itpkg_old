@@ -725,6 +725,13 @@ public class HostServiceImpl implements HostService {
         return flowLimitDao.select(flowId);  //
     }
 
+    @Override
+    public List<MacOutput> listFirewallMacOutputByHost(long hostId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("host", hostId);
+        return macOutputDao.list("SELECT mo FROM MacOutput mo WHERE mo.output IN (SELECT o FROM Output o WHERE o.host=:host)", map);
+    }
+
 
     @Override
     public List<MacOutput> listFirewallMacOutputByMac(long macId) {

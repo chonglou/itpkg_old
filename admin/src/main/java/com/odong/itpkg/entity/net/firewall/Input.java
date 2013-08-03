@@ -21,6 +21,7 @@ public class Input extends IdEntity {
     private String name;
     @Column(nullable = false, updatable = false)
     private Long host;
+    @Column(nullable = false)
     private String sIp;
     @Column(nullable = false)
     private int port;
