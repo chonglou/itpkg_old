@@ -1,0 +1,11 @@
+用于企业网络管理
+主要实现的功能有：
+dhcp iptables(含共享上网) bind9管理
+openvpn proftpd postfix用户管理
+
+
+被控端（daemon）需要安装的服务有
+acpi iptables dhcp bind protobuf
+
+主控端（admin）需要安装的服务有
+protobuf

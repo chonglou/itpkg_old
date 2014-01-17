@@ -1,0 +1,3 @@
+启动tftpd：
+systemctl start tftpd.socket tftpd.service
+文件放：/srv/tftp

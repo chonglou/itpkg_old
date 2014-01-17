@@ -1,0 +1,149 @@
+{% block main %}
+{% autoescape xhtml_escape %}
+{% autoescape None %}
+
+<h3 class="glyphicon glyphicon-list">{{form.label}} </h3>
+<hr>
+<div id="fm-msg-{{form.fid}}"></div>
+<form id="fm-{{form.fid}}" class="form-horizontal" action="#" method="post">
+    {% module xsrf_form_html() %}
+
+    {% for field in form %}
+    {% if field.type == "HiddenField" %}<input type="hidden" id="fm-{{form.fid}}-{{field.id}}">{% end %}
+    {% end %}
+    {% for field in form %}
+
+    {% if field.type == "TextField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.default or ''}}">
+        </div>
+    </div>
+    {% elif field.type == "TextAreaField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-6">
+            <textarea id="fm-{{form.fid}}-{{field.id}}" class="form-control" rows="6">{{field.default or ""}}</textarea>
+        </div>
+    </div>
+    {% elif field.type == "PasswordField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-4">
+            <input type="password" class="form-control" id="fm-{{form.fid}}-{{field.id}}">
+        </div>
+    </div>
+    {% elif field.type == "IntegerField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.default or ''}}">
+        </div>
+    </div>
+    {% elif field.type == "BooleanField" %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-6">
+            <div class="checkbox">
+                <label>
+                    {%if field.default %}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox" checked/>
+                    {%else%}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox"/>
+                    {%end%}
+                    {{field.label.text}}
+                </label>
+            </div>
+        </div>
+    </div>
+    {% elif field.type == "AgreementField" %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-6">
+            <textarea readonly class="form-control" rows="6">
+                {{field.text or ""}}
+            </textarea>
+        </div>
+        <div class="col-sm-offset-2 col-sm-6">
+            <div class="checkbox">
+                <label>
+                    {%if field.default %}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox" checked/>
+                    {%else%}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox"/>
+                    {%end%}
+                    我同意并遵守上述协议
+                </label>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    {% end %}
+
+    {% end %}
+    {% if form.captcha %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-captcha" class="col-sm-2 control-label">
+            验证码*：
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-captcha">
+        </div>
+        <div class="col-sm-3">
+            <img id="fm-img-{{form.fid}}-captcha" src="/captcha">
+        </div>
+    </div>
+    {% end %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <a id="fm-btn-{{form.fid}}-submit" class="btn btn-primary">提交</a>
+            <a id="fm-btn-{{form.fid}}-reset" class="btn btn-default">重写</a>
+        </div>
+    </div>
+</form>
+{%end%}
+{% block extra_script %}
+<script type="text/javascript">
+    function reset_field() {
+        $('form#fm-{{form.fid}}')[0].reset();
+    }
+    function reload_captcha(){
+        $("img#fm-img-{{form.fid}}-captcha").attr("src", "/captcha?_=" + Math.random());
+    }
+    $(document).ready(function () {
+        $("a#fm-btn-{{form.fid}}-submit").click(function () {
+            var id = "[id^='fm-{{form.fid}}-']";
+            var data = {};
+            $(id).each(function () {
+                data[$(this).attr('id').split('-')[2]] = $(this).val();
+            });
+            new Ajax(
+                    "fm-msg-{{form.fid}}",
+                    "{{form.action}}",
+                    "POST",
+                    data,
+                    undefined,
+                    "{{form.captcha}}"!="True"
+            );
+            reload_captcha();
+        });
+        $("a#fm-btn-{{form.fid}}-reset").click(reset_field);
+        <!--{% if form.captcha %}-->
+        $("img#fm-img-{{form.fid}}-captcha").click(reload_captcha);
+        <!--{% end%} -->
+        reset_field();
+    });
+</script>
+{% end %}

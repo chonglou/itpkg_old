@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block main%}
+        <h3>搜索[{{keyword}}]的结果</h3><hr>
+        {%for i in items%}
+        {{i}}
+        {%end%}
+{%end%}
