@@ -1,10 +1,12 @@
 配置文件在：web.cfg
 app_secret需要16位
 
+默认数据存储在tmp目录下
+
 密钥可以使用"pwgen -n 16"生成
 
 
-安装python环境：
+加载python环境：
 mkdir tmp
 cd tmp
 virtualenv python3
@@ -12,7 +14,6 @@ source tmp/python3/bin/activate
 pacman -S tcl tk
 pip install Pillow
 pip install tornado SQLAlchemy pycurl pycrypto redis WTForms wtforms-tornado beaker qrcode 
-pip install PyRSS2Gen
 
 退出python环境：
 deactivate
