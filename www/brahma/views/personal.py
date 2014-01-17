@@ -1,7 +1,9 @@
 __author__ = 'zhengjitang@gmail.com'
 
+import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
+from brahma.store.site import UserDao
 
 
 class ActiveHandler(BaseHandler):
@@ -36,16 +38,40 @@ class RegisterHandler(BaseHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render("widgets/form.html",
-                    form=LoginForm(fid="login", label="欢迎登录", action="/personal/login", captcha=True)
-        )
+        if self.check_non_login():
+            self.render(
+                "widgets/form.html",
+                form=LoginForm(fid="login", label="欢迎登录", action="/personal/login", captcha=True)
+            )
 
     def post(self):
-        self.goto_main_page()
+        if self.check_non_login():
+            fm = LoginForm(formdata=self.request.arguments)
+            messages = []
+            if self.check_captcha():
+                if fm.validate():
+                    user = UserDao.auth("email", email=fm.email.data, password=fm.password.data)
+                    if user:
+                        self.set_current_user({
+                            "id": user.id,
+                            #"logo": user.logo, TODO
+                            "username": user.username,
+                        })
+                        self.render_message_widget(ok=True, goto="/main")
+                        return
+                    else:
+                        messages.append("登录邮箱和密码不匹配")
+                else:
+                    messages.extend(fm.messages())
+            else:
+                messages.append("验证码不对")
+            self.render_message_widget(ok=False, messages=messages)
 
 
 class LogoutHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
+        self.clear_cookie("user")
         self.goto_main_page()
 
 

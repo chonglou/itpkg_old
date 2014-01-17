@@ -147,10 +147,13 @@
     $(document).ready(function () {
         $("li#personalBar ul.dropdown-menu a").each(function () {
             $(this).click(function () {
+                var id = $(this).attr("id");
                 <!--{%if is_login %}-->
-                window.location.href = $(this).attr("id");
+                if(id.indexOf('logout') < 0 || window.confirm("您确认要退出系统么？") ){
+                    window.location.href = id;
+                }
                 <!--{%else%}-->
-                new Ajax("gl_root", $(this).attr("id"));
+                new Ajax("gl_root", id);
                 <!--{%end%}-->
             });
         });

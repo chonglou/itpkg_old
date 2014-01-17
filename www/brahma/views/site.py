@@ -3,7 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.store.site import SiteDao
+from brahma.store.site import SettingDao
 from brahma.env import cache_call
 
 
@@ -23,7 +23,7 @@ class HelpHandler(BaseHandler):
     def get(self):
         @cache_call("site/help")
         def get_help():
-            return SiteDao.get("site.help")
+            return SettingDao.get("site.help")
 
         self.render_page("template.html", index="/help", title="帮助文档", content=get_help())
 
@@ -32,7 +32,7 @@ class AboutMeHandler(BaseHandler):
     def get(self):
         @cache_call("site/aboutMe")
         def get_aboutMe():
-            return SiteDao.get("site.aboutMe")
+            return SettingDao.get("site.aboutMe")
 
         self.render_page("template.html", index="/aboutMe", title="关于我们", content=get_aboutMe())
 

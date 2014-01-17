@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import redis as _redis
+import pickle
 
 
 class Redis:
@@ -8,17 +9,18 @@ class Redis:
         self.name = name
         self.__pool = _redis.ConnectionPool(host=host, port=port)
 
-    def set(self, key, val=None, fun=None):
-        self.__client().set(self.__key(key), fun() if fun else val)
+    def set(self, key, val):
+        self.__client().set(self.__key(key), pickle.dumps(val))
 
     def get(self, key):
-        return self.__client().get(self.__key(key))
+        return pickle.loads(self.__client().get(self.__key(key)))
 
-    def rpush(self, key, val):
-        self.__client().rpush(key, val)
+    def lpush(self, key, val):
+        self.__client().lpush(self.__key(key), pickle.dumps(val))
 
-    def blpop(self, key):
-        return self.__client().blpop(key)
+    def brpop(self, key):
+        k,v = self.__client().brpop(self.__key(key))
+        return pickle.loads(v)
 
     def __key(self, key):
         return "{0}://{1}".format(self.name, key)

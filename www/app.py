@@ -2,9 +2,9 @@ __author__ = 'zhengjitang@gmail.com'
 
 if __name__ == "__main__":
     import sys
-    from brahma import HttpDaemon, utils
+    from brahma import Daemon, utils
 
-    daemon = HttpDaemon(utils.path("../../tmp/pid"))
+    daemon = Daemon(utils.path("../../tmp/pid"))
     if len(sys.argv) == 2:
         if "start" == sys.argv[1]:
             daemon.start()

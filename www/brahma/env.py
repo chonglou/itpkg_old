@@ -8,6 +8,7 @@ from brahma.utils.cache import Beaker
 from brahma.utils.encrypt import Encrypt
 from brahma.utils.redis import Redis
 from brahma.store import Database
+from brahma.utils.email import EmailHelper
 
 encrypt = Encrypt(tornado.options.options.app_secret)
 
@@ -27,13 +28,6 @@ def cache_call(key):
         return __decorator
 
     return _decorator
-
-
-redis = Redis(
-    name=tornado.options.options.app_name,
-    host=tornado.options.options.redis_host,
-    port=tornado.options.options.redis_port
-)
 
 _db = Database(
     tornado.options.options.db_uri,
@@ -58,3 +52,13 @@ def db_call(func):
         return val
 
     return __decorator
+
+
+redis = Redis(
+    name=tornado.options.options.app_name,
+    host=tornado.options.options.redis_host,
+    port=tornado.options.options.redis_port
+)
+
+email = EmailHelper()
+email.load()

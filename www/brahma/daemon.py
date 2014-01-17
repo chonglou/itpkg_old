@@ -56,7 +56,7 @@ class Daemon:
             pid = None
 
         if pid:
-            sys.stderr.write("pid文件{0}已经存在.\n".format(self.pidfile))
+            sys.stderr.write("pid文件[{0}]已经存在.\n".format(self.pidfile))
             sys.exit(1)
 
         self.__daemonize()
@@ -68,13 +68,14 @@ class Daemon:
                 pid = int(pf.read().strip())
         except IOError:
             pid = None
+
         if not pid:
             sys.stderr.write("pid文件{0}不存在，没有运行？\n".format(self.pidfile))
             return
 
         try:
-            while 1:
-                os.kill(pid, signal.SIGTERM)
+            while True:
+                os.killpg(os.getpgid(pid), signal.SIGKILL)
                 time.sleep(0.1)
         except OSError as err:
             e = str(err.args)

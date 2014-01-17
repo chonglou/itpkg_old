@@ -1,55 +1,39 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import importlib
+import multiprocessing
 import logging
+import time
+import importlib
 import tornado.ioloop
 import tornado.web
-
-from brahma.daemon import Daemon
-
-
-class Application(tornado.web.Application):
-    def __init__(self, debug):
-        import tornado.options
-        from brahma import utils, widgets
-        from brahma.views import PageNotFoundHandler
-
-        routes = []
-
-        for i in utils.list_mod("../views"):
-            routes.extend(importlib.import_module("brahma.views." + i).handlers)
-
-        for p in tornado.options.options.app_plugins:
-            for i in utils.list_mod("../plugins/" + p + "/views"):
-                routes.extend(importlib.import_module("brahma.plugins." + p + ".views." + i).handlers)
-
-        routes.append((r".*", PageNotFoundHandler))
-
-        settings = dict(
-            ui_modules=widgets,
-            template_path=utils.path("../../templates"),
-            static_path=utils.path("../../statics"),
-            login_url="/personal/login",
-            cookie_secret=tornado.options.options.http_secret,
-            xsrf_cookies=True,
-            debug=debug,
-        )
-
-        tornado.web.Application.__init__(self, routes, **settings)
+from brahma import daemon
 
 
-class HttpDaemon(Daemon):
+class Daemon(daemon.Daemon):
     def run(self, debug=False):
-        self.__setup(debug)
+        Tornado.setup(debug)
+        if debug:
+            jobs = multiprocessing.Process(name="jobs", target=Tornado.jobs)
+            jobs.daemon = True
+            jobs.start()
+            time.sleep(1)
+            Tornado.http()
+        else:
+            jobs = multiprocessing.Process(name="jobs", target=Tornado.jobs)
+            jobs.daemon = True
+            jobs.start()
+            time.sleep(1)
+            Tornado.http()
 
+
+class Tornado:
+    @staticmethod
+    def http():
         import tornado.options
 
-        app = Application(debug)
+        app = Application(tornado.options.options.debug)
         logging.info("开始监听端口%d", tornado.options.options.http_port)
 
-        #app.listen(
-        #    port=tornado.options.options.http_port,
-        #    address=tornado.options.options.http_host)
         import socket
         from tornado.httpserver import HTTPServer
         from tornado.netutil import bind_sockets
@@ -58,16 +42,30 @@ class HttpDaemon(Daemon):
             port=tornado.options.options.http_port,
             address=tornado.options.options.http_host,
             family=socket.AF_INET)
+        if not tornado.options.options.debug:
+            import tornado.process
+            tornado.process.fork_processes(0)
         server = HTTPServer(app, xheaders=True)
         server.add_sockets(sockets)
-        if not debug:
-            import tornado.process
-
-            tornado.process.fork_processes(0)
         tornado.ioloop.IOLoop.instance().start()
 
+    @staticmethod
+    def jobs():
+        import logging, tornado.options
+        from brahma.utils.redis import Redis
+        redis = Redis(
+            name=tornado.options.options.app_name,
+            host=tornado.options.options.redis_host,
+            port=tornado.options.options.redis_port)
+        logging.info("启动后台进程")
+        while True:
+            val = redis.brpop("tasks")
+            logging.debug("收到任务[%s]" % val)
 
-    def __setup(self, debug):
+
+
+    @staticmethod
+    def setup(debug):
         from brahma import utils
         import tornado.options
 
@@ -91,6 +89,34 @@ class HttpDaemon(Daemon):
         tornado.options.parse_config_file(utils.path("../../web.cfg"))
 
 
+class Application(tornado.web.Application):
+    def __init__(self, debug):
+        import tornado.options
+        from brahma import utils, widgets
+        from brahma.views import PageNotFoundHandler
+
+        routes = []
+
+        for i in utils.list_mod("../views"):
+            routes.extend(importlib.import_module("brahma.views." + i).handlers)
+
+        for p in tornado.options.options.app_plugins:
+            for i in utils.list_mod("../plugins/" + p + "/views"):
+                routes.extend(importlib.import_module("brahma.plugins." + p + ".views." + i).handlers)
+
+        routes.append((r".*", PageNotFoundHandler))
+
+        settings = dict(
+            ui_modules=widgets,
+            template_path=utils.path("../../templates"),
+            static_path=utils.path("../../statics"),
+            login_url="/main",
+            cookie_secret=tornado.options.options.http_secret,
+            xsrf_cookies=True,
+            debug=debug,
+        )
+
+        tornado.web.Application.__init__(self, routes, **settings)
 
 
 

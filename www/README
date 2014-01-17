@@ -5,11 +5,21 @@ app_secret需要16位
 
 密钥可以使用"pwgen -n 16"生成
 
+启动：
+python app start
+
+停止：
+python app stop
+
+调试：
+python app debug
+
 
 加载python环境：
 mkdir tmp
 cd tmp
 virtualenv python3
+cd ..
 source tmp/python3/bin/activate
 pacman -S tcl tk
 pip install Pillow

@@ -1,6 +1,35 @@
 __author__ = 'zhengjitang@gmail.com'
 
 
+class EmailHelper:
+    def __init__(self):
+        self.email = None
+
+    def load(self):
+        from brahma.store.site import SettingDao
+        smtp = SettingDao.get("site.smtp", encrypt=True)
+        if smtp:
+            import tornado.options
+
+            self.email = Email(
+                smtp['host'],
+                smtp['username'],
+                smtp['password'],
+                port=smtp['port'],
+                ssl=smtp['ssl'],
+                debug=tornado.options.options.debug,
+            )
+        else:
+            self.email = None
+
+    def send(self, to, title, body, html=True):
+        if self.email:
+            self.email.send(to, title, body, html)
+        else:
+            import logging
+            logging.error("发送邮件[{%s}]：%s出错"%(to, title))
+
+
 class Email:
     def __init__(self, host, username, password, port=25, ssl=False, bcc=None, debug=False):
         self.host = host
@@ -11,7 +40,7 @@ class Email:
         self.bcc = bcc
         self.debug = debug
 
-    def send(self, to, title, body, html=True):
+    def send(self, to, title, body, html):
         import smtplib
         from email.mime.text import MIMEText
         from email.header import Header

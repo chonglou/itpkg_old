@@ -4,7 +4,7 @@ import datetime
 
 import tornado.web
 
-from brahma.store.site import SiteDao
+from brahma.store.site import SettingDao
 from brahma.forms.site import InstallForm
 from brahma.models import Setting, User
 from brahma.env import cache
@@ -20,7 +20,7 @@ def get_site_info():
 
 class InstallHandler(tornado.web.RequestHandler):
     def __check(self):
-        v = SiteDao.get("site.version")
+        v = SettingDao.get("site.version")
         if v:
             cache.set("site/version", val=v)
             self.render("message.html",

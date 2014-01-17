@@ -2,7 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 import tornado.options
-from brahma.store.site import SiteDao
+from brahma.store.site import SettingDao
 from brahma.env import cache_call
 
 
@@ -19,7 +19,7 @@ class QrCodeHandler(tornado.web.RequestHandler):
                 border=1,
             )
 
-            qr.add_data("<a href='http://%s'>%s</a>" % (SiteDao.get("site.domain"), SiteDao.get("site.title")))
+            qr.add_data("<a href='http://%s'>%s</a>" % (SettingDao.get("site.domain"), SettingDao.get("site.title")))
             qr.make(fit=True)
 
             import io
@@ -46,8 +46,8 @@ class SitemapHandler(tornado.web.RequestHandler):
             sitemap = io.StringIO()
             sitemap.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             sitemap.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-            domain = SiteDao.get("site.domain")
-            init = SiteDao.get("site.init")
+            domain = SettingDao.get("site.domain")
+            init = SettingDao.get("site.init")
             #FIXME
             for loc, lastmod, changefreq, priority in [
                 ("main", datetime.datetime.now(), "daily", 1.0),
@@ -74,21 +74,21 @@ class RssHandler(tornado.web.RequestHandler):
         def get_rss():
             import io
 
-            domain = SiteDao.get("site.domain")
-            init = SiteDao.get("site.init")
+            domain = SettingDao.get("site.domain")
+            init = SettingDao.get("site.init")
 
             rss = io.StringIO()
             rss.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             rss.write('<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">\n')
             rss.write('\t<channel>\n')
-            rss.write('\t\t<title>%s</title>\n' % SiteDao.get("site.title"))
+            rss.write('\t\t<title>%s</title>\n' % SettingDao.get("site.title"))
             rss.write('\t\t<link>http://%s</link>\n' % domain)
-            rss.write('\t\t<description>%s</description>\n' % SiteDao.get("site.description"))
+            rss.write('\t\t<description>%s</description>\n' % SettingDao.get("site.description"))
 
             #FIXME
             for title, link, description, pubDate in [
-                ("关于我们", "aboutMe", SiteDao.get("site.aboutMe"), init),
-                ("帮助文档", "help", SiteDao.get("site.help"), init),
+                ("关于我们", "aboutMe", SettingDao.get("site.aboutMe"), init),
+                ("帮助文档", "help", SettingDao.get("site.help"), init),
             ]:
                 link = "http://%s/%s" % (domain, link)
                 rss.write('\t\t<item>\n')

@@ -6,8 +6,8 @@ from brahma.env import cache_call
 
 @cache_call("site/protocol")
 def get_protocol():
-    from brahma.store.site import SiteDao
-    return SiteDao.get("site.protocol")
+    from brahma.store.site import SettingDao
+    return SettingDao.get("site.protocol")
 
 
 class LoginForm(Form):

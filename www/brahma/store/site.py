@@ -2,11 +2,24 @@ __author__ = 'zhengjitang@gmail.com'
 
 import pickle
 from sqlalchemy.orm.exc import NoResultFound
-from brahma.models import Setting
+from brahma.models import Setting, User
 from brahma.env import encrypt as _encrypt, db_call
 
 
-class SiteDao:
+class UserDao:
+    @staticmethod
+    @db_call
+    def auth(flag, email=None, password=None, session=None):
+        if flag == "email":
+            try:
+                user = session.query(User).filter(User.email == email, User.flag == flag).one()
+                if user.check(password):
+                    return user
+            except NoResultFound:
+                pass
+
+
+class SettingDao:
     @staticmethod
     @db_call
     def set(key, val, encrypt=False, session=None):
