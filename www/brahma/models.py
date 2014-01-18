@@ -3,7 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import datetime
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, Sequence, LargeBinary
+from sqlalchemy import Column, Integer, String, DateTime, Sequence, LargeBinary, Text
 
 
 Base = declarative_base()
@@ -51,6 +51,9 @@ class User(Base):
     password = Column(String(512), nullable=False)
     username = Column(String(255))
     salt = Column(String(8), nullable=False)
+    state = Column(String(8), nullable=False)
+    logo = Column(String(255))
+    contact = Column(Text)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
     lastLogin = Column(DateTime)
 

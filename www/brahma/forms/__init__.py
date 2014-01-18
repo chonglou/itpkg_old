@@ -4,10 +4,11 @@ import wtforms_tornado
 
 from wtforms import BooleanField
 
+
 class AgreementField(BooleanField):
-    def __init__(self, text="", *args,**kwargs):
+    def __init__(self, text="", *args, **kwargs):
         self.text = text
-        super().__init__(self, *args,**kwargs)
+        super().__init__(self, *args, **kwargs)
 
 
 class Translations(object):

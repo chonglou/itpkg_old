@@ -1,10 +1,10 @@
 __author__ = 'zhengjitang@gmail.com'
 
 
-def listen(name, host, port):
-    import logging
-    from brahma.utils.redis import Redis
-    redis = Redis(name, host=host, port=port)
-    while True:
-        val = redis.brpop("tasks")
-        logging.debug("收到任务[%s]"%val)
+class TaskSender:
+    @staticmethod
+    def send_email(to, title, body, html=True):
+        from brahma.env import redis
+        import logging
+        logging.debug("邮件任务%s" % to)
+        redis.lpush("tasks", ("email", (to, title, body, html)))

@@ -70,9 +70,13 @@ class InstallHandler(tornado.web.RequestHandler):
                         )
 
                         email = form.managerEmail.data
-                        session.add(User("email", email=email, username="超级管理员", password=form.managerPassword.data))
+                        user = User("email", email=email, username="超级管理员", password=form.managerPassword.data)
+                        user.state = "ENABLE"
+                        session.add(user)
                         user = session.query(User).filter(User.email == email).one()
                         session.add(Setting("site.manager", encrypt.encode(user.id)))
+
+                        session.add(Setting("site.link.valid", pickle.dumps(24)))
 
                         session.add(Setting("site.version", pickle.dumps("v20140112")))
 

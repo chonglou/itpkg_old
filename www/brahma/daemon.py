@@ -1,10 +1,11 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import sys
-import os
 import time
 import atexit
 import signal
+
+import os
 
 
 class Daemon:

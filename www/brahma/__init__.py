@@ -44,6 +44,7 @@ class Tornado:
             family=socket.AF_INET)
         if not tornado.options.options.debug:
             import tornado.process
+
             tornado.process.fork_processes(0)
         server = HTTPServer(app, xheaders=True)
         server.add_sockets(sockets)
@@ -52,16 +53,34 @@ class Tornado:
     @staticmethod
     def jobs():
         import logging, tornado.options
-        from brahma.utils.redis import Redis
-        redis = Redis(
-            name=tornado.options.options.app_name,
-            host=tornado.options.options.redis_host,
-            port=tornado.options.options.redis_port)
+        from brahma.env import redis
+        from brahma.store.site import SettingDao
+        from brahma.utils.email import Email
+
+        #redis = Redis(
+        #    name=tornado.options.options.app_name,
+        #    host=tornado.options.options.redis_host,
+        #    port=tornado.options.options.redis_port)
         logging.info("启动后台进程")
         while True:
-            val = redis.brpop("tasks")
-            logging.debug("收到任务[%s]" % val)
-
+            flag, args = redis.brpop("tasks")
+            if flag == "email":
+                to, title, body, html = args
+                smtp = SettingDao.get("site.smtp", encrypt=True)
+                if smtp:
+                    email = Email(
+                        host=smtp['host'],
+                        username=smtp['username'],
+                        password=smtp['password'],
+                        port=smtp['port'],
+                        ssl=smtp['ssl'],
+                        debug=tornado.options.options.debug,
+                    )
+                    email.send(to, title, body, html)
+                else:
+                    logging.error("SMTP未配置")
+            else:
+                logging.error("丢弃的任务[(%s, %s)]" % (type, str(args)))
 
 
     @staticmethod

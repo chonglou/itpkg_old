@@ -95,7 +95,7 @@ class RssHandler(tornado.web.RequestHandler):
                 rss.write('\t\t\t<title>%s</title>\n' % title)
                 rss.write('\t\t\t<link>%s</link>\n' % link)
                 rss.write((
-                '\t\t\t<description>%s</description>\n' % description) if description else '\t\t\t<description/>\n')
+                    '\t\t\t<description>%s</description>\n' % description) if description else '\t\t\t<description/>\n')
                 rss.write('\t\t\t<pubDate>%s</pubDate>\n' % init.isoformat())
                 rss.write('\t\t\t<guid>%s</guid>\n' % link)
                 rss.write('\t\t\t<dc:date>%s</dc:date>\n' % init.isoformat())

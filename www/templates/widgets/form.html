@@ -127,7 +127,17 @@
             var id = "[id^='fm-{{form.fid}}-']";
             var data = {};
             $(id).each(function () {
-                data[$(this).attr('id').split('-')[2]] = $(this).val();
+                var fid = $(this).attr('id').split('-')[2];
+
+                switch ($(this).attr('type')){
+                    case "checkbox":
+
+                        data[fid]=$(this).is(":checked");
+                        break;
+                    default:
+                        data[fid] = $(this).val();
+                }
+
             });
             new Ajax(
                     "fm-msg-{{form.fid}}",

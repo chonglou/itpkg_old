@@ -2,6 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import datetime
 
+
 def last_months(minimum, count):
     months = list()
     today = datetime.datetime.today()

@@ -1,9 +1,10 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import fcntl
-import os
 import select
 from subprocess import Popen, PIPE
+
+import os
 
 
 class Ssh:

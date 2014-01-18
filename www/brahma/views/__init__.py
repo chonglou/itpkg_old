@@ -1,7 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
-from brahma.env import cache,cache_call
+from brahma.env import cache, cache_call
 from brahma.store.site import SettingDao
 
 
@@ -16,7 +16,7 @@ def get_site_info():
     init = get_site("init")
 
     sbCal = Sidebar("归档列表")
-    sbCal.items.extend(map(lambda dt:(dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
+    sbCal.items.extend(map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
 
     #def add(dt):
     #    sbCal.add("/calendar/" + dt.isoformat(), dt.strftime("%Y年%m月"))
@@ -98,11 +98,13 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def get_current_user(self):
         import pickle
+
         user = self.get_secure_cookie("user")
         return pickle.loads(user) if user else None
 
     def set_current_user(self, user):
         import pickle
+
         self.set_secure_cookie("user", pickle.dumps(user))
 
 

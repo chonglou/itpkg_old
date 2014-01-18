@@ -1,7 +1,8 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import redis as _redis
 import pickle
+
+import redis as _redis
 
 
 class Redis:
@@ -19,7 +20,7 @@ class Redis:
         self.__client().lpush(self.__key(key), pickle.dumps(val))
 
     def brpop(self, key):
-        k,v = self.__client().brpop(self.__key(key))
+        k, v = self.__client().brpop(self.__key(key))
         return pickle.loads(v)
 
     def __key(self, key):
