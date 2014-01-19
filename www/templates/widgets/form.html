@@ -1,4 +1,3 @@
-{% block main %}
 {% autoescape xhtml_escape %}
 {% autoescape None %}
 
@@ -6,6 +5,7 @@
 <hr>
 <div id="fm-msg-{{form.fid}}"></div>
 <form id="fm-{{form.fid}}" class="form-horizontal" action="#" method="post">
+    <input type="hidden" id="fm-act-{{form.fid}}" value="{{form.action}}">
     {% module xsrf_form_html() %}
 
     {% for field in form %}
@@ -113,47 +113,3 @@
         </div>
     </div>
 </form>
-{%end%}
-{% block extra_script %}
-<script type="text/javascript">
-    function reset_field() {
-        $('form#fm-{{form.fid}}')[0].reset();
-    }
-    function reload_captcha(){
-        $("img#fm-img-{{form.fid}}-captcha").attr("src", "/captcha?_=" + Math.random());
-    }
-    $(document).ready(function () {
-        $("a#fm-btn-{{form.fid}}-submit").click(function () {
-            var id = "[id^='fm-{{form.fid}}-']";
-            var data = {};
-            $(id).each(function () {
-                var fid = $(this).attr('id').split('-')[2];
-
-                switch ($(this).attr('type')){
-                    case "checkbox":
-
-                        data[fid]=$(this).is(":checked");
-                        break;
-                    default:
-                        data[fid] = $(this).val();
-                }
-
-            });
-            new Ajax(
-                    "fm-msg-{{form.fid}}",
-                    "{{form.action}}",
-                    "POST",
-                    data,
-                    undefined,
-                    "{{form.captcha}}"!="True"
-            );
-            reload_captcha();
-        });
-        $("a#fm-btn-{{form.fid}}-reset").click(reset_field);
-        <!--{% if form.captcha %}-->
-        $("img#fm-img-{{form.fid}}-captcha").click(reload_captcha);
-        <!--{% end%} -->
-        reset_field();
-    });
-</script>
-{% end %}

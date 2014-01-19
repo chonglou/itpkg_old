@@ -4,10 +4,7 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="{{site['description']}}"/>
-    <meta name="keywords" content="{{site['keywords']}}"/>
-    <meta name="author" content="zhengjitang@gmail.com">
-    <title>{{site['title']}}-{{title}}</title>
+    {% module Head() %}
     <link rel="shortcut icon" href='{{ static_url("image/favicon.ico") }}' type="image/vnd.microsoft.icon">
     <link href='{{ static_url("3rd/bootstrap-3.0.3/css/bootstrap.min.css") }}' rel="stylesheet"/>
     <link href='{{ static_url("3rd/jquery-ui-1.10.3/themes/base/jquery-ui.min.css") }}' rel="stylesheet"/>
@@ -16,118 +13,28 @@
 </head>
 <body>
 {% block body %}
-<div class="navbar navbar-fixed-top navbar-inverse">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/main">{{ site['title'] }}</a>
-        </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                {% if index %}
-                <li><a href="/main">站点主页</a></li>
-                {% else %}
-                <li class="active"><a href="/main">站点主页</a></li>
-                {% end %}
-                {% for url,label in site['topLinks'] %}
-                {% if index == url%}
-                <li class="active"><a href="{{url}}">{{label}}</a></li>
-                {% else %}
-                <li><a href="{{url}}">{{label}}</a></li>
-                {% end %}
-                {% end %}
-            </ul>
-            <form method="post" target="_blank" action="/search" class="navbar-form form-inline pull-left">
-                {% module xsrf_form_html() %}
-                <input class="form-control col-lg-8" name="keyword" type="text" placeholder="点击此处进行搜索">
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" id="favorites" rel="sidebar">收藏本页</a></li>
-                <li id="personalBar" class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        {%if is_login%}用户中心{% else %}登录/注册{% end %}
-                        <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        {% if is_login %}
-                        <li><a href="#" id="/personal/self">用户中心</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" id="/personal/logout">安全退出</a></li>
-                        {% else %}
-                        <li><a href="#" id="/personal/login">用户登录</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" id="/personal/register">账户注册</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" id="/personal/active">账户激活</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" id="/personal/resetPwd">重置密码</a></li>
-                        {% end %}
-                    </ul>
-                </li>
-                <li id="qqAuthBar"></li>
-                <li id="googleAuthBar"></li>
-                <li>
-                    <a href="/rss.xml" target="_blank">
-                        <img title="收取站点更新通知" class="navbar-icon" src='{{ static_url("image/rss.png") }}'/>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+{% module TopNav(index) %}
 <div><p></p></div>
 <div class="container">
     <div class="row">
         <div class="col-lg-3">
+            {% block sidebar %}
             <div><p></p></div>
-            {% if site['sidebars'] %}
-            <div class="well sidebar-nav">
-                {% for sb in site['sidebars'] %}
-                <ul class="nav">
-                    <li>{{sb.label}}</li>
-                    {% for url,label in sb.items%}
-                    <li class="warp"><a href="{{url}}" target="_blank">{{label}}</a></li>
-                    {% end %}
-                </ul>
-                {% end %}
-            </div>
-            {% end %}
-            <div id="datePicker"></div>
+            {% module NavBar(navItems)%}
             <br>
-            {{site['adLeft'] or ""}}
+            {% module Advert("left") %}
             <br/>
-            {% if site['tags'] %}
-            <div id="tagCanvasContainer">
-                <canvas id="tagCanvas" height="300px">
-                    <p>标签云</p>
-                </canvas>
-            </div>
-            <div id="tags">
-                <ul>
-                    {% for url,label in site['tags'] %}
-                    <li><a href="{{url}}" target="_blank">{{label}}</a></li>
-                    {% end %}
-                </ul>
-            </div>
+            {% module TagCloud(tagLinks)%}
             <br/>
-            {% end %}
-            <div>
-                <a href="/main" target="_blank">
-                    <img style="width: 250px" src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息"/>
-                </a>
-            </div>
+            {% module QrCode() %}
             <br/>
             {% block extra_sidebar %}{% end %}
+            {% end %}
         </div>
         <div class="col-lg-9">
             <div id="gl_root"></div>
             {% block main %}{% end %}
-            {{site['adMain'] or ""}}
+            {% module Advert("bottom")%}
         </div>
     </div>
     <hr>
@@ -143,62 +50,6 @@
 <script type="text/javascript" src='{{ static_url("3rd/jquery.tagcanvas.min.js") }}'></script>
 <script type="text/javascript" src='{{ static_url("3rd/bootstrap-3.0.3/js/bootstrap.min.js") }}'></script>
 <script type="text/javascript" src='{{ static_url("js/widgets.js") }}'></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("li#personalBar ul.dropdown-menu a").each(function () {
-            $(this).click(function () {
-                var id = $(this).attr("id");
-                <!--{%if is_login %}-->
-                if(id.indexOf('logout') < 0 || window.confirm("您确认要退出系统么？") ){
-                    window.location.href = id;
-                }
-                <!--{%else%}-->
-                new Ajax("gl_root", id);
-                <!--{%end%}-->
-            });
-        });
-
-        var dt = $("div#datePicker");
-        dt.datepicker({
-            onSelect: function (dateText) {
-                window.open("/calendar/" + dateText.split('-').join('/'));
-            }
-        });
-        dt.datepicker($.datepicker.regional[ "zh-CN" ]);
-
-        $("a#favorites").click(function () {
-            var ctrl = (navigator.userAgent.toLowerCase()).indexOf('mac') != -1 ? 'Command/Cmd' : 'CTRL';
-
-            if (document.all) {
-                window.external.addFavorite(location.href, document.title);
-
-            } else if (window.sidebar) {
-                window.sidebar.addPanel(location.href, document.title, "");
-            } else {
-                alert('添加失败\n您可以尝试通过快捷键' + ctrl + ' + D 加入到收藏夹~')
-            }
-
-        });
-        <!--{%if site['tags']%}-->
-        if (!$('#tagCanvas').tagcanvas({
-            textColour: '#00f',
-            textHeight: 25,
-            outlineColour: '#ff9999',
-            outlineThickness: 3,
-            pulsateTo: 0.2,
-            pulsateTime: 0.5,
-            wheelZoom: false,
-            reverse: true,
-            decel: 0.9,
-            depth: 0.8,
-            maxSpeed: 0.08,
-            minSpeed: 0.01,
-            shape: "sphere"
-        }, 'tags')) {
-            $("div#tagCanvasContainer").hide();
-        }
-        <!--{%end%}-->
-    });
-</script>
 {% block extra_script %}{% end %}
 </body>
+</html>

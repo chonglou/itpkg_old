@@ -1,25 +1,17 @@
 {% extends "layout.html" %}
 {% block extra_head %}
-        <style>
-            body{
-                padding-top: 10px;
-            }
-        </style>
+<style>
+    body {
+        padding-top: 10px;
+    }
+</style>
 {% end %}
 {% block body %}
 <div class="container">
-    {% module xsrf_form_html() %}
-    <div id="install"></div>
+    {% module Form(form) %}
     <hr>
     <footer>
         <p>&copy; 2014</p>
     </footer>
 </div>
-{% end %}
-{% block extra_script%}
-<script type="text/javascript">
-    $(document).ready(function () {
-        new Ajax("install", "/install", "PUT");
-    });
-</script>
 {% end %}

@@ -5,6 +5,19 @@ import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
 from brahma.store.site import UserDao, SettingDao
+from brahma.web import NavBar, Message
+
+
+class SelfHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        nv_self = NavBar("控制面板")
+        if self.is_admin():
+            nv_self.add("/admin/site", "站点设置")
+        nv_self.add("/personal/info", "个人信息")
+        nv_self.add("/personal/info", "日志列表")
+
+        return self.render_page("personal/self.html", index="/personal/self", title="用户中心", navBars=[nv_self])
 
 
 class ValidHandler(BaseHandler):
@@ -65,9 +78,8 @@ class ValidHandler(BaseHandler):
 class ActiveHandler(BaseHandler):
     def get(self):
         if self.check_non_login():
-            self.render("widgets/form.html",
-                        form=ActiveForm(fid="active", label="账户激活", action="/personal/active", captcha=True)
-            )
+            self.render_form_widget(
+                form=ActiveForm(fid="active", label="账户激活", action="/personal/active", captcha=True))
 
     def post(self):
         if self.check_non_login():
@@ -81,8 +93,8 @@ class ActiveHandler(BaseHandler):
                         if user:
                             if user.state == "SUBMIT":
                                 _send_active_email(email, user.username)
-                                self.render_message_widget(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"],
-                                                           goto="/main")
+                                self.render_message_widget(Message(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"],
+                                                                   goto="/main"))
                                 return
                             else:
                                 messages.append("用户[%s]状态不对" % email)
@@ -94,15 +106,14 @@ class ActiveHandler(BaseHandler):
                     messages.append(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(ok=False, messages=messages)
+            self.render_message_widget(Message(messages=messages))
 
 
 class ResetPwdHandler(BaseHandler):
     def get(self):
         if self.check_non_login():
-            self.render("widgets/form.html",
-                        form=ResetPwdForm(fid="resetPwd", label="重置密码", action="/personal/resetPwd", captcha=True)
-            )
+            self.render_form_widget(
+                form=ResetPwdForm(fid="resetPwd", label="重置密码", action="/personal/resetPwd", captcha=True))
 
     def post(self):
         if self.check_non_login():
@@ -114,8 +125,10 @@ class ResetPwdHandler(BaseHandler):
                     user = UserDao.get_by_email(email)
                     if user and user.state == "ENABLE":
                         from brahma.env import encrypt
+
                         _send_valid_email("resetPwd", email, user.username, "重置密码", (user.id, fm.password.data))
-                        self.render_message_widget(ok=True, goto="/main", messages=["重置密码申请提交成功", "请进入邮箱点击链接生效"])
+                        self.render_message_widget(
+                            Message(ok=True, goto="/main", messages=["重置密码申请提交成功", "请进入邮箱点击链接生效"]))
                         return
                     else:
                         messages.append("用户[%s]状态不对" % email)
@@ -123,15 +136,14 @@ class ResetPwdHandler(BaseHandler):
                     messages.extend(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(ok=False, messages=messages)
+            self.render_message_widget(Message(messages=messages))
 
 
 class RegisterHandler(BaseHandler):
     def get(self):
         if self.check_non_login():
-            self.render("widgets/form.html",
-                        form=RegisterForm(fid="register", label="账户注册", action="/personal/register", captcha=True)
-            )
+            self.render_form_widget(
+                form=RegisterForm(fid="register", label="账户注册", action="/personal/register", captcha=True))
 
     def post(self):
         if self.check_non_login():
@@ -146,7 +158,8 @@ class RegisterHandler(BaseHandler):
                         if not user:
                             UserDao.add_user("email", username=username, email=email, password=fm.password.data)
                             _send_active_email(email, username)
-                            self.render_message_widget(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"], goto="/main")
+                            self.render_message_widget(
+                                Message(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"], goto="/main"))
                             return
                         else:
                             messages.append("邮箱[%s]已存在" % email)
@@ -156,17 +169,17 @@ class RegisterHandler(BaseHandler):
                     messages.append(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(ok=False, messages=messages)
+            self.render_message_widget(Message(messages=messages))
 
 
 def _send_valid_email(flag, email, username, action, args):
     domain = SettingDao.get("site.domain")
     title = SettingDao.get("site.title")
     linkValid = SettingDao.get("site.link.valid")
+
     from brahma.jobs import TaskSender
     from brahma.env import encrypt
     import datetime
-
 
     url = "http://%s/personal/valid?code=%s" % (domain, encrypt.encode(
         (flag,
@@ -183,7 +196,6 @@ def _send_valid_email(flag, email, username, action, args):
     )
 
 
-
 def _send_active_email(email, username):
     _send_valid_email("active", email, username, "账户激活", email)
 
@@ -191,10 +203,7 @@ def _send_active_email(email, username):
 class LoginHandler(BaseHandler):
     def get(self):
         if self.check_non_login():
-            self.render(
-                "widgets/form.html",
-                form=LoginForm(fid="login", label="欢迎登录", action="/personal/login", captcha=True)
-            )
+            self.render_form_widget(form=LoginForm(fid="login", label="欢迎登录", action="/personal/login", captcha=True))
 
     def post(self):
         if self.check_non_login():
@@ -210,7 +219,7 @@ class LoginHandler(BaseHandler):
                                 "logo": user.logo,
                                 "username": user.username,
                             })
-                            self.render_message_widget(ok=True, goto="/main")
+                            self.render_message_widget(Message(ok=True, goto="/main"))
                             return
                         else:
                             messages.append("账户未激活，或被禁用。")
@@ -220,7 +229,7 @@ class LoginHandler(BaseHandler):
                     messages.extend(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(ok=False, messages=messages)
+            self.render_message_widget(Message(messages=messages))
 
 
 class LogoutHandler(BaseHandler):
@@ -231,6 +240,7 @@ class LogoutHandler(BaseHandler):
 
 
 handlers = [
+    (r"/personal/self", SelfHandler),
     (r"/personal/valid", ValidHandler),
     (r"/personal/active", ActiveHandler),
     (r"/personal/resetPwd", ResetPwdHandler),

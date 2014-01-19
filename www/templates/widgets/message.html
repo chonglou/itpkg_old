@@ -1,39 +1,25 @@
-{% block main %}
 <div id="msgModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">
-                    {% if ok%}操作成功{% else %}操作失败{% end %}
+                    {% if msg.ok %}操作成功{% else %}操作失败{% end %}
                 </h4>
             </div>
             <div class="modal-body">
-                {% for msg in messages %}
-                <p>{{msg}}</p>
+                {% for m in msg.messages %}
+                <p>{{m}}</p>
                 {% end %}
             </div>
             <div class="modal-footer">
-                {% if ok and confirm %}
+                {% if msg.confirm %}
                 <a class="btn btn-default" data-dismiss="modal">取消</a>
                 <a class="btn btn-primary">继续</a>
                 {% else %}
-                <button id="btn-ok" class="btn btn-primary" data-dismiss="modal">确定</button>
+                <button id="msgModal-btn-ok" class="btn btn-primary" data-dismiss="modal">确定</button>
                 {% end %}
             </div>
         </div>
     </div>
 </div>
-{%end%}
-{% block extra_script %}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('div#msgModal').modal({keyboard: false});
-        <!--{% if goto %}-->
-        $("button#btn-ok").click(function(){
-           window.location.href="{{goto}}";
-        });
-        <!--{% end %}-->
-    });
-</script>
-{% end %}

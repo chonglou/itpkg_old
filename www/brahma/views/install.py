@@ -8,14 +8,7 @@ from brahma.store.site import SettingDao
 from brahma.forms.site import InstallForm
 from brahma.models import Setting, User
 from brahma.env import cache
-
-
-def get_site_info():
-    return {
-        "title": "", "keywords": "", "description": "", "domain": "",
-        "sidebars": [], "tags": [], "topLinks": [],
-        "adLeft": "left", "adMain": "main",
-    }
+from brahma.web import Message
 
 
 class InstallHandler(tornado.web.RequestHandler):
@@ -23,20 +16,25 @@ class InstallHandler(tornado.web.RequestHandler):
         v = SettingDao.get("site.version")
         if v:
             cache.set("site/version", val=v)
-            self.render("message.html",
-                        title="提示信息", site=get_site_info(), is_login=False, index=None,
-                        ok=True, confirm=None, messages=["已经安装"], goto="/main")
+            self.redirect("/main")
             return False
         return True
 
+    def __render_page(self, page, title, **kwargs):
+        self.render(page, title=title, navItems=list(), tagLinks=list(), index=None, is_login=False, **kwargs)
+
+    def __render_message(self, msg):
+        from brahma.widgets import Message
+
+        m = Message(self)
+        self.write(m.render(msg=msg))
+        self.write('<script type="text/javascript">')
+        self.write(m.embedded_javascript())
+        self.write('</script>')
+
     def get(self):
         if self.__check():
-            self.render("install.html", title="初始化安装", site=get_site_info(), index=None, is_login=False)
-
-    def put(self):
-        if self.__check():
-            form = InstallForm("install", "初始化安装", "/install", captcha=True)
-            self.render("widgets/form.html", form=form)
+            self.__render_page("install.html", "初始化安装", form=InstallForm("install", "初始化安装", "/install", captcha=True))
 
     def post(self):
         if self.__check():
@@ -81,14 +79,17 @@ class InstallHandler(tornado.web.RequestHandler):
                         session.add(Setting("site.version", pickle.dumps("v20140112")))
 
                     install()
+                    from brahma.env import cache
 
-                    self.render("widgets/message.html", ok=True, confirm=False, messages=["请刷新页面"], goto="/main")
+                    cache.pop("site/title")
+                    cache.pop("site/info")
+                    self.__render_message(Message(ok=True, messages=["请刷新页面"], goto="/main"))
                     return
                 messages.append("验证码不对")
             else:
                 messages.extend(form.messages())
 
-            self.render("widgets/message.html", ok=False, confirm=False, messages=messages, goto=None)
+            self.__render_message(Message(messages=messages))
 
 
 handlers = [

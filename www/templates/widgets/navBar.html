@@ -1,0 +1,20 @@
+{% if navBars %}
+<div id="navBar" class="well sidebar-nav">
+    {% for nb in navBars %}
+    <ul class="nav">
+        <li>{{nb.label}}</li>
+        {% for url,label in nb.items%}
+        <li class="warp">
+            {% if ajax %}
+            <a href="#" id="nav-{{url}}">{{label}}</a>
+            {% else %}
+            <a href="{{url}}" target="_blank">{{label}}</a>
+            {% end %}
+        </li>
+        {% end %}
+    </ul>
+    {% end %}
+</div>
+{% end %}
+
+
