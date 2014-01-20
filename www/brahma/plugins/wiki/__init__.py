@@ -1,6 +1,6 @@
 __author__ = 'zhengjitang@gmail.com'
 
-NAME = "文章列表"
+NAME = "知识库"
 
 
 def search(keyword):

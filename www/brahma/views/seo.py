@@ -40,20 +40,23 @@ class SitemapHandler(tornado.web.RequestHandler):
             """
             更新频率：yearly daily, monthly, hourly, weekly
             """
-            import io
-            import datetime
+            import io, datetime, importlib, tornado.options
 
             sitemap = io.StringIO()
             sitemap.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             sitemap.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
             domain = SettingDao.get("site.domain")
             init = SettingDao.get("site.init")
-            #FIXME
-            for loc, lastmod, changefreq, priority in [
-                ("main", datetime.datetime.now(), "daily", 1.0),
-                ("aboutMe", init, "yearly", 0.9),
-                ("help", init, "yearly", 0.9),
-            ]:
+
+            items = list()
+            items.append(("main", datetime.datetime.now(), "daily", 1.0))
+            items.append(("aboutMe", init, "yearly", 0.9))
+            items.append(("help", init, "yearly", 0.9))
+
+            map(lambda rs: items.extend(rs),
+                map(lambda name: importlib.import_module("brahma.plugins." + name).sitemap(),
+                    tornado.options.options.app_plugins))
+            for loc, lastmod, changefreq, priority in items:
                 sitemap.write('\t<url>\n')
                 sitemap.write('\t\t<loc>http://%s/%s</loc>\n' % (domain, loc))
                 sitemap.write('\t\t<lastmod>%s</lastmod>\n' % lastmod.isoformat())
@@ -72,7 +75,7 @@ class RssHandler(tornado.web.RequestHandler):
     def get(self):
         @cache_call("rss.xml")
         def get_rss():
-            import io
+            import io, importlib, tornado.options
 
             domain = SettingDao.get("site.domain")
             init = SettingDao.get("site.init")
@@ -85,11 +88,14 @@ class RssHandler(tornado.web.RequestHandler):
             rss.write('\t\t<link>http://%s</link>\n' % domain)
             rss.write('\t\t<description>%s</description>\n' % SettingDao.get("site.description"))
 
-            #FIXME
-            for title, link, description, pubDate in [
-                ("关于我们", "aboutMe", SettingDao.get("site.aboutMe"), init),
-                ("帮助文档", "help", SettingDao.get("site.help"), init),
-            ]:
+            items = list()
+            items.append(("关于我们", "aboutMe", SettingDao.get("site.aboutMe"), init))
+            items.append(("帮助文档", "help", SettingDao.get("site.help"), init))
+            map(lambda rs: items.extend(rs),
+                map(lambda name: importlib.import_module("brahma.plugins." + name).rss(),
+                    tornado.options.options.app_plugins))
+
+            for title, link, description, pubDate in items:
                 link = "http://%s/%s" % (domain, link)
                 rss.write('\t\t<item>\n')
                 rss.write('\t\t\t<title>%s</title>\n' % title)

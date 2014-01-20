@@ -5,6 +5,8 @@ app_secret需要16位
 
 密钥可以使用"pwgen -n 16"生成
 
+需要中文字体文件在tmp/font.ttc(验证码需要)
+
 启动：
 python app start
 

@@ -77,8 +77,28 @@ class TopNav(tornado.web.UIModule):
             links.append(("/aboutMe", "关于我们"))
             return links
 
-        return self.render_string("widgets/topNav.html", index=index, title=get_title(), user=self.current_user,
-                                  links=get_top_links())
+        def get_self_links():
+            import tornado.options, importlib
+
+            links = list()
+            if self.current_user:
+                #FIXME 站点信息
+                links.append(("/personal/self", "个人信息"))
+                links.extend(map(lambda name: ("/personal/" + name, importlib.import_module("brahma.plugins." + name).NAME),
+                                 tornado.options.options.app_plugins))
+                links.append(("/personal/logout", "安全退出"))
+            else:
+                links.append(("/personal/login", "用户登录"))
+                links.append(("/personal/register", "账户注册"))
+                links.append(("/personal/active", "账户激活"))
+                links.append(("/personal/resetPwd", "重置密码"))
+
+            return links
+
+
+        return self.render_string("widgets/topNav.html", index=index, title=get_title(),
+                                  selfLinks=get_self_links(), isLogin=self.current_user is not None,
+                                  topLinks=get_top_links())
 
 
 class DatePicker(tornado.web.UIModule):

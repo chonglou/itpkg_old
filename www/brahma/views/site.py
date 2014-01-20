@@ -14,8 +14,15 @@ class MainHandler(BaseHandler):
 
 class SearchHandler(BaseHandler):
     def post(self):
+        import tornado.options, importlib
+
         keyword = self.get_argument("keyword")
-        #FIXME
+        items = list()
+        map(lambda rs: items.append(rs),
+            map(
+                lambda name: importlib.import_module("brahma.plugins." + name).search(keyword),
+                tornado.options.options.app_plugins))
+
         self.render_page("search.html", title="搜索[%s]" % keyword, keyword=keyword, items=[])
 
 

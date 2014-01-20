@@ -9,7 +9,7 @@ from brahma.web import Message
 class PageNotFoundHandler(tornado.web.RequestHandler):
     def get(self):
         #raise tornado.web.HTTPError(404)
-        self.render("message.html", msg=Message(messages=["资源不存在"], goto="/main"), )
+        self.render("message.html", title="出错了",  msg=Message(messages=["资源不存在"], goto="/main"), )
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -68,7 +68,7 @@ class BaseHandler(tornado.web.RequestHandler):
         #super(tornado.web.RequestHandler, self).write_error(status_code, **kwargs)
 
     def render_message(self, title, ok=None, confirm=None, messages=list(), goto=None):
-        self.render("message.html", msg=Message(title=title, ok=ok, confirm=confirm, messages=messages, goto=goto))
+        self.render("message.html", title=title, msg=Message(ok=ok, confirm=confirm, messages=messages, goto=goto))
 
     def render_page(self, template_name, title, index=None, **kwargs):
 
@@ -87,8 +87,14 @@ class BaseHandler(tornado.web.RequestHandler):
 
         @cache_call("tagCloud")
         def get_tag_cloud():
-            #FIXME
-            return [("http://" + SettingDao.get("site.domain"), SettingDao.get("site.title"))]
+            import importlib, tornado.options
+            items = list()
+            items.append(("http://" + SettingDao.get("site.domain"), SettingDao.get("site.title")))
+
+            map(lambda rs: items.extend(rs),
+                map(lambda name: importlib.import_module("brahma.plugins." + name).rss(),
+                    tornado.options.options.app_plugins))
+            return items
 
         if "tagLinks" not in kwargs:
             kwargs['tagLinks'] = get_tag_cloud()
