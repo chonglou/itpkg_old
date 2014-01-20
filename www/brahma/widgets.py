@@ -84,8 +84,9 @@ class TopNav(tornado.web.UIModule):
             if self.current_user:
                 #FIXME 站点信息
                 links.append(("/personal/self", "个人信息"))
-                links.extend(map(lambda name: ("/personal/" + name, importlib.import_module("brahma.plugins." + name).NAME),
-                                 tornado.options.options.app_plugins))
+                links.extend(
+                    map(lambda name: ("/personal/" + name, importlib.import_module("brahma.plugins." + name).NAME),
+                        tornado.options.options.app_plugins))
                 links.append(("/personal/logout", "安全退出"))
             else:
                 links.append(("/personal/login", "用户登录"))

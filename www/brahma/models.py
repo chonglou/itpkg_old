@@ -9,6 +9,37 @@ from sqlalchemy import Column, Integer, String, DateTime, Sequence, LargeBinary,
 Base = declarative_base()
 
 
+class Permission(Base):
+    __tablename__ = "rbacs"
+    id = Column(Integer, Sequence('rbac_id_seq'), primary_key=True)
+    resource = Column(String(255), name="resource", nullable=False)
+    role = Column(String(255), nullable=False)
+    operation = Column(String(255), nullable=False)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    begin = Column(DateTime, nullable=False)
+    end = Column(DateTime, nullable=False)
+
+    def __init__(self, role, operation, resource, begin, end):
+        self.resource = resource
+        self.role = role
+        self.operation = operation
+        self.begin = begin
+        self.end = end
+
+
+class FriendLink(Base):
+    __tablename__ = "friend_links"
+    id = Column(Integer, Sequence('rbac_id_seq'), primary_key=True)
+    url = Column(String(255), nullable=False, unique=True)
+    logo = Column(String(255))
+    title = Column(String(255), nullable=False)
+
+    def __init__(self, url, logo, title):
+        self.url = url
+        self.logo = logo
+        self.title = title
+
+
 class Setting(Base):
     __tablename__ = "settings"
     key = Column(String(255), name="kkk", primary_key=True)
@@ -32,7 +63,7 @@ class Log(Base):
     flag = Column(String(8), nullable=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
-    def __init__(self, message, user=None, flag="info"):
+    def __init__(self, message, user, flag):
         self.message = message
         self.user = user
         self.flag = flag

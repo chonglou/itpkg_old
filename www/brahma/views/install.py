@@ -6,7 +6,7 @@ import tornado.web
 
 from brahma.store.site import SettingDao
 from brahma.forms.site import InstallForm
-from brahma.models import Setting, User
+from brahma.models import Setting, User,Log
 from brahma.env import cache
 from brahma.web import Message
 
@@ -77,6 +77,7 @@ class InstallHandler(tornado.web.RequestHandler):
                         session.add(Setting("site.link.valid", pickle.dumps(24)))
 
                         session.add(Setting("site.version", pickle.dumps("v20140112")))
+                        session.add(Log(user=user.id, flag="INFO", message="初始化系统"))
 
                     install()
                     from brahma.env import cache

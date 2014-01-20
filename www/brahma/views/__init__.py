@@ -9,7 +9,7 @@ from brahma.web import Message
 class PageNotFoundHandler(tornado.web.RequestHandler):
     def get(self):
         #raise tornado.web.HTTPError(404)
-        self.render("message.html", title="出错了",  msg=Message(messages=["资源不存在"], goto="/main"), )
+        self.render("message.html", title="出错了", msg=Message(messages=["资源不存在"], goto="/main"), )
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -88,6 +88,7 @@ class BaseHandler(tornado.web.RequestHandler):
         @cache_call("tagCloud")
         def get_tag_cloud():
             import importlib, tornado.options
+
             items = list()
             items.append(("http://" + SettingDao.get("site.domain"), SettingDao.get("site.title")))
 

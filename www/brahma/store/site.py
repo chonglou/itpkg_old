@@ -2,8 +2,15 @@ __author__ = 'zhengjitang@gmail.com'
 
 import pickle
 from sqlalchemy.orm.exc import NoResultFound
-from brahma.models import Setting, User
+from brahma.models import Setting, User, Log
 from brahma.env import encrypt as _encrypt, db_call
+
+
+class LogDao:
+    @staticmethod
+    @db_call
+    def add_log(message, flag="INFO", user=None, session=None):
+        session.add(Log(message=message, flag=flag, user=user))
 
 
 class UserDao:
