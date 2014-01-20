@@ -14,7 +14,7 @@ class WikiDao:
     @db_call
     def get_wiki(name, session=None):
         try:
-            return session.query(Wiki).filter(Wiki.name==name).one()
+            return session.query(Wiki).filter(Wiki.name == name).one()
         except NoResultFound:
             return None
 
@@ -27,7 +27,7 @@ class WikiDao:
     @staticmethod
     @db_call
     def set_wiki(name, title, body, session=None):
-        w = session.query(Wiki).filter(Wiki.name==name).one()
+        w = session.query(Wiki).filter(Wiki.name == name).one()
         w.title = title
         w.body = body
         w.lastEdit = datetime.datetime.now()
@@ -37,7 +37,7 @@ class WikiDao:
     @db_call
     def del_wiki(name, session=None):
         try:
-            w = session.query(Wiki).filter(Wiki.name==name).one()
+            w = session.query(Wiki).filter(Wiki.name == name).one()
         except NoResultFound:
             logging.error("知识库[%s]不存在" % name)
             return
@@ -45,6 +45,8 @@ class WikiDao:
 
     @staticmethod
     @db_call
-    def list_wiki(begin, end, session=None):
-        return map(lambda w:("/wiki/%s"%w.name, w.title), session.query(Wiki).filter(Wiki.created >= begin, Wiki.created <= end).all())
+    def list_wiki(begin, end, author=None, session=None):
+        if author:
+            return session.query(Wiki).filter(Wiki.author==author, Wiki.created >= begin, Wiki.created <= end).all()
+        return session.query(Wiki).filter(Wiki.created >= begin, Wiki.created <= end).order_by(Wiki.created.desc()).all()
 

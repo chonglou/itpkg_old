@@ -1,7 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
-from brahma.env import cache
+from brahma.cache import get_site_info
 from brahma.store.site import SettingDao
 from brahma.web import Message
 
@@ -14,8 +14,7 @@ class PageNotFoundHandler(tornado.web.RequestHandler):
 
 class BaseHandler(tornado.web.RequestHandler):
     def is_admin(self):
-        #FIXME
-        return True
+        return self.current_user and self.current_user["admin"]
 
     def check_non_login(self):
         if self.get_current_user():
@@ -43,12 +42,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.write('</script>')
 
     def prepare(self):
-        if not cache.get("site/version"):
-            v = SettingDao.get("site.version")
-            if v:
-                cache.set("site/version", v)
-            else:
-                self.redirect("/install")
+        if not get_site_info("version"):
+            self.redirect("/install")
 
     #def _handle_request_exception(self, e):
     #    self.render_message(ok=False, messages=[e], goto="/main")
@@ -72,9 +67,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def render_page(self, template_name, title, index=None, **kwargs):
 
-        from brahma.env import cache_call
+        from brahma.env import cache
 
-        @cache_call("nav/cal")
+        @cache.cache("nav/cal", expire=3600 * 24)
         def get_nav_cal():
             from brahma.web import NavBar
             from brahma.utils.time import last_months
@@ -85,7 +80,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
             return nv_cal
 
-        @cache_call("tagCloud")
+        @cache.cache("tagCloud", expire=3600 * 24)
         def get_tag_cloud():
             import importlib, tornado.options
 

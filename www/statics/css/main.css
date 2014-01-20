@@ -30,4 +30,8 @@ body {
     word-break: break-all;
 }
 
-.fall-item { margin-bottom: 20px; }
+.fall-item {
+    margin-bottom: 20px;
+    word-warp:break-word;
+    word-break:break-all;
+}

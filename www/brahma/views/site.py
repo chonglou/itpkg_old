@@ -3,8 +3,6 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.store.site import SettingDao
-from brahma.env import cache_call
 
 
 class MainHandler(BaseHandler):
@@ -18,45 +16,40 @@ class SearchHandler(BaseHandler):
 
         keyword = self.get_argument("keyword")
         items = list()
-        map(lambda rs: items.extend(rs),
-            map(
-                lambda name: importlib.import_module("brahma.plugins." + name).search(keyword),
-                tornado.options.options.app_plugins))
-
+        for p in tornado.options.options.app_plugins:
+            items.extend(importlib.import_module("brahma.plugins." + p).search(keyword))
         self.render_page("search.html", title="搜索[%s]" % keyword, keyword=keyword, items=[])
 
 
 class HelpHandler(BaseHandler):
     def get(self):
-        @cache_call("site/help")
-        def get_help():
-            return SettingDao.get("site.help")
+        from brahma.cache import get_site_info
 
-        self.render_page("template.html", index="/help", title="帮助文档", content=get_help())
+        self.render_page("template.html", index="/help", title="帮助文档", content=get_site_info("help"))
 
 
 class AboutMeHandler(BaseHandler):
     def get(self):
-        @cache_call("site/aboutMe")
-        def get_aboutMe():
-            return SettingDao.get("site.aboutMe")
+        from brahma.cache import get_site_info
 
-        self.render_page("template.html", index="/aboutMe", title="关于我们", content=get_aboutMe())
+        self.render_page("template.html", index="/aboutMe", title="关于我们", content=get_site_info("aboutMe"))
 
 
 class CalendarHandler(BaseHandler):
     def get(self, year, month, day=None):
+        year = int(year)
+        month = int(month)
+        day = int(day) if day else None
+
         import tornado.options, importlib
 
         items = list()
-        map(lambda rs: items.extend(rs),
-            map(
-                lambda name: importlib.import_module("brahma.plugins." + name).calendar(year, month, day),
-                tornado.options.options.app_plugins))
+        for p in tornado.options.options.app_plugins:
+            items.extend(importlib.import_module("brahma.plugins." + p).calendar(year, month, day))
 
         self.render_page(
             "calendar.html",
-            title="%s年%s月%s日" % (year, month, day) if day else "%s年%s月" % (year, month),
+            title="%04d年%02d月%02d日" % (year, month, day) if day else "%04d年%02d月" % (year, month),
             items=items)
 
 

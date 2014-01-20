@@ -1,7 +1,8 @@
 __author__ = 'zhengjitang@gmail.com'
 
+from wtforms import validators, TextField, TextAreaField
+
 from brahma.web import Form
-from wtforms import validators,TextField,TextAreaField,HiddenField
 
 
 class WikiForm(Form):

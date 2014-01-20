@@ -4,18 +4,16 @@ import datetime
 
 import tornado.web
 
-from brahma.store.site import SettingDao
 from brahma.forms.site import InstallForm
 from brahma.models import Setting, User, Log, Permission
-from brahma.env import cache
 from brahma.web import Message
 
 
 class InstallHandler(tornado.web.RequestHandler):
     def __check(self):
-        v = SettingDao.get("site.version")
-        if v:
-            cache.set("site/version", val=v)
+        from brahma.cache import get_site_info
+
+        if get_site_info("version"):
             self.redirect("/main")
             return False
         return True
@@ -83,10 +81,11 @@ class InstallHandler(tornado.web.RequestHandler):
                                                datetime.datetime.max))
 
                     install()
-                    from brahma.env import cache
 
-                    cache.pop("site/title")
-                    cache.pop("site/info")
+                    from brahma.cache import get_site_info
+
+                    for s in ["title", "description", "keywords", "version"]:
+                        get_site_info(s, True)
                     self.__render_message(Message(ok=True, messages=["请刷新页面"], goto="/main"))
                     return
                 messages.append("验证码不对")

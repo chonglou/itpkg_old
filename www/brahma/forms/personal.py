@@ -2,14 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 from wtforms import TextField, validators, PasswordField
 from brahma.web import Form, AgreementField
-from brahma.env import cache_call
-
-
-@cache_call("site/protocol")
-def get_protocol():
-    from brahma.store.site import SettingDao
-
-    return SettingDao.get("site.protocol")
+from brahma.cache import get_site_info
 
 
 class LoginForm(Form):
@@ -23,12 +16,12 @@ class RegisterForm(Form):
     password = PasswordField("登录密码",
                              validators=[validators.Required(), validators.EqualTo("rePassword")])
     rePassword = PasswordField("再输一次")
-    agree = AgreementField(get_protocol())
+    agree = AgreementField(get_site_info("protocol"))
 
 
 class ActiveForm(Form):
     email = TextField("电子邮箱", validators=[validators.Required(), validators.Email()])
-    agree = AgreementField(get_protocol())
+    agree = AgreementField(get_site_info("protocol"))
 
 
 class ResetPwdForm(Form):

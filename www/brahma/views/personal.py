@@ -214,10 +214,13 @@ class LoginHandler(BaseHandler):
                     user = UserDao.auth("email", email=fm.email.data, password=fm.password.data)
                     if user:
                         if user.state == "ENABLE":
+                            from brahma.store.rbac import RbacDao
+
                             self.set_current_user({
                                 "id": user.id,
                                 "logo": user.logo,
                                 "username": user.username,
+                                "admin": RbacDao.auth4admin(user.id),
                             })
                             self.render_message_widget(Message(ok=True, goto="/main"))
                             return

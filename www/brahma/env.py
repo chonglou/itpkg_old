@@ -4,16 +4,29 @@ import logging
 
 import tornado.options
 
-from brahma.utils.cache import Beaker
 from brahma.utils.encrypt import Encrypt
 from brahma.utils.redis import Redis
 from brahma.store import Database
 
 encrypt = Encrypt(tornado.options.options.app_secret)
 
+
+def _get_cache(path):
+    opts = {
+        'cache.type': 'file',
+        'cache.data_dir': path + "/cache/data",
+        'cache.lock_dir': path + "/cache/lock",
+    }
+    from beaker.cache import CacheManager
+    from beaker.util import parse_cache_config_options
+
+    return CacheManager(**parse_cache_config_options(opts))
+
+
+cache = _get_cache(tornado.options.options.app_store)
+
+"""
 cache = Beaker(tornado.options.options.app_name, tornado.options.options.app_store)
-
-
 def cache_call(key):
     def _decorator(func):
         def __decorator(*args, **kwargs):
@@ -27,7 +40,7 @@ def cache_call(key):
         return __decorator
 
     return _decorator
-
+"""
 
 _db = Database(
     tornado.options.options.db_uri,

@@ -1,0 +1,60 @@
+<div id="wiki-root"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        知识库列表
+        <input type="text" id="name">
+
+        <div class="btn-group btn-group-sm">
+            <button id="add" class="btn btn-success">新建页面</button>
+            <button id="refresh" class="btn btn-info">刷新列表</button>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>标题</td>
+            <td>创建日期</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for w in items %}
+        <tr>
+            <td>{{w.name}}</td>
+            <td>{{w.title}}</td>
+            <td>{{w.created}}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button id="/wiki/{{w.name}}-PUT" class="btn btn-primary">编辑</button>
+                    <button id="/wiki/{{w.name}}-DELETE" class="btn btn-danger">删除</button>
+                </div>
+            </td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("button#refresh").click(function () {
+            new Ajax("gl_root", "/personal/wiki");
+        });
+        $("button#add").click(function () {
+            var name = $("input#name").val();
+            if (name == undefined || name.trim() == "") {
+                alert("请输入名称");
+            }
+            else {
+                new Ajax("wiki-root", "/wiki/" + name.trim(), "PUT");
+            }
+        });
+        $("button[id^='/wiki/']").click(function () {
+            var ss = $(this).attr("id").split('-');
+            if (ss[1] != "DELETE" || confirm("你确定要删除此项么？")) {
+                new Ajax("wiki-root", ss[0], ss[1]);
+            }
+        });
+    });
+</script>

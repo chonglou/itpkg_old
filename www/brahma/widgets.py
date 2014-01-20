@@ -1,12 +1,13 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
-from brahma.env import cache_call
+from brahma.env import cache
+
 
 class FallCard(tornado.web.UIModule):
     def embedded_javascript(self):
         return js_ready("""
-            $('div#fall-container').masonry({
+            $('div#fall-container-card').masonry({
                 itemSelector: '.fall-item'
             });
         """)
@@ -16,6 +17,13 @@ class FallCard(tornado.web.UIModule):
 
 
 class FallLink(tornado.web.UIModule):
+    def embedded_javascript(self):
+        return js_ready("""
+            $('div#fall-container-link').masonry({
+                itemSelector: '.fall-item'
+            });
+        """)
+
     def render(self, items):
         return self.render_string("widgets/fallLink.html", items=items)
 
@@ -23,7 +31,7 @@ class FallLink(tornado.web.UIModule):
 class ButtonGroup(tornado.web.UIModule):
     def embedded_javascript(self):
         return """
-        $("div.btn-group button").each(function () {
+            $("div.btn-group button").each(function () {
                 $(this).click(function () {
                     var ss = $(this).attr("id").split('-');
                     if(ss[1]!="DELETE" || confirm("你确定要删除此项么？")){
@@ -33,36 +41,36 @@ class ButtonGroup(tornado.web.UIModule):
             });
         """ % self.div
 
-    def render(self,div, items):
+    def render(self, div, items):
         self.div = div
         return '<div class="btn-group">%s</div>' % ''.join(
-            map(lambda item : '<button id="%s-%s" type="button" class="btn btn-%s">%s</button>' % item,
+            map(lambda item: '<button id="%s-%s" type="button" class="btn btn-%s">%s</button>' % item,
                 items))
 
 
 class Head(tornado.web.UIModule):
     def render(self, title=None):
-        @cache_call("site/info")
-        def get_site():
-            from brahma.store.site import SettingDao
-
-            return SettingDao.get("site.description") or "", SettingDao.get("site.keywords") or "", SettingDao.get(
-                "site.title") or ""
+        from brahma.cache import get_site_info
 
         return """
             <meta name="description" content="%s"/>
             <meta name="keywords" content="%s"/>
             <meta name="author" content="zhengjitang@gmail.com">
             <title>%s</title>
-            """ % get_site()
+            """ % (get_site_info("description") or "", get_site_info("keywords") or "", get_site_info("title") or "")
 
 
 class TopNav(tornado.web.UIModule):
     def embedded_javascript(self):
         if self.current_user:
             click = """
-                if(id.indexOf('logout') < 0 || window.confirm("您确认要退出系统么？") ){
-                    window.location.href = id;
+                if(id.indexOf('logout') < 0){
+                    new Ajax("gl_root", id);
+                }
+                else{
+                    if(window.confirm("您确认要退出系统么？")){
+                        window.location.href = id;
+                    }
                 }
             """
         else:
@@ -95,13 +103,8 @@ class TopNav(tornado.web.UIModule):
         if not index:
             index = "/main"
 
-        @cache_call("site/title")
-        def get_title():
-            from brahma.store.site import SettingDao
 
-            return SettingDao.get("site.title")
-
-        @cache_call("site/topLinks")
+        @cache.cache("site/topLinks", expire=3600 * 24)
         def get_top_links():
             import tornado.options, importlib
 
@@ -118,9 +121,7 @@ class TopNav(tornado.web.UIModule):
 
             links = list()
             if self.current_user:
-                from brahma.store.site import RbacDao
-
-                if RbacDao.auth4admin(self.current_user["id"]):
+                if self.current_user["admin"]:
                     links.append(("/personal/site", "站点参数"))
                 links.append(("/personal/self", "个人信息"))
                 links.extend(
@@ -135,9 +136,10 @@ class TopNav(tornado.web.UIModule):
 
             return links
 
+        from brahma.cache import get_site_info
 
-        return self.render_string("widgets/topNav.html", index=index, title=get_title(),
-                                  selfLinks=get_self_links(), isLogin=self.current_user is not None,
+        return self.render_string("widgets/topNav.html", index=index, title=get_site_info("title"),
+                                  selfLinks=get_self_links(), user=self.current_user,
                                   topLinks=get_top_links())
 
 
@@ -200,11 +202,7 @@ class QrCode(tornado.web.UIModule):
 
 class Advert(tornado.web.UIModule):
     def embedded_javascript(self):
-        @cache_call("site/advert/" + self.name)
-        def get_advert(name):
-            from brahma.store.site import SettingDao
-
-            return SettingDao.get("site.advert." + name)
+        from brahma.cache import get_advert
 
         return get_advert(self.name)
 

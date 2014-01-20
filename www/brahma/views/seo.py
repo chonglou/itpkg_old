@@ -3,39 +3,20 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 import tornado.options
 from brahma.store.site import SettingDao
-from brahma.env import cache_call
+from brahma.env import cache
 
 
 class QrCodeHandler(tornado.web.RequestHandler):
     def get(self):
-        @cache_call("site.png")
-        def get_qr():
-            import qrcode
-
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.ERROR_CORRECT_L,
-                #box_size=10,
-                border=1,
-            )
-
-            qr.add_data("<a href='http://%s'>%s</a>" % (SettingDao.get("site.domain"), SettingDao.get("site.title")))
-            qr.make(fit=True)
-
-            import io
-
-            buf = io.BytesIO()
-            img = qr.make_image()
-            img.save(buf, "PNG")
-            return buf.getvalue()
+        from brahma.cache import get_qr_png
 
         self.set_header("Content-Type", "image/png")
-        self.write(get_qr())
+        self.write(get_qr_png())
 
 
 class SitemapHandler(tornado.web.RequestHandler):
     def get(self):
-        @cache_call("sitemap.xml")
+        @cache.cache("sitemap.xml", expire=3600 * 24)
         def get_sitemap():
             """
             更新频率：yearly daily, monthly, hourly, weekly
@@ -53,9 +34,8 @@ class SitemapHandler(tornado.web.RequestHandler):
             items.append(("aboutMe", init, "yearly", 0.9))
             items.append(("help", init, "yearly", 0.9))
 
-            map(lambda rs: items.extend(rs),
-                map(lambda name: importlib.import_module("brahma.plugins." + name).sitemap(),
-                    tornado.options.options.app_plugins))
+            for p in tornado.options.options.app_plugins:
+                items.extend(importlib.import_module("brahma.plugins." + p).sitemap())
             for loc, lastmod, changefreq, priority in items:
                 sitemap.write('\t<url>\n')
                 sitemap.write('\t\t<loc>http://%s/%s</loc>\n' % (domain, loc))
@@ -73,7 +53,7 @@ class SitemapHandler(tornado.web.RequestHandler):
 
 class RssHandler(tornado.web.RequestHandler):
     def get(self):
-        @cache_call("rss.xml")
+        @cache.cache("rss.xml", expire=3600 * 24)
         def get_rss():
             import io, importlib, tornado.options
 
@@ -91,9 +71,9 @@ class RssHandler(tornado.web.RequestHandler):
             items = list()
             items.append(("关于我们", "aboutMe", SettingDao.get("site.aboutMe"), init))
             items.append(("帮助文档", "help", SettingDao.get("site.help"), init))
-            map(lambda rs: items.extend(rs),
-                map(lambda name: importlib.import_module("brahma.plugins." + name).rss(),
-                    tornado.options.options.app_plugins))
+
+            for p in tornado.options.options.app_plugins:
+                items.extend(importlib.import_module("brahma.plugins." + p).rss())
 
             for title, link, description, pubDate in items:
                 link = "http://%s/%s" % (domain, link)
