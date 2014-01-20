@@ -3,6 +3,10 @@ __author__ = 'zhengjitang@gmail.com'
 NAME = "文章列表"
 
 
+def calendar(year, month, dao):
+    return list()
+
+
 def search(keyword):
     return list()
 

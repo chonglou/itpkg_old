@@ -71,7 +71,7 @@ class TopNav(tornado.web.UIModule):
 
             links = list()
             links.append(("/main", "本站首页"))
-            links.extend(map(lambda name: ("/" + name, importlib.import_module("brahma.plugins." + name).NAME),
+            links.extend(map(lambda name: ("/%s/" % name, importlib.import_module("brahma.plugins." + name).NAME),
                              tornado.options.options.app_plugins))
             links.append(("/help", "帮助文档"))
             links.append(("/aboutMe", "关于我们"))
@@ -82,7 +82,10 @@ class TopNav(tornado.web.UIModule):
 
             links = list()
             if self.current_user:
-                #FIXME 站点信息
+                from brahma.store.site import RbacDao
+
+                if RbacDao.auth4admin(self.current_user["id"]):
+                    links.append(("/personal/site", "站点参数"))
                 links.append(("/personal/self", "个人信息"))
                 links.extend(
                     map(lambda name: ("/personal/" + name, importlib.import_module("brahma.plugins." + name).NAME),

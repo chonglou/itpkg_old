@@ -46,10 +46,18 @@ class AboutMeHandler(BaseHandler):
 
 class CalendarHandler(BaseHandler):
     def get(self, year, month, day=None):
+        import tornado.options, importlib
+
+        items = list()
+        map(lambda rs: items.append(rs),
+            map(
+                lambda name: importlib.import_module("brahma.plugins." + name).calendar(year, month, day),
+                tornado.options.options.app_plugins))
+
         self.render_page(
-            "template.html",
+            "calendar.html",
             title="%s年%s月%s日" % (year, month, day) if day else "%s年%s月" % (year, month),
-            content=None)
+            items=items)
 
 
 handlers = [
