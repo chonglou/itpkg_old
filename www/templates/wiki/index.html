@@ -1,4 +1,9 @@
 {% extends "../layout.html" %}
 {% block main%}
-        <h3>{{title}}</h3><hr>
+<h3>{{title}} {% module ButtonGroup("gl_root", buttons) %}</h3>
+<hr>
+{% if wiki %}
+{{ wiki.body }}
+{% end %}
+{% module FallLink(wikiItems)%}
 {%end%}

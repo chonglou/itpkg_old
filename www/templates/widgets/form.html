@@ -9,7 +9,7 @@
     {% module xsrf_form_html() %}
 
     {% for field in form %}
-    {% if field.type == "HiddenField" %}<input type="hidden" id="fm-{{form.fid}}-{{field.id}}">{% end %}
+    {% if field.type == "HiddenField" %}<input type="hidden" value="{{field.data}}" id="fm-{{form.fid}}-{{field.id}}">{% end %}
     {% end %}
     {% for field in form %}
 
@@ -20,7 +20,7 @@
         </label>
 
         <div class="col-sm-6">
-            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.default or ''}}">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.data or ''}}">
         </div>
     </div>
     {% elif field.type == "TextAreaField" %}
@@ -30,7 +30,7 @@
         </label>
 
         <div class="col-sm-6">
-            <textarea id="fm-{{form.fid}}-{{field.id}}" class="form-control" rows="6">{{field.default or ""}}</textarea>
+            <textarea id="fm-{{form.fid}}-{{field.id}}" class="form-control" rows="6">{{field.data or ""}}</textarea>
         </div>
     </div>
     {% elif field.type == "PasswordField" %}
@@ -50,7 +50,7 @@
         </label>
 
         <div class="col-sm-2">
-            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.default or ''}}">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.data or ''}}">
         </div>
     </div>
     {% elif field.type == "BooleanField" %}
@@ -58,7 +58,7 @@
         <div class="col-sm-offset-2 col-sm-6">
             <div class="checkbox">
                 <label>
-                    {%if field.default %}
+                    {%if field.data %}
                     <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox" checked/>
                     {%else%}
                     <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox"/>
@@ -78,7 +78,7 @@
         <div class="col-sm-offset-2 col-sm-6">
             <div class="checkbox">
                 <label>
-                    {%if field.default %}
+                    {%if field.data %}
                     <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox" checked/>
                     {%else%}
                     <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox"/>

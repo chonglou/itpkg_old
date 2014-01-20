@@ -1,0 +1,13 @@
+<div class="row row-offcanvas row-offcanvas-right">
+    {% for url,label in items %}
+    <div class="col-lg-1 fall-item">
+        <a href="{{url}}" target="_blank">
+            <div class="thumbnail">
+                <div class="caption">
+                    {{label}}
+                </div>
+            </div>
+        </a>
+    </div>
+    {% end %}
+</div>

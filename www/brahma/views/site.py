@@ -18,7 +18,7 @@ class SearchHandler(BaseHandler):
 
         keyword = self.get_argument("keyword")
         items = list()
-        map(lambda rs: items.append(rs),
+        map(lambda rs: items.extend(rs),
             map(
                 lambda name: importlib.import_module("brahma.plugins." + name).search(keyword),
                 tornado.options.options.app_plugins))
@@ -49,7 +49,7 @@ class CalendarHandler(BaseHandler):
         import tornado.options, importlib
 
         items = list()
-        map(lambda rs: items.append(rs),
+        map(lambda rs: items.extend(rs),
             map(
                 lambda name: importlib.import_module("brahma.plugins." + name).calendar(year, month, day),
                 tornado.options.options.app_plugins))

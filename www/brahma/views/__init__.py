@@ -62,7 +62,7 @@ class BaseHandler(tornado.web.RequestHandler):
         elif status_code == 500:
             msg = "服务器错误"
         else:
-            msg = "未知错误[" + status_code + "]"
+            msg = "未知错误[%d]" % status_code
 
         self.render_message("出错了！", messages=[msg], goto="/main")
         #super(tornado.web.RequestHandler, self).write_error(status_code, **kwargs)

@@ -1,3 +1,16 @@
+$.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+        if (settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE') {
+            function get_cookie() {
+                var r = document.cookie.match("\\b" + "_xsrf" + "=([^;]*)\\b");
+                return r ? r[1] : undefined;
+            }
+            xhr.setRequestHeader("X-CSRFToken", get_cookie());
+        }
+    }
+});
+
+
 function Ajax(id, url, type, data, success, async) {
     var _init = function () {
         if (type == undefined) {
@@ -6,9 +19,9 @@ function Ajax(id, url, type, data, success, async) {
         if (data == undefined) {
             data = {};
         }
-        if (type != "GET") {
-            data['_xsrf'] = get_cookie();
-        }
+        //if (type != "GET") {
+        //    data['_xsrf'] = get_cookie();
+        //}
         if (success == undefined) {
             success = function (result) {
                 $("div#" + id).html(result);
@@ -33,14 +46,4 @@ function Ajax(id, url, type, data, success, async) {
     _init();
 }
 
-function get_cookie() {
-    var r = document.cookie.match("\\b" + "_xsrf" + "=([^;]*)\\b");
 
-    return r ? r[1] : undefined;
-}
-
-function log(data) {
-    for (var i in data) {
-        console.log(i + "\t" + data[i]);
-    }
-}

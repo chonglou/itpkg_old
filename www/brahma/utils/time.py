@@ -3,10 +3,6 @@ __author__ = 'zhengjitang@gmail.com'
 import datetime
 
 
-def max_time():
-    return datetime.datetime(datetime.MAXYEAR, 12, 32)
-
-
 def last_months(minimum, count):
     months = list()
     today = datetime.datetime.today()

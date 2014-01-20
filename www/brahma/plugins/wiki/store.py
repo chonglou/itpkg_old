@@ -20,18 +20,18 @@ class WikiDao:
 
     @staticmethod
     @db_call
-    def save_wiki(name, title, body, author=None, session=None):
-        try:
-            w = session.query(Wiki).filter(Wiki.name==name).one()
-        except NoResultFound:
-            w = None
-        if w:
-            w.title = title
-            w.body = body
-            w.lastEdit = datetime.datetime.now()
-        else:
-            w = Wiki(name, title, body, author)
-            session.add(w)
+    def add_wiki(name, title, body, author, session=None):
+        w = Wiki(name, title, body, author)
+        session.add(w)
+
+    @staticmethod
+    @db_call
+    def set_wiki(name, title, body, session=None):
+        w = session.query(Wiki).filter(Wiki.name==name).one()
+        w.title = title
+        w.body = body
+        w.lastEdit = datetime.datetime.now()
+
 
     @staticmethod
     @db_call
@@ -46,5 +46,5 @@ class WikiDao:
     @staticmethod
     @db_call
     def list_wiki(begin, end, session=None):
-        return session.query(Wiki).filter(Wiki.created >= begin, Wiki.created <= end).all()
+        return map(lambda w:("/wiki/%s"%w.name, w.title), session.query(Wiki).filter(Wiki.created >= begin, Wiki.created <= end).all())
 

@@ -49,6 +49,8 @@ def db_call(func):
         except SQLAlchemyError:
             session.rollback()
             logging.exception("数据库操作出错")
+
+        session.close()
         return val
 
     return __decorator

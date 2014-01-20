@@ -1,0 +1,18 @@
+<div id="fall-container" class="row row-offcanvas row-offcanvas-right">
+
+    {% for url, logo, title, summary in items %}
+    <div class="col-lg-3 fall-item">
+        <a href="{{url}}" target="_blank">
+            <div class="thumbnail">
+                #if(i.logo)
+                <img src="{{logo}}" class="img-thumbnail" alt=""/>
+                #end
+                <div class="caption">
+                    <h4>{{title}}</h4>
+                    <p>{{summary}}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    #end
+</div>

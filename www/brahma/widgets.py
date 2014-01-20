@@ -3,6 +3,42 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 from brahma.env import cache_call
 
+class FallCard(tornado.web.UIModule):
+    def embedded_javascript(self):
+        return js_ready("""
+            $('div#fall-container').masonry({
+                itemSelector: '.fall-item'
+            });
+        """)
+
+    def render(self, items):
+        return self.render_string("widgets/fallCard.html", items=items)
+
+
+class FallLink(tornado.web.UIModule):
+    def render(self, items):
+        return self.render_string("widgets/fallLink.html", items=items)
+
+
+class ButtonGroup(tornado.web.UIModule):
+    def embedded_javascript(self):
+        return """
+        $("div.btn-group button").each(function () {
+                $(this).click(function () {
+                    var ss = $(this).attr("id").split('-');
+                    if(ss[1]!="DELETE" || confirm("你确定要删除此项么？")){
+                        new Ajax("%s", ss[0], ss[1]);
+                    }
+                });
+            });
+        """ % self.div
+
+    def render(self,div, items):
+        self.div = div
+        return '<div class="btn-group">%s</div>' % ''.join(
+            map(lambda item : '<button id="%s-%s" type="button" class="btn btn-%s">%s</button>' % item,
+                items))
+
 
 class Head(tornado.web.UIModule):
     def render(self, title=None):
