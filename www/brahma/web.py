@@ -2,7 +2,11 @@ __author__ = 'zhengjitang@gmail.com'
 
 import wtforms_tornado
 
-from wtforms import BooleanField
+from wtforms import BooleanField,TextAreaField
+
+
+class HtmlField(TextAreaField):
+    pass
 
 
 class AgreementField(BooleanField):

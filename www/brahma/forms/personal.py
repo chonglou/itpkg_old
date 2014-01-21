@@ -1,7 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 from wtforms import TextField, validators, PasswordField,TextAreaField
-from brahma.web import Form, AgreementField
+from brahma.web import Form, AgreementField,HtmlField
 from brahma.cache import get_site_info
 
 
@@ -16,7 +16,7 @@ class ContactForm(Form):
     address = TextField("住址")
     fax = TextField("传真")
     tel = TextField("电话")
-    details = TextAreaField("个人介绍")
+    details = HtmlField("个人介绍")
 
 
 class SetPwdForm(Form):

@@ -88,6 +88,16 @@
             </div>
         </div>
     </div>
+     {% elif field.type == "HtmlField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-8">
+            <script id="fm-{{form.fid}}-{{field.id}}" style="height:350px;" type="text/plain">{{field.data or ""}}</script>
+        </div>
+    </div>
     {% else %}
     {% end %}
 
