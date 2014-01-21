@@ -36,6 +36,16 @@ class Form(wtforms_tornado.Form):
                        "".join(self.errors[i]))
         return val
 
+    def from_dict(self, items):
+        for k in items.keys():
+            getattr(self, k).data = items[k]
+
+    def to_dict(self, items):
+        val = {}
+        for i in items:
+            val[i] = getattr(self, i).data
+        return val
+
     def _get_translations(self):
         return Translations()
 

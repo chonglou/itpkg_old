@@ -4,6 +4,32 @@ import tornado.web
 from brahma.env import cache
 
 
+class List(tornado.web.UIModule):
+    def render(self, label, items):
+        return self.render_string("widgets/list.html", label=label, items=items)
+
+
+class CtlBar(tornado.web.UIModule):
+    def embedded_javascript(self):
+        return js_ready("""
+            function show_tab(href){
+                var id = href.substr(1);
+                new Ajax(id, "%s/"+id);
+            }
+            $('ul#tab a').click(function(){
+                show_tab($(this).attr("href"));
+            });
+
+            var last = $('ul#tab a:last');
+            last.tab('show');
+            show_tab(last.attr('href'));
+        """ % self.act)
+
+    def render(self, act, items):
+        self.act = act
+        return self.render_string("widgets/ctlBar.html", act=act, items=items)
+
+
 class FallCard(tornado.web.UIModule):
     def embedded_javascript(self):
         return js_ready("""
@@ -250,6 +276,10 @@ class Form(tornado.web.UIModule):
                         switch ($(this).attr('type')) {
                             case "checkbox":
                                 data[fid] = $(this).is(":checked");
+                                break;
+                            case "password":
+                                data[fid] = $(this).val();
+                                $(this).val("");
                                 break;
                             default:
                                 data[fid] = $(this).val();

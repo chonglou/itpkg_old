@@ -22,6 +22,13 @@ class BaseHandler(tornado.web.RequestHandler):
             return False
         return True
 
+    def render_list_widget(self, label, items=list()):
+        from brahma.widgets import List
+
+        l = List(self)
+        self.write(l.render(label=label, items=items))
+
+
     def render_form_widget(self, form):
         from brahma.widgets import Form
 

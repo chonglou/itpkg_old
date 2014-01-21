@@ -7,5 +7,5 @@ class TaskSender:
         from brahma.env import redis
         import logging
 
-        logging.debug("邮件任务%s" % to)
         redis.lpush("tasks", ("email", (to, title, body, html)))
+        logging.debug("发送邮件任务%s" % to)

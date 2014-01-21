@@ -11,11 +11,28 @@ from brahma.env import encrypt as _encrypt, db_call
 class LogDao:
     @staticmethod
     @db_call
+    def list_log(begin, end, user, limit=None, session=None):
+        q = session.query(Log).filter(Log.user == user, Log.created >= begin, Log.created <= end).order_by(
+            Log.id.desc())
+        return q.limit(limit) if limit else q.all()
+
+    @staticmethod
+    @db_call
     def add_log(message, flag="INFO", user=None, session=None):
         session.add(Log(message=message, flag=flag, user=user))
 
 
 class UserDao:
+    @staticmethod
+    @db_call
+    def set_info(uid, username, logo, contact, session=None):
+        u = session.query(User).filter(User.id == uid).one()
+        import json
+
+        u.username = username
+        u.logo = logo
+        u.contact = json.dumps(contact)
+
     @staticmethod
     @db_call
     def set_password(uid, password, session=None):

@@ -4,20 +4,8 @@ import logging
 import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
-from brahma.store.site import UserDao, SettingDao
-from brahma.web import NavBar, Message
-
-
-class SelfHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self):
-        nv_self = NavBar("控制面板")
-        if self.is_admin():
-            nv_self.add("/admin/site", "站点设置")
-        nv_self.add("/personal/info", "个人信息")
-        nv_self.add("/personal/info", "日志列表")
-
-        return self.render_page("personal/self.html", index="/personal/self", title="用户中心", navBars=[nv_self])
+from brahma.store.site import UserDao, SettingDao, LogDao
+from brahma.web import Message
 
 
 class ValidHandler(BaseHandler):
@@ -36,6 +24,7 @@ class ValidHandler(BaseHandler):
                         user = UserDao.get_by_email(args)
                         if user and user.state == "SUBMIT":
                             UserDao.set_state(user.id, "ENABLE")
+                            LogDao.add_log("账户激活", user=user.id)
                             ok = True
                             domain = SettingDao.get("site.domain")
                             title = SettingDao.get("site.title")
@@ -53,6 +42,7 @@ class ValidHandler(BaseHandler):
                         user = UserDao.get_by_id(uid)
                         if user and user.state == "ENABLE":
                             UserDao.set_password(uid, password)
+                            LogDao.add_log("重置密码", user=user.id)
                             ok = True
                             domain = SettingDao.get("site.domain")
                             title = SettingDao.get("site.title")
@@ -103,7 +93,7 @@ class ActiveHandler(BaseHandler):
                     else:
                         messages.append("你需要同意协议才能继续")
                 else:
-                    messages.append(fm.messages())
+                    messages.extend(fm.messages())
             else:
                 messages.append("验证码不对")
             self.render_message_widget(Message(messages=messages))
@@ -222,6 +212,7 @@ class LoginHandler(BaseHandler):
                                 "username": user.username,
                                 "admin": RbacDao.auth4admin(user.id),
                             })
+                            LogDao.add_log("成功登录", user=user.id)
                             self.render_message_widget(Message(ok=True, goto="/main"))
                             return
                         else:
@@ -238,12 +229,12 @@ class LoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        LogDao.add_log("安全退出", user=self.current_user['id'])
         self.clear_cookie("user")
         self.goto_main_page()
 
 
 handlers = [
-    (r"/personal/self", SelfHandler),
     (r"/personal/valid", ValidHandler),
     (r"/personal/active", ActiveHandler),
     (r"/personal/resetPwd", ResetPwdHandler),

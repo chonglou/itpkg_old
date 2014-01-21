@@ -57,10 +57,6 @@ class Tornado:
         from brahma.store.site import SettingDao
         from brahma.utils.email import Email
 
-        #redis = Redis(
-        #    name=tornado.options.options.app_name,
-        #    host=tornado.options.options.redis_host,
-        #    port=tornado.options.options.redis_port)
         logging.info("启动后台进程")
         while True:
             flag, args = redis.brpop("tasks")

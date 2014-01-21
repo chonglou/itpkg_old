@@ -47,6 +47,7 @@ class WikiDao:
     @db_call
     def list_wiki(begin, end, author=None, session=None):
         if author:
-            return session.query(Wiki).filter(Wiki.author==author, Wiki.created >= begin, Wiki.created <= end).all()
-        return session.query(Wiki).filter(Wiki.created >= begin, Wiki.created <= end).order_by(Wiki.created.desc()).all()
+            return session.query(Wiki).filter(Wiki.author == author, Wiki.created >= begin, Wiki.created <= end).all()
+        return session.query(Wiki).filter(Wiki.created >= begin, Wiki.created <= end).order_by(
+            Wiki.created.desc()).all()
 
