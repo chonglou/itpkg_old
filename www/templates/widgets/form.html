@@ -1,3 +1,8 @@
+<body>
+<script type="text/javascript" src='{{ static_url("js/config.js") }}'></script>
+<script type="text/javascript" src='{{ static_url("3rd/ueditor1_3_6-utf8/ueditor.all.min.js") }}'></script>
+<script type="text/javascript" src='{{ static_url("3rd/ueditor1_3_6-utf8/lang/zh-cn/zh-cn.js") }}'></script>
+
 {% autoescape xhtml_escape %}
 {% autoescape None %}
 
@@ -9,7 +14,8 @@
     {% module xsrf_form_html() %}
 
     {% for field in form %}
-    {% if field.type == "HiddenField" %}<input type="hidden" value="{{field.data}}" id="fm-{{form.fid}}-{{field.id}}">{% end %}
+    {% if field.type == "HiddenField" %}<input type="hidden" value="{{field.data}}" id="fm-{{form.fid}}-{{field.id}}">{%
+    end %}
     {% end %}
     {% for field in form %}
 
@@ -88,15 +94,22 @@
             </div>
         </div>
     </div>
-     {% elif field.type == "HtmlField" %}
+    {% elif field.type == "HtmlField" %}
     <div class="form-group">
-        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+        <label for="fm-html-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
             {{field.label.text}}{% if field.flags.required %}*{% end %}：
         </label>
 
         <div class="col-sm-8">
-            <script id="fm-{{form.fid}}-{{field.id}}" style="height:350px;" type="text/plain">{{field.data or ""}}</script>
+            <script id="fm-html-{{form.fid}}-{{field.id}}" name="fm-html-{{form.fid}}-{{field.id}}"
+                    style="height:350px;" type="text/plain">
+                {{field.data or ""}}
+
+            </script>
         </div>
+        <script type="text/javascript">
+            UE.getEditor("fm-html-{{form.fid}}-{{field.id}}");
+        </script>
     </div>
     {% else %}
     {% end %}
@@ -123,3 +136,4 @@
         </div>
     </div>
 </form>
+</body>

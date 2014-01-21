@@ -255,14 +255,8 @@ class NavBar(tornado.web.UIModule):
 
 class Form(tornado.web.UIModule):
     def embedded_javascript(self):
-        from brahma.web import HtmlField
-
-        editors = []
-        for f in self.form:
-            if isinstance(f, HtmlField):
-                editors.append("UE.getEditor('fm-%s-%s');" %(self.form.fid, f.id))
         return """
-        %s
+
         function reset_field(fmId) {
             $('form#fm-' + fmId + '')[0].reset();
         }
@@ -270,7 +264,8 @@ class Form(tornado.web.UIModule):
             $("img#fm-img-" + fmId + "-captcha").attr("src", "/captcha?_=" + Math.random());
         }
         %s
-        """ % (" ".join(editors), js_ready("""
+        """ % (js_ready("""
+
              $("form[id^='fm-']").each(function () {
                 var fmId = $(this).attr('id').split('-')[1];
 
@@ -289,9 +284,13 @@ class Form(tornado.web.UIModule):
                                 $(this).val("");
                                 break;
                             default:
-                                //console.log($(this).attr('id')+"\\t"+$(this).attr('type'));
                                 data[fid] = $(this).val();
                         }
+                    });
+                    $("[id^='fm-html-"+fmId+"-']").each(function(){
+                        var id = $(this).attr('id');
+                        data[id.split('-')[3]] = UE.getEditor(id).getContent();
+                        console.log(id);
                     });
                     new Ajax(
                             "fm-msg-"+fmId,
@@ -310,16 +309,16 @@ class Form(tornado.web.UIModule):
                 reset_field(fmId);
             });
         """ % (
-            "false" if self.form.captcha else "true",
+            "false" if self.captcha else "true",
             """
             $("img#fm-img-"+fmId+"-captcha").click(function(){
             reload_captcha(fmId);
             });
-            """ if self.form.captcha else "",)
+            """ if self.captcha else "",)
         ))
 
     def render(self, form):
-        self.form = form
+        self.captcha = form.captcha
         return self.render_string("widgets/form.html", form=form)
 
 
