@@ -10,6 +10,7 @@ class ImageUpHandler(tornado.web.RequestHandler):
         TaskSender.qr()
         TaskSender.rss()
         TaskSender.sitemap()
+        TaskSender.robots()
         pass
 
 

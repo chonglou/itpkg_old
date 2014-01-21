@@ -63,12 +63,9 @@ class Tornado:
             flag, args = redis.brpop("tasks")
             if flag == "email":
                 TaskListener.email(*args)
-            elif flag == "rss":
-                TaskListener.rss()
-            elif flag == "sitemap":
-                TaskListener.sitemap()
-            elif flag == "qr":
-                TaskListener.qr()
+            elif flag in ["rss", "sitemap", "qr", "robots"]:
+                import importlib
+                getattr(TaskListener, flag)()
             elif flag == "echo":
                 logging.info(str(args))
             else:

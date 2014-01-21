@@ -1,4 +1,5 @@
 *.pyc
 .idea
 test.py
+robots.txt
 __pycache__

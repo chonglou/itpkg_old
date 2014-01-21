@@ -10,6 +10,9 @@ from brahma.store.site import SettingDao
 
 class TaskSender:
     @staticmethod
+    def robots():
+        redis.lpush("tasks", ("robots", None))
+    @staticmethod
     def sitemap():
         redis.lpush("tasks", ("sitemap", None))
 
@@ -32,11 +35,18 @@ class TaskSender:
 
 class TaskListener:
     @staticmethod
+    def robots():
+        from brahma.utils import path
+        with open(path("../../statics/robots.txt"), "w") as f:
+            f.write("User-agent: *\n")
+            f.write("Disallow: /personal/\n")
+            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n"%SettingDao.get("site.domain"))
+    @staticmethod
     def sitemap():
         """
             更新频率：yearly daily, monthly, hourly, weekly
         """
-        import datetime, importlib, tornado.options
+        import datetime, importlib, tornado.options, gzip
 
         with open(TaskListener.__seo_file("sitemap.xml"), "w") as sitemap:
             sitemap.write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -61,6 +71,13 @@ class TaskListener:
                 sitemap.write('\t</url>\n')
 
             sitemap.write('</urlset>\n')
+        logging.info("生成sitemap.xml完毕,开始压缩")
+
+        with open(TaskListener.__seo_file("sitemap.xml"), "rb") as f_in:
+            with gzip.open(TaskListener.__seo_file("sitemap.xml.gz"), "wb") as f_out:
+                f_out.writelines(f_in)
+
+        logging.info("压缩完毕")
 
     @staticmethod
     def rss():
@@ -99,6 +116,7 @@ class TaskListener:
             rss.write('\t</channel>\n')
             rss.write('</rss>\n')
 
+        logging.info("生成rss.xml完毕")
 
     @staticmethod
     def qr():
@@ -117,6 +135,7 @@ class TaskListener:
 
         img = qr.make_image()
         img.save(TaskListener.__seo_file("site.png"))
+        logging.info("生成site.png完毕")
 
     @staticmethod
     def __seo_file(name):
