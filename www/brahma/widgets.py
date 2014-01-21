@@ -290,7 +290,6 @@ class Form(tornado.web.UIModule):
                     $("[id^='fm-html-"+fmId+"-']").each(function(){
                         var id = $(this).attr('id');
                         data[id.split('-')[3]] = UE.getEditor(id).getContent();
-                        console.log(id);
                     });
                     new Ajax(
                             "fm-msg-"+fmId,

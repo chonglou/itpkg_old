@@ -25,6 +25,7 @@ class InfoHandler(BaseHandler):
             user = UserDao.get_by_id(self.current_user['id'])
             if user.contact:
                 import json
+
                 form.from_dict(json.loads(user.contact))
             form.username.data = user.username
             form.logo.data = user.logo
@@ -54,7 +55,8 @@ class InfoHandler(BaseHandler):
             fm = ContactForm(formdata=self.request.arguments)
             if fm.validate():
                 UserDao.set_info(self.current_user['id'], fm.username.data, fm.logo.data,
-                                 fm.to_dict(["qq", "email", "website", "wechat", "weibo", "address", "fax", "tel", "details"]))
+                                 fm.to_dict(
+                                     ["qq", "email", "website", "wechat", "weibo", "address", "fax", "tel", "details"]))
                 self.render_message_widget(Message(ok=True))
                 return
             else:

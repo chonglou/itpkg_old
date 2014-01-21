@@ -30,7 +30,7 @@ class ValidHandler(BaseHandler):
                             title = SettingDao.get("site.title")
                             from brahma.jobs import TaskSender
 
-                            TaskSender.send_email(
+                            TaskSender.email(
                                 user.email,
                                 "账户激活成功--来自[%s](%s)的邮件" % (title, domain),
                                 "亲爱的[%s]：<br>您好<br>您刚刚激活了账户，祝您一切顺利。谢谢" % user.username)
@@ -48,7 +48,7 @@ class ValidHandler(BaseHandler):
                             title = SettingDao.get("site.title")
                             from brahma.jobs import TaskSender
 
-                            TaskSender.send_email(
+                            TaskSender.email(
                                 user.email,
                                 "重置密码成功--来自[%s](%s)的邮件" % (title, domain),
                                 "亲爱的[%s]：<br>您好<br>您刚刚重置了密码，祝您一切顺利。谢谢" % user.username)
@@ -176,7 +176,7 @@ def _send_valid_email(flag, email, username, action, args):
          datetime.datetime.now() + datetime.timedelta(hours=linkValid),
          args)).decode("utf-8")
     )
-    TaskSender.send_email(
+    TaskSender.email(
         email,
         "%s -- 来自[%s]（%s）的邮件" % (action, title, domain),
         """亲爱的用户[%s]:<br/>

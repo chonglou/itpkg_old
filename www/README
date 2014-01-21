@@ -29,3 +29,5 @@ pip install tornado SQLAlchemy pycurl pycrypto redis WTForms wtforms-tornado bea
 
 退出python环境：
 deactivate
+
+编辑器设定：禁止全屏

@@ -52,29 +52,25 @@ class Tornado:
 
     @staticmethod
     def jobs():
-        import logging, tornado.options
+        import logging
         from brahma.env import redis
         from brahma.store.site import SettingDao
         from brahma.utils.email import Email
+        from brahma.jobs import TaskListener
 
         logging.info("启动后台进程")
         while True:
             flag, args = redis.brpop("tasks")
             if flag == "email":
-                to, title, body, html = args
-                smtp = SettingDao.get("site.smtp", encrypt=True)
-                if smtp:
-                    email = Email(
-                        host=smtp['host'],
-                        username=smtp['username'],
-                        password=smtp['password'],
-                        port=smtp['port'],
-                        ssl=smtp['ssl'],
-                        debug=tornado.options.options.debug,
-                    )
-                    email.send(to, title, body, html)
-                else:
-                    logging.error("SMTP未配置")
+                TaskListener.email(*args)
+            elif flag == "rss":
+                TaskListener.rss()
+            elif flag == "sitemap":
+                TaskListener.sitemap()
+            elif flag == "qr":
+                TaskListener.qr()
+            elif flag == "echo":
+                logging.info(str(args))
             else:
                 logging.error("丢弃的任务[(%s, %s)]" % (type, str(args)))
 
