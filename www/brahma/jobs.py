@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import logging,os
+import logging
+import os
 
 import tornado.options
 
@@ -12,6 +13,7 @@ class TaskSender:
     @staticmethod
     def robots():
         redis.lpush("tasks", ("robots", None))
+
     @staticmethod
     def sitemap():
         redis.lpush("tasks", ("sitemap", None))
@@ -37,10 +39,12 @@ class TaskListener:
     @staticmethod
     def robots():
         from brahma.utils import path
+
         with open(path("../../statics/robots.txt"), "w") as f:
             f.write("User-agent: *\n")
             f.write("Disallow: /personal/\n")
-            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n"%SettingDao.get("site.domain"))
+            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n" % SettingDao.get("site.domain"))
+
     @staticmethod
     def sitemap():
         """
@@ -140,10 +144,11 @@ class TaskListener:
     @staticmethod
     def __seo_file(name):
         from brahma.utils import path
+
         d = path("../../statics/tmp/seo")
         if not os.path.exists(d):
             os.makedirs(d)
-        return d+"/"+name
+        return d + "/" + name
 
 
     @staticmethod

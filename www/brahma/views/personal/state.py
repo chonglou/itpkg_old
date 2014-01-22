@@ -205,12 +205,14 @@ class LoginHandler(BaseHandler):
                     if user:
                         if user.state == "ENABLE":
                             from brahma.store.rbac import RbacDao
+                            from brahma.env import encrypt
 
                             self.set_current_user({
                                 "id": user.id,
                                 "logo": user.logo,
                                 "username": user.username,
                                 "admin": RbacDao.auth4admin(user.id),
+                                "sid": encrypt.encode((user.id, encrypt.random_str(8))),
                             })
                             LogDao.add_log("成功登录", user=user.id)
                             self.render_message_widget(Message(ok=True, goto="/main"))

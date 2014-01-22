@@ -11,7 +11,6 @@ class AttachHandler(tornado.web.RequestHandler):
 
 handlers = [
     (r"/attachments/(.*)", AttachHandler),
-    (r"/site.png", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/site.png"}),
     (r"/rss.xml", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/rss.xml"}),
     (r"/sitemap.xml", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/sitemap.xml"}),
     (r"/sitemap.xml.gz", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/sitemap.xml.gz"}),

@@ -65,6 +65,7 @@ class Tornado:
                 TaskListener.email(*args)
             elif flag in ["rss", "sitemap", "qr", "robots"]:
                 import importlib
+
                 getattr(TaskListener, flag)()
             elif flag == "echo":
                 logging.info(str(args))

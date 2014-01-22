@@ -8,6 +8,8 @@
  * 主要有两种修改方案，一种是取消此处注释，然后修改成对应参数；另一种是在实例化编辑器时传入对应参数。
  * 当升级编辑器时，可直接使用旧版配置文件替换新版配置文件,不用担心旧版配置文件中因缺少新功能所需的参数而导致脚本报错。
  **************************提示********************************/
+window.UEDITOR_HOME_URL = "/static/3rd/ueditor1_3_6-utf8/";
+
 
 
 (function () {
@@ -19,7 +21,7 @@
      * 因此，UEditor提供了针对不同页面的编辑器可单独配置的根路径，具体来说，在需要实例化编辑器的页面最顶部写上如下代码即可。当然，需要令此处的URL等于对应的配置。
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
-    var URL = window.UEDITOR_HOME_URL || "/static/3rd/ueditor1_3_6-utf8/";
+    var URL = window.UEDITOR_HOME_URL || getUEBasePath();
 
     /**
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
@@ -30,7 +32,7 @@
         UEDITOR_HOME_URL: URL
 
         //图片上传配置区
-        , imageUrl: URL + "../../../editor/imageUp"             //图片上传提交地址
+        , imageUrl: URL + "../../../editor/imageUp?jsessionid=" + gl_jsessionid             //图片上传提交地址
         , imagePath: URL + "../../../attachments/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
         //,imageFieldName:"upfile"                  //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
         //,compressSide:0                           //等比压缩的基准，确定maxImageSideLength参数的参照对象。0为按照最长边，1为按照宽度，2为按照高度
@@ -40,40 +42,40 @@
         //比如： savePath: [ 'upload1', 'upload2' ]
 
         //涂鸦图片配置区
-        , scrawlUrl: URL + "../../../editor/scrawlUp"           //涂鸦上传地址
+        , scrawlUrl: URL + "../../../editor/scrawlUp?jsessionid=" + gl_jsessionid            //涂鸦上传地址
         , scrawlPath: URL + "../../../attachments/"                            //图片修正地址，同imagePath
 
         //附件上传配置区
-        , fileUrl: URL + "../../../editor/fileUp"               //附件上传提交地址
+        , fileUrl: URL + "../../../editor/fileUp?jsessionid=" + gl_jsessionid             //附件上传提交地址
         , filePath: URL + "../../../attachments/"                   //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 
         //远程抓取配置区
         //,catchRemoteImageEnable:true               //是否开启远程图片抓取,默认开启
-        , catcherUrl: URL + "../../../editor/getRemoteImage"   //处理远程图片抓取的地址
+        , catcherUrl: URL + "../../../editor/getRemoteImage?jsessionid=" + gl_jsessionid    //处理远程图片抓取的地址
         , catcherPath: URL + "../../../attachments/"                  //图片修正地址，同imagePath
         //,catchFieldName:"upfile"                   //提交到后台远程图片uri合集，若此处修改，需要在后台对应文件修改对应参数
         //,separater:'ue_separate_ue'               //提交至后台的远程图片地址字符串分隔符
         //,localDomain:[]                            //本地顶级域名，当开启远程图片抓取时，除此之外的所有其它域名下的图片都将被抓取到本地,默认不抓取127.0.0.1和localhost
 
         //图片在线管理配置区
-        , imageManagerUrl: URL + "../../../editor/imageManager"       //图片在线管理的处理地址
+        , imageManagerUrl: URL + "../../../editor/imageManager?jsessionid=" + gl_jsessionid       //图片在线管理的处理地址
         , imageManagerPath: URL + "../../../attachments/"                                    //图片修正地址，同imagePath
 
         //屏幕截图配置区
         , snapscreenHost: location.hostname                                 //屏幕截图的server端文件所在的网站地址或者ip，请不要加http://
-        , snapscreenServerUrl: URL + "../../../editor/imageUp" //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
+        , snapscreenServerUrl: URL + "../../../editor/imageUp?jsessionid=" + gl_jsessionid //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
         , snapscreenPath: URL + "../../../attachments/", snapscreenServerPort: location.port                                   //屏幕截图的server端端口
         //,snapscreenImgAlign: ''                                //截图的图片默认的排版方式
 
         //word转存配置区
-        , wordImageUrl: URL + "../../../editor/imageUp"             //word转存提交地址
+        , wordImageUrl: URL + "../../../editor/imageUp?jsessionid=" + gl_jsessionid             //word转存提交地址
         , wordImagePath: URL + "../../../attachments/"                       //
         //,wordImageFieldName:"upfile"                     //word转存表单名若此处修改，需要在后台对应文件修改对应参数
 
         //视频上传配置区
-        , getMovieUrl: URL + "../../../editor/getMovie"                   //视频数据获取地址
-        , videoUrl: URL + "../../../editor/fileUp"               //附件上传提交地址
+        , getMovieUrl: URL + "../../../editor/getMovie?jsessionid=" + gl_jsessionid                  //视频数据获取地址
+        , videoUrl: URL + "../../../editor/fileUp?jsessionid=" + gl_jsessionid               //附件上传提交地址
         , videoPath: URL + "../../../attachments/"                   //附件修正地址，同imagePath
         //,videoFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 
@@ -150,7 +152,7 @@
         //,initialStyle:'p{line-height:1em}'//编辑器层级的基数,可以用来改变字体等
 
         //,autoSyncData:true //自动同步编辑器要提交的数据
-        ,emotionLocalization:true //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
+        , emotionLocalization: true //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
 
         //,pasteplain:false  //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
         //纯文本粘贴模式下的过滤规则
@@ -217,7 +219,7 @@
         //    'square' : ''   //'■ 小方块'
         //}
 //        ,listDefaultPaddingLeft : '30'//默认的左边缩进的基数倍
-        ,listiconpath : URL+'themes/ueditor-list/'//自定义标号的路径
+        , listiconpath: URL + 'themes/ueditor-list/'//自定义标号的路径
 //        ,maxListLevel : 3 //限制可以tab的级数-1不限制
         //fontfamily
         //字体设置 label留空支持多语言自动切换，若配置，则以配置值为准

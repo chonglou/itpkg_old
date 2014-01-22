@@ -200,6 +200,7 @@ class TagCloud(tornado.web.UIModule):
                 reverse: true,
                 decel: 0.9,
                 depth: 0.8,
+                weight: true,
                 maxSpeed: 0.08,
                 minSpeed: 0.01,
                 shape: "sphere"
@@ -217,13 +218,7 @@ class QrCode(tornado.web.UIModule):
         return ".qrCode{width: 250px}"
 
     def render(self):
-        return """
-            <div>
-                <a href="/main" target="_blank">
-                    <img class="qrCode" src="/site.png" alt="二维码" title="手机扫描二维码获得更多信息"/>
-                </a>
-            </div>
-        """
+        return self.render_string("widgets/qrCode.html")
 
 
 class Advert(tornado.web.UIModule):
@@ -256,7 +251,6 @@ class NavBar(tornado.web.UIModule):
 class Form(tornado.web.UIModule):
     def embedded_javascript(self):
         return """
-
         function reset_field(fmId) {
             $('form#fm-' + fmId + '')[0].reset();
         }
@@ -318,7 +312,9 @@ class Form(tornado.web.UIModule):
 
     def render(self, form):
         self.captcha = form.captcha
-        return self.render_string("widgets/form.html", form=form)
+        return self.render_string("widgets/form.html",
+                                  jsessionid=self.current_user['sid'] if self.current_user else "null",
+                                  form=form)
 
 
 class Message(tornado.web.UIModule):

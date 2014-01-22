@@ -1,15 +1,16 @@
 $.ajaxSetup({
     beforeSend: function (xhr, settings) {
+
+        function get_cookie() {
+            var r = document.cookie.match("\\b" + "_xsrf" + "=([^;]*)\\b");
+            return r ? r[1] : undefined;
+        }
+
         if (settings.type == 'POST' || settings.type == 'PUT' || settings.type == 'DELETE') {
-            function get_cookie() {
-                var r = document.cookie.match("\\b" + "_xsrf" + "=([^;]*)\\b");
-                return r ? r[1] : undefined;
-            }
             xhr.setRequestHeader("X-CSRFToken", get_cookie());
         }
     }
 });
-
 
 function Ajax(id, url, type, data, success, async) {
     var _init = function () {
