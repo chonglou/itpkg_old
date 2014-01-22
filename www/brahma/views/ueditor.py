@@ -122,8 +122,11 @@ class ImageUpHandler(FileHandler):
             import tornado.options
 
             self.set_header("Content-Type", "text/javascript")
+            rs = list()
+            rs.append("'root'")
+            rs.extend(map(lambda p: "'%s'" % p, tornado.options.options.app_plugins))
             self.write(
-                "updateSavePath([%s]);" % ','.join(map(lambda p: "'%s'" % p, tornado.options.options.app_plugins)))
+                "updateSavePath([%s]);" % ','.join(rs))
 
     def post(self):
         import tornado.options
