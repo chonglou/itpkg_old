@@ -51,6 +51,12 @@
 <script type="text/javascript" src='{{ static_url("3rd/jquery.tagcanvas.min.js") }}'></script>
 <script type="text/javascript" src='{{ static_url("3rd/jquery.masonry.min.js") }}'></script>
 <script type="text/javascript" src='{{ static_url("3rd/bootstrap-3.0.3/js/bootstrap.min.js") }}'></script>
+<script type="text/javascript">
+    var gl_jsessionid="{{ jsessionid or 'null'}}";
+</script>
+<script type="text/javascript" src='{{ static_url("js/config.js") }}'></script>
+<script type="text/javascript" src='{{ static_url("3rd/ueditor1_3_6-utf8/ueditor.all.min.js") }}'></script>
+<script type="text/javascript" src='{{ static_url("3rd/ueditor1_3_6-utf8/lang/zh-cn/zh-cn.js") }}'></script>
 <script type="text/javascript" src='{{ static_url("js/widgets.js") }}'></script>
 {% block extra_script %}{% end %}
 </body>

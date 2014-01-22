@@ -70,12 +70,12 @@ class InfoHandler(BaseHandler):
 class SelfHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        return self.render("personal/self.html", act="/personal/info",
-                           items=[
-                               ("contact", "联系信息"),
-                               ("setPwd", "修改密码"),
-                               ("logs", "日志列表"),
-                           ])
+        return self.render_ctlbar_widget(act="/personal/info",
+                                         items=[
+                                             ("contact", "联系信息"),
+                                             ("setPwd", "修改密码"),
+                                             ("logs", "日志列表"),
+                                         ])
 
 
 handlers = [

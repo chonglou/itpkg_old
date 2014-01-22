@@ -1,7 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
-from brahma.cache import get_site_info
+from brahma.cache import get_site_info,j_u_id
 from brahma.store.site import SettingDao
 from brahma.web import Message
 
@@ -27,6 +27,15 @@ class BaseHandler(tornado.web.RequestHandler):
 
         l = List(self)
         self.write(l.render(label=label, items=items))
+
+    def render_ctlbar_widget(self, act, items):
+        from brahma.widgets import CtlBar
+
+        cb = CtlBar(self)
+        self.write(cb.render(act, items))
+        self.write('<script type="text/javascript">')
+        self.write(cb.embedded_javascript())
+        self.write('</script>')
 
 
     def render_form_widget(self, form):
@@ -105,7 +114,10 @@ class BaseHandler(tornado.web.RequestHandler):
         if "navItems" not in kwargs:
             kwargs['navItems'] = [get_nav_cal()]
 
-        self.render(template_name, title=title,
+        import uuid
+        self.render(template_name,
+                    title=title,
+                    jsessionid=self.current_user['jid'] if self.current_user else uuid.uuid4().hex,
                     index=index,
                     is_login=self.get_secure_cookie("user") is not None,
                     **kwargs)
@@ -120,7 +132,6 @@ class BaseHandler(tornado.web.RequestHandler):
         import pickle
 
         self.set_secure_cookie("user", pickle.dumps(user))
-
 
     def goto_main_page(self):
         self.redirect("/main")

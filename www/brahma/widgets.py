@@ -138,6 +138,7 @@ class TopNav(tornado.web.UIModule):
             links.append(("/main", "本站首页"))
             links.extend(map(lambda name: ("/%s/" % name, importlib.import_module("brahma.plugins." + name).NAME),
                              tornado.options.options.app_plugins))
+            links.append(("/user", "用户列表"))
             links.append(("/help", "帮助文档"))
             links.append(("/aboutMe", "关于我们"))
             return links
@@ -312,9 +313,7 @@ class Form(tornado.web.UIModule):
 
     def render(self, form):
         self.captcha = form.captcha
-        return self.render_string("widgets/form.html",
-                                  jsessionid=self.current_user['sid'] if self.current_user else "null",
-                                  form=form)
+        return self.render_string("widgets/form.html", form=form)
 
 
 class Message(tornado.web.UIModule):

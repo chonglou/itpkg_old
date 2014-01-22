@@ -1,14 +1,6 @@
 <body>
-<script type="text/javascript">
-    var gl_jsessionid="{{jsessionid}}";
-</script>
-<script type="text/javascript" src='{{ static_url("js/config.js") }}'></script>
-<script type="text/javascript" src='{{ static_url("3rd/ueditor1_3_6-utf8/ueditor.all.min.js") }}'></script>
-<script type="text/javascript" src='{{ static_url("3rd/ueditor1_3_6-utf8/lang/zh-cn/zh-cn.js") }}'></script>
-
 {% autoescape xhtml_escape %}
 {% autoescape None %}
-
 <h3 class="glyphicon glyphicon-list">{{form.label}} </h3>
 <hr>
 <div id="fm-msg-{{form.fid}}"></div>
@@ -17,8 +9,9 @@
     {% module xsrf_form_html() %}
 
     {% for field in form %}
-    {% if field.type == "HiddenField" %}<input type="hidden" value="{{field.data}}" id="fm-{{form.fid}}-{{field.id}}">{%
-    end %}
+    {% if field.type == "HiddenField" %}
+    <input type="hidden" value="{{field.data}}" id="fm-{{form.fid}}-{{field.id}}">
+    {% end %}
     {% end %}
     {% for field in form %}
 
@@ -108,11 +101,11 @@
                     style="height:350px;" type="text/plain">
                 {{field.data or ""}}
 
-
             </script>
         </div>
         <script type="text/javascript">
-            UE.getEditor("fm-html-{{form.fid}}-{{field.id}}");
+            var editor = new UE.ui.Editor();
+            editor.render("fm-html-{{form.fid}}-{{field.id}}");
         </script>
     </div>
     {% else %}

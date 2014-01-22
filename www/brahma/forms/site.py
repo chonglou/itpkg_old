@@ -1,7 +1,28 @@
 __author__ = 'zhengjitang@gmail.com'
 
 from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField
-from brahma.web import Form
+from brahma.web import Form,HtmlField
+
+
+class ContentForm(Form):
+    content = HtmlField()
+
+
+class InfoForm(Form):
+    domain = TextField("域名", validators=[validators.Required()])
+    title = TextField("标题", validators=[validators.Required()])
+    keywords = TextField("关键字", validators=[validators.Required()])
+    description = TextAreaField("说明")
+
+
+class SmtpForm(Form):
+    host = TextField("SMTP主机", validators=[validators.Required()])
+    port = IntegerField("SMTP端口", validators=[validators.Required(), validators.NumberRange(1, 65535)])
+    ssl = BooleanField("启用SSL")
+    username = TextField("SMTP用户", validators=[validators.Required()])
+    password = PasswordField("SMTP密码", validators=[validators.Required(), validators.EqualTo("rePassword")])
+    rePassword = PasswordField("再输一次", validators=[validators.Required()])
+    bcc = TextField("抄送")
 
 
 class InstallForm(Form):

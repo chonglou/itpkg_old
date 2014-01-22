@@ -204,17 +204,20 @@ class LoginHandler(BaseHandler):
                     user = UserDao.auth("email", email=fm.email.data, password=fm.password.data)
                     if user:
                         if user.state == "ENABLE":
+                            import uuid
                             from brahma.store.rbac import RbacDao
                             from brahma.env import encrypt
-
+                            from brahma.cache import j_u_id
+                            jid = uuid.uuid4().hex
                             self.set_current_user({
                                 "id": user.id,
                                 "logo": user.logo,
                                 "username": user.username,
                                 "admin": RbacDao.auth4admin(user.id),
-                                "sid": encrypt.encode((user.id, encrypt.random_str(8))),
+                                "jid": jid,
                             })
                             LogDao.add_log("成功登录", user=user.id)
+                            j_u_id(jid, uid=user.id)
                             self.render_message_widget(Message(ok=True, goto="/main"))
                             return
                         else:
@@ -232,6 +235,8 @@ class LogoutHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         LogDao.add_log("安全退出", user=self.current_user['id'])
+        from brahma.cache import j_u_id
+        j_u_id(self.current_user['jid'], invalidate=True)
         self.clear_cookie("user")
         self.goto_main_page()
 

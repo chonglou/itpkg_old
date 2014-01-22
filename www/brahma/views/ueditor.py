@@ -100,16 +100,11 @@ class FileHandler(tornado.web.RequestHandler):
 
     def __user_path(self):
 
-        sid = self.get_argument("jsessionid")
+        jid = self.get_argument("jsessionid")
         uid = None
-        if sid and sid != "null":
-            try:
-                from brahma.env import encrypt
-
-                uid, salt = encrypt.decode(sid.encode())
-            except:
-                logging.exception("解析sid出错")
-
+        if jid and jid != "null":
+            from brahma.cache import j_u_id
+            uid = j_u_id(jid=jid)
         if uid is None:
             uid = 0
 

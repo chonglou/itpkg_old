@@ -3,6 +3,19 @@ __author__ = 'zhengjitang@gmail.com'
 from brahma.env import cache
 
 
+def j_u_id(jid, uid=None, invalidate=False):
+    c = cache.get_cache("jsessionid", type="dbm")
+    if invalidate:
+        c.remove_value(jid)
+        return
+    if uid:
+        c.set_value(jid, uid)
+        return uid
+    return c.get_value(jid)
+
+
+
+
 def get_advert(key, invalidate=False):
     @cache.cache("site/advert/%s" % key)
     def info():

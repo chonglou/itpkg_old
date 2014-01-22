@@ -10,7 +10,9 @@
  **************************提示********************************/
 window.UEDITOR_HOME_URL = "/static/3rd/ueditor1_3_6-utf8/";
 
-
+function getJsessionid(){
+    return "?jsessionid="+gl_jsessionid;
+}
 
 (function () {
     /**
@@ -32,7 +34,7 @@ window.UEDITOR_HOME_URL = "/static/3rd/ueditor1_3_6-utf8/";
         UEDITOR_HOME_URL: URL
 
         //图片上传配置区
-        , imageUrl: URL + "../../../editor/imageUp?jsessionid=" + gl_jsessionid             //图片上传提交地址
+        , imageUrl: URL + "../../../editor/imageUp" +getJsessionid()             //图片上传提交地址
         , imagePath: URL + "../../../attachments/"                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
         //,imageFieldName:"upfile"                  //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
         //,compressSide:0                           //等比压缩的基准，确定maxImageSideLength参数的参照对象。0为按照最长边，1为按照宽度，2为按照高度
@@ -42,40 +44,40 @@ window.UEDITOR_HOME_URL = "/static/3rd/ueditor1_3_6-utf8/";
         //比如： savePath: [ 'upload1', 'upload2' ]
 
         //涂鸦图片配置区
-        , scrawlUrl: URL + "../../../editor/scrawlUp?jsessionid=" + gl_jsessionid            //涂鸦上传地址
+        , scrawlUrl: URL + "../../../editor/scrawlUp" +getJsessionid()            //涂鸦上传地址
         , scrawlPath: URL + "../../../attachments/"                            //图片修正地址，同imagePath
 
         //附件上传配置区
-        , fileUrl: URL + "../../../editor/fileUp?jsessionid=" + gl_jsessionid             //附件上传提交地址
+        , fileUrl: URL + "../../../editor/fileUp" +getJsessionid()             //附件上传提交地址
         , filePath: URL + "../../../attachments/"                   //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 
         //远程抓取配置区
         //,catchRemoteImageEnable:true               //是否开启远程图片抓取,默认开启
-        , catcherUrl: URL + "../../../editor/getRemoteImage?jsessionid=" + gl_jsessionid    //处理远程图片抓取的地址
+        , catcherUrl: URL + "../../../editor/getRemoteImage" +getJsessionid()    //处理远程图片抓取的地址
         , catcherPath: URL + "../../../attachments/"                  //图片修正地址，同imagePath
         //,catchFieldName:"upfile"                   //提交到后台远程图片uri合集，若此处修改，需要在后台对应文件修改对应参数
         //,separater:'ue_separate_ue'               //提交至后台的远程图片地址字符串分隔符
         //,localDomain:[]                            //本地顶级域名，当开启远程图片抓取时，除此之外的所有其它域名下的图片都将被抓取到本地,默认不抓取127.0.0.1和localhost
 
         //图片在线管理配置区
-        , imageManagerUrl: URL + "../../../editor/imageManager?jsessionid=" + gl_jsessionid       //图片在线管理的处理地址
+        , imageManagerUrl: URL + "../../../editor/imageManager" +getJsessionid()       //图片在线管理的处理地址
         , imageManagerPath: URL + "../../../attachments/"                                    //图片修正地址，同imagePath
 
         //屏幕截图配置区
         , snapscreenHost: location.hostname                                 //屏幕截图的server端文件所在的网站地址或者ip，请不要加http://
-        , snapscreenServerUrl: URL + "../../../editor/imageUp?jsessionid=" + gl_jsessionid //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
+        , snapscreenServerUrl: URL + "../../../editor/imageUp" +getJsessionid() //屏幕截图的server端保存程序，UEditor的范例代码为“URL +"server/upload/jsp/snapImgUp.jsp"”
         , snapscreenPath: URL + "../../../attachments/", snapscreenServerPort: location.port                                   //屏幕截图的server端端口
         //,snapscreenImgAlign: ''                                //截图的图片默认的排版方式
 
         //word转存配置区
-        , wordImageUrl: URL + "../../../editor/imageUp?jsessionid=" + gl_jsessionid             //word转存提交地址
+        , wordImageUrl: URL + "../../../editor/imageUp" +getJsessionid()             //word转存提交地址
         , wordImagePath: URL + "../../../attachments/"                       //
         //,wordImageFieldName:"upfile"                     //word转存表单名若此处修改，需要在后台对应文件修改对应参数
 
         //视频上传配置区
-        , getMovieUrl: URL + "../../../editor/getMovie?jsessionid=" + gl_jsessionid                  //视频数据获取地址
-        , videoUrl: URL + "../../../editor/fileUp?jsessionid=" + gl_jsessionid               //附件上传提交地址
+        , getMovieUrl: URL + "../../../editor/getMovie" +getJsessionid()                  //视频数据获取地址
+        , videoUrl: URL + "../../../editor/fileUp" +getJsessionid()               //附件上传提交地址
         , videoPath: URL + "../../../attachments/"                   //附件修正地址，同imagePath
         //,videoFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 

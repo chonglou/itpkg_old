@@ -32,7 +32,8 @@ class InstallHandler(tornado.web.RequestHandler):
 
     def get(self):
         if self.__check():
-            self.__render_page("install.html", "初始化安装", form=InstallForm("install", "初始化安装", "/install", captcha=True))
+            import uuid
+            self.__render_page("install.html", "初始化安装", jsessionid=uuid.uuid4().hex, form=InstallForm("install", "初始化安装", "/install", captcha=True))
 
     def post(self):
         if self.__check():
