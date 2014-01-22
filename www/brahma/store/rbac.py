@@ -14,7 +14,7 @@ class RbacDao:
     def bind(role, operation, resource, begin=datetime.datetime.now(), end=datetime.datetime.max, bind=False,
              session=None):
         try:
-            p = session.query(User).filter(Permission.role == role, Permission.operation == operation,
+            p = session.query(Permission).filter(Permission.role == role, Permission.operation == operation,
                                            Permission.resource == resource).one()
         except NoResultFound:
             p = None
@@ -36,7 +36,7 @@ class RbacDao:
     def auth(role, operation, resource, session=None):
         try:
             dt = datetime.datetime.now()
-            return session.query(User).filter(
+            return session.query(Permission).filter(
                 Permission.role == role,
                 Permission.operation == operation,
                 Permission.resource == resource,

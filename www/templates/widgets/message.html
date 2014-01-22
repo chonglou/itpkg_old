@@ -1,4 +1,4 @@
-<div id="msgModal" class="modal fade">
+<div id="msgModal{{id}}" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,7 +17,7 @@
                 <a class="btn btn-default" data-dismiss="modal">取消</a>
                 <a class="btn btn-primary">继续</a>
                 {% else %}
-                <button id="msgModal-btn-ok" class="btn btn-primary" data-dismiss="modal">确定</button>
+                <button id="msgModal{{id}}-btn-ok" class="btn btn-primary" data-dismiss="modal">确定</button>
                 {% end %}
             </div>
         </div>

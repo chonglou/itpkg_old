@@ -1,7 +1,20 @@
 __author__ = 'zhengjitang@gmail.com'
 
-from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField
+from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField,HiddenField
 from brahma.web import Form,HtmlField
+
+
+class ValidCodeForm(Form):
+    code = TextField("文件名")
+
+
+class AdvertForm(Form):
+    aid = HiddenField()
+    script = TextAreaField("脚本")
+
+
+class ProtocolForm(Form):
+    content = TextAreaField("用户协议")
 
 
 class ContentForm(Form):

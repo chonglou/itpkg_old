@@ -13,6 +13,9 @@ class PageNotFoundHandler(tornado.web.RequestHandler):
 
 
 class BaseHandler(tornado.web.RequestHandler):
+    def log(self, message, flag="INFO"):
+        from brahma.store.site import LogDao
+        LogDao.add_log(message, flag=flag, user=self.current_user['id'] if self.current_user else None)
     def is_admin(self):
         return self.current_user and self.current_user["admin"]
 

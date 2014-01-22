@@ -14,7 +14,7 @@ class CtlBar(tornado.web.UIModule):
         return js_ready("""
             function show_tab(href){
                 var id = href.substr(1);
-                new Ajax(id, "%s/"+id);
+                new Ajax(id, "%s/"+id.split('-')[2]);
             }
             $('ul#tab a').click(function(){
                 show_tab($(this).attr("href"));
@@ -149,7 +149,7 @@ class TopNav(tornado.web.UIModule):
             links = list()
             if self.current_user:
                 if self.current_user["admin"]:
-                    links.append(("/personal/site", "站点参数"))
+                    links.append(("/personal/site", "站点设置"))
                 links.append(("/personal/self", "个人信息"))
                 links.extend(
                     map(lambda name: ("/personal/" + name, importlib.import_module("brahma.plugins." + name).NAME),
@@ -223,14 +223,10 @@ class QrCode(tornado.web.UIModule):
 
 
 class Advert(tornado.web.UIModule):
-    def embedded_javascript(self):
-        from brahma.cache import get_advert
-
-        return get_advert(self.name)
 
     def render(self, name):
-        self.name = name
-        return "<div id='advert-%s'></div>" % name
+        from brahma.cache import get_advert
+        return "<div id='advert-%s'>%s</div>" % (name,get_advert(name))
 
 
 class NavBar(tornado.web.UIModule):
@@ -319,17 +315,19 @@ class Form(tornado.web.UIModule):
 class Message(tornado.web.UIModule):
     def embedded_javascript(self):
         return js_ready("""
-            $('div#msgModal').modal({keyboard: false});
+            $('div#msgModal%s').modal({keyboard: false});
             %s
-        """ % ("""
-            $("button#msgModal-btn-ok").click(function(){
+        """ % (self.mid, """
+            $("button#msgModal%s-btn-ok").click(function(){
                window.location.href="%s";
             });
-        """ % self.goto if self.goto else ""))
+        """ % (self.mid, self.goto) if self.goto else ""))
 
     def render(self, msg):
+        import uuid
         self.goto = msg.goto
-        return self.render_string("widgets/message.html", msg=msg)
+        self.mid = uuid.uuid4().hex
+        return self.render_string("widgets/message.html", id=self.mid, msg=msg)
 
 
 def js_ready(script):

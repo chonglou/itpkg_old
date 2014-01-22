@@ -25,6 +25,11 @@ class LogDao:
 class UserDao:
     @staticmethod
     @db_call
+    def list_user(session=None):
+        return session.query(User).order_by(User.id.desc()).all()
+
+    @staticmethod
+    @db_call
     def set_info(uid, username, logo, contact, session=None):
         u = session.query(User).filter(User.id == uid).one()
         import json
@@ -32,6 +37,14 @@ class UserDao:
         u.username = username
         u.logo = logo
         u.contact = json.dumps(contact)
+
+
+    @staticmethod
+    @db_call
+    def set_lastLogin(uid, session=None):
+        import datetime
+        u = session.query(User).filter(User.id == uid).one()
+        u.lastLogin = datetime.datetime.now()
 
     @staticmethod
     @db_call
@@ -91,7 +104,7 @@ class SettingDao:
         try:
             s = session.query(Setting).filter(Setting.key == key).one()
         except NoResultFound:
-            return
+            s = None
 
         if encrypt:
             val = _encrypt.encode(val)
@@ -100,7 +113,7 @@ class SettingDao:
 
         if s:
             s.val = val
-            s.val += 1
+            s.version += 1
         else:
             s = Setting(key, val)
             session.add(s)

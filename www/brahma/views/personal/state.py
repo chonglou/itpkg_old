@@ -216,6 +216,7 @@ class LoginHandler(BaseHandler):
                                 "admin": RbacDao.auth4admin(user.id),
                                 "jid": jid,
                             })
+                            UserDao.set_lastLogin(user.id)
                             LogDao.add_log("成功登录", user=user.id)
                             j_u_id(jid, uid=user.id)
                             self.render_message_widget(Message(ok=True, goto="/main"))

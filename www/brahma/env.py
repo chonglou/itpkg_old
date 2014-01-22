@@ -1,12 +1,14 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import logging
+import logging,datetime
 
 import tornado.options
 
 from brahma.utils.encrypt import Encrypt
 from brahma.utils.redis import Redis
 from brahma.store import Database
+
+start_stamp = datetime.datetime.now()
 
 encrypt = Encrypt(tornado.options.options.app_secret)
 
