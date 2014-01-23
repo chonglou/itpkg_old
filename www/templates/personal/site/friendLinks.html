@@ -1,5 +1,4 @@
-<div id="frientlinks-root"></div>
-{% module Form(form) %}
+<div id="friendLinks-root"></div>
 <div class="panel panel-default">
     <div class="panel-heading">
         友情链接列表
@@ -20,16 +19,16 @@
         <tbody>
         {% for l in links %}
         <tr>
-            <td>{{id}}</td>
+            <td>{{l.id}}</td>
             <td>{{l.name}}</td>
             <td><a href="{{l.url}}" target="_blank">{{l.url}}</a></td>
-            <td>{{("<img src='%s'>" % l.logo) if l.logo else ""}}</td>
+            <td>{% raw ("<img src='%s'>" % l.logo) if l.logo else "" %}</td>
             <td>
                 <div class="btn-group btn-group-sm">
-                    <button id="/personal/site/friendLink-{{lid}}-EDIT" class="btn btn-success">
+                    <button id="/personal/site/friendLink-{{l.id}}-EDIT" class="btn btn-success">
                         编辑
                     </button>
-                    <button id="/personal/site/friendLink-{{lid}}-DELETE" class="btn btn-danger">
+                    <button id="/personal/site/friendLink-{{l.id}}-DELETE" class="btn btn-danger">
                         删除
                     </button>
                 </div>
@@ -41,14 +40,21 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
+        new Ajax("friendLinks-root", "/personal/site/friendLink", "PUT");
         $("button#refresh").click(function () {
             new Ajax("tab-item-friendLink", "/personal/site/friendLink");
         });
-        $("button[id^='/personal/site/user']").click(function () {
+        $("button[id^='/personal/site/friendLink-']").click(function () {
             var ss = $(this).attr("id").split('-');
-            if (confirm("你确定要进行此操作么？")) {
-                new Ajax("user-root", ss[0], "POST", {uid:ss[1],state:ss[2]});
+            if(ss[2] == "EDIT"){
+                new Ajax("friendLinks-root", "/personal/site/friendLink", "PUT", {id:ss[1]});
             }
+            else if(ss[2] == "DELETE"){
+                if (confirm("你确定要进行此操作么？")) {
+                    new Ajax("friendLinks-root", ss[0]+"/"+ss[1], "DELETE");
+                }
+            }
+
         });
     });
 </script>

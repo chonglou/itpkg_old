@@ -30,7 +30,7 @@ class Permission(Base):
 class FriendLink(Base):
     __tablename__ = "friend_links"
     id = Column(Integer, Sequence('friendlink_id_seq'), primary_key=True)
-    url = Column(String(255), nullable=False, unique=True)
+    url = Column(String(255), nullable=False)
     logo = Column(String(255))
     name = Column(String(255), nullable=False)
 

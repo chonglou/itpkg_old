@@ -71,6 +71,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.get_argument("captcha") == self.get_secure_cookie("captcha").decode("utf-8")
 
     def write_error(self, status_code, **kwargs):
+        status_code = status_code
         if status_code == 404:
             msg = "资源不存在"
         elif status_code == 500:

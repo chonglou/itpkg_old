@@ -32,7 +32,6 @@ class AdminHandler(BaseHandler):
 
             elif act=="friendLink":
                 self.render("personal/site/friendLinks.html",
-                            form=FriendLinkForm("friendLink", "友情链接", "/personal/site/friendLink"),
                             links=FriendLinkDao.all())
 
             elif act == "seo":
@@ -185,8 +184,44 @@ class AdminHandler(BaseHandler):
                 get_site_info("protocol", True)
                 self.log("修改用户注册协议")
                 self.render_message_widget(Message(ok=True))
+            elif act=="friendLink":
+                fm = FriendLinkForm(formdata=self.request.arguments)
+
+                if fm.validate():
+                    if fm.flid:
+                        FriendLinkDao.add(fm.name.data, fm.url.data, fm.logo.data)
+                    else:
+                        FriendLinkDao.set(fm.flid.data,fm.name.data, fm.url.data, fm.logo.data)
+                    self.render_message_widget(Message(ok=True))
+                else:
+                    messages = []
+                    messages.extend(fm.messages())
+                    self.render_message_widget(Message(messages=messages))
             else:
                 pass
+
+    @tornado.web.authenticated
+    def put(self, act):
+        if self.is_admin():
+            if act == "friendLink":
+                flid = self.get_argument("id", None)
+                form=FriendLinkForm("friendLink", "友情链接", "/personal/site/friendLink")
+                if flid:
+                    fl = FriendLinkDao.get(flid)
+                    form.flid.data = fl.id
+                    form.url.data = fl.url
+                    form.name.data = fl.name
+                    form.logo.data = fl.logo
+                self.render_form_widget(form)
+
+    @tornado.web.authenticated
+    def delete(self, act):
+        if self.is_admin():
+            if act.startswith("friendLink/"):
+                flid = act[len("friendLink/"):]
+                FriendLinkDao.delete(flid)
+                self.log("删除友情链接[%s]"%flid)
+                self.render_message_widget(Message(ok=True))
 
 
 class SiteHandler(BaseHandler):

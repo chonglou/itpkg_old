@@ -20,6 +20,11 @@ class FriendLinkDao:
 
     @staticmethod
     @db_call
+    def get(flid, session=None):
+        return session.query(FriendLink).filter(FriendLink.id == flid).one()
+
+    @staticmethod
+    @db_call
     def set(flid, name, url, logo=None, session=None):
         fl = session.query(FriendLink).filter(FriendLink.id == flid).one()
         fl.name = name
