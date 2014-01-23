@@ -4,6 +4,12 @@ from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanF
 from brahma.web import Form,HtmlField
 
 
+class FriendLinkForm(Form):
+    flid = HiddenField()
+    name = TextField("名称", validators=[validators.Required()])
+    url = TextField("地址", validators=[validators.Required()])
+    logo = TextField("图标")
+
 class ValidCodeForm(Form):
     code = TextField("文件名")
 

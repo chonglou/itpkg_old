@@ -29,20 +29,20 @@ class Permission(Base):
 
 class FriendLink(Base):
     __tablename__ = "friend_links"
-    id = Column(Integer, Sequence('rbac_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('friendlink_id_seq'), primary_key=True)
     url = Column(String(255), nullable=False, unique=True)
     logo = Column(String(255))
-    title = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False)
 
-    def __init__(self, url, logo, title):
+    def __init__(self, name, url, logo):
         self.url = url
         self.logo = logo
-        self.title = title
+        self.name = name
 
 
 class Setting(Base):
     __tablename__ = "settings"
-    key = Column(String(255), name="kkk", primary_key=True)
+    key = Column(String(255), Sequence('setting_id_seq'), name="kkk", primary_key=True)
     val = Column(LargeBinary, name="vvv")
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
     version = Column(Integer, nullable=False, default=0)
@@ -57,7 +57,7 @@ class Setting(Base):
 
 class Log(Base):
     __tablename__ = "logs"
-    id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('log_id_seq'), primary_key=True)
     user = Column(Integer)
     message = Column(String(255), nullable=False)
     flag = Column(String(8), nullable=False)

@@ -2,8 +2,8 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 from brahma.views import BaseHandler
-from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm,ValidCodeForm
-from brahma.store.site import SettingDao, UserDao, LogDao
+from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm,ValidCodeForm,FriendLinkForm
+from brahma.store.site import SettingDao, UserDao, LogDao,FriendLinkDao
 from brahma.web import Message
 from brahma.cache import get_site_info
 
@@ -29,6 +29,11 @@ class AdminHandler(BaseHandler):
                 fmProtocol.content.data = SettingDao.get("site.protocol")
 
                 self.render("widgets/forms.html", forms=[fmInfo, fmHelp, fmAboutMe, fmProtocol])
+
+            elif act=="friendLink":
+                self.render("personal/site/friendLinks.html",
+                            form=FriendLinkForm("friendLink", "友情链接", "/personal/site/friendLink"),
+                            links=FriendLinkDao.all())
 
             elif act == "seo":
                 fmGoogle = ValidCodeForm("google", "GOOGLE网站验证", "/personal/site/seo.google")
@@ -191,6 +196,7 @@ class SiteHandler(BaseHandler):
             return self.render_ctlbar_widget(act="/personal/site",
                                              items=[
                                                  ("info", "基本信息"),
+                                                 ("friendLink", "友情链接"),
                                                  ("smtp", "邮件设置"),
                                                  ("seo", "站长工具"),
                                                  ("oauth", "OAUTH"),

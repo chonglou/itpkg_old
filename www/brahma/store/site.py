@@ -4,8 +4,33 @@ import pickle
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from brahma.models import Setting, User, Log
+from brahma.models import Setting, User, Log,FriendLink
 from brahma.env import encrypt as _encrypt, db_call
+
+class FriendLinkDao:
+    @staticmethod
+    @db_call
+    def add(name, url, logo=None, session=None):
+        session.add(FriendLink(name, url, logo))
+
+    @staticmethod
+    @db_call
+    def all(session=None):
+        return session.query(FriendLink).order_by(FriendLink.id.desc()).all()
+
+    @staticmethod
+    @db_call
+    def set(flid, name, url, logo=None, session=None):
+        fl = session.query(FriendLink).filter(FriendLink.id == flid).one()
+        fl.name = name
+        fl.url = url
+        fl.logo = logo
+
+    @staticmethod
+    @db_call
+    def delete(flid, session=None):
+        fl = session.query(FriendLink).filter(FriendLink.id == flid).one()
+        session.delete(fl)
 
 
 class LogDao:

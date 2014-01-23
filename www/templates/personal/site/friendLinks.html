@@ -1,0 +1,55 @@
+<div id="frientlinks-root"></div>
+{% module Form(form) %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        友情链接列表
+        <div class="btn-group btn-group-sm">
+            <button id="refresh" class="btn btn-info">刷新列表</button>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>名称</td>
+            <td>地址</td>
+            <td>图标</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for l in links %}
+        <tr>
+            <td>{{id}}</td>
+            <td>{{l.name}}</td>
+            <td><a href="{{l.url}}" target="_blank">{{l.url}}</a></td>
+            <td>{{("<img src='%s'>" % l.logo) if l.logo else ""}}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button id="/personal/site/friendLink-{{lid}}-EDIT" class="btn btn-success">
+                        编辑
+                    </button>
+                    <button id="/personal/site/friendLink-{{lid}}-DELETE" class="btn btn-danger">
+                        删除
+                    </button>
+                </div>
+            </td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button#refresh").click(function () {
+            new Ajax("tab-item-friendLink", "/personal/site/friendLink");
+        });
+        $("button[id^='/personal/site/user']").click(function () {
+            var ss = $(this).attr("id").split('-');
+            if (confirm("你确定要进行此操作么？")) {
+                new Ajax("user-root", ss[0], "POST", {uid:ss[1],state:ss[2]});
+            }
+        });
+    });
+</script>
+<p>&nbsp;</p>
