@@ -29,12 +29,12 @@ def get_advert(key, invalidate=False):
     return info()
 
 
-def get_site_info(key, invalidate=False):
+def get_site_info(key, invalidate=False, encrypt=False):
     @cache.cache("site/%s" % key)
     def info():
         from brahma.store.site import SettingDao
 
-        return SettingDao.get("site.%s" % key)
+        return SettingDao.get("site.%s" % key, encrypt)
 
     if invalidate:
         cache.invalidate(info, "site/%s" % key)

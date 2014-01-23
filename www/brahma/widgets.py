@@ -82,8 +82,11 @@ class Head(tornado.web.UIModule):
             <meta name="description" content="%s"/>
             <meta name="keywords" content="%s"/>
             <meta name="author" content="zhengjitang@gmail.com">
-            <title>%s</title>
-            """ % (get_site_info("description") or "", get_site_info("keywords") or "", get_site_info("title") or "")
+            <title>%s-%s</title>
+            """ % (get_site_info("description") or "",
+                   get_site_info("keywords") or "",
+                   get_site_info("title") or "",
+                   title or "")
 
 
 class TopNav(tornado.web.UIModule):
@@ -223,10 +226,10 @@ class QrCode(tornado.web.UIModule):
 
 
 class Advert(tornado.web.UIModule):
-
     def render(self, name):
         from brahma.cache import get_advert
-        return "<div id='advert-%s'>%s</div>" % (name,get_advert(name))
+
+        return "<div id='advert-%s'>%s</div>" % (name, get_advert(name))
 
 
 class NavBar(tornado.web.UIModule):
@@ -325,6 +328,7 @@ class Message(tornado.web.UIModule):
 
     def render(self, msg):
         import uuid
+
         self.goto = msg.goto
         self.mid = uuid.uuid4().hex
         return self.render_string("widgets/message.html", id=self.mid, msg=msg)

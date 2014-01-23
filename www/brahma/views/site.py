@@ -3,6 +3,8 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 
 from brahma.views import BaseHandler
+from brahma.store.site import UserDao, SettingDao
+from brahma.cache import get_site_info
 
 
 class MainHandler(BaseHandler):
@@ -53,12 +55,35 @@ class CalendarHandler(BaseHandler):
             items=items)
 
 
+class UserInfoHandler(BaseHandler):
+    def get(self, uid):
+        manager = get_site_info("manager", encrypt=True)
+        if manager != int(uid) :
+            user = UserDao.get_by_id(uid)
+            if user:
+                import json
+                contact = json.loads(user.contact)
+                self.render_page("template.html", title=user.username, content=contact['details'])
+                return
+        self.write_error(404)
+
+
+class UserListHandler(BaseHandler):
+    def get(self):
+        manager = get_site_info("manager", encrypt=True)
+        cards = [("/user/%s" % u.id, u.logo, u.username, "" if "localhost" in u.email else u.email) for u in
+                 filter(lambda t:t.id!=manager, UserDao.list_user())]
+        self.render_page("fallCard.html", "用户列表", "/user", cards=cards)
+
+
 handlers = [
     (r"/", tornado.web.RedirectHandler, dict(url="/main")),
     (r"/main", MainHandler),
     (r"/search", SearchHandler),
     (r"/aboutMe", AboutMeHandler),
     (r"/help", HelpHandler),
+    (r"/user", UserListHandler),
+    (r"/user/([0-9]+)", UserInfoHandler),
     (r"/calendar/([0-9]+)/([0-9]+)", CalendarHandler),
     (r"/calendar/([0-9]+)/([0-9]+)/([0-9]+)", CalendarHandler)
 ]
