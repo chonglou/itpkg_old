@@ -14,7 +14,8 @@ class InstallHandler(tornado.web.RequestHandler):
         from brahma.cache import get_site_info
 
         if get_site_info("version"):
-            self.redirect("/main")
+            #如果需要重新安装，请清理浏览器cache
+            self.redirect("/main",permanent=True)
             return False
         return True
 

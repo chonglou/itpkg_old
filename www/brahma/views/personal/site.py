@@ -59,9 +59,16 @@ class AdminHandler(BaseHandler):
                 self.render("widgets/forms.html", forms=[fmLeft, fmBottom])
             elif act == "status":
                 from brahma.env import start_stamp
-                import datetime
+                import datetime,psutil,tornado.options,sys
+                import brahma.utils
 
                 items = list()
+                items.append("Python Home：%s"%sys.exec_prefix)
+                items.append("附件目录：%s"%brahma.utils.path("../../statics/tmp/attach"))
+                items.append("临时数据：%s"%tornado.options.options.app_store)
+                items.append("CPU：%s%%"%psutil.cpu_percent(1))
+                phymem = psutil.phymem_usage()
+                items.append("内存：%s%%  %sM/%sM"%(phymem.percent, int(phymem.used/1024/1024), int(phymem.total/1024/1024)))
                 items.append("当前时间：%s" % datetime.datetime.now())
                 items.append("启动时间：%s" % start_stamp)
                 self.render_list_widget("系统状态", items)

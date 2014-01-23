@@ -15,13 +15,14 @@ class FileHandler(tornado.web.RequestHandler):
         val = list()
 
         path = "%s/%s" % (brahma.utils.path("../../statics/tmp/attach"), self.__user_path())
+        l = len(path)
         for root, dirs, files in os.walk(path, True):
             for name in files:
                 ext = os.path.splitext(name)[1]
                 if ext in types:
-                    val.append("%s%s/%s" % (self.__user_path(), root[len(path):], name))
+                    val.append("%s%s/%s" % (self.__user_path(), root[l:], name))
 
-        logging.debug("%s" % val)
+        #logging.debug("%s" % val)
         return val
 
     def _upload_remote(self, url, path=None, types={".gif", ".png", ".jpg", ".jpeg", ".bmp"}):
