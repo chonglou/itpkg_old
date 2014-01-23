@@ -46,6 +46,9 @@ class InfoHandler(BaseHandler):
 
             self.render("personal/self/attach.html", items=items,
                         uid=None if self.is_admin() else self.current_user['id'])
+
+        elif act == "ssh":
+            self.render("personal/self/ssh.html", ssh=None)
         else:
             pass
 
@@ -77,6 +80,66 @@ class InfoHandler(BaseHandler):
                 return
             else:
                 messages.extend(fm.messages())
+        elif act == "ssh":
+            from brahma.env import ssh
+
+            flag = self.get_argument("act")
+            ok = False
+            data = []
+
+            if flag == "login":
+                host = self.get_argument("host")
+                password = self.get_argument("password")
+
+                try:
+                    i1 = host.index("@")
+                except ValueError:
+                    i1 = None
+
+                try:
+                    i2 = host.index(":")
+                except ValueError:
+                    i2 = None
+
+                if i1:
+                    user = host[0:i1]
+                    if i2:
+                        port = host[i2 + 1:]
+                        host = host[i1 + 1:i2]
+                    else:
+                        port = 22
+                        host = host[i1 + 1:]
+                else:
+                    user = "root"
+                    if i2:
+                        port = host[i2 + 1:]
+                        host = host[0:i2]
+                    else:
+                        port = 22
+                data.append("%s@%s:%s" % (user, host, port))
+                sid = ssh.login(host, user, password, port)
+                if sid:
+                    self.set_secure_cookie("ssh", sid, expires_days=1)
+                    ok = True
+                    data.append("成功登录")
+                else:
+                    data.append("登录失败")
+
+            elif flag == "logout":
+                sid = self.get_secure_cookie("ssh").decode()
+                ssh.logout(sid)
+                self.clear_cookie("ssh")
+                data.append("成功注销登录")
+                ok = True
+            elif flag == "run":
+                command = self.get_argument("command")
+                sid = self.get_secure_cookie("ssh").decode()
+                data.extend(ssh.execute(sid, command))
+                ok = True
+            else:
+                data.append("未知操作")
+            self.write({"ok": ok, "data": data})
+            return
         else:
             messages.append("未知操作")
 
@@ -86,9 +149,10 @@ class InfoHandler(BaseHandler):
     def delete(self, attach):
         if attach.startswith("attach/"):
             attach = attach[7:]
-            import os,logging
+            import os, logging
             import brahma.utils
-            logging.debug("用户[%s]请求删除[%s]"%(self.current_user["id"], attach))
+
+            logging.debug("用户[%s]请求删除[%s]" % (self.current_user["id"], attach))
             d = "../../statics/tmp/attach"
             if self.is_admin():
                 tmp = brahma.utils.path(d)
@@ -110,6 +174,7 @@ class SelfHandler(BaseHandler):
     def get(self):
         return self.render_ctlbar_widget(act="/personal/self",
                                          items=[
+                                             ("ssh", "SSH工具"),
                                              ("attach", "附件管理"),
                                              ("contact", "联系信息"),
                                              ("setPwd", "修改密码"),

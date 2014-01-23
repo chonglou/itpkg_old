@@ -18,14 +18,15 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-3">
+            <div id="gl_left"></div>
             {% block sidebar %}
-            {% module NavBar(navItems)%}
+            {% module NavBar()%}
             <br>
             {% module DatePicker() %}
             <br>
             {% module Advert("left") %}
             <br/>
-            {% module TagCloud(tagLinks)%}
+            {% module TagCloud()%}
             <br/>
             {% module QrCode() %}
             <br/>
@@ -38,6 +39,8 @@
             {% module Advert("bottom")%}
         </div>
     </div>
+    <hr>
+    {% module FriendLinkBar() %}
     <hr>
     <footer>
         <p>&copy; 2014</p>

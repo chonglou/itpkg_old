@@ -1,0 +1,90 @@
+<form id="sshFm" class="form-inline" role="form">
+    <div class="form-group">
+        <input type="text" class="form-control" id="sshHost" placeholder="用户名@主机:端口">
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" id="sshPassword" placeholder="密码">
+    </div>
+    <div class="form-group">
+        <input type="text" style="display: none" size="100" class="form-control" id="sshCommand"
+               placeholder="在此输入命令, 按下回车运行">
+    </div>
+    <div class="btn-group">
+        <button id="sshSubmit" type="submit" value="false" class="btn btn-success"> 连 接</button>
+    </div>
+</form>
+<br/>
+<div id="sshOutput" class="panel panel-default">
+    <div class="panel-heading">控制台</div>
+    <ul class="list-group"></ul>
+</div>
+
+<script type="text/javascript">
+    function insertItem(msg) {
+        $("div#sshOutput ul").prepend("<li class='list-group-item'> " + msg + "</li>");
+    }
+    function toggle() {
+        $("input#sshHost").toggle();
+        $("input#sshPassword").toggle();
+        $("input#sshCommand").toggle();
+        btn = $("button#sshSubmit");
+
+        if (btn.val() == "false") {
+            btn.val("true");
+            btn.text(" 断 开 ");
+            btn.removeClass("btn-success");
+            btn.addClass("btn-danger")
+        }
+        else {
+            btn.val("false");
+            btn.text(" 连 接 ");
+            btn.removeClass("btn-danger");
+            btn.addClass("btn-success")
+        }
+    }
+    $(document).ready(function () {
+        $("button#sshSubmit").click(function () {
+
+            if ($(this).val() == "false") {
+
+                new Ajax("",
+                        "/personal/self/ssh", "POST",
+                        {
+                            act: "login",
+                            host: $("input#sshHost").val(),
+                            password: $("input#sshPassword").val()
+                        },
+                        function (result) {
+
+                            $("input#sshPassword").val("");
+                            if (result.ok) {
+                                toggle();
+                            }
+                            insertItem("ssh "+result.data.join("<br>"));
+
+                        }, false);
+            }
+            else {
+                new Ajax("", "/personal/self/ssh", "POST", {act: "logout"}, function(result){
+                    $("input#sshCommand").val("");
+                    insertItem("断开连接");
+                    //$("div#sshOutput ul").empty();
+                    toggle();
+                });
+            }
+
+        });
+        $("input#sshCommand").keypress(function (event) {
+            if (event.which == 13) {
+                event.preventDefault();
+                var command = $(this).val();
+                $(this).val("");
+
+                new Ajax("", "/personal/self/ssh", "POST", {act: "run", command: command}, function (result) {
+                    insertItem("# " + result.data.join("<br>"));
+                }, false);
+            }
+        });
+
+    });
+</script>

@@ -12,14 +12,16 @@ class AttachHandler(tornado.web.RequestHandler):
 class GoogleHandler(tornado.web.RequestHandler):
     def get(self, name):
         from brahma.cache import get_site_info
+
         if name == get_site_info("seo.google"):
             self.set_header("Content-Type:", "text/plain")
-            self.write("google-site-verification: google%s.html"%name)
+            self.write("google-site-verification: google%s.html" % name)
 
 
 class BaiduHandler(tornado.web.RequestHandler):
     def get(self, name):
         from brahma.cache import get_site_info
+
         if name == get_site_info("seo.baidu"):
             self.set_header("Content-Type:", "text/plain")
             self.write(name)

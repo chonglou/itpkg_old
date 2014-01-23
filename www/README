@@ -25,7 +25,7 @@ cd ..
 source tmp/python3/bin/activate
 pacman -S tcl tk
 pip install Pillow
-pip install tornado SQLAlchemy pycurl pycrypto redis WTForms wtforms-tornado beaker qrcode markdown mysql-connector-python psutil
+pip install tornado SQLAlchemy pycurl pycrypto redis WTForms wtforms-tornado beaker qrcode markdown mysql-connector-python psutil pexpect
 
 退出python环境：
 deactivate

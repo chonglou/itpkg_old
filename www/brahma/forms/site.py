@@ -1,7 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
-from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField,HiddenField
-from brahma.web import Form,HtmlField
+from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField, HiddenField
+from brahma.web import Form, HtmlField
 
 
 class FriendLinkForm(Form):
@@ -9,6 +9,7 @@ class FriendLinkForm(Form):
     name = TextField("名称", validators=[validators.Required()])
     url = TextField("地址", validators=[validators.Required()])
     logo = TextField("图标")
+
 
 class ValidCodeForm(Form):
     code = TextField("文件名")

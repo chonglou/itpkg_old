@@ -3,7 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.store.site import UserDao, SettingDao
+from brahma.store.site import UserDao
 from brahma.cache import get_site_info
 
 
@@ -45,23 +45,27 @@ class CalendarHandler(BaseHandler):
 
         import tornado.options, importlib
 
-        items = list()
+        cards = list()
+        links = list()
         for p in tornado.options.options.app_plugins:
-            items.extend(importlib.import_module("brahma.plugins." + p).calendar(year, month, day))
+            cl, ll = importlib.import_module("brahma.plugins." + p).calendar(year, month, day)
+            cards.extend(cl)
+            links.extend(ll)
 
         self.render_page(
             "calendar.html",
             title="%04d年%02d月%02d日" % (year, month, day) if day else "%04d年%02d月" % (year, month),
-            items=items)
+            cards=cards, links=links)
 
 
 class UserInfoHandler(BaseHandler):
     def get(self, uid):
         manager = get_site_info("manager", encrypt=True)
-        if manager != int(uid) :
+        if manager != int(uid):
             user = UserDao.get_by_id(uid)
             if user:
                 import json
+
                 contact = json.loads(user.contact)
                 self.render_page("template.html", title=user.username, content=contact['details'])
                 return
@@ -72,7 +76,7 @@ class UserListHandler(BaseHandler):
     def get(self):
         manager = get_site_info("manager", encrypt=True)
         cards = [("/user/%s" % u.id, u.logo, u.username, "" if "localhost" in u.email else u.email) for u in
-                 filter(lambda t:t.id!=manager, UserDao.list_user())]
+                 filter(lambda t: t.id != manager, UserDao.list_user())]
         self.render_page("fallCard.html", "用户列表", "/user", cards=cards)
 
 

@@ -19,7 +19,7 @@ def calendar(year, month, day):
             return [("/wiki/%s" % w.name, w.title) for w in
                     WikiDao.list_wiki(datetime.datetime(year, month, 1), datetime.datetime(year, month + 1, 1))]
 
-    return list_wiki()
+    return list(), list_wiki()
 
 
 def search(keyword):

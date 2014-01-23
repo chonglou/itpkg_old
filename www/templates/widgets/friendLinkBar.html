@@ -1,0 +1,13 @@
+<div class="row">
+    {% for fl in items %}
+    <div class="col-lg-1">
+        <a href="{{fl.url}}" target="_blank">
+            {% if fl.logo %}
+            <img src="{{fl.logo}}" alt="{{fl.name}}">
+            {% else %}
+            {{fl.name}}
+            {% end %}
+        </a>
+    </div>
+    {% end %}
+</div>

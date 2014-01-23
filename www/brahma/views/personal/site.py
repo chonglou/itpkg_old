@@ -2,8 +2,8 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 from brahma.views import BaseHandler
-from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm,ValidCodeForm,FriendLinkForm
-from brahma.store.site import SettingDao, UserDao, LogDao,FriendLinkDao
+from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm, ValidCodeForm, FriendLinkForm
+from brahma.store.site import SettingDao, UserDao, FriendLinkDao
 from brahma.web import Message
 from brahma.cache import get_site_info
 
@@ -30,7 +30,7 @@ class AdminHandler(BaseHandler):
 
                 self.render("widgets/forms.html", forms=[fmInfo, fmHelp, fmAboutMe, fmProtocol])
 
-            elif act=="friendLink":
+            elif act == "friendLink":
                 self.render("personal/site/friendLinks.html",
                             links=FriendLinkDao.all())
 
@@ -63,16 +63,17 @@ class AdminHandler(BaseHandler):
                 self.render("widgets/forms.html", forms=[fmLeft, fmBottom])
             elif act == "status":
                 from brahma.env import start_stamp
-                import datetime,psutil,tornado.options,sys
+                import datetime, psutil, tornado.options, sys
                 import brahma.utils
 
                 items = list()
-                items.append("Python Home：%s"%sys.exec_prefix)
-                items.append("附件目录：%s"%brahma.utils.path("../../statics/tmp/attach"))
-                items.append("临时数据：%s"%tornado.options.options.app_store)
-                items.append("CPU：%s%%"%psutil.cpu_percent(1))
+                items.append("Python Home：%s" % sys.exec_prefix)
+                items.append("附件目录：%s" % brahma.utils.path("../../statics/tmp/attach"))
+                items.append("临时数据：%s" % tornado.options.options.app_store)
+                items.append("CPU：%s%%" % psutil.cpu_percent(1))
                 phymem = psutil.phymem_usage()
-                items.append("内存：%s%%  %sM/%sM"%(phymem.percent, int(phymem.used/1024/1024), int(phymem.total/1024/1024)))
+                items.append("内存：%s%%  %sM/%sM" % (
+                    phymem.percent, int(phymem.used / 1024 / 1024), int(phymem.total / 1024 / 1024)))
                 items.append("当前时间：%s" % datetime.datetime.now())
                 items.append("启动时间：%s" % start_stamp)
                 self.render_list_widget("系统状态", items)
@@ -120,7 +121,7 @@ class AdminHandler(BaseHandler):
             elif act == "advert":
                 fm = AdvertForm(formdata=self.request.arguments)
                 aid = fm.aid.data
-                SettingDao.set("site.advert."+aid, fm.script.data)
+                SettingDao.set("site.advert." + aid, fm.script.data)
                 from brahma.cache import get_advert
 
                 get_advert(aid, True)
@@ -131,12 +132,12 @@ class AdminHandler(BaseHandler):
                 messages = []
                 if fm.validate():
                     SettingDao.set("site.smtp", {
-                        "host":fm.host.data,
-                        "port":fm.port.data,
-                        "username":fm.username.data,
-                        "password":fm.password.data,
-                        "bcc":fm.bcc.data,
-                        "ssl":fm.ssl.data,
+                        "host": fm.host.data,
+                        "port": fm.port.data,
+                        "username": fm.username.data,
+                        "password": fm.password.data,
+                        "bcc": fm.bcc.data,
+                        "ssl": fm.ssl.data,
                     }, True)
                     self.log("修改SMTP信息")
                     self.render_message_widget(Message(ok=True))
@@ -158,7 +159,7 @@ class AdminHandler(BaseHandler):
                 messages = []
                 if fm.validate():
                     for s in ["domain", "title", "keywords", "description"]:
-                        SettingDao.set("site."+s, getattr(fm, s).data)
+                        SettingDao.set("site." + s, getattr(fm, s).data)
                         get_site_info(s, True)
                     self.log("修改站点信息")
                     self.render_message_widget(Message(ok=True))
@@ -184,14 +185,14 @@ class AdminHandler(BaseHandler):
                 get_site_info("protocol", True)
                 self.log("修改用户注册协议")
                 self.render_message_widget(Message(ok=True))
-            elif act=="friendLink":
+            elif act == "friendLink":
                 fm = FriendLinkForm(formdata=self.request.arguments)
 
                 if fm.validate():
                     if fm.flid:
                         FriendLinkDao.add(fm.name.data, fm.url.data, fm.logo.data)
                     else:
-                        FriendLinkDao.set(fm.flid.data,fm.name.data, fm.url.data, fm.logo.data)
+                        FriendLinkDao.set(fm.flid.data, fm.name.data, fm.url.data, fm.logo.data)
                     self.render_message_widget(Message(ok=True))
                 else:
                     messages = []
@@ -205,7 +206,7 @@ class AdminHandler(BaseHandler):
         if self.is_admin():
             if act == "friendLink":
                 flid = self.get_argument("id", None)
-                form=FriendLinkForm("friendLink", "友情链接", "/personal/site/friendLink")
+                form = FriendLinkForm("friendLink", "友情链接", "/personal/site/friendLink")
                 if flid:
                     fl = FriendLinkDao.get(flid)
                     form.flid.data = fl.id
@@ -220,7 +221,7 @@ class AdminHandler(BaseHandler):
             if act.startswith("friendLink/"):
                 flid = act[len("friendLink/"):]
                 FriendLinkDao.delete(flid)
-                self.log("删除友情链接[%s]"%flid)
+                self.log("删除友情链接[%s]" % flid)
                 self.render_message_widget(Message(ok=True))
 
 

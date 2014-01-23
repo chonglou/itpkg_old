@@ -4,8 +4,9 @@ import pickle
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from brahma.models import Setting, User, Log,FriendLink
+from brahma.models import Setting, User, Log, FriendLink
 from brahma.env import encrypt as _encrypt, db_call
+
 
 class FriendLinkDao:
     @staticmethod
@@ -73,6 +74,7 @@ class UserDao:
     @db_call
     def set_lastLogin(uid, session=None):
         import datetime
+
         u = session.query(User).filter(User.id == uid).one()
         u.lastLogin = datetime.datetime.now()
 

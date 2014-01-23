@@ -15,12 +15,12 @@ class InstallHandler(tornado.web.RequestHandler):
 
         if get_site_info("version"):
             #如果需要重新安装，请清理浏览器cache
-            self.redirect("/main",permanent=True)
+            self.redirect("/main", permanent=True)
             return False
         return True
 
     def __render_page(self, page, title, **kwargs):
-        self.render(page, title=title, navItems=list(), tagLinks=list(), index=None, is_login=False, **kwargs)
+        self.render(page, title=title, index=None, is_login=False, **kwargs)
 
     def __render_message(self, msg):
         from brahma.widgets import Message
@@ -34,7 +34,9 @@ class InstallHandler(tornado.web.RequestHandler):
     def get(self):
         if self.__check():
             import uuid
-            self.__render_page("install.html", "初始化安装", jsessionid=uuid.uuid4().hex, form=InstallForm("install", "初始化安装", "/install", captcha=True))
+
+            self.__render_page("install.html", "初始化安装", jsessionid=uuid.uuid4().hex,
+                               form=InstallForm("install", "初始化安装", "/install", captcha=True))
 
     def post(self):
         if self.__check():

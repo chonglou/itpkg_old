@@ -105,6 +105,7 @@ class FileHandler(tornado.web.RequestHandler):
         uid = None
         if jid and jid != "null":
             from brahma.cache import j_u_id
+
             uid = j_u_id(jid=jid)
         if uid is None:
             uid = 0

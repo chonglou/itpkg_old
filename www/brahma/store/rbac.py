@@ -4,7 +4,7 @@ import datetime
 import logging
 
 from sqlalchemy.orm.exc import NoResultFound
-from brahma.models import User, Permission
+from brahma.models import Permission
 from brahma.env import db_call
 
 
@@ -15,7 +15,7 @@ class RbacDao:
              session=None):
         try:
             p = session.query(Permission).filter(Permission.role == role, Permission.operation == operation,
-                                           Permission.resource == resource).one()
+                                                 Permission.resource == resource).one()
         except NoResultFound:
             p = None
         if bind:

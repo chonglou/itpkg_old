@@ -4,6 +4,17 @@ import tornado.web
 from brahma.env import cache
 
 
+class FriendLinkBar(tornado.web.UIModule):
+    def render(self):
+        @cache.cache("site/friendLinks", expire=3600 * 24)
+        def fl():
+            from brahma.store.site import FriendLinkDao
+
+            return FriendLinkDao.all()
+
+        return self.render_string("widgets/friendLinkBar.html", items=fl())
+
+
 class List(tornado.web.UIModule):
     def render(self, label, items):
         return self.render_string("widgets/list.html", label=label, items=items)
@@ -132,7 +143,6 @@ class TopNav(tornado.web.UIModule):
         if not index:
             index = "/main"
 
-
         @cache.cache("site/topLinks", expire=3600 * 24)
         def get_top_links():
             import tornado.options, importlib
@@ -213,8 +223,21 @@ class TagCloud(tornado.web.UIModule):
             }
         """)
 
-    def render(self, tags=list()):
-        return self.render_string("widgets/tagCloud.html", tags=tags)
+    def render(self):
+        @cache.cache("tagCloud", expire=3600 * 24)
+        def tags():
+            import importlib, tornado.options
+            from brahma.store.site import SettingDao
+
+            items = list()
+            items.append(("http://" + SettingDao.get("site.domain"), SettingDao.get("site.title")))
+
+            map(lambda rs: items.extend(rs),
+                map(lambda name: importlib.import_module("brahma.plugins." + name).tags(),
+                    tornado.options.options.app_plugins))
+            return items
+
+        return self.render_string("widgets/tagCloud.html", tags=tags())
 
 
 class QrCode(tornado.web.UIModule):
@@ -243,9 +266,21 @@ class NavBar(tornado.web.UIModule):
                 });
             """ % self.ajax)
 
-    def render(self, items=list(), ajax=False):
+    def render(self, ajax=False):
+        @cache.cache("nav/cal", expire=3600 * 24)
+        def get_nav_cal():
+            from brahma.web import NavBar
+            from brahma.utils.time import last_months
+            from brahma.store.site import SettingDao
+
+            nv_cal = NavBar("归档列表")
+            init = SettingDao.get("site.init")
+            nv_cal.items.extend(
+                map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
+            return nv_cal
+
         self.ajax = ajax
-        return self.render_string("widgets/navBar.html", navBars=items, ajax=ajax)
+        return self.render_string("widgets/navBar.html", navBars=[get_nav_cal()], ajax=ajax)
 
 
 class Form(tornado.web.UIModule):

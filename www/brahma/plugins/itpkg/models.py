@@ -83,6 +83,7 @@ class RouterDevice(Base):
     id = Column(Integer, Sequence('itpkg_router_device_id_seq'), primary_key=True)
     router = Column(Integer, nullable=False)
     device = Column(Integer, nullable=False)
+
     def __init__(self, router, device):
         self.router = router
         self.device = device

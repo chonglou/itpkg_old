@@ -208,6 +208,7 @@ class LoginHandler(BaseHandler):
                             from brahma.store.rbac import RbacDao
                             from brahma.env import encrypt
                             from brahma.cache import j_u_id
+
                             jid = uuid.uuid4().hex
                             self.set_current_user({
                                 "id": user.id,
@@ -237,6 +238,7 @@ class LogoutHandler(BaseHandler):
     def get(self):
         LogDao.add_log("安全退出", user=self.current_user['id'])
         from brahma.cache import j_u_id
+
         j_u_id(self.current_user['jid'], invalidate=True)
         self.clear_cookie("user")
         self.goto_main_page()

@@ -1,8 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
-from brahma.cache import get_site_info,j_u_id
-from brahma.store.site import SettingDao
+from brahma.cache import get_site_info
 from brahma.web import Message
 
 
@@ -15,7 +14,9 @@ class PageNotFoundHandler(tornado.web.RequestHandler):
 class BaseHandler(tornado.web.RequestHandler):
     def log(self, message, flag="INFO"):
         from brahma.store.site import LogDao
+
         LogDao.add_log(message, flag=flag, user=self.current_user['id'] if self.current_user else None)
+
     def is_admin(self):
         return self.current_user and self.current_user["admin"]
 
@@ -86,39 +87,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.render("message.html", title=title, msg=Message(ok=ok, confirm=confirm, messages=messages, goto=goto))
 
     def render_page(self, template_name, title, index=None, **kwargs):
-
-        from brahma.env import cache
-
-        @cache.cache("nav/cal", expire=3600 * 24)
-        def get_nav_cal():
-            from brahma.web import NavBar
-            from brahma.utils.time import last_months
-
-            nv_cal = NavBar("归档列表")
-            init = SettingDao.get("site.init")
-            nv_cal.items.extend(
-                map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
-            return nv_cal
-
-        @cache.cache("tagCloud", expire=3600 * 24)
-        def get_tag_cloud():
-            import importlib, tornado.options
-
-            items = list()
-            items.append(("http://" + SettingDao.get("site.domain"), SettingDao.get("site.title")))
-
-            map(lambda rs: items.extend(rs),
-                map(lambda name: importlib.import_module("brahma.plugins." + name).rss(),
-                    tornado.options.options.app_plugins))
-            return items
-
-        if "tagLinks" not in kwargs:
-            kwargs['tagLinks'] = get_tag_cloud()
-
-        if "navItems" not in kwargs:
-            kwargs['navItems'] = [get_nav_cal()]
-
         import uuid
+
         self.render(template_name,
                     title=title,
                     jsessionid=self.current_user['jid'] if self.current_user else uuid.uuid4().hex,

@@ -2,7 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime, Sequence, Text,Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Sequence, Text, Boolean
 
 from brahma.models import Base
 
