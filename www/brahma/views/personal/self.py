@@ -172,14 +172,14 @@ class InfoHandler(BaseHandler):
 class SelfHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        return self.render_ctlbar_widget(act="/personal/self",
-                                         items=[
-                                             ("ssh", "SSH工具"),
-                                             ("attach", "附件管理"),
-                                             ("contact", "联系信息"),
-                                             ("setPwd", "修改密码"),
-                                             ("logs", "日志列表"),
-                                         ])
+        self.render_ctlbar_widget(act="/personal/self",
+                                  items=[
+                                      ("ssh", "SSH工具"),
+                                      ("attach", "附件管理"),
+                                      ("contact", "联系信息"),
+                                      ("setPwd", "修改密码"),
+                                      ("logs", "日志列表"),
+                                  ])
 
 
 handlers = [

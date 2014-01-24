@@ -11,18 +11,18 @@ class Router(Base):
     __tablename__ = "itpkg_routers"
     id = Column(Integer, Sequence('itpkg_router_id_seq'), primary_key=True)
     name = Column(String(255), nullable=False)
-    wan = Column(String(512), nullable=False)
+    wan = Column(String(512))
     lan = Column(String(512))
     ping = Column(Boolean, nullable=False, default=True)
     manager = Column(Integer, nullable=False)
     details = Column(Text)
-    version = Column(Integer, nullable=False)
+    version = Column(Integer, nullable=False, default=0)
     state = Column(String(8), nullable=False, default="SUBMIT")
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
-    def __init__(self, name, wan, details):
+    def __init__(self, manager, name, details):
+        self.manager = manager
         self.name = name
-        self.wan = wan
         self.details = details
 
 
@@ -97,8 +97,9 @@ class Device(Base):
     fix = Column(Boolean, nullable=False)
     state = Column(String(8), nullable=False, default="SUBMIT")
     user = Column(Integer)
+    manager = Column(Integer, nullable=False)
     details = Column(Text)
-    version = Column(Integer, nullable=False)
+    version = Column(Integer, nullable=False, default=0)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
     def __init__(self, mac, name, ip):
@@ -114,7 +115,8 @@ class Group(Base):
 
     details = Column(Text)
     state = Column(String(8), nullable=False, default="SUBMIT")
-    version = Column(Integer, nullable=False)
+    manager = Column(Integer, nullable=False)
+    version = Column(Integer, nullable=False, default=0)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
     def __init__(self, router, name, details):
@@ -127,11 +129,13 @@ class User(Base):
     __tablename__ = "itpkg_users"
     id = Column(Integer, Sequence('itpkg_user_id_seq'), primary_key=True)
     name = Column(String(255))
+    manager = Column(Integer, nullable=False)
     details = Column(Text)
     state = Column(String(8), nullable=False, default="SUBMIT")
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
-    def __init__(self, name, details):
+    def __init__(self, manager, name, details):
+        self.manager = manager
         self.name = name
         self.details = details
 
@@ -152,6 +156,7 @@ class GroupUser(Base):
 class Limit(Base):
     __tablename__ = "itpkg_limits"
     id = Column(Integer, Sequence('itpkg_limit_id_seq'), primary_key=True)
+    manager = Column(Integer, nullable=False)
     name = Column(String(255), nullable=False)
     upMax = Column(Integer, nullable=False)
     downMax = Column(Integer, nullable=False)
@@ -166,7 +171,7 @@ class Limit(Base):
     fri = Column(Boolean, nullable=False, default=True)
     sat = Column(Boolean, nullable=False, default=True)
     sun = Column(Boolean, nullable=False, default=True)
-    version = Column(Integer, nullable=False)
+    version = Column(Integer, nullable=False, default=0)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
     def __init__(self, name, upMax, downMax, upMin, downMin):

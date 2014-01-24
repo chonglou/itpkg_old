@@ -1,7 +1,7 @@
-<div id="router-root"></div>
+<div id="user-root"></div>
 <div class="panel panel-default">
     <div class="panel-heading">
-        设备列表
+        用户列表
         <div class="btn-group btn-group-sm">
             <button id="add" class="btn btn-primary">添加</button>
             <button id="refresh" class="btn btn-info">刷新</button>
@@ -17,14 +17,14 @@
         </tr>
         </thead>
         <tbody>
-        {% for r in routers %}
+        {% for u in users %}
         <tr>
-            <td>{{r.id}}</td>
-            <td>{{r.name}}</td>
-            <td>{% raw r.details %}</td>
+            <td>{{u.id}}</td>
+            <td>{{u.name}}</td>
+            <td>{% raw u.details %}</td>
             <td>
                 <div class="btn-group btn-group-sm">
-                    <button id="/itpkg/router-{{r.id}}-EDIT" class="btn btn-success">
+                    <button id="/itpkg/user-{{u.id}}-EDIT" class="btn btn-success">
                         编辑
                     </button>
                 </div>
@@ -37,15 +37,15 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("button#add").click(function () {
-            new Ajax("router-root", "/itpkg/router", "PUT");
+            new Ajax("user-root", "/itpkg/user", "PUT");
         });
         $("button#refresh").click(function () {
-            new Ajax("gl_root", "/itpkg/router");
+            new Ajax("gl_root", "/itpkg/user");
         });
-        $("button[id^='/itpkg/router-']").click(function () {
+        $("button[id^='/itpkg/user-']").click(function () {
             var ss = $(this).attr("id").split('-');
             if (ss[2] == "EDIT") {
-                new Ajax("router-root", "/itpkg/router", "PUT", {id: ss[1]});
+                new Ajax("user-root", "/itpkg/user", "PUT", {id: ss[1]});
             }
         });
     });

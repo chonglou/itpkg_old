@@ -189,7 +189,7 @@ class AdminHandler(BaseHandler):
                 fm = FriendLinkForm(formdata=self.request.arguments)
 
                 if fm.validate():
-                    if fm.flid:
+                    if fm.flid.data:
                         FriendLinkDao.set(fm.flid.data, fm.name.data, fm.url.data, fm.logo.data)
                     else:
                         FriendLinkDao.add(fm.name.data, fm.url.data, fm.logo.data)
@@ -206,8 +206,9 @@ class AdminHandler(BaseHandler):
         if self.is_admin():
             if act == "friendLink":
                 flid = self.get_argument("id", None)
-                form = FriendLinkForm("friendLink", "友情链接", "/personal/site/friendLink")
+                form = FriendLinkForm("friendLink", "添加友情链接", "/personal/site/friendLink")
                 if flid:
+                    form.label = "编辑友情链接[%s]" % flid
                     fl = FriendLinkDao.get(flid)
                     form.flid.data = fl.id
                     form.url.data = fl.url
@@ -229,17 +230,17 @@ class SiteHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         if self.is_admin():
-            return self.render_ctlbar_widget(act="/personal/site",
-                                             items=[
-                                                 ("info", "基本信息"),
-                                                 ("friendLink", "友情链接"),
-                                                 ("smtp", "邮件设置"),
-                                                 ("seo", "站长工具"),
-                                                 ("oauth", "OAUTH"),
-                                                 ("advert", "广告代码"),
-                                                 ("user", "账户管理"),
-                                                 ("status", "系统状态"),
-                                             ])
+            self.render_ctlbar_widget(act="/personal/site",
+                                      items=[
+                                          ("info", "基本信息"),
+                                          ("friendLink", "友情链接"),
+                                          ("smtp", "邮件设置"),
+                                          ("seo", "站长工具"),
+                                          ("oauth", "OAUTH"),
+                                          ("advert", "广告代码"),
+                                          ("user", "账户管理"),
+                                          ("status", "系统状态"),
+                                      ])
 
 
 handlers = [

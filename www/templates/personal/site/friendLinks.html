@@ -3,7 +3,8 @@
     <div class="panel-heading">
         友情链接列表
         <div class="btn-group btn-group-sm">
-            <button id="refresh" class="btn btn-info">刷新列表</button>
+            <button id="add" class="btn btn-primary">添加</button>
+            <button id="refresh" class="btn btn-info">刷新</button>
         </div>
     </div>
     <table class="table table-hover">
@@ -39,8 +40,11 @@
     </table>
 </div>
 <script type="text/javascript">
+
     $(document).ready(function () {
-        new Ajax("friendLinks-root", "/personal/site/friendLink", "PUT");
+        $("button#add").click(function(){
+            new Ajax("friendLinks-root", "/personal/site/friendLink", "PUT");
+        });
         $("button#refresh").click(function () {
             new Ajax("tab-item-friendLink", "/personal/site/friendLink");
         });

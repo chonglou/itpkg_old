@@ -14,6 +14,7 @@ class Database:
         for p in plugins:
             importlib.import_module("brahma.plugins." + p + ".models")
 
+        #expire_on_commit=False
         self.__session = sessionmaker(expire_on_commit=False)
         engine = create_engine(uri, echo=echo)
         logging.debug("检查数据库")

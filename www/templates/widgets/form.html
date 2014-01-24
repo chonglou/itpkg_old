@@ -10,7 +10,7 @@
 
     {% for field in form %}
     {% if field.type == "HiddenField" %}
-    <input type="hidden" value="{{field.data}}" id="fm-{{form.fid}}-{{field.id}}">
+    <input type="hidden" value="{{field.data or ''}}" id="fm-{{form.fid}}-{{field.id}}">
     {% end %}
     {% end %}
     {% for field in form %}

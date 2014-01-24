@@ -1,11 +1,80 @@
 __author__ = 'zhengjitang@gmail.com'
 
 from brahma.env import db_call
-from brahma.plugins.itpkg.models import Router
+from brahma.plugins.itpkg.models import Router, User, Group
+
+
+class UserDao:
+    @staticmethod
+    @db_call
+    def add(manager, name, details, session=None):
+        session.add(User(manager, name, details))
+
+    @staticmethod
+    @db_call
+    def get(uid, session=None):
+        return session.query(User).filter(Group.id == uid).one()
+
+    @staticmethod
+    @db_call
+    def set_info(uid, name, details, session=None):
+        u = session.query(User).filter(User.id == uid).one()
+        u.name = name
+        u.details = details
+        u.version += 1
+
+    @staticmethod
+    @db_call
+    def all(manager, session=None):
+        return session.query(User).filter(User.manager == manager).order_by(User.id.desc()).all()
+
+
+class GroupDao:
+    @staticmethod
+    @db_call
+    def add(manager, name, details, session=None):
+        session.add(Group(manager, name, details))
+
+    @staticmethod
+    @db_call
+    def get(gid, session=None):
+        return session.query(Group).filter(Group.id == gid).one()
+
+    @staticmethod
+    @db_call
+    def set_info(gid, name, details, session=None):
+        g = session.query(Group).filter(Group.id == gid).one()
+        g.name = name
+        g.details = details
+        g.version += 1
+
+    @staticmethod
+    @db_call
+    def all(manager, session=None):
+        return session.query(Group).filter(Group.manager == manager).order_by(Group.id.desc()).all()
 
 
 class RouterDao:
     @staticmethod
     @db_call
-    def all(uid, session=None):
-        return session.query(Router).filter(Router.manager == uid).all()
+    def add(manager, name, details, session=None):
+        session.add(Router(manager, name, details))
+
+    @staticmethod
+    @db_call
+    def set_info(rid, name, details, session=None):
+        r = session.query(Router).filter(Router.id == rid).one()
+        r.name = name
+        r.details = details
+        r.version += 1
+
+    @staticmethod
+    @db_call
+    def get(rid, session=None):
+        return session.query(Router).filter(Router.id == rid).one()
+
+
+    @staticmethod
+    @db_call
+    def all(manager, session=None):
+        return session.query(Router).filter(Router.manager == manager).order_by(Router.id.desc()).all()
