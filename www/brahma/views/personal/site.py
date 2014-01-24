@@ -190,9 +190,9 @@ class AdminHandler(BaseHandler):
 
                 if fm.validate():
                     if fm.flid:
-                        FriendLinkDao.add(fm.name.data, fm.url.data, fm.logo.data)
-                    else:
                         FriendLinkDao.set(fm.flid.data, fm.name.data, fm.url.data, fm.logo.data)
+                    else:
+                        FriendLinkDao.add(fm.name.data, fm.url.data, fm.logo.data)
                     self.render_message_widget(Message(ok=True))
                 else:
                     messages = []

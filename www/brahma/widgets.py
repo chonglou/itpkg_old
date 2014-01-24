@@ -105,6 +105,7 @@ class TopNav(tornado.web.UIModule):
         if self.current_user:
             click = """
                 if(id.indexOf('logout') < 0){
+                    clear_navbar();
                     new Ajax("gl_root", id);
                 }
                 else{
@@ -230,11 +231,9 @@ class TagCloud(tornado.web.UIModule):
             from brahma.store.site import SettingDao
 
             items = list()
-            items.append(("http://" + SettingDao.get("site.domain"), SettingDao.get("site.title")))
-
-            map(lambda rs: items.extend(rs),
-                map(lambda name: importlib.import_module("brahma.plugins." + name).tags(),
-                    tornado.options.options.app_plugins))
+            items.append(("/main", SettingDao.get("site.title")))
+            for p in tornado.options.options.app_plugins:
+                items.extend(importlib.import_module("brahma.plugins." + p).tags())
             return items
 
         return self.render_string("widgets/tagCloud.html", tags=tags())
@@ -257,30 +256,50 @@ class Advert(tornado.web.UIModule):
 
 class NavBar(tornado.web.UIModule):
     def embedded_javascript(self):
-        if self.ajax:
-            return ("""
-                $("li#navBar a").each(function () {
+
+        return """
+                function clear_navbar(){
+                    $("div#navBar li").each(function () {
+                        $(this).removeClass('active');
+                    });
+                }
+                %s
+                """ % js_ready("""
+                $("div#navBar a").each(function () {
                     $(this).click(function () {
-                        new Ajax($(this).attr("id"));
+                        if($(this).attr('href') == '#'){
+                            clear_navbar();
+                            $(this).parent().addClass('active');
+                            new Ajax("gl_root", $(this).attr("id"));
+                        }
                     });
                 });
-            """ % self.ajax)
+                """)
 
-    def render(self, ajax=False):
+    def render(self):
+        import importlib, tornado.options
+        from brahma.web import NavBar
+        from brahma.store.site import SettingDao
+
+        navbars = list()
+        for p in tornado.options.options.app_plugins:
+            nb = importlib.import_module("brahma.plugins." + p).navbar(
+                self.current_user['id'] if self.current_user else None)
+            if nb:
+                navbars.append(nb)
+
         @cache.cache("nav/cal", expire=3600 * 24)
-        def get_nav_cal():
-            from brahma.web import NavBar
+        def nv_cal():
             from brahma.utils.time import last_months
-            from brahma.store.site import SettingDao
 
-            nv_cal = NavBar("归档列表")
+            cal = NavBar("归档列表")
             init = SettingDao.get("site.init")
-            nv_cal.items.extend(
+            cal.items.extend(
                 map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
-            return nv_cal
+            return cal
 
-        self.ajax = ajax
-        return self.render_string("widgets/navBar.html", navBars=[get_nav_cal()], ajax=ajax)
+        navbars.append(nv_cal())
+        return self.render_string("widgets/navBar.html", navBars=navbars)
 
 
 class Form(tornado.web.UIModule):

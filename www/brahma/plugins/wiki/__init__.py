@@ -6,18 +6,21 @@ NAME = "知识库"
 def calendar(year, month, day):
     from brahma.plugins.wiki.store import WikiDao
     from brahma.env import cache
-    import datetime
 
     if day:
         @cache.cache("wiki/%04d/%02d/%02d" % ( year, month, day), expire=2600 * 24)
         def list_wiki():
-            dt = datetime.datetime(year, month, day)
-            return [("/wiki/%s" % w.name, w.title) for w in WikiDao.list_wiki(dt, dt + datetime.timedelta(days=1))]
+            from brahma.utils.time import day_range
+
+            d1, d2 = day_range(year, month, day)
+            return [("/wiki/%s" % w.name, w.title) for w in WikiDao.list_wiki(d1, d2)]
     else:
         @cache.cache("wiki/%04d/%02d" % ( year, month), expire=2600 * 24)
         def list_wiki():
-            return [("/wiki/%s" % w.name, w.title) for w in
-                    WikiDao.list_wiki(datetime.datetime(year, month, 1), datetime.datetime(year, month + 1, 1))]
+            from brahma.utils.time import month_range
+
+            d1, d2 = month_range(year, month)
+            return [("/wiki/%s" % w.name, w.title) for w in WikiDao.list_wiki(d1, d2)]
 
     return list(), list_wiki()
 
@@ -32,6 +35,10 @@ def sitemap():
 
 def rss():
     return list()
+
+
+def navbar(uid=None):
+    return None
 
 
 def tags():

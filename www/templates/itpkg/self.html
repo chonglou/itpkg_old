@@ -1,0 +1,11 @@
+asew
+<script type="text/javascript">
+    $(document).ready(function(){
+        new Ajax("gl_root", "/itpkg/router");
+        $("div#navBar a").each(function(){
+            if($(this).attr('id') == '/itpkg/router'){
+                $(this).parent().addClass("active");
+            }
+        })
+    });
+</script>

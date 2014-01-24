@@ -13,6 +13,7 @@ class Ssh:
             from pexpect import pxssh
 
             ssh = pxssh.pxssh()
+            #vt100 dumb
             ssh.login(server=host, username=user, port=port, password=password)
             sid = uuid.uuid4().hex
             self.__hosts[sid] = ssh

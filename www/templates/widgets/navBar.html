@@ -1,12 +1,12 @@
 {% if navBars %}
-<div id="navBar" class="well sidebar-nav">
+        <div id="navBar" class="well sidebar-nav">
     {% for nb in navBars %}
-    <ul class="nav">
+    <ul class="nav nav-pills nav-stacked">
         <li>{{nb.label}}</li>
         {% for url,label in nb.items%}
         <li class="warp">
-            {% if ajax %}
-            <a href="#" id="nav-{{url}}">{{label}}</a>
+            {% if nb.ajax %}
+            <a href="#" id="{{url}}">{{label}}</a>
             {% else %}
             <a href="{{url}}" target="_blank">{{label}}</a>
             {% end %}

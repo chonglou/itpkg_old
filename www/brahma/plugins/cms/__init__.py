@@ -1,6 +1,6 @@
 __author__ = 'zhengjitang@gmail.com'
 
-NAME = "文章列表"
+NAME = "内容系统"
 
 
 def calendar(year, month, dao):
@@ -17,6 +17,10 @@ def sitemap():
 
 def rss():
     return list()
+
+
+def navbar(uid=None):
+    return None
 
 
 def tags():

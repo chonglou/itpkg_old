@@ -3,6 +3,24 @@ __author__ = 'zhengjitang@gmail.com'
 import datetime
 
 
+def day_range(year, month, day):
+    dt = datetime.datetime(year, month, day)
+    return dt, dt + datetime.timedelta(days=1)
+
+
+def month_range(year, month):
+    import logging
+
+    logging.debug("###### %s" % month)
+    dt = datetime.datetime(year, month, 1)
+    if month == 12:
+        year += 1
+        month = 1
+    else:
+        month += 1
+    return dt, datetime.datetime(year, month, 1)
+
+
 def last_months(minimum, count):
     months = list()
     today = datetime.datetime.today()

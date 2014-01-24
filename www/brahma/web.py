@@ -70,9 +70,10 @@ class Message:
 
 
 class NavBar:
-    def __init__(self, label):
+    def __init__(self, label, ajax=False):
         self.label = label
         self.items = list()
+        self.ajax = ajax
 
     def add(self, url, label):
         self.items.append((url, label))
