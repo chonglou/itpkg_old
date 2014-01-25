@@ -6,7 +6,7 @@ from brahma.plugins.itpkg.store import RouterDao
 
 class StatusHandler(BaseHandler):
     def get(self, rid):
-        if self.check_router(rid):
+        if self.check_manager(rid):
             self.render("itpkg/status.html", router=RouterDao.get(rid))
 
 

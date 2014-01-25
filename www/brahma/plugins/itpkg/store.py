@@ -56,6 +56,25 @@ class GroupDao:
 class RouterDao:
     @staticmethod
     @db_call
+    def set_wan(rid, flag, mac, dns1, dns2, ip=None, netmask=None, gateway=None, username=None, password=None, session=None):
+        r  = session.query(Router).filter(Router.id == rid).one()
+        import json
+        r.wan = json.dumps({"flag":flag, "mac":mac, "dns1":dns1, "dns2":dns2, "ip":ip, "netmask":netmask, "gateway":gateway, "username":username, "password":password})
+    @staticmethod
+    @db_call
+    def set_lan(rid, mac, net, domain, session=None):
+        r = session.query(Router).filter(Router.id == rid).one()
+        import json
+        r.lan = json.dumps({"mac":mac, "net":net, "domain":domain})
+
+    @staticmethod
+    @db_call
+    def set_state(rid, state, session=None):
+        r  = session.query(Router).filter(Router.id == rid).one()
+        r.version +=1
+        r.state = state
+    @staticmethod
+    @db_call
     def add(manager, name, details, session=None):
         session.add(Router(manager, name, details))
 

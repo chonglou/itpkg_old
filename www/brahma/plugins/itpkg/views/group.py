@@ -7,6 +7,18 @@ from brahma.plugins.itpkg.store import GroupDao
 from brahma.plugins.itpkg.forms import InfoForm
 
 
+class RouterGroupHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, rid):
+        #todo
+        pass
+
+    @tornado.web.authenticated
+    def post(self, rid):
+        #todo
+        pass
+
+
 class GroupHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
@@ -27,7 +39,7 @@ class GroupHandler(BaseHandler):
                 form.iid.data = g.id
                 form.name.data = g.name
                 form.details.data = g.details
-                form.label = "编辑用户组[%s]"%gid
+                form.label = "编辑用户组[%s]" % gid
                 self.render_form_widget(form)
                 return
         else:
@@ -42,16 +54,16 @@ class GroupHandler(BaseHandler):
             if gid:
                 if self.__check_group(gid):
                     GroupDao.set_info(gid, fm.name.data, fm.details.data)
-                    self.render_message_widget(Message(ok=True))
+                    self.render_message_widget(ok=True)
                     return
             else:
                 GroupDao.add(self.current_user['id'], fm.name.data, fm.details.data)
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
                 return
         else:
             messages = []
             messages.extend(fm.messages())
-            self.render_message_widget(Message(messages=messages))
+            self.render_message_widget(messages=messages)
             return
 
 
@@ -60,12 +72,11 @@ class GroupHandler(BaseHandler):
         manager = self.current_user['id']
         if g.manager == manager:
             return True
-        self.render_message_widget(Message(messages=['没有权限']))
+        self.render_message_widget(messages=['没有权限'])
         return False
-
-
 
 
 handlers = [
     (r"/itpkg/group", GroupHandler),
+    (r"/itpkg/([0-9]+)/group", RouterGroupHandler),
 ]

@@ -83,8 +83,8 @@ class ActiveHandler(BaseHandler):
                         if user:
                             if user.state == "SUBMIT":
                                 _send_active_email(email, user.username)
-                                self.render_message_widget(Message(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"],
-                                                                   goto="/main"))
+                                self.render_message_widget(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"],
+                                                                   goto="/main")
                                 return
                             else:
                                 messages.append("用户[%s]状态不对" % email)
@@ -96,7 +96,7 @@ class ActiveHandler(BaseHandler):
                     messages.extend(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(Message(messages=messages))
+            self.render_message_widget(messages=messages)
 
 
 class ResetPwdHandler(BaseHandler):
@@ -118,7 +118,7 @@ class ResetPwdHandler(BaseHandler):
 
                         _send_valid_email("resetPwd", email, user.username, "重置密码", (user.id, fm.password.data))
                         self.render_message_widget(
-                            Message(ok=True, goto="/main", messages=["重置密码申请提交成功", "请进入邮箱点击链接生效"]))
+                            ok=True, goto="/main", messages=["重置密码申请提交成功", "请进入邮箱点击链接生效"])
                         return
                     else:
                         messages.append("用户[%s]状态不对" % email)
@@ -126,7 +126,7 @@ class ResetPwdHandler(BaseHandler):
                     messages.extend(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(Message(messages=messages))
+            self.render_message_widget(messages=messages)
 
 
 class RegisterHandler(BaseHandler):
@@ -149,7 +149,7 @@ class RegisterHandler(BaseHandler):
                             UserDao.add_user("email", username=username, email=email, password=fm.password.data)
                             _send_active_email(email, username)
                             self.render_message_widget(
-                                Message(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"], goto="/main"))
+                                ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"], goto="/main")
                             return
                         else:
                             messages.append("邮箱[%s]已存在" % email)
@@ -159,7 +159,7 @@ class RegisterHandler(BaseHandler):
                     messages.append(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(Message(messages=messages))
+            self.render_message_widget(messages=messages)
 
 
 def _send_valid_email(flag, email, username, action, args):
@@ -220,7 +220,7 @@ class LoginHandler(BaseHandler):
                             UserDao.set_lastLogin(user.id)
                             LogDao.add_log("成功登录", user=user.id)
                             j_u_id(jid, uid=user.id)
-                            self.render_message_widget(Message(ok=True, goto="/main"))
+                            self.render_message_widget(ok=True, goto="/main")
                             return
                         else:
                             messages.append("账户未激活，或被禁用。")
@@ -230,7 +230,7 @@ class LoginHandler(BaseHandler):
                     messages.extend(fm.messages())
             else:
                 messages.append("验证码不对")
-            self.render_message_widget(Message(messages=messages))
+            self.render_message_widget(messages=messages)
 
 
 class LogoutHandler(BaseHandler):

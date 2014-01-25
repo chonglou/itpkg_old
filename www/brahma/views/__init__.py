@@ -22,7 +22,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def check_non_login(self):
         if self.get_current_user():
-            self.render_message_widget(msg=Message(messages=["你已经登录"]))
+            self.render_message_widget(messages=["你已经登录"])
             return False
         return True
 
@@ -52,11 +52,12 @@ class BaseHandler(tornado.web.RequestHandler):
         self.write('</script>')
 
 
-    def render_message_widget(self, msg):
-        from brahma.widgets import Message
+    def render_message_widget(self, ok=None, confirm=None, messages=list(), goto=None):
+        from brahma.widgets import Message as MessageWidget
+        from brahma.web import Message
 
-        m = Message(self)
-        self.write(m.render(msg=msg))
+        m = MessageWidget(self)
+        self.write(m.render(msg=Message(ok=ok,confirm=confirm, messages=messages, goto=goto)))
         self.write('<script type="text/javascript">')
         self.write(m.embedded_javascript())
         self.write('</script>')
@@ -66,7 +67,7 @@ class BaseHandler(tornado.web.RequestHandler):
             self.redirect("/install")
 
     #def _handle_request_exception(self, e):
-    #    self.render_message(ok=False, messages=[e], goto="/main")
+    #    self.render_message(title="出错了", ok=False, messages=[e], goto="/main")
 
     def check_captcha(self):
         return self.get_argument("captcha") == self.get_secure_cookie("captcha").decode("utf-8")

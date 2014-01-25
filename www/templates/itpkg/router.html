@@ -26,9 +26,14 @@
             <td>{% raw r.details %}</td>
             <td>
                 <div class="btn-group btn-group-sm">
-                    <button id="/itpkg/router-{{r.id}}-EDIT" class="btn btn-success">
+                    <button id="/itpkg/router-{{r.id}}-edit" class="btn btn-success">
                         编辑
                     </button>
+                    {% if r.state == 'SUBMIT' %}
+                    <button id="/itpkg/router-{{r.id}}-init" class="btn btn-danger">
+                        初始化
+                    </button>
+                    {% end %}
                 </div>
             </td>
         </tr>
@@ -46,8 +51,11 @@
         });
         $("button[id^='/itpkg/router-']").click(function () {
             var ss = $(this).attr("id").split('-');
-            if (ss[2] == "EDIT") {
+            if (ss[2] == "edit") {
                 new Ajax("router-root", "/itpkg/router", "PUT", {id: ss[1]});
+            }
+            else if (ss[2] == "init") {
+                new Ajax("router-root", "/itpkg/" + ss[1] + "/init");
             }
         });
     });

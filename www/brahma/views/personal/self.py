@@ -64,7 +64,7 @@ class InfoHandler(BaseHandler):
                 if u.check(fm.oldPassword.data):
                     UserDao.set_password(uid, fm.password.data)
                     LogDao.add_log("修改密码", user=uid)
-                    self.render_message_widget(Message(ok=True))
+                    self.render_message_widget(ok=True)
                     return
                 else:
                     messages.append("旧密码输入有误")
@@ -76,7 +76,7 @@ class InfoHandler(BaseHandler):
                 UserDao.set_info(self.current_user['id'], fm.username.data, fm.logo.data,
                                  fm.to_dict(
                                      ["qq", "email", "website", "wechat", "weibo", "address", "fax", "tel", "details"]))
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
                 return
             else:
                 messages.extend(fm.messages())
@@ -143,7 +143,7 @@ class InfoHandler(BaseHandler):
         else:
             messages.append("未知操作")
 
-        self.render_message_widget(Message(messages=messages))
+        self.render_message_widget(messages=messages)
 
     @tornado.web.authenticated
     def delete(self, attach):
@@ -164,9 +164,9 @@ class InfoHandler(BaseHandler):
 
             if attach.startswith(tmp):
                 os.remove(attach)
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             else:
-                self.render_message_widget(Message(messages=["你大爷的!"]))
+                self.render_message_widget(messages=["你大爷的!"])
 
 
 class SelfHandler(BaseHandler):

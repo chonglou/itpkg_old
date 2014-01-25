@@ -4,7 +4,7 @@ import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 
 
-class DhcpHandler(BaseHandler):
+class LimitHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         #todo
@@ -17,5 +17,5 @@ class DhcpHandler(BaseHandler):
 
 
 handlers = [
-    (r"/itpkg/([0-9]+)/dhcp", DhcpHandler),
+    (r"/itpkg/([0-9]+)/limit", LimitHandler),
 ]

@@ -7,6 +7,18 @@ from brahma.web import Message
 from brahma.plugins.itpkg.forms import InfoForm
 
 
+class RouterUserHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, rid):
+        #todo
+        pass
+
+    @tornado.web.authenticated
+    def post(self, rid):
+        #todo
+        pass
+
+
 class UserHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
@@ -22,7 +34,7 @@ class UserHandler(BaseHandler):
                 form.iid.data = u.id
                 form.name.data = u.name
                 form.details.data = u.details
-                form.label = "编辑用户组[%s]"%uid
+                form.label = "编辑用户组[%s]" % uid
                 self.render_form_widget(form)
                 return
         else:
@@ -37,16 +49,16 @@ class UserHandler(BaseHandler):
             if uid:
                 if self.__check_user(uid):
                     UserDao.set_info(uid, fm.name.data, fm.details.data)
-                    self.render_message_widget(Message(ok=True))
+                    self.render_message_widget(ok=True)
                     return
             else:
                 UserDao.add(self.current_user['id'], fm.name.data, fm.details.data)
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
                 return
         else:
             messages = []
             messages.extend(fm.messages())
-            self.render_message_widget(Message(messages=messages))
+            self.render_message_widget(messages=messages)
             return
 
 
@@ -55,9 +67,11 @@ class UserHandler(BaseHandler):
         manager = self.current_user['id']
         if u.manager == manager:
             return True
-        self.render_message_widget(Message(messages=['没有权限']))
+        self.render_message_widget(messages=['没有权限'])
         return False
+
 
 handlers = [
     (r"/itpkg/user", UserHandler),
+    (r"/itpkg/([0-9]+)/user", RouterUserHandler),
 ]

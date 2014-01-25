@@ -113,11 +113,11 @@ class AdminHandler(BaseHandler):
                         if state in ["ENABLE", "DISABLE"]:
                             UserDao.set_state(uid, state)
                             self.log("变更用户状态[%s=>%s]" % (uid, state))
-                            self.render_message_widget(Message(ok=True))
+                            self.render_message_widget(ok=True)
                             return
-                    self.render_message_widget(Message(messages=["状态不对"]))
+                    self.render_message_widget(messages=["状态不对"])
                 else:
-                    self.render_message_widget(Message(messages=["不能修改超级管理员"]))
+                    self.render_message_widget(messages=["不能修改超级管理员"])
             elif act == "advert":
                 fm = AdvertForm(formdata=self.request.arguments)
                 aid = fm.aid.data
@@ -126,7 +126,7 @@ class AdminHandler(BaseHandler):
 
                 get_advert(aid, True)
                 self.log("修改广告[%s]脚本" % aid)
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             elif act == "smtp":
                 fm = SmtpForm(formdata=self.request.arguments)
                 messages = []
@@ -140,20 +140,20 @@ class AdminHandler(BaseHandler):
                         "ssl": fm.ssl.data,
                     }, True)
                     self.log("修改SMTP信息")
-                    self.render_message_widget(Message(ok=True))
+                    self.render_message_widget(ok=True)
                 else:
                     messages.extend(fm.messages())
-                    self.render_message_widget(Message(messages=messages))
+                    self.render_message_widget(messages=messages)
             elif act == "seo.google":
                 fm = ValidCodeForm(formdata=self.request.arguments)
                 SettingDao.set("site.seo.google", fm.code.data[6:-5])
                 self.log("更新google网站验证")
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             elif act == "seo.baidu":
                 fm = ValidCodeForm(formdata=self.request.arguments)
                 SettingDao.set("site.seo.baidu", fm.code.data[13:-5])
                 self.log("更新百度网站验证")
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             elif act == "info":
                 fm = InfoForm(formdata=self.request.arguments)
                 messages = []
@@ -162,29 +162,29 @@ class AdminHandler(BaseHandler):
                         SettingDao.set("site." + s, getattr(fm, s).data)
                         get_site_info(s, True)
                     self.log("修改站点信息")
-                    self.render_message_widget(Message(ok=True))
+                    self.render_message_widget(ok=True)
                 else:
                     messages.append(fm.messages())
-                    self.render_message_widget(Message(messages=messages))
+                    self.render_message_widget(messages=messages)
 
             elif act == "help":
                 fm = ContentForm(formdata=self.request.arguments)
                 SettingDao.set("site.help", fm.content.data)
                 get_site_info("help", True)
                 self.log("修改帮助文档")
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             elif act == "aboutMe":
                 fm = ContentForm(formdata=self.request.arguments)
                 SettingDao.set("site.aboutMe", fm.content.data)
                 get_site_info("aboutMe", True)
                 self.log("修改关于我们")
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             elif act == "protocol":
                 fm = ProtocolForm(formdata=self.request.arguments)
                 SettingDao.set("site.protocol", fm.content.data)
                 get_site_info("protocol", True)
                 self.log("修改用户注册协议")
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
             elif act == "friendLink":
                 fm = FriendLinkForm(formdata=self.request.arguments)
 
@@ -193,11 +193,11 @@ class AdminHandler(BaseHandler):
                         FriendLinkDao.set(fm.flid.data, fm.name.data, fm.url.data, fm.logo.data)
                     else:
                         FriendLinkDao.add(fm.name.data, fm.url.data, fm.logo.data)
-                    self.render_message_widget(Message(ok=True))
+                    self.render_message_widget(ok=True)
                 else:
                     messages = []
                     messages.extend(fm.messages())
-                    self.render_message_widget(Message(messages=messages))
+                    self.render_message_widget(messages=messages)
             else:
                 pass
 
@@ -223,7 +223,7 @@ class AdminHandler(BaseHandler):
                 flid = act[len("friendLink/"):]
                 FriendLinkDao.delete(flid)
                 self.log("删除友情链接[%s]" % flid)
-                self.render_message_widget(Message(ok=True))
+                self.render_message_widget(ok=True)
 
 
 class SiteHandler(BaseHandler):
