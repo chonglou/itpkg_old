@@ -108,6 +108,23 @@
             editor.render("fm-html-{{form.fid}}-{{field.id}}");
         </script>
     </div>
+     {% elif field.type == "SelectField" %}
+    <div class="form-group">
+        <label for="fm-select-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+        <div class="col-sm-4">
+            <select id="fm-select-{{form.fid}}-{{field.id}}" class="form-control">
+                {% for v,k in field.choices %}
+                {% if v == field.data %}
+                <option value="{{v}}" selected>{{k}}</option>
+                {% else %}
+                <option value="{{v}}">{{k}}</option>
+                {% end %}
+                {% end %}
+            </select>
+        </div>
+    </div>
     {% else %}
     {% end %}
 

@@ -339,6 +339,9 @@ class Form(tornado.web.UIModule):
                         var id = $(this).attr('id');
                         data[id.split('-')[3]] = UE.getEditor(id).getContent();
                     });
+                    $("[id^='fm-select-"+fmId+"-']").each(function(){
+                        data[$(this).attr('id').split('-')[3]] = $(this).val();
+                    });
                     new Ajax(
                             "fm-msg-"+fmId,
                             $("input#fm-act-"+fmId).val(),

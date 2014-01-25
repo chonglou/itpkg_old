@@ -13,7 +13,7 @@ class UserDao:
     @staticmethod
     @db_call
     def get(uid, session=None):
-        return session.query(User).filter(Group.id == uid).one()
+        return session.query(User).filter(User.id == uid).one()
 
     @staticmethod
     @db_call
@@ -21,7 +21,6 @@ class UserDao:
         u = session.query(User).filter(User.id == uid).one()
         u.name = name
         u.details = details
-        u.version += 1
 
     @staticmethod
     @db_call

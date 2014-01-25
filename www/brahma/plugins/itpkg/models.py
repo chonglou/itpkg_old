@@ -16,6 +16,7 @@ class Router(Base):
     ping = Column(Boolean, nullable=False, default=True)
     manager = Column(Integer, nullable=False)
     details = Column(Text)
+    flag = Column(String(16))
     version = Column(Integer, nullable=False, default=0)
     state = Column(String(8), nullable=False, default="SUBMIT")
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
@@ -119,8 +120,8 @@ class Group(Base):
     version = Column(Integer, nullable=False, default=0)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
-    def __init__(self, router, name, details):
-        self.router = router
+    def __init__(self, manager, name, details):
+        self.manager = manager
         self.name = name
         self.details = details
 
