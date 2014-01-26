@@ -57,7 +57,7 @@ class BaseHandler(tornado.web.RequestHandler):
         from brahma.web import Message
 
         m = MessageWidget(self)
-        self.write(m.render(msg=Message(ok=ok,confirm=confirm, messages=messages, goto=goto)))
+        self.write(m.render(msg=Message(ok=ok, confirm=confirm, messages=messages, goto=goto)))
         self.write('<script type="text/javascript">')
         self.write(m.embedded_javascript())
         self.write('</script>')

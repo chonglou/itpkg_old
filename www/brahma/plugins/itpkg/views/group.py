@@ -2,21 +2,9 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 from brahma.views import BaseHandler
-from brahma.web import Message
 from brahma.plugins.itpkg.store import GroupDao
 from brahma.plugins.itpkg.forms import InfoForm
 
-
-class RouterGroupHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, rid):
-        #todo
-        pass
-
-    @tornado.web.authenticated
-    def post(self, rid):
-        #todo
-        pass
 
 
 class GroupHandler(BaseHandler):
@@ -78,5 +66,4 @@ class GroupHandler(BaseHandler):
 
 handlers = [
     (r"/itpkg/group", GroupHandler),
-    (r"/itpkg/([0-9]+)/group", RouterGroupHandler),
 ]

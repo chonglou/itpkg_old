@@ -4,7 +4,6 @@ import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.forms import InitForm
 from brahma.plugins.itpkg.store import RouterDao
-from brahma.web import Message
 from brahma.plugins.itpkg.rpc import Rpc
 
 
@@ -112,7 +111,7 @@ class InitHandler(BaseHandler):
                                               mac=fm.lanMac.data.lower(),
                                               net=lanNet,
                                               domain=fm.lanDomain.data)
-                            RouterDao.set_state(rid, "ENABLE")
+                            RouterDao.set_state(rid, flag=fm.flag.data, state="ENABLE")
                             self.render_message_widget(ok=True)
                             return
                         else:

@@ -5,7 +5,6 @@ import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
 from brahma.store.site import UserDao, SettingDao, LogDao
-from brahma.web import Message
 
 
 class ValidHandler(BaseHandler):
@@ -84,7 +83,7 @@ class ActiveHandler(BaseHandler):
                             if user.state == "SUBMIT":
                                 _send_active_email(email, user.username)
                                 self.render_message_widget(ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"],
-                                                                   goto="/main")
+                                                           goto="/main")
                                 return
                             else:
                                 messages.append("用户[%s]状态不对" % email)

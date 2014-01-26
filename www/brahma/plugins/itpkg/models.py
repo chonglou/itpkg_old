@@ -27,6 +27,7 @@ class Router(Base):
         self.details = details
 
 
+
 class Input(Base):
     __tablename__ = "itpkg_input"
     id = Column(Integer, Sequence('itpkg_input_id_seq'), primary_key=True)
@@ -92,20 +93,21 @@ class RouterDevice(Base):
 
 class Device(Base):
     __tablename__ = "itpkg_devices"
-    mac = Column(String(18), Sequence('itpkg_device_id_seq'), primary_key=True)
-    name = Column(String(255))
+    id = Column(Integer, Sequence('itpkg_device_id_seq'), primary_key=True)
+    mac = Column(String(20))
     ip = Column(Integer, nullable=False)
-    fix = Column(Boolean, nullable=False)
+    fix = Column(Boolean, nullable=False, default=False)
     state = Column(String(8), nullable=False, default="SUBMIT")
     user = Column(Integer)
-    manager = Column(Integer, nullable=False)
+    router = Column(Integer, nullable=False)
     details = Column(Text)
     version = Column(Integer, nullable=False, default=0)
+    lastUpdated = Column(DateTime)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
-    def __init__(self, mac, name, ip):
+    def __init__(self, router, mac, ip):
+        self.router = router
         self.mac = mac
-        self.name = name
         self.ip = ip
 
 

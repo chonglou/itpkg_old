@@ -1,7 +1,50 @@
 __author__ = 'zhengjitang@gmail.com'
 
+import datetime
+from sqlalchemy.orm.exc import NoResultFound
 from brahma.env import db_call
-from brahma.plugins.itpkg.models import Router, User, Group
+from brahma.plugins.itpkg.models import Router, User, Group,Device
+
+
+class DeviceDao:
+    @staticmethod
+    @db_call
+    def set_info(did, user, details, session=None):
+        d = session.query(Device).filter(Device.id==did).one()
+        d.user = user
+        d.details = details
+
+    @staticmethod
+    @db_call
+    def get(did, session=None):
+        return session.query(Device).filter(Device.id==did).one()
+
+    @staticmethod
+    @db_call
+    def fill(rid, items, session=None):
+        insert=0
+        update = 0
+        for mac, ip in items:
+            try:
+                d = session.query(Device).filter(Device.mac==mac).filter(Device.router==rid).one()
+                if d.ip != ip:
+                    d.ip = ip
+                    d.lastUpdated = datetime.datetime.now()
+                    d.version +=1
+                    update += 1
+            except NoResultFound:
+                session.add(Device(rid, mac, ip))
+                insert += 1
+        return insert, update
+
+    @staticmethod
+    @db_call
+    def all(rid, session=None):
+        return session.query(Device).filter(Device.router==rid).all()
+    @staticmethod
+    @db_call
+    def delete(did, session=None):
+        session.query(Device).filter(Device.id == did).delete()
 
 
 class UserDao:
@@ -25,7 +68,7 @@ class UserDao:
     @staticmethod
     @db_call
     def all(manager, session=None):
-        return session.query(User).filter(User.manager == manager).order_by(User.id.desc()).all()
+        return session.query(User).filter(User.manager == manager).all()
 
 
 class GroupDao:
@@ -56,23 +99,31 @@ class GroupDao:
 class RouterDao:
     @staticmethod
     @db_call
-    def set_wan(rid, flag, mac, dns1, dns2, ip=None, netmask=None, gateway=None, username=None, password=None, session=None):
-        r  = session.query(Router).filter(Router.id == rid).one()
+    def set_wan(rid, flag, mac, dns1, dns2, ip=None, netmask=None, gateway=None, username=None, password=None,
+                session=None):
+        r = session.query(Router).filter(Router.id == rid).one()
         import json
-        r.wan = json.dumps({"flag":flag, "mac":mac, "dns1":dns1, "dns2":dns2, "ip":ip, "netmask":netmask, "gateway":gateway, "username":username, "password":password})
+
+        r.wan = json.dumps(
+            {"flag": flag, "mac": mac, "dns1": dns1, "dns2": dns2, "ip": ip, "netmask": netmask, "gateway": gateway,
+             "username": username, "password": password})
+
     @staticmethod
     @db_call
     def set_lan(rid, mac, net, domain, session=None):
         r = session.query(Router).filter(Router.id == rid).one()
         import json
-        r.lan = json.dumps({"mac":mac, "net":net, "domain":domain})
+
+        r.lan = json.dumps({"mac": mac, "net": net, "domain": domain})
 
     @staticmethod
     @db_call
-    def set_state(rid, state, session=None):
-        r  = session.query(Router).filter(Router.id == rid).one()
-        r.version +=1
+    def set_state(rid, flag, state, session=None):
+        r = session.query(Router).filter(Router.id == rid).one()
+        r.flag = flag
         r.state = state
+        r.version += 1
+
     @staticmethod
     @db_call
     def add(manager, name, details, session=None):

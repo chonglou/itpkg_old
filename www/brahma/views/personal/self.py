@@ -5,7 +5,6 @@ import datetime
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.web import Message
 from brahma.forms.personal import ContactForm, SetPwdForm
 from brahma.store.site import LogDao, UserDao
 

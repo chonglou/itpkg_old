@@ -3,26 +3,20 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 from brahma.views import BaseHandler
 from brahma.plugins.itpkg.store import UserDao
-from brahma.web import Message
 from brahma.plugins.itpkg.forms import InfoForm
 
 
-class RouterUserHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, rid):
-        #todo
-        pass
-
-    @tornado.web.authenticated
-    def post(self, rid):
-        #todo
-        pass
 
 
 class UserHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("itpkg/user.html", users=UserDao.all(self.current_user['id']))
+        manager = self.current_user['id']
+        users=UserDao.all(manager)
+        if not users:
+            UserDao.add(manager, "默认用户", "")
+            users = UserDao.all(manager)
+        self.render("itpkg/user.html", users=users)
 
     @tornado.web.authenticated
     def put(self):
@@ -73,5 +67,4 @@ class UserHandler(BaseHandler):
 
 handlers = [
     (r"/itpkg/user", UserHandler),
-    (r"/itpkg/([0-9]+)/user", RouterUserHandler),
 ]

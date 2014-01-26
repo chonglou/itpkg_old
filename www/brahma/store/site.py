@@ -35,8 +35,7 @@ class FriendLinkDao:
     @staticmethod
     @db_call
     def delete(flid, session=None):
-        fl = session.query(FriendLink).filter(FriendLink.id == flid).one()
-        session.delete(fl)
+        session.query(FriendLink).filter(FriendLink.id == flid).delete()
 
 
 class LogDao:

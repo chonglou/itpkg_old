@@ -36,12 +36,8 @@ class WikiDao:
     @staticmethod
     @db_call
     def del_wiki(name, session=None):
-        try:
-            w = session.query(Wiki).filter(Wiki.name == name).one()
-        except NoResultFound:
-            logging.error("知识库[%s]不存在" % name)
-            return
-        session.delete(w)
+        session.query(Wiki).filter(Wiki.name == name).delete()
+
 
     @staticmethod
     @db_call

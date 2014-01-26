@@ -5,8 +5,8 @@ import brahma.views
 
 class BaseHandler(brahma.views.BaseHandler):
     def check_state(self, rid):
-        from brahma.web import Message
         from brahma.plugins.itpkg.store import RouterDao
+
         r = RouterDao.get(rid)
         messages = []
         if self.current_user['id'] == r.manager:
@@ -22,7 +22,6 @@ class BaseHandler(brahma.views.BaseHandler):
         return False
 
     def check_manager(self, rid):
-        from brahma.web import Message
         from brahma.plugins.itpkg.store import RouterDao
 
         if self.current_user['id'] == RouterDao.get(rid).manager:

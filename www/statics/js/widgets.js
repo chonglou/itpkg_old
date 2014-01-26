@@ -12,6 +12,8 @@ $.ajaxSetup({
     }
 });
 
+
+
 function Ajax(id, url, type, data, success, async) {
     var _init = function () {
         if (type == undefined) {
@@ -20,9 +22,6 @@ function Ajax(id, url, type, data, success, async) {
         if (data == undefined) {
             data = {};
         }
-        //if (type != "GET") {
-        //    data['_xsrf'] = get_cookie();
-        //}
         if (success == undefined) {
             success = function (result) {
                 $("div#" + id).html(result);
@@ -32,6 +31,10 @@ function Ajax(id, url, type, data, success, async) {
             async = true;
         }
 
+        if(!async){
+            $('body').css('cursor', 'wait');
+        }
+
         $.ajax({
             url: url,
             type: type,
@@ -39,6 +42,11 @@ function Ajax(id, url, type, data, success, async) {
             success: success,
             async: async,
             cache: false,
+
+            complete:function(){
+                $('body').css('cursor', 'default');
+            },
+
             error: function () {
                 alert("HTTP请求失败！");
             }

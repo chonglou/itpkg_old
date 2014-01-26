@@ -1,8 +1,7 @@
 <div class="btn-group">
     <button id="refresh" class="btn btn-primary">刷新</button>
-    <button id="wan" class="btn btn-info">WAN</button>
     <button id="lan" class="btn btn-success">LAN</button>
-    <button id="apply" class="btn btn-danger">应用更改</button>
+    <button id="wan" class="btn btn-danger">WAN</button>
 </div>
 <div id="network-root"></div>
 <script type="text/javascript">
@@ -12,15 +11,13 @@
             new Ajax("tab-item-init", "/itpkg/{{rid}}/network");
         });
         $("button#wan").click(function () {
-            new Ajax("network-root", "/itpkg/{{rid}}/network", "PUT", {act: "wan"})
+            if(confirm("变更WAN信息之后需要切换物理线路，确认要继续么？")){
+                new Ajax("network-root", "/itpkg/{{rid}}/network", "PUT", {act: "wan"})
+            }
+
         });
         $("button#lan").click(function () {
             new Ajax("network-root", "/itpkg/{{rid}}/network", "PUT", {act: "lan"})
-        });
-        $("button#apply").click(function () {
-            if(confirm("你确定要应用更改么？")){
-                new Ajax("network-root", "/itpkg/{{rid}}/network", "PUT", {act: "apply"})
-            }
         });
     });
 </script>

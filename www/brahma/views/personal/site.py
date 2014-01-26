@@ -4,7 +4,6 @@ import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm, ValidCodeForm, FriendLinkForm
 from brahma.store.site import SettingDao, UserDao, FriendLinkDao
-from brahma.web import Message
 from brahma.cache import get_site_info
 
 

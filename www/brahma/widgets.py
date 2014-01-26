@@ -348,7 +348,7 @@ class Form(tornado.web.UIModule):
                             "POST",
                             data,
                             undefined,
-                           %s
+                           false
                     );
                     reload_captcha(fmId);
                 });
@@ -359,7 +359,6 @@ class Form(tornado.web.UIModule):
                 reset_field(fmId);
             });
         """ % (
-            "false" if self.captcha else "true",
             """
             $("img#fm-img-"+fmId+"-captcha").click(function(){
             reload_captcha(fmId);

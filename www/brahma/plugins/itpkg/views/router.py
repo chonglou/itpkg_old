@@ -1,10 +1,9 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
-from brahma.web import Message
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.forms import InfoForm
-from brahma.plugins.itpkg.store import RouterDao
+from brahma.plugins.itpkg.store import RouterDao,UserDao
 
 
 class RouterHandler(BaseHandler):
@@ -14,8 +13,7 @@ class RouterHandler(BaseHandler):
             self.render_ctlbar_widget(act="/itpkg/%s" % rid,
                                       items=[
                                           ("network", "网络配置"),
-                                          ("user", "用户"),
-                                          ("group", "用户组"),
+                                          ("device", "设备管理"),
                                           ("dhcp", "DHCP"),
                                           ("dns", "DNS"),
                                           ("firewall", "防火墙"),
@@ -45,7 +43,7 @@ class ListHandler(BaseHandler):
         else:
             messages = []
             messages.extend(fm.messages())
-            self.render_message(messages=messages)
+            self.render_message_widget(messages=messages)
 
     @tornado.web.authenticated
     def put(self):
