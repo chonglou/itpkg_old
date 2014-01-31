@@ -27,7 +27,6 @@ class Router(Base):
         self.details = details
 
 
-
 class Input(Base):
     __tablename__ = "itpkg_input"
     id = Column(Integer, Sequence('itpkg_input_id_seq'), primary_key=True)
@@ -70,14 +69,27 @@ class Nat(Base):
     name = Column(String(255), nullable=False)
     sport = Column(Integer, nullable=False)
     dport = Column(Integer, nullable=False)
+    dip = Column(Integer, nullable=False)
     tcp = Column(Boolean, nullable=False)
     router = Column(Integer, nullable=False)
 
-    def __init__(self, name, sport, dport, tcp):
+    def __init__(self, name, sport, tcp, dip, dport):
         self.name = name
         self.sport = sport
+        self.dip = dip
         self.dport = dport
         self.tcp = tcp
+
+
+class OutputDevice(Base):
+    __tablename__ = "itpkg_output_device"
+    id = Column(Integer, Sequence('itpkg_output_device_id_seq'), primary_key=True)
+    output = Column(Integer, nullable=False)
+    device = Column(Integer, nullable=False)
+
+    def __init__(self,  output , device):
+        self.output = output
+        self.device = device
 
 
 class RouterDevice(Base):

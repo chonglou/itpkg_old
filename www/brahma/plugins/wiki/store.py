@@ -1,6 +1,5 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import logging
 import datetime
 
 from sqlalchemy.orm.exc import NoResultFound

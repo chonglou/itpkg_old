@@ -5,6 +5,162 @@ import logging
 
 class ArchLinux:
     @staticmethod
+    def firewall_empty():
+        """
+                "iptables -F",
+                "iptables -X",
+                "iptables -t nat -F",
+                "iptables -t nat -X",
+                "iptables -t mangle -F",
+                "iptables -t mangle -X",
+                "iptables -t raw -F",
+                "iptables -t raw -X",
+                "iptables -t security -F",
+                "iptables -t security -X",
+                "iptables -P INPUT ACCEPT",
+                "iptables -P FORWARD ACCEPT",
+                "iptables -P OUTPUT ACCEPT",
+        """
+        return "iptables-restore < /etc/iptables/empty.rules"
+
+    @staticmethod
+    def firewall_status():
+        return [
+            "iptables -nvL --line-numbers",
+            "iptables -nvL --line-numbers -t nat"
+        ]
+
+    @staticmethod
+    def firewall_save():
+        return "iptables-save > /etc/iptables/iptables.rules"
+
+    @staticmethod
+    def firewall_apply(net, ins=list(), nats=list(), outs=list(), macs=list()):
+        #基本规则
+        rules = [
+            ArchLinux.firewall_empty(),
+            "iptables -N TCP",
+            "iptables -N UDP",
+            "iptables -P OUTPUT ACCEPT",
+            "iptables -P INPUT DROP",
+            "iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "iptables -A INPUT -i lo -j ACCEPT",
+            "iptables -A INPUT -m conntrack --ctstate INVALID -j DROP",
+            "iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT",
+            "iptables -A INPUT -p udp -m conntrack --ctstate NEW -j UDP",
+            "iptables -A INPUT -p tcp --syn -m conntrack --ctstate NEW -j TCP",
+            "iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable",
+            "iptables -A INPUT -p tcp -j REJECT --reject-with tcp-rst",
+            "iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable",
+            "iptables -A TCP -p tcp -m tcp --dport 22 -j ACCEPT",
+        ]
+
+        #入口规则
+        for protocol, port in ins:
+            if protocol == "tcp":
+                rules.append("iptables -A TCP -p tcp -m tcp --dport %s -j ACCEPT" % port)
+            elif protocol == "udp":
+                rules.append("iptables -A UDP -p udp -m udp --dport %s -j ACCEPT" % port)
+
+        #转发规则
+        rules.extend([
+            "echo 1 > /proc/sys/net/ipv4/ip_forward",
+            "iptables -N fw-interfaces",
+            "iptables -N fw-open",
+            "iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "iptables -A FORWARD -j fw-interfaces",
+            "iptables -A FORWARD -j fw-open",
+            "iptables -A FORWARD -j REJECT --reject-with icmp-host-unreach",
+            "iptables -P FORWARD DROP",
+        ])
+
+        # 出口规则
+        #"iptables -A fw-interfaces -i lan -j ACCEPT",
+        for d, s, e, w, ms in outs:
+            for m in ms:
+                rules.append(
+                    'iptables -A fw-interfaces -m mac --mac-source %s -i lan -m time --kerneltz --timestrart %s --timestop %s --weekdays %s -m string --string "%s" --algo bm -j ACCEPT' %
+                    (m, s, e, w, d)
+                )
+            rules.append(
+                'iptables -A fw-interfaces -i lan -m time --kerneltz --timestrart %s --timestop %s --weekdays %s -m string --string "%s" --algo bm -j ACCEPT' %
+                (s, e, w, d)
+            )
+
+        for m in macs:
+            rules.append("iptables -A fw-interfaces -m mac --mac-source %s -j ACCEPT" % m)
+
+        rules.append("iptables -t nat -A POSTROUTING -s %s.0/24 -o wan -j MASQUERADE" % net)
+
+        # nat 规则
+        for sport, protocol, dip, dport in nats:
+            rules.extend([
+                "iptables -A fw-open -d %s.%s -p %s --dport %s -j ACCEPT" % (net, dip, protocol, dport),
+                "iptables -t nat -A PREROUTING -i wan -p %s --dport %s -j DNAT --to %s.%s:%s" % (
+                protocol, sport, net, dip, dport),
+            ])
+        return rules
+
+    @staticmethod
+    def firewall_clear(net):
+        return [
+            ArchLinux.firewall_empty(),
+            "echo 1 > /proc/sys/net/ipv4/ip_forward",
+            "iptables -N fw-interfaces",
+            "iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+            "iptables -A FORWARD -j fw-interfaces",
+            "iptables -A FORWARD -j REJECT --reject-with icmp-host-unreach",
+            "iptables -P FORWARD DROP",
+            "iptables -A fw-interfaces -i lan -j ACCEPT",
+            "iptables -t nat -A POSTROUTING -s %s.0/24 -o wan -j MASQUERADE" % net,
+        ]
+
+    @staticmethod
+    def named(net, dns1, dns2, zones=None):
+        named_conf = list()
+        named_conf.extend([
+            'options {',
+            'directory "/var/named";',
+            'pid-file "/var/run/named/named.pid";',
+            'datasize default;',
+            'listen-on { %s.1;};' % net,
+            'forward only;',
+            'forwarders {\n%s;%s;\n};' % (dns1, dns2),
+            'allow-query { any; };',
+            '};',
+            'controls { inet %s.1 port 953 allow { localhost; }; };' % net,
+            'zone "localhost" IN {',
+            'type master;',
+            'file "localhost.zone";',
+            'allow-transfer { any; };',
+            '};',
+            'zone "0.0.127.in-addr.arpa" IN {',
+            'type master;',
+            'file "127.0.0.zone";',
+            'allow-transfer { any; };',
+            '};',
+            'zone "." IN {',
+            'type hint;',
+            'file "root.hint";',
+            '};',
+            'logging {',
+            'channel xfer-log {',
+            'file "/var/log/named.log";',
+            'print-category yes;',
+            'print-severity yes;',
+            'print-time yes;',
+            'severity info;',
+            '};',
+            'category xfer-in { xfer-log; };',
+            'category xfer-out { xfer-log; };',
+            'category notify { xfer-log; };',
+            '};',
+        ])
+        #todo 域名解析
+        return ArchLinux.file("/etc/named.conf", named_conf, mode="440", own="root:named")
+
+
+    @staticmethod
     def scan():
         return "arp -e -i lan"
 
@@ -44,7 +200,7 @@ class ArchLinux:
             lines.extend([
                 'host %s-pc {' % ip,
                 'hardware ethernet %s;' % mac,
-                'fixed-address %s.%s;' %(net, ip),
+                'fixed-address %s.%s;' % (net, ip),
                 '}'
             ])
 
@@ -94,8 +250,30 @@ class ArchLinux:
         ])
 
     @staticmethod
-    def file(name, lines):
-        return "cat << EOF > %s \n%s\nEOF" % (name, '\n'.join(lines))
+    def restart(daemon):
+        return "systemctl restart %s" % daemon
+
+    @staticmethod
+    def start(daemon):
+        return "systemctl start %s" % daemon
+
+    @staticmethod
+    def stop(daemon):
+        return "systemctl stop %s" % daemon
+
+    @staticmethod
+    def status(daemon=None):
+        if daemon:
+            return "systemctl status %s" % daemon
+        return ["uname -a", "uptime", "free -m", "iostat"]
+
+    @staticmethod
+    def file(name, lines, mode="400", own="root:root"):
+        return [
+            "cat << EOF > %s \n%s\nEOF" % (name, '\n'.join(lines)),
+            "chmod %s %s" % (mode, name),
+            "chown %s %s" % (own, name)
+        ]
 
 
 class Rpc:
@@ -106,25 +284,65 @@ class Rpc:
         self.__port = port
         self.__flag = flag
 
-    def apply_dhcp(self, domain, net, items):
+    def status(self):
         if self.__is_archLinux():
-            return self.call(ArchLinux.dhcpd(domain, net, items))
+            return self.call(ArchLinux.status())
+        return self.__fail()
+
+    def status_firewall(self):
+        if self.__is_archLinux():
+            return self.call(ArchLinux.firewall_status())
+        return self.__fail()
+
+    def apply_firewall(self, net, ins, outs, nats, macs):
+        if self.__is_archLinux():
+            cmds = ArchLinux.firewall_apply(net=net, ins=ins, outs=outs, nats=nats, macs=macs)
+            cmds.append(ArchLinux.firewall_save())
+            return self.call(cmds)
+        return self.__fail()
+
+    def clear_firewall(self, net):
+        if self.__is_archLinux():
+            cmds = ArchLinux.firewall_clear(net)
+            cmds.append(ArchLinux.firewall_save())
+            return self.call(cmds)
+        return self.__fail()
+
+    def apply_named(self, net, dns1, dns2):
+        if self.__is_archLinux():
+            cmds = ArchLinux.named(net, dns1, dns2)
+            cmds.append(ArchLinux.restart("named"))
+            return self.call(cmds)
+        return self.__fail()
+
+
+    def status_named(self):
+        if self.__is_archLinux():
+            return self.call([ArchLinux.status("named")])
+        return self.__fail()
+
+    def status_dhcpd(self):
+        if self.__is_archLinux():
+            return self.call([ArchLinux.status("dhcpd4")])
+        return self.__fail()
+
+    def apply_dhcpd(self, domain, net, items):
+        if self.__is_archLinux():
+            cmds = ArchLinux.dhcpd(domain, net, items)
+            cmds.append(ArchLinux.restart("dhcpd4"))
+            return self.call(cmds)
         return self.__fail()
 
     def set_wan(self, ip, netmask, gateway, dns1, dns2):
         if self.__is_archLinux():
-            return self.call([
-                ArchLinux.wan_static(ip, netmask, gateway, dns1, dns2),
-                #"netctl restart wan",
-            ])
+            return self.call(ArchLinux.wan_static(ip, netmask, gateway, dns1, dns2))
         return self.__fail()
 
     def set_lan(self, net):
         if self.__is_archLinux():
-            return self.call([
-                ArchLinux.lan(net),
-                "netctl restart lan",
-            ])
+            cmds = ArchLinux.lan(net)
+            cmds.append("netctl restart lan")
+            return self.call(cmds)
         return self.__fail()
 
 
@@ -163,9 +381,10 @@ class Rpc:
 
             ssh = pxssh.pxssh()
             logging.debug("登录:%s@%s:%s" % (self.__user, self.__host, self.__port))
+            logging.debug("请求：\n%s", "\n".join(commands))
             ssh.login(server=self.__host, username=self.__user, password=self.__password, port=self.__port)
             for cmd in commands:
-                logging.debug("命令\n%s" % cmd)
+                logging.debug("运行\n%s" % cmd)
                 ssh.sendline(cmd)
                 ssh.prompt()
                 out = ssh.before.decode().split('\n')

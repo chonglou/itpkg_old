@@ -37,6 +37,15 @@
                     <button id="/itpkg/{{rid}}/device-{{d.id}}-edit" class="btn btn-primary">
                         编辑
                     </button>
+                    {% if d.state == 'ENABLE' %}
+                    <button id="/itpkg/{{rid}}/device-{{d.id}}-disable" class="btn btn-danger">
+                        禁用
+                    </button>
+                    {% else %}
+                    <button id="/itpkg/{{rid}}/device-{{d.id}}-enable" class="btn btn-danger">
+                        启用
+                    </button>
+                    {% end %}
                 </div>
             </td>
         </tr>
@@ -54,7 +63,9 @@
         });
         $("button[id^='/itpkg/{{rid}}/device-']").click(function () {
             var ss = $(this).attr("id").split('-');
-            if (ss[2] == "edit" || ss[2] == "view" ) {
+            if (ss[2] == "edit" ||
+                    ss[2] == "view" ||
+                    ((ss[2] == "enable" || ss[2] == "disable") && confirm("你确定要进行此操作么？"))) {
                 new Ajax("device-root", ss[0], "PUT", {id: ss[1], act: ss[2]});
             }
         });

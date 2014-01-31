@@ -3,14 +3,43 @@ __author__ = 'zhengjitang@gmail.com'
 import datetime
 from sqlalchemy.orm.exc import NoResultFound
 from brahma.env import db_call
-from brahma.plugins.itpkg.models import Router, User, Group,Device
+from brahma.plugins.itpkg.models import Router, User, Group, Device, Input, Output, Nat, OutputDevice
+
+
+class InputDao:
+    @staticmethod
+    @db_call
+    def all(rid, session=None):
+        return session.query(Input).filter(Input.router == rid).all()
+
+
+class OutputDao:
+    @staticmethod
+    @db_call
+    def all(rid, session=None):
+        return session.query(Output).filter(Output.router == rid).all()
+
+
+class NatDao:
+    @staticmethod
+    @db_call
+    def all(rid, session=None):
+        return session.query(Nat).filter(Nat.router == rid).all()
+
+
+class OutputDeviceDao:
+    @staticmethod
+    @db_call
+    def all(oid, session=None):
+        return session.query(OutputDevice).filter(OutputDevice.output == oid).all()
 
 
 class DeviceDao:
     @staticmethod
     @db_call
     def all_fix(rid, session=None):
-        return session.query(Device).filter(Device.router == rid, Device.fix==True).all()
+        return session.query(Device).filter(Device.router == rid, Device.fix == True).all()
+
     @staticmethod
     @db_call
     def bind(did, ip, flag, session=None):
@@ -24,32 +53,38 @@ class DeviceDao:
     @staticmethod
     @db_call
     def set_info(did, user, details, session=None):
-        d = session.query(Device).filter(Device.id==did).one()
+        d = session.query(Device).filter(Device.id == did).one()
         d.user = user
         d.details = details
 
     @staticmethod
     @db_call
+    def set_state(did, state, session=None):
+        d = session.query(Device).filter(Device.id == did).one()
+        d.state = state
+
+    @staticmethod
+    @db_call
     def is_ip_inuse(rid, ip, session=None):
-        return session.query(Device).filter(Device.router == rid, Device.ip==ip, Device.fix==True).count() !=0
+        return session.query(Device).filter(Device.router == rid, Device.ip == ip, Device.fix == True).count() != 0
 
     @staticmethod
     @db_call
     def get(did, session=None):
-        return session.query(Device).filter(Device.id==did).one()
+        return session.query(Device).filter(Device.id == did).one()
 
     @staticmethod
     @db_call
     def fill(rid, items, session=None):
-        insert=0
+        insert = 0
         update = 0
         for mac, ip in items:
             try:
-                d = session.query(Device).filter(Device.mac==mac).filter(Device.router==rid).one()
+                d = session.query(Device).filter(Device.mac == mac).filter(Device.router == rid).one()
                 if d.ip != ip:
                     d.ip = ip
                     d.lastUpdated = datetime.datetime.now()
-                    d.version +=1
+                    d.version += 1
                     update += 1
             except NoResultFound:
                 session.add(Device(rid, mac, ip))
@@ -59,7 +94,8 @@ class DeviceDao:
     @staticmethod
     @db_call
     def all(rid, session=None):
-        return session.query(Device).filter(Device.router==rid).all()
+        return session.query(Device).filter(Device.router == rid).order_by(Device.state.asc()).all()
+
     @staticmethod
     @db_call
     def delete(did, session=None):

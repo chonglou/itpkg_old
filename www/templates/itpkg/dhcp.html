@@ -1,5 +1,6 @@
 <div class="btn-group">
     <button id="refresh" class="btn btn-primary">刷新</button>
+    <button id="status" class="btn btn-success">当前状态</button>
     <button id="apply" class="btn btn-danger">应用更改</button>
 </div>
 <div id="dhcp-root"></div>
@@ -37,7 +38,10 @@
             new Ajax("tab-item-dhcp", "/itpkg/{{rid}}/dhcp");
         });
         $("button#apply").click(function () {
-            new Ajax("dhcp-root", "/itpkg/{{rid}}/dhcp", "PUT", undefined, undefined, false);
+            new Ajax("dhcp-root", "/itpkg/{{rid}}/dhcp", "PUT", {act:"apply"}, undefined, false);
+        });
+        $("button#status").click(function () {
+            new Ajax("dhcp-root", "/itpkg/{{rid}}/dhcp", "PUT", {act:"status"}, undefined, false);
         });
     });
 </script>

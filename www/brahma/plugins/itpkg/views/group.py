@@ -6,7 +6,6 @@ from brahma.plugins.itpkg.store import GroupDao
 from brahma.plugins.itpkg.forms import InfoForm
 
 
-
 class GroupHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):

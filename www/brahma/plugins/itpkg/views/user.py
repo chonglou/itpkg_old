@@ -6,13 +6,11 @@ from brahma.plugins.itpkg.store import UserDao
 from brahma.plugins.itpkg.forms import InfoForm
 
 
-
-
 class UserHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         manager = self.current_user['id']
-        users=UserDao.all(manager)
+        users = UserDao.all(manager)
         if not users:
             UserDao.add(manager, "默认用户", "")
             users = UserDao.all(manager)

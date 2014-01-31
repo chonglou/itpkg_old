@@ -46,17 +46,25 @@ class DhcpHandler(BaseHandler):
     @tornado.web.authenticated
     def put(self, rid):
         if self.check_state(rid):
-            import json
+            act = self.get_argument("act")
             from brahma.plugins.itpkg.rpc import create
             r = RouterDao.get(rid)
             rpc = create(rid)
-            lan = json.loads(r.lan)
-            #todo test
-            ok, result = rpc.apply_dhcp(lan['domain'], lan['net'], [(d.mac, d.ip) for d in DeviceDao.all_fix(rid)])
-            if ok:
-                self.render_message_widget(ok=True)
+            if act == "apply":
+                import json
+                lan = json.loads(r.lan)
+                #todo test
+                ok, result = rpc.apply_dhcpd(lan['domain'], lan['net'], [(d.mac, d.ip) for d in DeviceDao.all_fix(rid)])
+                if ok:
+                    self.render_message_widget(ok=True)
+                else:
+                    self.render_message_widget(messages=result)
+            elif act == "status":
+                ok, result = rpc.status_dhcpd()
+                self.render_message_widget(ok=ok, messages=result)
             else:
-                self.render_message_widget(messages=result)
+                self.render_message_widget(messages=["未知操作"])
+
 
 
 handlers = [
