@@ -9,10 +9,29 @@ from brahma.plugins.itpkg.models import Router, User, Group,Device
 class DeviceDao:
     @staticmethod
     @db_call
+    def all_fix(rid, session=None):
+        return session.query(Device).filter(Device.router == rid, Device.fix==True).all()
+    @staticmethod
+    @db_call
+    def bind(did, ip, flag, session=None):
+        d = session.query(Device).filter(Device.id == did).one()
+        if flag:
+            d.ip = ip
+            d.fix = True
+        else:
+            d.fix = False
+
+    @staticmethod
+    @db_call
     def set_info(did, user, details, session=None):
         d = session.query(Device).filter(Device.id==did).one()
         d.user = user
         d.details = details
+
+    @staticmethod
+    @db_call
+    def is_ip_inuse(rid, ip, session=None):
+        return session.query(Device).filter(Device.router == rid, Device.ip==ip, Device.fix==True).count() !=0
 
     @staticmethod
     @db_call

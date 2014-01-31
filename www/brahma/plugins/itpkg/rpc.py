@@ -7,6 +7,7 @@ class ArchLinux:
     @staticmethod
     def scan():
         return "arp -e -i lan"
+
     @staticmethod
     def reboot():
         return "reboot"
@@ -22,6 +23,32 @@ class ArchLinux:
     @staticmethod
     def hostname(name):
         return "hostnamectl set-hostname %s" % name
+
+    @staticmethod
+    def dhcpd(domain, net, items):
+        lines = list()
+        lines.extend([
+            'option domain-name "%s";' % domain,
+            'default-lease-time 600;',
+            'max-lease-time 7200;',
+            'authoritative;',
+            'log-facility local7;',
+            'subnet %s.0 netmask 255.255.255.0 {' % net,
+            'range dynamic-bootp %s.2  %s.254;' % (net, net),
+            'option broadcast-address %s.255;' % net,
+            'option routers %s.1;' % net,
+            'option domain-name-servers %s.1, %s.1;' % (net, net),
+            '}'
+        ])
+        for mac, ip in items:
+            lines.extend([
+                'host %s-pc {' % ip,
+                'hardware ethernet %s;' % mac,
+                'fixed-address %s.%s;' %(net, ip),
+                '}'
+            ])
+
+        return ArchLinux.file("/etc/dhcpd.conf", lines)
 
     @staticmethod
     def udev(wanMac, lanMac):
@@ -79,9 +106,13 @@ class Rpc:
         self.__port = port
         self.__flag = flag
 
+    def apply_dhcp(self, domain, net, items):
+        if self.__is_archLinux():
+            return self.call(ArchLinux.dhcpd(domain, net, items))
+        return self.__fail()
 
     def set_wan(self, ip, netmask, gateway, dns1, dns2):
-        if self.__flag == "ArchLinux":
+        if self.__is_archLinux():
             return self.call([
                 ArchLinux.wan_static(ip, netmask, gateway, dns1, dns2),
                 #"netctl restart wan",
@@ -89,16 +120,40 @@ class Rpc:
         return self.__fail()
 
     def set_lan(self, net):
-        if self.__flag == "ArchLinux":
+        if self.__is_archLinux():
             return self.call([
                 ArchLinux.lan(net),
                 "netctl restart lan",
             ])
         return self.__fail()
 
+
+    def scan(self):
+        if self.__flag == "ArchLinux":
+            ok, result = self.call([ArchLinux.scan()])
+            if ok:
+                val = list()
+                import shlex
+
+                for i in range(1, len(result)):
+                    ss = shlex.split(result[i])
+                    if len(ss) == 5:
+                        ip = ss[1]
+                        val.append((ss[2], ip[ip.rindex('.') + 1:]))
+                return ok, val
+            else:
+                return ok, result
+
+        return self.__fail()
+
     @staticmethod
     def __fail():
-        return False,["尚未不支持"]
+        return False, ["尚未不支持"]
+
+
+    def __is_archLinux(self):
+        return self.__flag == "ArchLinux"
+
 
     def call(self, commands):
         result = list()
@@ -107,14 +162,14 @@ class Rpc:
             from pexpect import pxssh
 
             ssh = pxssh.pxssh()
-            logging.debug("登录:%s@%s:%s"%(self.__user, self.__host, self.__port))
+            logging.debug("登录:%s@%s:%s" % (self.__user, self.__host, self.__port))
             ssh.login(server=self.__host, username=self.__user, password=self.__password, port=self.__port)
             for cmd in commands:
-                logging.debug("命令\n%s"%cmd)
+                logging.debug("命令\n%s" % cmd)
                 ssh.sendline(cmd)
                 ssh.prompt()
                 out = ssh.before.decode().split('\n')
-                logging.debug("结果\n%s"%out)
+                logging.debug("结果\n%s" % out)
                 result.extend(out)
             ssh.logout()
             ok = True
@@ -123,32 +178,11 @@ class Rpc:
             result.append("网络通讯出错")
         return ok, result
 
-    def scan(self):
-        if self.__flag == "ArchLinux":
-            ok,result = self.call([ArchLinux.scan()])
-            if ok:
-                val = list()
-                import shlex
-                for i in range(1, len(result)):
-                    ss = shlex.split(result[i])
-                    if len(ss) == 5:
-                        ip = ss[1]
-                        val.append((ss[2], ip[ip.rindex('.')+1:]))
-                return ok, val
-            else:
-                return ok, result
-
-        return self.__fail()
-
-
-
-
-
-
 
 def create(rid):
     import json
     from brahma.plugins.itpkg.store import RouterDao
+
     r = RouterDao.get(rid)
     wan = json.loads(r.wan)
     return Rpc(host=wan['ip'], flag=r.flag)

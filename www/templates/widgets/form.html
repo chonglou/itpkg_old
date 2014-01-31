@@ -70,6 +70,26 @@
             </div>
         </div>
     </div>
+    {% elif field.type == "RadioField" %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            {{field.label.text}}：
+        </label>
+        <div class="col-sm-6">
+            {% for v,k in field.choices%}
+            <div class="radio col-sm-2">
+                <label>
+                    {% if field.data == v %}
+                    <input type="radio" name="fm-radio-{{form.fid}}-{{field.id}}" value="{{v}}" checked>
+                    {% else %}
+                    <input type="radio" name="fm-radio-{{form.fid}}-{{field.id}}" value="{{v}}">
+                    {% end %}
+                    {{k}}
+                </label>
+            </div>
+            {% end %}
+        </div>
+    </div>
     {% elif field.type == "AgreementField" %}
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-6">
@@ -101,6 +121,8 @@
                     style="height:350px;" type="text/plain">
                 {{field.data or ""}}
 
+
+
             </script>
         </div>
         <script type="text/javascript">
@@ -108,11 +130,12 @@
             editor.render("fm-html-{{form.fid}}-{{field.id}}");
         </script>
     </div>
-     {% elif field.type == "SelectField" %}
+    {% elif field.type == "SelectField" %}
     <div class="form-group">
         <label for="fm-select-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
             {{field.label.text}}{% if field.flags.required %}*{% end %}：
         </label>
+
         <div class="col-sm-4">
             <select id="fm-select-{{form.fid}}-{{field.id}}" class="form-control">
                 {% for v,k in field.choices %}

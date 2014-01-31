@@ -21,6 +21,9 @@ class DeviceHandler(BaseHandler):
     def post(self, rid):
         manager = self.current_user['id']
         act = self.get_argument("act")
+        router = RouterDao.get(rid)
+        import json
+        net = json.loads(router.lan)['net']
         if self.check_state(rid):
             if act == "edit":
                 fm = DeviceInfoForm(formdata=self.request.arguments)
@@ -30,6 +33,8 @@ class DeviceHandler(BaseHandler):
                     self.render_message_widget(ok=True)
                 else:
                     self.render_message_widget(messages=fm.messages())
+            else:
+                self.render_message_widget(messages=['未知操作'])
 
     @tornado.web.authenticated
     def put(self, rid):
@@ -64,18 +69,14 @@ class DeviceHandler(BaseHandler):
                     )
                 else:
                     self.render_message_widget(messages=result)
-            elif act == "fix":
-                form = DeviceBindForm("bind", "固定IP绑定", "/itpkg/%s/device"%rid)
-                form.act.data = "fix"
-                form.ip.choices = [(i, "%s.%s"%(net, i)) for i in range(2, 254)]
-                form.mac.choices = [(d.id, d.mac) for d in DeviceDao.all(rid)]
-                self.render_form_widget(form)
             #elif act == "test":
             #    items = list()
             #    for i in range(1, 20):
             #        items.append(("mac-%s"%i,i))
             #    DeviceDao.fill(rid, items)
             #    self.render_message_widget(ok=True)
+            else:
+                self.render_message_widget(messages=['错误请求'])
 
 
 handlers = [

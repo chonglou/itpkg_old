@@ -342,6 +342,10 @@ class Form(tornado.web.UIModule):
                     $("[id^='fm-select-"+fmId+"-']").each(function(){
                         data[$(this).attr('id').split('-')[3]] = $(this).val();
                     });
+                    $("[name^='fm-radio-"+fmId+"-']:checked").each(function(){
+                        data[$(this).attr('name').split('-')[3]] = $(this).val();
+                    });
+
                     new Ajax(
                             "fm-msg-"+fmId,
                             $("input#fm-act-"+fmId).val(),

@@ -1,15 +1,14 @@
 __author__ = 'zhengjitang@gmail.com'
 
-from wtforms import validators, TextField, HiddenField, PasswordField, SelectField,RadioField
+from wtforms import validators, TextField, HiddenField, PasswordField, SelectField,RadioField,BooleanField
 
 from brahma.web import Form, HtmlField
 
 
 class DeviceBindForm(Form):
-    act = HiddenField()
-    mac = SelectField("MAC")
-    ip = SelectField("IP")
-    flag = RadioField("绑定", choices=[(True, "是"), (False, "否")])
+    mac = SelectField("MAC", coerce=int)
+    ip = SelectField("IP", coerce=int)
+    flag = BooleanField("绑定")
 
 
 class DeviceInfoForm(Form):
