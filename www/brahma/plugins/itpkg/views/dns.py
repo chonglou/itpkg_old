@@ -16,10 +16,12 @@ class DnsHandler(BaseHandler):
         if self.check_state(rid):
             act = self.get_argument("act")
             from brahma.plugins.itpkg.rpc import create
+
             r = RouterDao.get(rid)
             rpc = create(rid)
             if act == "apply":
                 import json
+
                 lan = json.loads(r.lan)
                 wan = json.loads(r.wan)
                 ok, result = rpc.apply_named(lan['net'], wan['dns1'], wan['dns2'])

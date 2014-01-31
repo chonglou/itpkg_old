@@ -87,7 +87,7 @@ class OutputDevice(Base):
     output = Column(Integer, nullable=False)
     device = Column(Integer, nullable=False)
 
-    def __init__(self,  output , device):
+    def __init__(self, output, device):
         self.output = output
         self.device = device
 
@@ -189,7 +189,8 @@ class Limit(Base):
     version = Column(Integer, nullable=False, default=0)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 
-    def __init__(self, name, upMax, downMax, upMin, downMin):
+    def __init__(self, manager, name, upMax, downMax, upMin, downMin):
+        self.manager = manager
         self.name = name
         self.upMax = upMax
         self.upMin = upMin

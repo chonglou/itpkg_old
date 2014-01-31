@@ -3,7 +3,34 @@ __author__ = 'zhengjitang@gmail.com'
 import datetime
 from sqlalchemy.orm.exc import NoResultFound
 from brahma.env import db_call
-from brahma.plugins.itpkg.models import Router, User, Group, Device, Input, Output, Nat, OutputDevice
+from brahma.plugins.itpkg.models import Router, User, Group, Device, Input, Output, Nat, OutputDevice, Limit
+
+
+class LimitDao:
+    @staticmethod
+    @db_call
+    def get(lid, session=None):
+        return session.query(Limit).filter(Limit.id == lid).one()
+
+    @staticmethod
+    @db_call
+    def set(lid, name, upMax, downMax, upMin, downMin, session=None):
+        l = session.query(Limit).filter(Limit.id == lid).one()
+        l.name = name
+        l.upMax = upMax
+        l.upMin = upMin
+        l.downMax = downMax
+        l.downMin = downMin
+
+    @staticmethod
+    @db_call
+    def add(manager, name, upMax, downMax, upMin, downMin, session=None):
+        session.add(Limit(manager, name, upMax, downMax, upMin, downMin))
+
+    @staticmethod
+    @db_call
+    def all(manager, session=None):
+        return session.query(Limit).filter(Limit.manager == manager).all()
 
 
 class InputDao:

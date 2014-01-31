@@ -97,7 +97,7 @@ class ArchLinux:
             rules.extend([
                 "iptables -A fw-open -d %s.%s -p %s --dport %s -j ACCEPT" % (net, dip, protocol, dport),
                 "iptables -t nat -A PREROUTING -i wan -p %s --dport %s -j DNAT --to %s.%s:%s" % (
-                protocol, sport, net, dip, dport),
+                    protocol, sport, net, dip, dport),
             ])
         return rules
 

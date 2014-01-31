@@ -8,6 +8,16 @@ from brahma.plugins.itpkg.forms import DeviceInfoForm
 
 
 class DeviceHandler(BaseHandler):
+    def __check_device(self, rid, did):
+        d = DeviceDao.get(did)
+        if type(rid) == str:
+            rid = int(rid)
+
+        if d.router == rid:
+            return True
+        self.render_message_widget(messages=['没有权限'])
+        return False
+
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_state(rid):
@@ -25,11 +35,12 @@ class DeviceHandler(BaseHandler):
             if act == "edit":
                 fm = DeviceInfoForm(formdata=self.request.arguments)
                 fm.user.choices = [(str(u.id), u.name) for u in UserDao.all(manager)]
-                if fm.validate():
-                    DeviceDao.set_info(fm.id.data, fm.user.data, fm.details.data)
-                    self.render_message_widget(ok=True)
-                else:
-                    self.render_message_widget(messages=fm.messages())
+                if self.__check_device(rid, fm.id.data):
+                    if fm.validate():
+                        DeviceDao.set_info(fm.id.data, fm.user.data, fm.details.data)
+                        self.render_message_widget(ok=True)
+                    else:
+                        self.render_message_widget(messages=fm.messages())
             else:
                 self.render_message_widget(messages=['未知操作'])
 
@@ -43,16 +54,20 @@ class DeviceHandler(BaseHandler):
             r = RouterDao.get(rid)
             net = json.loads(r.lan)['net']
             if act == "edit":
-                device = DeviceDao.get(self.get_argument("id"))
-                form = DeviceInfoForm("device", "设备[%s]详细信息" % device.id, "/itpkg/%s/device" % rid)
-                form.act.data = "edit"
-                form.id.data = device.id
-                form.user.choices = [(u.id, u.name) for u in UserDao.all(manager)]
-                form.user.data = device.user
-                form.details.data = device.details
-                self.render_form_widget(form)
+                did = self.get_argument("id")
+                if self.__check_device(rid, did):
+                    device = DeviceDao.get(did)
+                    form = DeviceInfoForm("device", "设备[%s]详细信息" % device.id, "/itpkg/%s/device" % rid)
+                    form.act.data = "edit"
+                    form.id.data = device.id
+                    form.user.choices = [(u.id, u.name) for u in UserDao.all(manager)]
+                    form.user.data = device.user
+                    form.details.data = device.details
+                    self.render_form_widget(form)
             elif act == "view":
-                self.render("itpkg/device/view.html", net=net, device=DeviceDao.get(self.get_argument("id")))
+                did = self.get_argument("id")
+                if self.__check_device(rid, did):
+                    self.render("itpkg/device/view.html", net=net, device=DeviceDao.get(did))
             elif act == "scan":
                 #test
                 rpc = create_rpc(rid)
@@ -74,11 +89,15 @@ class DeviceHandler(BaseHandler):
             #    DeviceDao.fill(rid, items)
             #    self.render_message_widget(ok=True)
             elif act == "enable":
-                DeviceDao.set_state(self.get_argument('id'), "ENABLE")
-                self.render_message_widget(ok=True)
+                did = self.get_argument('id')
+                if self.__check_device(rid, did):
+                    DeviceDao.set_state(did, "ENABLE")
+                    self.render_message_widget(ok=True)
             elif act == "disable":
-                DeviceDao.set_state(self.get_argument('id'), "DISABLE")
-                self.render_message_widget(ok=True)
+                did = self.get_argument('id')
+                if self.__check_device(rid, did):
+                    DeviceDao.set_state(self.get_argument('id'), "DISABLE")
+                    self.render_message_widget(ok=True)
             else:
                 self.render_message_widget(messages=['错误请求'])
 

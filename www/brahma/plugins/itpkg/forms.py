@@ -1,9 +1,70 @@
 __author__ = 'zhengjitang@gmail.com'
 
-from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField
+from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField,IntegerField,RadioField
 
-from brahma.web import Form, HtmlField
+from brahma.web import Form, HtmlField,ListField
 
+
+def ip_choices(net):
+    return [(i, "%s.%s"%(net, i)) for i in range(2, 254)]
+
+
+def _speed_choice():
+    return [(50, "50K"),(100, "100K"),(200, "200K"), (300, "300K"), (500, "500K"), (800, "800K"), (1000, "1M"), (1500, "1.5M"), (2000, "2M"), (5000, "5M")]
+
+
+def _time_choices():
+    v = []
+    for i in range(0,24):
+        v.append(("%02d:00" % i,"%02d:00" % i))
+        v.append(("%02d:30" % i,"%02d:30" % i))
+    return v
+
+
+def _protocol_choices():
+    return [("tcp", "TCP"), ("udp", "UDP")]
+
+
+class LimitForm(Form):
+    id = HiddenField()
+    name = TextField("名称", validators=[validators.Required()])
+    upMax = SelectField("最大上传", choices=_speed_choice(), coerce=int)
+    downMax = SelectField("最大下载", choices=_speed_choice(), coerce=int)
+    upMin = SelectField("最小上传", choices=_speed_choice(), coerce=int)
+    downMin = SelectField("最小下载", choices=_speed_choice(), coerce=int)
+
+
+class NatForm(Form):
+    id = HiddenField()
+    act = HiddenField()
+    sport = IntegerField("来源端口")
+    protocol = RadioField("协议", choices=_protocol_choices())
+    dip = SelectField("目的地址", coerce=int)
+    dport = IntegerField("目的端口")
+
+
+class OutputForm(Form):
+    id = HiddenField()
+    act = HiddenField()
+    keyword = TextField("关键字", validators=[validators.Required()])
+    begin = SelectField("起始时间", choices=_time_choices())
+    end = SelectField("截止时间", choices=_time_choices())
+    weekdays = ListField("生效日期", choices=[
+        ("mon","星期一"),
+        ("tue","星期二"),
+        ("wed","星期三"),
+        ("thu","星期四"),
+        ("fri","星期五"),
+        ("sat","星期六"),
+        ("sun","星期日")
+    ])
+
+
+class InputForm(Form):
+    id = HiddenField()
+    act = HiddenField()
+    port = IntegerField("端口", validators=[validators.Required()])
+    protocol = RadioField("协议", choices=_protocol_choices())
 
 class DeviceBindForm(Form):
     mac = SelectField("MAC", coerce=int)

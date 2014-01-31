@@ -77,12 +77,32 @@
         </label>
         <div class="col-sm-6">
             {% for v,k in field.choices%}
-            <div class="radio col-sm-2">
+            <div class="radio col-sm-3">
                 <label>
                     {% if field.data == v %}
                     <input type="radio" name="fm-radio-{{form.fid}}-{{field.id}}" value="{{v}}" checked>
                     {% else %}
                     <input type="radio" name="fm-radio-{{form.fid}}-{{field.id}}" value="{{v}}">
+                    {% end %}
+                    {{k}}
+                </label>
+            </div>
+            {% end %}
+        </div>
+    </div>
+    {% elif field.type == "ListField" %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            {{field.label.text}}：
+        </label>
+        <div class="col-sm-6">
+            {% for v,k in field.choices%}
+            <div class="radio col-sm-3">
+                <label>
+                    {% if v in field.data %}
+                    <input type="checkbox" name="fm-list-{{form.fid}}-{{field.id}}" value="{{v}}" checked>
+                    {% else %}
+                    <input type="checkbox" name="fm-list-{{form.fid}}-{{field.id}}" value="{{v}}">
                     {% end %}
                     {{k}}
                 </label>

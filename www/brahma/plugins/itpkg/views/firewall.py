@@ -2,26 +2,48 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
-from brahma.plugins.itpkg.store import RouterDao,InputDao,OutputDao,NatDao,OutputDeviceDao, DeviceDao
+from brahma.plugins.itpkg.store import RouterDao, InputDao, OutputDao, NatDao, OutputDeviceDao, DeviceDao
+from brahma.plugins.itpkg.forms import InputForm, OutputForm,NatForm, ip_choices
 
 
 class FirewallHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_state(rid):
-            self.render("itpkg/firewall.html", rid=rid)
+            self.render("itpkg/firewall/index.html", rid=rid)
 
     @tornado.web.authenticated
     def put(self, rid):
         if self.check_state(rid):
             act = self.get_argument("act")
             from brahma.plugins.itpkg.rpc import create
+
             r = RouterDao.get(rid)
             rpc = create(rid)
             import json
+
             lan = json.loads(r.lan)
-            wan = json.loads(r.wan)
-            if act == "apply":
+            if act == "input":
+                form = InputForm("input", "添加入口规则", "/itpkg/%s/firewall" % rid)
+                form.act.data = "input"
+                form.protocol.data = "tcp"
+                self.render("itpkg/firewall/input.html", form=form, items=InputDao.all(rid))
+            elif act == "output":
+                form = OutputForm("output", "添加出口规则", "/itpkg/%s/firewall" % rid)
+                form.act.data = "output"
+                form.begin.data = "08:00"
+                form.end.data = "18:00"
+                form.weekdays.data = self.__output_weekdays()
+                self.render("itpkg/firewall/output.html", form=form, items=OutputDao.all(rid))
+            elif act == "nat":
+                form = NatForm("nat", "添加映射规则", "/itpkg/%s/firewall" % rid)
+                form.act.data = "nat"
+                form.protocol.data = "tcp"
+                form.dip.choices = ip_choices(lan['net'])
+                self.render("itpkg/firewall/nat.html", form=form)
+            elif act == "limit":
+                self.render("itpkg/firewall/limit.html")
+            elif act == "apply":
                 #test
                 ins = []
                 for i in InputDao.all(rid):
@@ -33,22 +55,9 @@ class FirewallHandler(BaseHandler):
                     ms = []
                     for od in OutputDeviceDao.all(o.id):
                         ms.append(DeviceDao.get(od.device).mac)
-                    ws = []
-                    if o.mon:
-                        ws.append("mon")
-                    if o.tue:
-                        ws.append("tue")
-                    if o.wed:
-                        ws.append("wed")
-                    if o.thu:
-                        ws.append("thu")
-                    if o.fri:
-                        ws.append("fri")
-                    if o.sat:
-                        ws.append("sat")
-                    if o.sun:
-                        ws.append("sun")
-                    outs.append((o.keyword, o.start.strftime("%H:%M"), o.end.strftime("%H:%M"),",".join(ws),ms))
+
+                    outs.append(
+                        (o.keyword, o.start.strftime("%H:%M"), o.end.strftime("%H:%M"), self.__output_weekdays(o), ms))
 
                 nats = []
                 for n in NatDao.all(rid):
@@ -79,6 +88,26 @@ class FirewallHandler(BaseHandler):
     def post(self, rid):
         #todo
         pass
+
+    def __output_weekdays(self, output=None):
+        if not output:
+            return "mon,tue,wed,thu,fri"
+        ws = []
+        if output.mon:
+            ws.append("mon")
+        if output.tue:
+            ws.append("tue")
+        if output.wed:
+            ws.append("wed")
+        if output.thu:
+            ws.append("thu")
+        if output.fri:
+            ws.append("fri")
+        if output.sat:
+            ws.append("sat")
+        if output.sun:
+            ws.append("sun")
+        return ",".join(ws)
 
 
 handlers = [

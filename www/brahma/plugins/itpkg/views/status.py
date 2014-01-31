@@ -15,6 +15,7 @@ class StatusHandler(BaseHandler):
     def put(self, rid):
         if self.check_manager(rid):
             from brahma.plugins.itpkg.rpc import create
+
             rpc = create(rid)
             ok, result = rpc.status()
             self.render_message_widget(ok=ok, messages=result)

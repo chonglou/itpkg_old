@@ -335,16 +335,34 @@ class Form(tornado.web.UIModule):
                                 data[fid] = $(this).val();
                         }
                     });
+
                     $("[id^='fm-html-"+fmId+"-']").each(function(){
                         var id = $(this).attr('id');
                         data[id.split('-')[3]] = UE.getEditor(id).getContent();
                     });
+
                     $("[id^='fm-select-"+fmId+"-']").each(function(){
                         data[$(this).attr('id').split('-')[3]] = $(this).val();
                     });
+
                     $("[name^='fm-radio-"+fmId+"-']:checked").each(function(){
                         data[$(this).attr('name').split('-')[3]] = $(this).val();
                     });
+
+                    $("[name^='fm-list-"+fmId+"-']:checked").each(function(){
+                        var fid = $(this).attr('name').split('-')[3];
+                        var val = $(this).val();
+                        var item = data[fid];
+                        if(item == undefined){
+                            item = val;
+                        }
+                        else{
+                            item += ','+val;
+                        }
+                        data[fid] = item;
+                    });
+
+
 
                     new Ajax(
                             "fm-msg-"+fmId,

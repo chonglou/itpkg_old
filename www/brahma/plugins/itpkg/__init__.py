@@ -24,9 +24,10 @@ def navbar(uid=None):
         from brahma.web import NavBar
 
         nb = NavBar("IT-PACKAGE", True)
-        nb.add("/itpkg/group", "用户组列表")
-        nb.add("/itpkg/user", "用户列表")
-        nb.add("/itpkg/router", "路由设备总览")
+        nb.add("/itpkg/group", "用户组")
+        nb.add("/itpkg/user", "用户")
+        nb.add("/itpkg/limit", "限速规则")
+        nb.add("/itpkg/router", "路由设备")
         from brahma.plugins.itpkg.store import RouterDao
 
         items = [("/itpkg/router/%s" % r.id, "路由-%s" % r.name) for r in RouterDao.all(uid)]

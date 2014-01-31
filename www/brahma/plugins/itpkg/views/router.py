@@ -17,7 +17,6 @@ class RouterHandler(BaseHandler):
                                           ("dhcp", "DHCP"),
                                           ("dns", "DNS"),
                                           ("firewall", "防火墙"),
-                                          ("limit", "限速规则"),
                                           ("status", "当前状态"),
                                       ])
 
