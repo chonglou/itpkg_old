@@ -251,7 +251,7 @@ class Advert(tornado.web.UIModule):
     def render(self, name):
         from brahma.cache import get_advert
 
-        return "<div id='advert-%s'>%s</div>" % (name, get_advert(name))
+        return "<div id='advert-%s'>%s</div>" % (name, get_advert(name) or "")
 
 
 class NavBar(tornado.web.UIModule):
@@ -313,7 +313,6 @@ class Form(tornado.web.UIModule):
         }
         %s
         """ % (js_ready("""
-
              $("form[id^='fm-']").each(function () {
                 var fmId = $(this).attr('id').split('-')[1];
 
@@ -380,16 +379,23 @@ class Form(tornado.web.UIModule):
                 %s
                 reset_field(fmId);
             });
+
+            %s
         """ % (
             """
             $("img#fm-img-"+fmId+"-captcha").click(function(){
             reload_captcha(fmId);
             });
-            """ if self.captcha else "",)
+            """ if self.captcha else "",
+            ("""
+            $("body,html").animate({scrollTop:$("form#fm-%s").offset().top});
+            """ % self.fid) if self.scroll else "")
         ))
 
     def render(self, form):
         self.captcha = form.captcha
+        self.fid = form.fid
+        self.scroll = form.scroll
         return self.render_string("widgets/form.html", form=form)
 
 

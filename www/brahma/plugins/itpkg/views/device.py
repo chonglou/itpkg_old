@@ -32,7 +32,7 @@ class DeviceHandler(BaseHandler):
                 for d in devices:
                     users[d.id] = UserDao.get(d.user).name if d.user else None
                     limits[d.id] = LimitDao.get(d.limit).name if d.limit else None
-            self.render("itpkg/device/list.html", rid=rid, devices=devices,users=users, limits=limits, net=lan['net'])
+            self.render("itpkg/device/list.html", rid=rid, devices=devices, users=users, limits=limits, net=lan['net'])
 
     @tornado.web.authenticated
     def post(self, rid):

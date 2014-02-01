@@ -2,10 +2,15 @@ __author__ = 'zhengjitang@gmail.com'
 
 import wtforms_tornado
 
-from wtforms import BooleanField, TextAreaField,SelectField
+from wtforms import BooleanField, TextAreaField, SelectField
+
 
 class ListField(SelectField):
-    pass
+    def pre_validate(self, form):
+        if self.data == "None":
+            raise ValueError("不能为空")
+
+
 
 class HtmlField(TextAreaField):
     pass
@@ -27,11 +32,12 @@ class Translations(object):
 
 
 class Form(wtforms_tornado.Form):
-    def __init__(self, fid=None, label="表单", action="#", captcha=False, formdata=None):
+    def __init__(self, fid=None, label="表单", action="#", captcha=False, formdata=None,scroll=False):
         self.fid = fid
         self.label = label
         self.action = action
         self.captcha = captcha
+        self.scroll=scroll
         super().__init__(formdata=formdata)
 
     def messages(self):

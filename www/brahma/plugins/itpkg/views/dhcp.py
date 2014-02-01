@@ -16,7 +16,7 @@ class DhcpHandler(BaseHandler):
             net = json.loads(r.lan)['net']
             form = DhcpForm("bind", "IP绑定", "/itpkg/%s/dhcp" % rid)
             form.ip.choices = ip_choices(net)
-            form.mac.choices = [(d.id, d.mac) for d in DeviceDao.all(rid)]
+            form.mac.choices = [(d.id, d.mac) for d in DeviceDao.all_by_state(rid, "ENABLE")]
             form.flag.data = True
             self.render("itpkg/dhcp.html", rid=rid, net=net, form=form, devices=DeviceDao.all_fix(rid))
 

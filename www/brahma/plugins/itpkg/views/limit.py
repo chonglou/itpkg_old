@@ -1,6 +1,5 @@
 __author__ = 'zhengjitang@gmail.com'
 
-
 import tornado.web
 from brahma.views import BaseHandler
 from brahma.plugins.itpkg.store import LimitDao
@@ -50,7 +49,8 @@ class LimitHandler(BaseHandler):
                         self.render_message_widget(ok=True)
                     return
                 else:
-                    LimitDao.add(self.current_user['id'], fm.name.data, fm.upMax.data, fm.downMax.data, fm.upMin.data, fm.downMin.data)
+                    LimitDao.add(self.current_user['id'], fm.name.data, fm.upMax.data, fm.downMax.data, fm.upMin.data,
+                                 fm.downMin.data)
                     self.render_message_widget(ok=True)
                     return
             else:
@@ -58,7 +58,6 @@ class LimitHandler(BaseHandler):
 
         messages.extend(fm.messages())
         self.render_message_widget(messages=messages)
-
 
 
     def __check_limit(self, lid):

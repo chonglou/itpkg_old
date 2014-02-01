@@ -88,11 +88,12 @@ class InitHandler(BaseHandler):
 
                     if not messages:
                         rpc = Rpc(host=host, port=port, flag="ArchLinux")
-                        ok, result = rpc.call([
-                            ArchLinux.udev(fm.wanMac.data.lower(), fm.lanMac.data.lower()),
-                            f_wan,
-                            ArchLinux.lan(lanNet),
-                        ])
+                        cmds = []
+                        cmds.extend(ArchLinux.udev(fm.wanMac.data.lower(), fm.lanMac.data.lower()))
+                        cmds.extend(f_wan)
+                        cmds.extend(ArchLinux.lan(lanNet))
+                        #ok,result=True,[]
+                        ok, result = rpc.call(cmds)
                         if ok:
                             if fm.wanFlag.data == "static":
                                 RouterDao.set_wan(rid,

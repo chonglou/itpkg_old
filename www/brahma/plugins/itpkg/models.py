@@ -28,57 +28,63 @@ class Router(Base):
 
 
 class Input(Base):
-    __tablename__ = "itpkg_input"
+    __tablename__ = "itpkg_inputs"
     id = Column(Integer, Sequence('itpkg_input_id_seq'), primary_key=True)
+    name = Column(String(255), nullable=False)
     port = Column(Integer, nullable=False)
-    tcp = Column(Boolean, nullable=False)
+    protocol = Column(String(5), nullable=False)
     router = Column(Integer, nullable=False)
 
-    def __init__(self, router, port, tcp):
+    def __init__(self, router, name, port, protocol):
+        self.name = name
         self.router = router
         self.port = port
-        self.tcp = tcp
+        self.protocol = protocol
 
 
 class Output(Base):
-    __tablename__ = "itpkg_output"
+    __tablename__ = "itpkg_outputs"
     id = Column(Integer, Sequence('itpkg_output_id_seq'), primary_key=True)
     name = Column(String(255), nullable=False)
-    flag = Column(String(8))
-    keyword = Column(String(255))
-    begin = Column(Time, nullable=False, default=datetime.time())
-    end = Column(Time, nullable=False, default=datetime.time(23, 59, 59))
-    mon = Column(Boolean, nullable=False, default=True)
-    tue = Column(Boolean, nullable=False, default=True)
-    wed = Column(Boolean, nullable=False, default=True)
-    thu = Column(Boolean, nullable=False, default=True)
-    fri = Column(Boolean, nullable=False, default=True)
-    sat = Column(Boolean, nullable=False, default=True)
-    sun = Column(Boolean, nullable=False, default=True)
+    flag = Column(String(8), nullable=False, default="key")
+    keyword = Column(String(255), nullable=False)
+    begin = Column(String(8), name="begin_", nullable=False, default="08:00")
+    end = Column(String(8), name="end_", nullable=False, default="20:00")
+    weekdays=Column(String(30), nullable=False, default="mon,tue,wed,thu,fri")
     router = Column(Integer, nullable=False)
 
-    def __init__(self, name, flag, keyword):
+    def weekdays_cn(self):
+        w = self.weekdays
+        for k, v in [('mon','星期一'),('tue','星期二'),('wed','星期三'),('thu','星期四'),('fri','星期五'),('sat','星期六'),('sun','星期日')]:
+            w = w.replace(k, v)
+        return "[%s,%s]@[%s]" %(self.begin, self.end, w)
+
+    def __init__(self, router, name, keyword, begin, end, weekdays):
+        self.router = router
         self.name = name
-        self.flag = flag
+        self.begin = begin
+        self.end = end
         self.keyword = keyword
+        self.weekdays = weekdays
 
 
 class Nat(Base):
-    __tablename__ = "itpkg_nat"
+    __tablename__ = "itpkg_nats"
     id = Column(Integer, Sequence('itpkg_nat_id_seq'), primary_key=True)
     name = Column(String(255), nullable=False)
     sport = Column(Integer, nullable=False)
     dport = Column(Integer, nullable=False)
     dip = Column(Integer, nullable=False)
-    tcp = Column(Boolean, nullable=False)
+    protocol = Column(String(5), nullable=False)
     router = Column(Integer, nullable=False)
 
-    def __init__(self, name, sport, tcp, dip, dport):
+    def __init__(self, router, name, sport, protocol, dip, dport):
+        self.router = router
         self.name = name
         self.sport = sport
         self.dip = dip
         self.dport = dport
-        self.tcp = tcp
+        self.protocol = protocol
 
 
 class OutputDevice(Base):
@@ -180,13 +186,7 @@ class Limit(Base):
     downMin = Column(Integer, nullable=False)
     begin = Column(Time, nullable=False, default=datetime.time())
     end = Column(Time, nullable=False, default=datetime.time(23, 59, 59))
-    mon = Column(Boolean, nullable=False, default=True)
-    tue = Column(Boolean, nullable=False, default=True)
-    wed = Column(Boolean, nullable=False, default=True)
-    thu = Column(Boolean, nullable=False, default=True)
-    fri = Column(Boolean, nullable=False, default=True)
-    sat = Column(Boolean, nullable=False, default=True)
-    sun = Column(Boolean, nullable=False, default=True)
+    #weekdays = Column(String(30), nullable=False, default="mon,tue,wed,thu,fri")
     version = Column(Integer, nullable=False, default=0)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now())
 

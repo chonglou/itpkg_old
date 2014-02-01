@@ -13,7 +13,6 @@ $.ajaxSetup({
 });
 
 
-
 function Ajax(id, url, type, data, success, async) {
     var _init = function () {
         if (type == undefined) {
@@ -31,7 +30,7 @@ function Ajax(id, url, type, data, success, async) {
             async = true;
         }
 
-        if(!async){
+        if (!async) {
             $('body').css('cursor', 'wait');
         }
 
@@ -43,7 +42,7 @@ function Ajax(id, url, type, data, success, async) {
             async: async,
             cache: false,
 
-            complete:function(){
+            complete: function () {
                 $('body').css('cursor', 'default');
             },
 

@@ -36,12 +36,32 @@ class LimitDao:
 class InputDao:
     @staticmethod
     @db_call
-    def is_exist(rid, port, tcp, session=None):
-        return session.query(Input).filter(Input.router==rid, Input.port==port, Input.tcp==tcp).count() != 0
+    def get(iid, session=None):
+        return session.query(Input).filter(Input.id == iid).one()
+
     @staticmethod
     @db_call
-    def add(rid, port, tcp, session=None):
-        session.add(Input(rid, port, tcp))
+    def delete(iid, session=None):
+        return session.query(Input).filter(Input.id == iid).delete()
+
+    @staticmethod
+    @db_call
+    def is_exist(rid, port, protocol, session=None):
+        return session.query(Input).filter(Input.router == rid, Input.port == port,
+                                           Input.protocol == protocol).count() != 0
+
+    @staticmethod
+    @db_call
+    def add(rid, name, port, protocol, session=None):
+        session.add(Input(rid, name, port, protocol))
+
+    @staticmethod
+    @db_call
+    def set(iid, name, port, protocol, session=None):
+        i = session.query(Input).filter(Input.id == iid).one()
+        i.name = name
+        i.port = port
+        i.protocol = protocol
 
     @staticmethod
     @db_call
@@ -52,14 +72,28 @@ class InputDao:
 class OutputDao:
     @staticmethod
     @db_call
-    def is_exist(rid, keyword, session=None):
-        return session.query(Output).filter(Output.router==rid, Output.keyword==keyword).count() != 0
+    def delete(oid, session=None):
+        session.query(Output).filter(Output.id == oid).delete()
+    @staticmethod
+    @db_call
+    def get(oid, session=None):
+        return session.query(Output).filter(Output.id == oid).one()
 
     @staticmethod
     @db_call
-    def add(rid, keyword, begin, end, session=None):
-        Output()
-        session.add(Input(rid, port, tcp))
+    def add(rid, name, keyword, begin, end, weekdays, session=None):
+        session.add(Output(rid, name, keyword, begin, end, weekdays))
+
+    @staticmethod
+    @db_call
+    def set(oid, name, keyword, begin, end, weekdays, session=None):
+        o = session.query(Output).filter(Output.id == oid).one()
+        o.name = name
+        o.keyword = keyword
+        o.begin = begin
+        o.end = end
+        o.weekdays = weekdays
+
 
     @staticmethod
     @db_call
@@ -70,11 +104,57 @@ class OutputDao:
 class NatDao:
     @staticmethod
     @db_call
+    def set(nid, name, sport, protocol, dip, dport, session=None):
+        n = session.query(Nat).filter(Nat.id == nid).one()
+        n.name = name
+        n.sport = sport
+        n.protocol = protocol
+        n.dip = dip
+        n.dport = dport
+
+    @staticmethod
+    @db_call
+    def add(rid, name, sport, protocol, dip, dport, session=None):
+        session.add(Nat(rid, name, sport, protocol, dip, dport))
+
+
+    @staticmethod
+    @db_call
+    def is_exist(rid, sport, protocol, session=None):
+        return session.query(Nat).filter(Nat.router == rid, Nat.sport == sport, Nat.protocol == protocol).count() != 0
+
+    @staticmethod
+    @db_call
+    def get(nid, session=None):
+        return session.query(Nat).filter(Nat.id == nid).one()
+
+    @staticmethod
+    @db_call
+    def delete(nid, session=None):
+        session.query(Nat).filter(Nat.id == nid).delete()
+
+    @staticmethod
+    @db_call
     def all(rid, session=None):
         return session.query(Nat).filter(Nat.router == rid).all()
 
 
 class OutputDeviceDao:
+    @staticmethod
+    @db_call
+    def bind(oid, did, bind=False, session=None):
+        try:
+            od = session.query(OutputDevice).filter(OutputDevice.output == oid, OutputDevice.device==did)
+        except NoResultFound:
+            od = None
+
+        if od:
+            if not bind:
+                session.delete(od)
+        else:
+            if bind:
+                session.add(OutputDevice(oid, did))
+
     @staticmethod
     @db_call
     def all(oid, session=None):
@@ -85,7 +165,7 @@ class DeviceDao:
     @staticmethod
     @db_call
     def all_fix(rid, session=None):
-        return session.query(Device).filter(Device.router == rid, Device.fix == True).all()
+        return session.query(Device).filter(Device.router == rid, Device.fix == True, Device.state == "ENABLE").all()
 
     @staticmethod
     @db_call
@@ -133,6 +213,12 @@ class DeviceDao:
                 session.add(Device(rid, mac, ip))
                 insert += 1
         return insert, update
+
+    @staticmethod
+    @db_call
+    def all_by_state(rid, state, session=None):
+        return session.query(Device).filter(Device.router == rid, Device.state == state).order_by(
+            Device.state.asc()).all()
 
     @staticmethod
     @db_call
