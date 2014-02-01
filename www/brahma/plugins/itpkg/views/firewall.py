@@ -10,7 +10,9 @@ class FirewallHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_state(rid):
-            self.render("itpkg/firewall/index.html", rid=rid)
+            self.render("itpkg/firewall/index.html", rid=rid,
+                        ins=InputDao.all(rid),
+                        outs = InputDao.all(rid))
 
     @tornado.web.authenticated
     def put(self, rid):
@@ -41,8 +43,6 @@ class FirewallHandler(BaseHandler):
                 form.protocol.data = "tcp"
                 form.dip.choices = ip_choices(lan['net'])
                 self.render("itpkg/firewall/nat.html", form=form)
-            elif act == "limit":
-                self.render("itpkg/firewall/limit.html")
             elif act == "apply":
                 #test
                 ins = []
@@ -86,8 +86,32 @@ class FirewallHandler(BaseHandler):
 
     @tornado.web.authenticated
     def post(self, rid):
-        #todo
-        pass
+        if self.check_state(rid):
+            act = self.get_argument("act")
+            if act == "input":
+                fm = InputForm(formdata=self.request.arguments)
+                if fm.validate():
+                    if InputDao.is_exist(rid, fm.port.data,fm.protocol.data == "tcp"):
+                        self.render_message_widget(messages=["规则已存在"])
+                    else:
+                        InputDao.add(rid, fm.port.data,fm.protocol.data == "tcp")
+                        self.render_message_widget(ok=True)
+                else:
+                    self.render_message_widget(messages=fm.messages())
+            elif act == "output":
+                fm = OutputForm(formdata=self.request.arguments)
+                if fm.validate():
+                    if OutputDao.is_exist(rid, fm.keyword.data):
+                        self.render_message_widget(messages=["规则已存在"])
+                    else:
+                        OutputDao.add(rid,
+                                      fm.begin.data,
+                                      fm.end.data,
+                                      "mon"in fm.weekdays.data)
+                        self.render_message_widget(ok=True)
+
+            else:
+                self.render_message_widget(messages=["错误请求"])
 
     def __output_weekdays(self, output=None):
         if not output:

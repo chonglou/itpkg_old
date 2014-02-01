@@ -36,11 +36,31 @@ class LimitDao:
 class InputDao:
     @staticmethod
     @db_call
+    def is_exist(rid, port, tcp, session=None):
+        return session.query(Input).filter(Input.router==rid, Input.port==port, Input.tcp==tcp).count() != 0
+    @staticmethod
+    @db_call
+    def add(rid, port, tcp, session=None):
+        session.add(Input(rid, port, tcp))
+
+    @staticmethod
+    @db_call
     def all(rid, session=None):
         return session.query(Input).filter(Input.router == rid).all()
 
 
 class OutputDao:
+    @staticmethod
+    @db_call
+    def is_exist(rid, keyword, session=None):
+        return session.query(Output).filter(Output.router==rid, Output.keyword==keyword).count() != 0
+
+    @staticmethod
+    @db_call
+    def add(rid, keyword, begin, end, session=None):
+        Output()
+        session.add(Input(rid, port, tcp))
+
     @staticmethod
     @db_call
     def all(rid, session=None):
@@ -79,15 +99,11 @@ class DeviceDao:
 
     @staticmethod
     @db_call
-    def set_info(did, user, details, session=None):
+    def set(did, user, limit, state, details, session=None):
         d = session.query(Device).filter(Device.id == did).one()
         d.user = user
         d.details = details
-
-    @staticmethod
-    @db_call
-    def set_state(did, state, session=None):
-        d = session.query(Device).filter(Device.id == did).one()
+        d.limit = limit
         d.state = state
 
     @staticmethod

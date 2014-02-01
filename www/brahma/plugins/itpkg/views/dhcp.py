@@ -3,7 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import RouterDao, DeviceDao
-from brahma.plugins.itpkg.forms import DeviceBindForm, ip_choices
+from brahma.plugins.itpkg.forms import DhcpForm, ip_choices
 
 
 class DhcpHandler(BaseHandler):
@@ -14,7 +14,7 @@ class DhcpHandler(BaseHandler):
 
             r = RouterDao.get(rid)
             net = json.loads(r.lan)['net']
-            form = DeviceBindForm("bind", "IP绑定", "/itpkg/%s/dhcp" % rid)
+            form = DhcpForm("bind", "IP绑定", "/itpkg/%s/dhcp" % rid)
             form.ip.choices = ip_choices(net)
             form.mac.choices = [(d.id, d.mac) for d in DeviceDao.all(rid)]
             form.flag.data = True
@@ -28,7 +28,7 @@ class DhcpHandler(BaseHandler):
 
             r = RouterDao.get(rid)
             net = json.loads(r.lan)['net']
-            fm = DeviceBindForm(formdata=self.request.arguments)
+            fm = DhcpForm(formdata=self.request.arguments)
             fm.ip.choices = ip_choices(net)
             fm.mac.choices = [(d.id, d.mac) for d in DeviceDao.all(rid)]
             msg = []

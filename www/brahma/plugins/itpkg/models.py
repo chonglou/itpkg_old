@@ -111,6 +111,7 @@ class Device(Base):
     fix = Column(Boolean, nullable=False, default=False)
     state = Column(String(8), nullable=False, default="SUBMIT")
     user = Column(Integer)
+    limit = Column(Integer, name="limit_")
     router = Column(Integer, nullable=False)
     details = Column(Text)
     version = Column(Integer, nullable=False, default=0)

@@ -46,6 +46,7 @@ class NatForm(Form):
 class OutputForm(Form):
     id = HiddenField()
     act = HiddenField()
+    name = TextField("名称", validators=[validators.Required()])
     keyword = TextField("关键字", validators=[validators.Required()])
     begin = SelectField("起始时间", choices=_time_choices())
     end = SelectField("截止时间", choices=_time_choices())
@@ -66,16 +67,19 @@ class InputForm(Form):
     port = IntegerField("端口", validators=[validators.Required()])
     protocol = RadioField("协议", choices=_protocol_choices())
 
-class DeviceBindForm(Form):
+
+class DhcpForm(Form):
     mac = SelectField("MAC", coerce=int)
     ip = SelectField("IP", coerce=int)
     flag = BooleanField("绑定")
 
 
-class DeviceInfoForm(Form):
+class DeviceForm(Form):
     act = HiddenField()
     id = HiddenField()
-    user = SelectField("用户")
+    user = SelectField("用户", coerce=int)
+    limit = SelectField("限速规则", coerce=int)
+    enable = BooleanField("启用")
     details = HtmlField("详细信息")
 
 
