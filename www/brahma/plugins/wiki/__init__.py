@@ -4,7 +4,13 @@ NAME = "知识库"
 
 
 def user(uid):
-    return list(), list()
+    import datetime
+    from brahma.plugins.wiki.store import WikiDao
+    from brahma.env import cache
+    @cache.cache("wiki/%s"%uid, expire=3600*24)
+    def list_wiki():
+        return [("/wiki/%s"%w.name, w.title) for w in WikiDao.list_wiki(datetime.datetime.min, datetime.datetime.max, author=uid)]
+    return list(), list_wiki()
 
 
 def calendar(year, month, day):
@@ -12,14 +18,14 @@ def calendar(year, month, day):
     from brahma.env import cache
 
     if day:
-        @cache.cache("wiki/%04d/%02d/%02d" % ( year, month, day), expire=2600 * 24)
+        @cache.cache("wiki/%04d/%02d/%02d" % ( year, month, day), expire=3600 * 24)
         def list_wiki():
             from brahma.utils.time import day_range
 
             d1, d2 = day_range(year, month, day)
             return [("/wiki/%s" % w.name, w.title) for w in WikiDao.list_wiki(d1, d2)]
     else:
-        @cache.cache("wiki/%04d/%02d" % ( year, month), expire=2600 * 24)
+        @cache.cache("wiki/%04d/%02d" % ( year, month), expire=3600 * 24)
         def list_wiki():
             from brahma.utils.time import month_range
 

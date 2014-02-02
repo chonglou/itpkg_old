@@ -15,22 +15,23 @@ class Task(Base):
     flag = Column(String(8))
     request = Column(LargeBinary)
     nextRun = Column(DateTime, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
-    index = Column(Integer, name="index_", nullable=False)
+    created = Column(DateTime, nullable=False)
+    index = Column(Integer, name="index_", nullable=False, default=0)
     total = Column(Integer, nullable=False)
     space = Column(Integer, nullable=False)
-    version = Column(Integer, nullable=False)
+    version = Column(Integer, nullable=False, default=0)
     begin = Column(DateTime, name="begin_", nullable=False)
     end = Column(DateTime, name="end_", nullable=False)
 
-    def __init__(self, flag, request, begin, end, total, space):
+    def __init__(self, flag, request, begin, end, total, space, nextRun):
         self.flag = flag
         self.request = request
         self.begin = begin
         self.end = end
         self.total = total
         self.space = space
-        self.nextRun = datetime.datetime.now()
+        self.nextRun = nextRun
+        self.created = datetime.datetime.now()
 
 
 class Permission(Base):
@@ -39,7 +40,7 @@ class Permission(Base):
     resource = Column(String(255), name="resource", nullable=False)
     role = Column(String(255), nullable=False)
     operation = Column(String(255), nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
     begin = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
 
@@ -49,6 +50,7 @@ class Permission(Base):
         self.operation = operation
         self.begin = begin
         self.end = end
+        self.created = datetime.datetime.now()
 
 
 class FriendLink(Base):
@@ -68,12 +70,13 @@ class Setting(Base):
     __tablename__ = "settings"
     key = Column(String(255), Sequence('setting_id_seq'), name="kkk", primary_key=True)
     val = Column(LargeBinary, name="vvv")
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
     version = Column(Integer, nullable=False, default=0)
 
     def __init__(self, key, val):
         self.key = key
         self.val = val
+        self.created = datetime.datetime.now()
 
     def __repr__(self):
         return "<Setting(%s, %s)>" % (self.key, self.created)
@@ -85,12 +88,13 @@ class Log(Base):
     user = Column(Integer)
     message = Column(String(255), nullable=False)
     flag = Column(String(8), nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, message, user, flag):
         self.message = message
         self.user = user
         self.flag = flag
+        self.created = datetime.datetime.now()
 
     def __repr__(self):
         return "<Log(%s, %s)>" % (self.created, self.message)
@@ -109,7 +113,7 @@ class User(Base):
     state = Column(String(8), nullable=False)
     logo = Column(String(255))
     contact = Column(Text)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
     lastLogin = Column(DateTime)
 
     def __init__(self, flag, username=None, password=None, email=None, openid=None, ):
@@ -138,6 +142,7 @@ class User(Base):
             password = encrypt.random_str(12)
 
         self.password = encrypt.sha512(password + self.salt)
+        self.created =datetime.datetime.now()
 
     def check(self, password):
         from brahma.env import encrypt

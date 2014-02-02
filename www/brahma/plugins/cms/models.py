@@ -13,11 +13,12 @@ class Tag(Base):
     name = Column(String(255), nullable=False, unique=True)
     keep = Column(Boolean, nullable=False)
     visits = Column(Integer, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, name, keep):
         self.name = name
         self.keep = keep
+        self.created =datetime.datetime.now()
 
 
 class Article(Base):
@@ -28,7 +29,7 @@ class Article(Base):
     title = Column(String(255), nullable=False)
     summary = Column(String(800), nullable=False)
     body = Column(Text, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
     lastEdit = Column(DateTime)
     visits = Column(Integer, nullable=False)
 
@@ -38,6 +39,7 @@ class Article(Base):
         self.summary = summary
         self.body = body
         self.logo = logo
+        self.created =datetime.datetime.now()
 
 
 class ArticleTag(Base):
@@ -45,11 +47,12 @@ class ArticleTag(Base):
     id = Column(Integer, Sequence('cms_article_tag_id_seq'), primary_key=True)
     article = Column(Integer, nullable=False)
     tag = Column(Integer, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, article, tag):
         self.article = article
         self.tag = tag
+        self.created =datetime.datetime.now()
 
 
 class Comment(Base):
@@ -59,7 +62,7 @@ class Comment(Base):
     content = Column(Text, nullable=False)
     comment = Column(Integer)
     user = Column(Integer, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
     lastEdit = Column(DateTime)
 
     def __init__(self, user, article, comment, content):
@@ -67,4 +70,5 @@ class Comment(Base):
         self.article = article
         self.comment = comment
         self.content = content
+        self.created =datetime.datetime.now()
 

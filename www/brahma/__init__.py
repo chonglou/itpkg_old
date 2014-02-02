@@ -1,6 +1,6 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import multiprocessing
+
 import logging
 import time
 import importlib
@@ -16,7 +16,14 @@ class Daemon(daemon.Daemon):
         self._run("tasks", Tornado.tasks)
         Tornado.http()
 
+    def _run1(self, name, target):
+        import threading
+        t = threading.Thread(name=name, target=target)
+        t.daemon = True
+        t.start()
+
     def _run(self, name, target):
+        import multiprocessing
         t = multiprocessing.Process(name=name, target=target)
         t.daemon = True
         t.start()
@@ -49,7 +56,7 @@ class Tornado:
 
     @staticmethod
     def tasks():
-        logging.info("启动调度")
+        logging.info("启动任务调度")
         import time, sched, tornado.options
         from brahma.store.task import TaskDao
 
@@ -58,13 +65,17 @@ class Tornado:
         def run():
             for t in TaskDao.available():
                 TaskDao.set_nextRun(t.id)
-                #todo 处理任务
+                #处理任务
+                if t.flag in ['qr', 'sitemap', 'rss', 'robots']:
+                    from brahma.jobs import TaskSender
+                    getattr(TaskSender, t.flag)()
+                else:
+                    logging.error("未知的任务类型[%s]" % t.flag)
 
+        while True:
             s.enter(tornado.options.options.task_space, 10, run)
             s.run()
 
-        s.enter(tornado.options.options.task_space, 10, run)
-        s.run()
 
     @staticmethod
     def jobs():

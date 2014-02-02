@@ -19,12 +19,13 @@ class Router(Base):
     flag = Column(String(16))
     version = Column(Integer, nullable=False, default=0)
     state = Column(String(8), nullable=False, default="SUBMIT")
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, manager, name, details):
         self.manager = manager
         self.name = name
         self.details = details
+        self.created =datetime.datetime.now()
 
 
 class Input(Base):
@@ -123,12 +124,13 @@ class Device(Base):
     details = Column(Text)
     version = Column(Integer, nullable=False, default=0)
     lastUpdated = Column(DateTime)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, router, mac, ip):
         self.router = router
         self.mac = mac
         self.ip = ip
+        self.created =datetime.datetime.now()
 
 
 class Group(Base):
@@ -140,12 +142,13 @@ class Group(Base):
     state = Column(String(8), nullable=False, default="SUBMIT")
     manager = Column(Integer, nullable=False)
     version = Column(Integer, nullable=False, default=0)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, manager, name, details):
         self.manager = manager
         self.name = name
         self.details = details
+        self.created =datetime.datetime.now()
 
 
 class User(Base):
@@ -155,12 +158,13 @@ class User(Base):
     manager = Column(Integer, nullable=False)
     details = Column(Text)
     state = Column(String(8), nullable=False, default="SUBMIT")
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, manager, name, details):
         self.manager = manager
         self.name = name
         self.details = details
+        self.created =datetime.datetime.now()
 
 
 class GroupUser(Base):
@@ -189,7 +193,7 @@ class Limit(Base):
     end = Column(Time, nullable=False, default=datetime.time(23, 59, 59))
     #weekdays = Column(String(30), nullable=False, default="mon,tue,wed,thu,fri")
     version = Column(Integer, nullable=False, default=0)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
 
     def __init__(self, manager, name, upMax, downMax, upMin, downMin):
         self.manager = manager
@@ -198,6 +202,7 @@ class Limit(Base):
         self.upMin = upMin
         self.downMax = downMax
         self.downMin = downMin
+        self.created =datetime.datetime.now()
 
 
 

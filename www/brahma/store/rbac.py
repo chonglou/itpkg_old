@@ -11,8 +11,11 @@ from brahma.env import db_call
 class RbacDao:
     @staticmethod
     @db_call
-    def bind(role, operation, resource, begin=datetime.datetime.now(), end=datetime.datetime.max, bind=False,
+    def bind(role, operation, resource, begin=None, end=datetime.datetime.max, bind=False,
              session=None):
+        if not begin:
+            begin = datetime.datetime.now()
+
         try:
             p = session.query(Permission).filter(Permission.role == role, Permission.operation == operation,
                                                  Permission.resource == resource).one()
@@ -46,7 +49,7 @@ class RbacDao:
             return False
 
     @staticmethod
-    def bind2admin(user, begin=datetime.datetime.now(), end=datetime.datetime.max, bind=False):
+    def bind2admin(user, begin=None, end=datetime.datetime.max, bind=False):
         RbacDao.bind(role="user://%d" % user, operation="MANAGER", resource="SITE", begin=begin, end=end, bind=bind)
 
 

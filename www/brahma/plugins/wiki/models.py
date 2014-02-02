@@ -13,7 +13,7 @@ class Wiki(Base):
     title = Column(String(255), nullable=False)
     body = Column(Text, nullable=False)
     author = Column(Integer, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False)
     lastEdit = Column(DateTime)
 
     def __init__(self, name, title, body, author):
@@ -21,5 +21,6 @@ class Wiki(Base):
         self.title = title
         self.body = body
         self.author = author
+        self.created =datetime.datetime.now()
 
 

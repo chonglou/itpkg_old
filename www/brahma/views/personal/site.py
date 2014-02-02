@@ -75,6 +75,7 @@ class AdminHandler(BaseHandler):
                     phymem.percent, int(phymem.used / 1024 / 1024), int(phymem.total / 1024 / 1024)))
                 items.append("当前时间：%s" % datetime.datetime.now())
                 items.append("启动时间：%s" % start_stamp)
+
                 self.render_list_widget("系统状态", items)
             elif act == "user":
                 manager = SettingDao.get("site.manager", True)
@@ -99,23 +100,41 @@ class AdminHandler(BaseHandler):
             elif act == "task":
                 qr = TimerForm("qr", "site.png", "/personal/site/task")
                 qr.act.data = "qr"
-                qr.clock.data = SettingDao.get("site.task.qr")
+                qr.clock.data = self.__get_clock("qr")
 
                 sitemap = TimerForm("sitemap", "sitemap.xml", "/personal/site/task")
                 sitemap.act.data = "sitemap"
-                sitemap.clock.data = SettingDao.get("site.task.sitemap")
+                sitemap.clock.data = self.__get_clock("sitemap")
 
                 rss = TimerForm("rss", "rss.xml", "/personal/site/task")
                 rss.act.data = "rss"
-                rss.clock.data = SettingDao.get("site.task.rss")
+                rss.clock.data = self.__get_clock("rss")
 
                 robots = TimerForm("robots", "robots.xml", "/personal/site/task")
                 robots.act.data = "robots"
-                robots.clock.data = SettingDao.get("site.task.robots")
+                robots.clock.data = self.__get_clock("robots")
 
                 self.render("widgets/forms.html", forms=[qr, robots, sitemap, rss])
             else:
                 self.render_message_widget(messages=["错误请求"])
+
+    def __get_clock(self, flag):
+        from brahma.store.task import TaskDao
+        ts = TaskDao.list_by_flag(flag)
+        if ts:
+            return ts[0].nextRun.hour
+        return None
+
+    def __set_clock(self, flag, clock):
+        import datetime
+        now = datetime.datetime.now()
+        nextRun = datetime.datetime(now.year, now.month, now.day, hour=clock)+datetime.timedelta(days=1)
+        from brahma.store.task import TaskDao
+        ts = TaskDao.list_by_flag(flag)
+        if ts:
+            TaskDao.set_nextRun(ts[0].id, nextRun=nextRun)
+        else:
+            TaskDao.add(flag, 3600*24, nextRun=nextRun)
 
     @tornado.web.authenticated
     def post(self, act):
@@ -221,7 +240,8 @@ class AdminHandler(BaseHandler):
                     from brahma.jobs import TaskSender
 
                     getattr(TaskSender, fm.act.data)()
-                    SettingDao.set("site.task.%s" % fm.act.data, fm.clock.data)
+                    self.__set_clock(fm.act.data, fm.clock.data)
+                    #SettingDao.set("site.task.%s" % fm.act.data, fm.clock.data)
                     self.render_message_widget(ok=True)
             else:
                 self.render_message_widget(messages=["错误请求"])
