@@ -2,7 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 from brahma.views import BaseHandler
-from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm, ValidCodeForm, FriendLinkForm
+from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm, ValidCodeForm, FriendLinkForm, TimerForm
 from brahma.store.site import SettingDao, UserDao, FriendLinkDao
 from brahma.cache import get_site_info
 
@@ -96,9 +96,26 @@ class AdminHandler(BaseHandler):
                 self.render(
                     "personal/site/user.html",
                     items=items)
+            elif act == "task":
+                qr = TimerForm("qr", "site.png", "/personal/site/task")
+                qr.act.data = "qr"
+                qr.clock.data = SettingDao.get("site.task.qr")
 
+                sitemap = TimerForm("sitemap", "sitemap.xml", "/personal/site/task")
+                sitemap.act.data = "sitemap"
+                sitemap.clock.data = SettingDao.get("site.task.sitemap")
+
+                rss = TimerForm("rss", "rss.xml", "/personal/site/task")
+                rss.act.data = "rss"
+                rss.clock.data = SettingDao.get("site.task.rss")
+
+                robots = TimerForm("robots", "robots.xml", "/personal/site/task")
+                robots.act.data = "robots"
+                robots.clock.data = SettingDao.get("site.task.robots")
+
+                self.render("widgets/forms.html", forms=[qr, robots, sitemap, rss])
             else:
-                pass
+                self.render_message_widget(messages=["错误请求"])
 
     @tornado.web.authenticated
     def post(self, act):
@@ -197,8 +214,17 @@ class AdminHandler(BaseHandler):
                     messages = []
                     messages.extend(fm.messages())
                     self.render_message_widget(messages=messages)
+
+            elif act == "task":
+                fm = TimerForm(formdata=self.request.arguments)
+                if fm.act.data in ['qr', "sitemap", "rss", "robots"]:
+                    from brahma.jobs import TaskSender
+
+                    getattr(TaskSender, fm.act.data)()
+                    SettingDao.set("site.task.%s" % fm.act.data, fm.clock.data)
+                    self.render_message_widget(ok=True)
             else:
-                pass
+                self.render_message_widget(messages=["错误请求"])
 
     @tornado.web.authenticated
     def put(self, act):
@@ -237,6 +263,7 @@ class SiteHandler(BaseHandler):
                                           ("seo", "站长工具"),
                                           ("oauth", "OAUTH"),
                                           ("advert", "广告代码"),
+                                          ("task", "定时任务"),
                                           ("user", "账户管理"),
                                           ("status", "系统状态"),
                                       ])

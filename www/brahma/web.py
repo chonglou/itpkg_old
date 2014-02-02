@@ -11,7 +11,6 @@ class ListField(SelectField):
             raise ValueError("不能为空")
 
 
-
 class HtmlField(TextAreaField):
     pass
 
@@ -32,12 +31,12 @@ class Translations(object):
 
 
 class Form(wtforms_tornado.Form):
-    def __init__(self, fid=None, label="表单", action="#", captcha=False, formdata=None,scroll=False):
+    def __init__(self, fid=None, label="表单", action="#", captcha=False, formdata=None, scroll=False):
         self.fid = fid
         self.label = label
         self.action = action
         self.captcha = captcha
-        self.scroll=scroll
+        self.scroll = scroll
         super().__init__(formdata=formdata)
 
     def messages(self):

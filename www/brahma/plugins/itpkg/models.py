@@ -50,14 +50,15 @@ class Output(Base):
     keyword = Column(String(255), nullable=False)
     begin = Column(String(8), name="begin_", nullable=False, default="08:00")
     end = Column(String(8), name="end_", nullable=False, default="20:00")
-    weekdays=Column(String(30), nullable=False, default="mon,tue,wed,thu,fri")
+    weekdays = Column(String(30), nullable=False, default="mon,tue,wed,thu,fri")
     router = Column(Integer, nullable=False)
 
     def weekdays_cn(self):
         w = self.weekdays
-        for k, v in [('mon','星期一'),('tue','星期二'),('wed','星期三'),('thu','星期四'),('fri','星期五'),('sat','星期六'),('sun','星期日')]:
+        for k, v in [('mon', '星期一'), ('tue', '星期二'), ('wed', '星期三'), ('thu', '星期四'), ('fri', '星期五'), ('sat', '星期六'),
+                     ('sun', '星期日')]:
             w = w.replace(k, v)
-        return "[%s,%s]@[%s]" %(self.begin, self.end, w)
+        return "[%s,%s]@[%s]" % (self.begin, self.end, w)
 
     def __init__(self, router, name, keyword, begin, end, weekdays):
         self.router = router

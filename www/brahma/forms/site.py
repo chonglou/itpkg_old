@@ -1,7 +1,12 @@
 __author__ = 'zhengjitang@gmail.com'
 
-from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField, HiddenField
+from wtforms import TextField, validators, TextAreaField, IntegerField, BooleanField, PasswordField, HiddenField, SelectField
 from brahma.web import Form, HtmlField
+
+
+class TimerForm(Form):
+    act = HiddenField()
+    clock = SelectField("时刻", coerce=int, choices=[(i, "%02d:00" % i) for i in range(0, 24)])
 
 
 class FriendLinkForm(Form):

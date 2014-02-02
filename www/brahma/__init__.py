@@ -12,18 +12,15 @@ from brahma import daemon
 class Daemon(daemon.Daemon):
     def run(self, debug=False):
         Tornado.setup(debug)
-        if debug:
-            jobs = multiprocessing.Process(name="jobs", target=Tornado.jobs)
-            jobs.daemon = True
-            jobs.start()
-            time.sleep(1)
-            Tornado.http()
-        else:
-            jobs = multiprocessing.Process(name="jobs", target=Tornado.jobs)
-            jobs.daemon = True
-            jobs.start()
-            time.sleep(1)
-            Tornado.http()
+        self._run("jobs", Tornado.jobs)
+        self._run("tasks", Tornado.tasks)
+        Tornado.http()
+
+    def _run(self, name, target):
+        t = multiprocessing.Process(name=name, target=target)
+        t.daemon = True
+        t.start()
+        time.sleep(1)
 
 
 class Tornado:
@@ -49,6 +46,25 @@ class Tornado:
         server = HTTPServer(app, xheaders=True)
         server.add_sockets(sockets)
         tornado.ioloop.IOLoop.instance().start()
+
+    @staticmethod
+    def tasks():
+        logging.info("启动调度")
+        import time, sched, tornado.options
+        from brahma.store.task import TaskDao
+
+        s = sched.scheduler(time.time, time.sleep)
+
+        def run():
+            for t in TaskDao.available():
+                TaskDao.set_nextRun(t.id)
+                #todo 处理任务
+
+            s.enter(tornado.options.options.task_space, 10, run)
+            s.run()
+
+        s.enter(tornado.options.options.task_space, 10, run)
+        s.run()
 
     @staticmethod
     def jobs():
@@ -83,10 +99,13 @@ class Tornado:
         tornado.options.define("http_secret", type=str, help="COOKIE密钥")
         tornado.options.define("http_port", type=int, help="HTTP Server 监听端口")
         tornado.options.define("http_host", type=str, help="HTTP Server 监听地址")
+
         tornado.options.define("app_name", type=str, help="APP名称")
         tornado.options.define("app_secret", type=str, help="加密密钥")
         tornado.options.define("app_store", type=str, help="站点数据存储目录", default=app_store)
         tornado.options.define("app_plugins", type=list, help="插件列表", default=[])
+
+        tornado.options.define("task_space", type=int, help="任务调度间隔", default=300)
 
         tornado.options.define("db_uri", type=str, help="数据库连接", default="sqlite:///" + app_store + "/db")
         tornado.options.define("redis_host", type=str, help="redis地址")

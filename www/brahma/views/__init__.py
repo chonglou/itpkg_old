@@ -87,6 +87,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def render_message(self, title, ok=None, confirm=None, messages=list(), goto=None):
         self.render("message.html", title=title, msg=Message(ok=ok, confirm=confirm, messages=messages, goto=goto))
 
+    def render_template(self, title, index=None, cards=list(), links=(), content=None, **kwargs):
+        self.render_page("template.html", title=title, index=index, cards=cards, links=links, content=content, **kwargs)
+
     def render_page(self, template_name, title, index=None, **kwargs):
         import uuid
 
@@ -112,3 +115,13 @@ class BaseHandler(tornado.web.RequestHandler):
         self.redirect("/main")
 
 
+def plugin_cards_links(func):
+    import tornado.options
+
+    cards = list()
+    links = list()
+    for p in tornado.options.options.app_plugins:
+        cl, ll = func(p)
+        cards.extend(cl)
+        links.extend(ll)
+    return cards, links

@@ -8,7 +8,8 @@ from brahma.views import BaseHandler
 class SelfHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.write({"goto":"/itpkg/"})
+        self.write({"goto": "/itpkg/"})
+
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
@@ -20,6 +21,7 @@ class MainHandler(BaseHandler):
                              "如果需要立刻生效，需要点击应用更改"
                          ]
         )
+
 
 handlers = [
     (r"/itpkg/", MainHandler),

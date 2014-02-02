@@ -37,6 +37,10 @@ class WikiDao:
     def del_wiki(name, session=None):
         session.query(Wiki).filter(Wiki.name == name).delete()
 
+    @staticmethod
+    @db_call
+    def all(session=None):
+        return session.query(Wiki).order_by(Wiki.created.desc()).all()
 
     @staticmethod
     @db_call

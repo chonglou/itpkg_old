@@ -74,6 +74,7 @@ class OutputDao:
     @db_call
     def delete(oid, session=None):
         session.query(Output).filter(Output.id == oid).delete()
+
     @staticmethod
     @db_call
     def get(oid, session=None):
@@ -144,7 +145,7 @@ class OutputDeviceDao:
     @db_call
     def bind(oid, did, bind=False, session=None):
         try:
-            od = session.query(OutputDevice).filter(OutputDevice.output == oid, OutputDevice.device==did)
+            od = session.query(OutputDevice).filter(OutputDevice.output == oid, OutputDevice.device == did)
         except NoResultFound:
             od = None
 

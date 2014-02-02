@@ -60,8 +60,6 @@ class ListHandler(BaseHandler):
             self.render_form_widget(form=form)
 
 
-
-
 handlers = [
     (r"/itpkg/router", ListHandler),
     (r"/itpkg/router/([0-9]+)", RouterHandler),

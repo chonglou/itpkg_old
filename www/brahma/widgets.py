@@ -152,7 +152,7 @@ class TopNav(tornado.web.UIModule):
             links.append(("/main", "本站首页"))
             links.extend(map(lambda name: ("/%s/" % name, importlib.import_module("brahma.plugins." + name).NAME),
                              tornado.options.options.app_plugins))
-            links.append(("/user", "用户列表"))
+            links.append(("/user/", "用户列表"))
             links.append(("/help", "帮助文档"))
             links.append(("/aboutMe", "关于我们"))
             return links

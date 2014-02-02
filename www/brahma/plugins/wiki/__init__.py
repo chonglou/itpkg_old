@@ -3,6 +3,10 @@ __author__ = 'zhengjitang@gmail.com'
 NAME = "知识库"
 
 
+def user(uid):
+    return list(), list()
+
+
 def calendar(year, month, day):
     from brahma.plugins.wiki.store import WikiDao
     from brahma.env import cache
@@ -26,11 +30,16 @@ def calendar(year, month, day):
 
 
 def search(keyword):
-    return list()
+    return list(), list()
 
 
 def sitemap():
-    return list()
+    def list_wiki():
+        from brahma.plugins.wiki.store import WikiDao
+
+        return [("wiki/%s" % w.name, w.created, "monthly", 0.5) for w in WikiDao.all()]
+
+    return list_wiki()
 
 
 def rss():
