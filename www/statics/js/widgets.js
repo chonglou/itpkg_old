@@ -23,7 +23,13 @@ function Ajax(id, url, type, data, success, async) {
         }
         if (success == undefined) {
             success = function (result) {
-                $("div#" + id).html(result);
+                if(result.goto == undefined){
+                    $("div#" + id).html(result);
+                }
+                else{
+                    window.location.href = result.goto;
+                }
+
             }
         }
         if (async == undefined) {

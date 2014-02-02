@@ -2,6 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 
+from brahma.cache import cache
 from brahma.views import BaseHandler
 from brahma.store.site import UserDao
 from brahma.cache import get_site_info
@@ -9,7 +10,16 @@ from brahma.cache import get_site_info
 
 class MainHandler(BaseHandler):
     def get(self):
-        self.render_page("main.html", title="主页")
+        @cache.cache("site/index")
+        def get_index():
+            import tornado.options
+            if tornado.options.options.app_plugins:
+                index = "/%s/" % tornado.options.options.app_plugins[0]
+            else:
+                index = "/aboutMe"
+            return index
+        #self.render_page("main.html", title="主页")
+        self.redirect(get_index())
 
 
 class SearchHandler(BaseHandler):
