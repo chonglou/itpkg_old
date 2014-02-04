@@ -1,0 +1,6 @@
+*.pyc
+.idea
+test.py
+robots.txt
+tmp
+__pycache__

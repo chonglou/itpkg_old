@@ -1,0 +1,4 @@
+重构
+
+一个daemon将对应多个tornado app
+app://plugin/medhod?param1=value1&param2=value2
