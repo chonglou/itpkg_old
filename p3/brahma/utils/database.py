@@ -73,8 +73,9 @@ class Mysql(object):
         self.__pool._remove_connections()
 
     def __init__(self, name, tables=list(), password=None, host="localhost", port=3306, user="root", pool_size=5,
-                 init=False):
-        self.__init_logging()
+                 init=False, echo=False):
+        if echo:
+            self.__init_logging()
 
         args = {
             "user": user,

@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import pickle
+from brahma.models import Item, LogFlag
 from brahma.env import db_call, encrypt as _encrypt
 
 
@@ -64,34 +65,54 @@ class Task(object):
 class Setting(object):
     @staticmethod
     @db_call
-    def get(key, encrypt=False, cnx=None):
+    def startup(flag=True, cnx=None):
+        import datetime
+
         cursor = cnx.cursor()
-        cursor.execute("SELECT val_ FROM settings WHERE key_=%s", [key])
+        Setting._set("site.startup" if flag else "site.shutdown", datetime.datetime.now(), False, cursor=cursor)
+        cursor = cnx.cursor()
+        Log._log(message="启动系统" if flag else "关闭系统", user=None, flag=LogFlag.INFO, cursor=cursor)
+
+
+    @staticmethod
+    @db_call
+    def get(key, encrypt=False, cnx=None):
+        return Setting._get(key, encrypt, cnx.cursor())
+
+    @staticmethod
+    @db_call
+    def set(key, val, encrypt=False, cnx=None):
+        Setting._set(key, val, encrypt, cnx.cursor())
+
+    @staticmethod
+    def _get(key, encrypt, cursor):
+        cursor.execute(*Item(key=key).select(name="settings", columns=["val"]))
         row = cursor.fetchone()
         return (_encrypt.decode(row[0]) if encrypt else pickle.loads(row[0])) if row else  None
 
 
     @staticmethod
-    @db_call
-    def set(key, val, encrypt=False, cnx=None):
-        cursor = cnx.cursor()
-        cursor.execute("SELECT COUNT(*) FROM settings WHERE key_=%s", [key])
+    def _set(key, val, encrypt, cursor):
+        name = "settings"
+        cursor.execute(*Item(key=key).count(name))
         val = _encrypt.encode(val) if encrypt else pickle.dumps(val)
         row = cursor.fetchone()
         if row[0]:
-            cursor.execute("UPDATE settings SET version_=version_+1,val_=%s WHERE key_=%s", [val, key])
+            cursor.execute(*Item(val=val).update(name, i_name="key", i_id=key, version=True))
         else:
-            cursor.execute("INSERT INTO settings(key_,val_) VALUES(%s, %s)", [key, val])
+            cursor.execute(*Item(key=key, val=val).insert(name))
         cursor.close()
 
 
 class Log(object):
-    created = None
+    @staticmethod
+    @db_call
+    def log(message, user=None, flag=LogFlag.INFO, cursor=None):
+        Log._log(message, user, flag, cursor)
 
-    def __init__(self, message, user=None, flag='I'):
-        self.message = message
-        self.user = user
-        self.flag = flag
-
-    def __repr__(self):
-        return "<Log(%s, %s)>" % (self.created, self.message)
+    @staticmethod
+    def _log(message, user, flag, cursor):
+        item = Item(message=message, flag=flag)
+        if user:
+            item.user = user
+        cursor.execute(*item.insert("logs"))

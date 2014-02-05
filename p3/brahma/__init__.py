@@ -46,6 +46,7 @@ class Server:
 
     def __init_logging(self):
         import logging.handlers
+
         logging.basicConfig()
         for name in ["sql", "redis"]:
             logger = logging.getLogger(name)
@@ -102,21 +103,27 @@ class Server:
                 timeout = 5
                 logging.info("将在%d秒钟内关闭" % timeout)
 
-
                 import time
-                deadline = time.time()+timeout
+
+                deadline = time.time() + timeout
 
                 def stop():
                     loop = tornado.ioloop.IOLoop.instance()
                     now = time.time()
                     if now < deadline and (loop._callbacks or loop._timeouts):
-                        loop.add_timeout(now+1, stop)
+                        loop.add_timeout(now + 1, stop)
                     else:
                         loop.stop()
 
                 stop()
 
+                #from brahma.store import Setting
+                #Setting.startup(False)
+                #from brahma.env import _db
+                #_db.close()
+
             import signal
+
             signal.signal(signal.SIGTERM, sig_handler)
             signal.signal(signal.SIGINT, sig_handler)
 
@@ -126,7 +133,7 @@ class Server:
 
 class Application(tornado.web.Application):
     def __init__(self, debug):
-        import tornado.options, importlib
+        import tornado.options
         from brahma import utils, widgets
         from brahma.views import PageNotFoundHandler
 
@@ -142,6 +149,7 @@ class Application(tornado.web.Application):
         routes.append((r".*", PageNotFoundHandler))
 
         import os
+
         settings = dict(
             ui_modules=widgets,
             template_path=os.path.realpath("templates"),
@@ -155,7 +163,8 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, routes, **settings)
 
     def __key(self):
-        import base64,uuid
+        import base64, uuid
+
         k = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
         logging.debug("生成cookie key:%s" % k)
         return k

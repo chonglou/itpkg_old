@@ -3,6 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import logging
 from brahma.models import TaskFlag
 
+
 class _TaskQueueRedis:
     def __init__(self):
         import tornado.options
@@ -24,6 +25,7 @@ class _TaskQueueRedis:
 class _TaskQueue:
     def __init__(self):
         import queue
+
         self.__q = queue.Queue()
 
     def put(self, flag, args):
@@ -70,12 +72,14 @@ class _TaskListener:
     @staticmethod
     def echo(message):
         import logging
+
         logging.info("ECHO: %s" % message)
 
     @staticmethod
     def robots():
         import os
-        from brahma.store import Setting 
+        from brahma.store import Setting
+
         with open(os.path.realpath("statics/robots.txt"), "w") as f:
             f.write("User-agent: *\n")
             f.write("Disallow: /personal/\n")
@@ -192,6 +196,7 @@ class _TaskListener:
     @staticmethod
     def email(to, title, body, html):
         from brahma.store import Setting
+
         smtp = Setting.get("site.smtp", encrypt=True)
         if smtp:
             import tornado.options
@@ -211,6 +216,11 @@ class _TaskListener:
 
 
 def _init():
+    logging.info("进程管理")
+    from brahma.store import Setting
+
+    Setting.startup(True)
+
     def _new_thread(name, target):
         import threading
 
@@ -235,6 +245,7 @@ def _init():
                     _TaskListener.email(**args)
                 elif flag in [TaskFlag.QR, TaskFlag.ROBOTS, TaskFlag.SITEMAP, TaskFlag.RSS]:
                     import importlib
+
                     getattr(_TaskListener, flag)()
                 elif flag == TaskFlag.ECHO:
                     _TaskListener.echo(args)
@@ -246,12 +257,12 @@ def _init():
     def _scanner():
         logging.info("启动定时扫描进程")
         import time, sched, tornado.options
-        from brahma.store import Task
 
         s = sched.scheduler(time.time, time.sleep)
 
         def run():
             import datetime
+
             TaskSender.echo("测试消息%s" % datetime.datetime.now())
 
             """

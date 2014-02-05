@@ -22,6 +22,7 @@ function stop(){
 		pgid=$(ps -o pgid `cat $pid` | grep [0-9])
 		#kill -TERM -$pgid  2> /dev/null
 		#echo $pgid
+		sleep 1
 		kill -TERM -$pgid 
 		rm $pid
 	else

@@ -120,6 +120,7 @@ class AdminHandler(BaseHandler):
 
     def __get_clock(self, flag):
         from brahma.store.task import TaskDao
+
         ts = TaskDao.list_by_flag(flag)
         if ts:
             return ts[0].nextRun.hour
@@ -127,14 +128,16 @@ class AdminHandler(BaseHandler):
 
     def __set_clock(self, flag, clock):
         import datetime
+
         now = datetime.datetime.now()
-        nextRun = datetime.datetime(now.year, now.month, now.day, hour=clock)+datetime.timedelta(days=1)
+        nextRun = datetime.datetime(now.year, now.month, now.day, hour=clock) + datetime.timedelta(days=1)
         from brahma.store.task import TaskDao
+
         ts = TaskDao.list_by_flag(flag)
         if ts:
             TaskDao.set_nextRun(ts[0].id, nextRun=nextRun)
         else:
-            TaskDao.add(flag, 3600*24, nextRun=nextRun)
+            TaskDao.add(flag, 3600 * 24, nextRun=nextRun)
 
     @tornado.web.authenticated
     def post(self, act):

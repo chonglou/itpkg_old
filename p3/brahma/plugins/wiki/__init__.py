@@ -7,9 +7,12 @@ def user(uid):
     import datetime
     from brahma.plugins.wiki.store import WikiDao
     from brahma.env import cache
-    @cache.cache("wiki/%s"%uid, expire=3600*24)
+
+    @cache.cache("wiki/%s" % uid, expire=3600 * 24)
     def list_wiki():
-        return [("/wiki/%s"%w.name, w.title) for w in WikiDao.list_wiki(datetime.datetime.min, datetime.datetime.max, author=uid)]
+        return [("/wiki/%s" % w.name, w.title) for w in
+                WikiDao.list_wiki(datetime.datetime.min, datetime.datetime.max, author=uid)]
+
     return list(), list_wiki()
 
 
