@@ -6,7 +6,7 @@ import os
 import tornado.options
 
 from brahma.env import redis
-from brahma.models import Setting
+from brahma.store import Setting
 import logging
 
 
@@ -190,7 +190,7 @@ def start():
     def _task_scanner():
         logging.info("启动任务调度")
         import time, sched, tornado.options
-        from brahma.models import Task
+        from brahma.store import Task
 
         s = sched.scheduler(time.time, time.sleep)
 
@@ -227,3 +227,7 @@ def start():
     #_run("task.scanner", newP)
     #_run("task.listener", newP)
 
+from brahma.env import encrypt
+from brahma.store import Setting
+Setting.set("site.title1", encrypt.random_str(8))
+print(Setting.get("site.title1"))

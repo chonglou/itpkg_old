@@ -29,7 +29,31 @@ def _get_db():
 
     return Mysql(init=True, tables=tables, **args)
 
-db = _get_db()
+_db = _get_db()
+
+
+def db_call(func):
+    def __decorator(*args, **kwargs):
+        val = None
+        cnx = _db.connection
+
+        try:
+
+            kwargs['cnx'] = cnx
+            val = func(*args, **kwargs)
+            cnx.commit()
+        except Exception:
+            if cnx:
+                cnx.rollback()
+            import logging
+            logging.exception("数据库操作出错")
+
+        finally:
+            cnx.close()
+
+        return val
+
+    return __decorator
 
 
 def _get_cache(path):

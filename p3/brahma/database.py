@@ -4,20 +4,6 @@ import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
 
 
-class Base(object):
-    def insert(self):
-        raise ValueError()
-
-    def update(self):
-        raise ValueError()
-
-    def delete(self):
-        raise ValueError()
-
-    def count(self):
-        raise ValueError()
-
-
 class Mysql(object):
     def bulk(self, lines):
         def query(cursor):
@@ -80,7 +66,7 @@ class Mysql(object):
     def __query(self, query, read=True):
         cnx = None
         try:
-            cnx = self.__get_connection()
+            cnx = self.connection
             cursor = cnx.cursor()
             result = query(cursor)
             if not read:
@@ -141,6 +127,6 @@ class Mysql(object):
             if cnx:
                 cnx.close()
 
-
-    def __get_connection(self):
+    @property
+    def connection(self):
         return self.__pool.get_connection()
