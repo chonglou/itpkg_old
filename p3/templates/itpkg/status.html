@@ -1,0 +1,18 @@
+<div class="btn-group">
+    <button id="refresh" class="btn btn-primary">刷新</button>
+    <button id="status" class="btn btn-success">当前状态</button>
+</div>
+<div id="status-root"></div>
+<p>&nbsp;</p>
+<h3>{{router.name}}[{{router.state}}]</h3>
+<hr>{% raw router.details %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button#refresh").click(function () {
+            new Ajax("tab-item-status", "/itpkg/{{rid}}/status");
+        });
+        $("button#status").click(function () {
+            new Ajax("status-root", "/itpkg/{{rid}}/status", "PUT", undefined, undefined, false);
+        });
+    });
+</script>

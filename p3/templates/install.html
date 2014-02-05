@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block extra_head %}
+<style>
+    body {
+        padding-top: 10px;
+    }
+</style>
+{% end %}
+{% block body %}
+<div class="container">
+    {% module Form(form) %}
+    <hr>
+    <footer>
+        <p>&copy; 2014</p>
+    </footer>
+</div>
+{% end %}

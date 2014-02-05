@@ -1,0 +1,53 @@
+<div id="group-root"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        用户组列表
+        <div class="btn-group btn-group-sm">
+            <button id="add" class="btn btn-primary">添加</button>
+            <button id="refresh" class="btn btn-info">刷新</button>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>名称</td>
+            <td>详细信息</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for g in groups %}
+        <tr>
+            <td>{{g.id}}</td>
+            <td>{{g.name}}</td>
+            <td>{% raw g.details %}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button id="/itpkg/group-{{g.id}}-EDIT" class="btn btn-success">
+                        编辑
+                    </button>
+                </div>
+            </td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button#add").click(function () {
+            new Ajax("group-root", "/itpkg/group", "PUT");
+        });
+        $("button#refresh").click(function () {
+            new Ajax("gl_root", "/itpkg/group");
+        });
+        $("button[id^='/itpkg/group-']").click(function () {
+            var ss = $(this).attr("id").split('-');
+            if (ss[2] == "EDIT") {
+                new Ajax("group-root", "/itpkg/group", "PUT", {id: ss[1]});
+            }
+        });
+    });
+</script>
+<p>&nbsp;</p>

@@ -1,0 +1,37 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.container{
+    width: 96%;
+}
+
+.navbar-icon{
+    height: 18px;
+    width: 18px;
+}
+
+@media screen and (min-width: 768px) {
+    .jumbotron {
+        margin-top: 20px;
+    }
+    .body-content {
+        padding: 0;
+    }
+}
+
+.warp{
+    word-break: break-all;
+}
+
+.fall-item {
+    margin-bottom: 20px;
+    word-warp:break-word;
+    word-break:break-all;
+}

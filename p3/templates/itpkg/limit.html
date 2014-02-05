@@ -1,0 +1,59 @@
+<div id="limit-root"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        限速规则列表
+        <div class="btn-group btn-group-sm">
+            <button id="add" class="btn btn-primary">添加</button>
+            <button id="refresh" class="btn btn-info">刷新</button>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>名称</td>
+            <td>最大上传</td>
+            <td>最大下载</td>
+            <td>最小上传</td>
+            <td>最小下载</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in items %}
+        <tr>
+            <td>{{i.id}}</td>
+            <td>{{i.name}}</td>
+            <td>{{i.upMax}}K/S</td>
+            <td>{{i.downMax}}K/S</td>
+            <td>{{i.upMin}}K/S</td>
+            <td>{{i.downMin}}K/S</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button id="/itpkg/limit-{{i.id}}-EDIT" class="btn btn-success">
+                        编辑
+                    </button>
+                </div>
+            </td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button#add").click(function () {
+            new Ajax("limit-root", "/itpkg/limit", "PUT");
+        });
+        $("button#refresh").click(function () {
+            new Ajax("gl_root", "/itpkg/limit");
+        });
+        $("button[id^='/itpkg/limit-']").click(function () {
+            var ss = $(this).attr("id").split('-');
+            if (ss[2] == "EDIT") {
+                new Ajax("limit-root", "/itpkg/limit", "PUT", {id: ss[1]});
+            }
+        });
+    });
+</script>
+<p>&nbsp;</p>

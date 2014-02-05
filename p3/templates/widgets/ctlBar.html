@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs" id="tab">
+    {% for url,label in items %}
+    <li><a href="#tab-item-{{url}}" data-toggle="tab">{{label}}</a></li>
+    {% end %}
+</ul>
+<br>
+<div class="tab-content">
+    {% for url,label in items %}
+    <div class="tab-pane" id="tab-item-{{url}}"></div>
+    {% end %}
+</div>

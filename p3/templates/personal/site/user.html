@@ -1,0 +1,57 @@
+<div id="user-root"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        用户列表
+        <div class="btn-group btn-group-sm">
+            <button id="refresh" class="btn btn-info">刷新列表</button>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>用户名</td>
+            <td>类型</td>
+            <td>邮箱</td>
+            <td>状态</td>
+            <td>上次登录</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for id,username,flag,email,state,lastLogin,act in items %}
+        <tr>
+            <td>{{id}}</td>
+            <td><a href="/user/{{id}}" target="_blank">{{username}}</a></td>
+            <td>{{flag}}</td>
+            <td>{% raw '<a href="mailto:%s">%s</a>' % (email,email) or "" %}</td>
+            <td><b>{{state}}</b></td>
+            <td>{{lastLogin or ""}}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    {% if act %}
+                    <button id="/personal/site/user-{{id}}-{{act}}" class="btn btn-danger">
+                        {% if act == "ENABLE" %}启用{% elif act =="DISABLE" %}禁用{% else %}{{ act }}{% end %}
+                    </button>
+                    {% end %}
+                </div>
+            </td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button#refresh").click(function () {
+            new Ajax("tab-item-user", "/personal/site/user");
+        });
+        $("button[id^='/personal/site/user']").click(function () {
+            var ss = $(this).attr("id").split('-');
+            if (confirm("你确定要进行此操作么？")) {
+                new Ajax("user-root", ss[0], "POST", {uid:ss[1],state:ss[2]});
+            }
+        });
+    });
+</script>
+<p>&nbsp;</p>

@@ -1,0 +1,12 @@
+<div id="tagCanvasContainer">
+    <canvas id="tagCanvas" height="300px">
+        <p>标签云</p>
+    </canvas>
+</div>
+<div id="tags">
+    <ul>
+        {% for url,label in tags %}
+        <li><a href="{{url}}" target="_blank">{{label}}</a></li>
+        {% end %}
+    </ul>
+</div>

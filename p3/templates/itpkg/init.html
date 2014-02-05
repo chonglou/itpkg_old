@@ -1,0 +1,49 @@
+<div id="init-root"></div>
+{% module Form(form) %}
+<div>
+    <ul>
+        <li>路由器需要初始化之后才能接入IT-PACKAGE进行管理</li>
+    </ul>
+</div>
+<script type="text/javascript">
+    function showFlag(flag) {
+        if (flag == "ArchLinux") {
+            $("input#fm-init-lanMac").parent().parent().show();
+            $("input#fm-init-wanMac").parent().parent().show();
+            $("input#fm-init-password").parent().parent().hide();
+        }
+        else if (flag == "DIR-615") {
+            $("input#fm-init-lanMac").parent().parent().hide();
+            $("input#fm-init-wanMac").parent().parent().hide();
+            $("input#fm-init-password").parent().parent().show();
+        }
+    }
+
+    function showWanFlag(flag) {
+        if (flag == "static") {
+            $("input#fm-init-wanIp").parent().parent().show();
+            $("input#fm-init-wanNetmask").parent().parent().show();
+            $("input#fm-init-wanGateway").parent().parent().show();
+        }
+        else {
+            $("input#fm-init-wanIp").parent().parent().hide();
+            $("input#fm-init-wanNetmask").parent().parent().hide();
+            $("input#fm-init-wanGateway").parent().parent().hide();
+        }
+    }
+    $(document).ready(function () {
+        $("select#fm-select-init-flag").change(function () {
+            showFlag($(this).val());
+        });
+        $("select#fm-select-init-wanFlag").change(function () {
+            showWanFlag($(this).val());
+        });
+        $("a#fm-btn-init-reset").click(function () {
+            showFlag("ArchLinux");
+            showWanFlag("static");
+        });
+        showFlag("ArchLinux");
+        showWanFlag("static");
+    });
+
+</script>

@@ -1,0 +1,66 @@
+<div class="btn-group">
+    <button id="refresh" class="btn btn-primary">刷新</button>
+    <button id="scan" class="btn btn-danger">扫描局域网</button>
+</div>
+<div id="device-root"></div>
+<p>&nbsp;</p>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        上网设备列表
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <td>id</td>
+            <td>MAC</td>
+            <td>IP</td>
+            <td>固定？</td>
+            <td>状态</td>
+            <td>用户</td>
+            <td>限速规则</td>
+            <td>最后更新</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for d in devices %}
+        <tr>
+            <td>{{d.id}}</td>
+            <td>{{d.mac}}</td>
+            <td>{{"%s.%s"% (net,d.ip)}}</td>
+            <td>{% raw "<b>固定</b>" if d.fix else "动态" %}</td>
+            <td>{{d.state}}</td>
+            <td>{{users[d.id] or ""}}</td>
+            <td>{{limits[d.id] or ""}}</td>
+            <td>{{d.lastUpdated if d.lastUpdated else d.created }}</td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button id="/itpkg/{{rid}}/device-{{d.id}}-view" class="btn btn-success">
+                        查看
+                    </button>
+                    <button id="/itpkg/{{rid}}/device-{{d.id}}-edit" class="btn btn-primary">
+                        编辑
+                    </button>
+                </div>
+            </td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button#refresh").click(function () {
+            new Ajax("tab-item-device", "/itpkg/{{rid}}/device");
+        });
+        $("button#scan").click(function () {
+            new Ajax("device-root", "/itpkg/{{rid}}/device", "PUT", {act: "scan"}, undefined, false);
+        });
+        $("button[id^='/itpkg/{{rid}}/device-']").click(function () {
+            var ss = $(this).attr("id").split('-');
+            if (ss[2] == "edit" || ss[2] == "view") {
+                new Ajax("device-root", ss[0], "PUT", {id: ss[1], act: ss[2]});
+            }
+        });
+    });
+</script>

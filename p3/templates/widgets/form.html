@@ -1,0 +1,197 @@
+<body>
+{% autoescape xhtml_escape %}
+{% autoescape None %}
+<h3 class="glyphicon glyphicon-list">{{form.label}} </h3>
+<hr>
+<div id="fm-msg-{{form.fid}}"></div>
+<form id="fm-{{form.fid}}" class="form-horizontal" action="#" method="post">
+    <input type="hidden" id="fm-act-{{form.fid}}" value="{{form.action}}">
+    {% module xsrf_form_html() %}
+
+    {% for field in form %}
+    {% if field.type == "HiddenField" %}
+    <input type="hidden" value="{{field.data or ''}}" id="fm-{{form.fid}}-{{field.id}}">
+    {% end %}
+    {% end %}
+    {% for field in form %}
+
+    {% if field.type == "TextField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.data or ''}}">
+        </div>
+    </div>
+    {% elif field.type == "TextAreaField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-6">
+            <textarea id="fm-{{form.fid}}-{{field.id}}" class="form-control" rows="6">{{field.data or ""}}</textarea>
+        </div>
+    </div>
+    {% elif field.type == "PasswordField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-4">
+            <input type="password" class="form-control" id="fm-{{form.fid}}-{{field.id}}">
+        </div>
+    </div>
+    {% elif field.type == "IntegerField" %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-{{field.id}}" value="{{field.data or ''}}">
+        </div>
+    </div>
+    {% elif field.type == "BooleanField" %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-6">
+            <div class="checkbox">
+                <label>
+                    {%if field.data %}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox" checked/>
+                    {%else%}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox"/>
+                    {%end%}
+                    {{field.label.text}}
+                </label>
+            </div>
+        </div>
+    </div>
+    {% elif field.type == "RadioField" %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            {{field.label.text}}：
+        </label>
+        <div class="col-sm-6">
+            {% for v,k in field.choices%}
+            <div class="radio col-sm-3">
+                <label>
+                    {% if field.data == v %}
+                    <input type="radio" name="fm-radio-{{form.fid}}-{{field.id}}" value="{{v}}" checked>
+                    {% else %}
+                    <input type="radio" name="fm-radio-{{form.fid}}-{{field.id}}" value="{{v}}">
+                    {% end %}
+                    {{k}}
+                </label>
+            </div>
+            {% end %}
+        </div>
+    </div>
+    {% elif field.type == "ListField" %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            {{field.label.text}}：
+        </label>
+        <div class="col-sm-6">
+            {% for v,k in field.choices%}
+            <div class="radio col-sm-3">
+                <label>
+                    {% if v in field.data %}
+                    <input type="checkbox" name="fm-list-{{form.fid}}-{{field.id}}" value="{{v}}" checked>
+                    {% else %}
+                    <input type="checkbox" name="fm-list-{{form.fid}}-{{field.id}}" value="{{v}}">
+                    {% end %}
+                    {{k}}
+                </label>
+            </div>
+            {% end %}
+        </div>
+    </div>
+    {% elif field.type == "AgreementField" %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-6">
+            <textarea readonly class="form-control" rows="6">
+                {{field.text or ""}}
+            </textarea>
+        </div>
+        <div class="col-sm-offset-2 col-sm-6">
+            <div class="checkbox">
+                <label>
+                    {%if field.data %}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox" checked/>
+                    {%else%}
+                    <input id="fm-{{form.fid}}-{{field.id}}" type="checkbox"/>
+                    {%end%}
+                    我同意并遵守上述协议
+                </label>
+            </div>
+        </div>
+    </div>
+    {% elif field.type == "HtmlField" %}
+    <div class="form-group">
+        <label for="fm-html-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-8">
+            <script id="fm-html-{{form.fid}}-{{field.id}}" name="fm-html-{{form.fid}}-{{field.id}}"
+                    style="height:350px;" type="text/plain">
+                {{field.data or ""}}
+
+
+
+            </script>
+        </div>
+        <script type="text/javascript">
+            var editor = new UE.ui.Editor();
+            editor.render("fm-html-{{form.fid}}-{{field.id}}");
+        </script>
+    </div>
+    {% elif field.type == "SelectField" %}
+    <div class="form-group">
+        <label for="fm-select-{{form.fid}}-{{field.id}}" class="col-sm-2 control-label">
+            {{field.label.text}}{% if field.flags.required %}*{% end %}：
+        </label>
+
+        <div class="col-sm-4">
+            <select id="fm-select-{{form.fid}}-{{field.id}}" class="form-control">
+                {% for v,k in field.choices %}
+                {% if v == field.data %}
+                <option value="{{v}}" selected>{{k}}</option>
+                {% else %}
+                <option value="{{v}}">{{k}}</option>
+                {% end %}
+                {% end %}
+            </select>
+        </div>
+    </div>
+    {% else %}
+    {% end %}
+
+    {% end %}
+    {% if form.captcha %}
+    <div class="form-group">
+        <label for="fm-{{form.fid}}-captcha" class="col-sm-2 control-label">
+            验证码*：
+        </label>
+
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="fm-{{form.fid}}-captcha">
+        </div>
+        <div class="col-sm-3">
+            <img id="fm-img-{{form.fid}}-captcha" src="/captcha">
+        </div>
+    </div>
+    {% end %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <a id="fm-btn-{{form.fid}}-submit" class="btn btn-primary">提交</a>
+            <a id="fm-btn-{{form.fid}}-reset" class="btn btn-default">重写</a>
+        </div>
+    </div>
+</form>
+</body>
+

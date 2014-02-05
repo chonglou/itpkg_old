@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block main%}
+<h3>{{title}}[{{len(cards)+len(links)}}]</h3>
+<hr>
+{% raw content or "" %}
+<br/>
+{% module FallLink(links)%}
+{% module FallCard(cards)%}
+{%end%}

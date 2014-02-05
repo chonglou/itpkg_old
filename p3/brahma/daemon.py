@@ -63,10 +63,6 @@ class Daemon:
         self.__daemonize()
         self.run()
 
-    def debug(self):
-        print("调试模式启动")
-        self.run(True)
-
     def stop(self):
         try:
             with open(self.pidfile, "r") as pf:
@@ -96,5 +92,5 @@ class Daemon:
         time.sleep(0.1)
         self.start()
 
-    def run(self, debug=False):
+    def run(self):
         pass
