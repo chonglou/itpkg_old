@@ -2,152 +2,125 @@ __author__ = 'zhengjitang@gmail.com'
 
 import datetime
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, Sequence, LargeBinary, Text
+class User(object):
+    id = None
+    created = None
 
-
-Base = declarative_base()
-
-
-class Task(Base):
-    __tablename__ = "tasks"
-    id = Column(Integer, Sequence('task_id_seq'), primary_key=True)
-    flag = Column(String(8))
-    request = Column(LargeBinary)
-    nextRun = Column(DateTime, nullable=False)
-    created = Column(DateTime, nullable=False)
-    index = Column(Integer, name="index_", nullable=False, default=0)
-    total = Column(Integer, nullable=False)
-    space = Column(Integer, nullable=False)
-    version = Column(Integer, nullable=False, default=0)
-    begin = Column(DateTime, name="begin_", nullable=False)
-    end = Column(DateTime, name="end_", nullable=False)
-
-    def __init__(self, flag, request, begin, end, total, space, nextRun):
-        self.flag = flag
-        self.request = request
-        self.begin = begin
-        self.end = end
-        self.total = total
-        self.space = space
-        self.nextRun = nextRun
-        self.created = datetime.datetime.now()
-
-
-class Permission(Base):
-    __tablename__ = "rbacs"
-    id = Column(Integer, Sequence('rbac_id_seq'), primary_key=True)
-    resource = Column(String(255), name="resource", nullable=False)
-    role = Column(String(255), nullable=False)
-    operation = Column(String(255), nullable=False)
-    created = Column(DateTime, nullable=False)
-    begin = Column(DateTime, nullable=False)
-    end = Column(DateTime, nullable=False)
-
-    def __init__(self, role, operation, resource, begin, end):
-        self.resource = resource
-        self.role = role
-        self.operation = operation
-        self.begin = begin
-        self.end = end
-        self.created = datetime.datetime.now()
-
-
-class FriendLink(Base):
-    __tablename__ = "friend_links"
-    id = Column(Integer, Sequence('friendlink_id_seq'), primary_key=True)
-    url = Column(String(255), nullable=False)
-    logo = Column(String(255))
-    name = Column(String(255), nullable=False)
-
-    def __init__(self, name, url, logo):
-        self.url = url
-        self.logo = logo
-        self.name = name
-
-
-class Setting(Base):
-    __tablename__ = "settings"
-    key = Column(String(255), Sequence('setting_id_seq'), name="kkk", primary_key=True)
-    val = Column(LargeBinary, name="vvv")
-    created = Column(DateTime, nullable=False)
-    version = Column(Integer, nullable=False, default=0)
-
-    def __init__(self, key, val):
-        self.key = key
-        self.val = val
-        self.created = datetime.datetime.now()
-
-    def __repr__(self):
-        return "<Setting(%s, %s)>" % (self.key, self.created)
-
-
-class Log(Base):
-    __tablename__ = "logs"
-    id = Column(Integer, Sequence('log_id_seq'), primary_key=True)
-    user = Column(Integer)
-    message = Column(String(255), nullable=False)
-    flag = Column(String(8), nullable=False)
-    created = Column(DateTime, nullable=False)
-
-    def __init__(self, message, user, flag):
-        self.message = message
-        self.user = user
-        self.flag = flag
-        self.created = datetime.datetime.now()
-
-    def __repr__(self):
-        return "<Log(%s, %s)>" % (self.created, self.message)
-
-
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
-    openid = Column(String(255), unique=True, nullable=False)
-    token = Column(String(255))
-    email = Column(String(255), unique=True, nullable=False)
-    flag = Column(String(8), nullable=False)
-    password = Column(String(512), nullable=False)
-    username = Column(String(255))
-    salt = Column(String(8), nullable=False)
-    state = Column(String(8), nullable=False)
-    logo = Column(String(255))
-    contact = Column(Text)
-    created = Column(DateTime, nullable=False)
-    lastLogin = Column(DateTime)
-
-    def __init__(self, flag, username=None, password=None, email=None, openid=None, ):
+    def __init__(self, flag, username=None, password=None, email=None, openid=None, token=None):
         self.username = username
 
         from brahma.env import encrypt
 
         self.salt = encrypt.random_str(8)
 
-        if flag == "email":
-            self.username = username
-            self.email = email
-            self.openid = encrypt.uuid()
-            self.flag = flag
-        elif flag == "google":
-            self.username = encrypt.random_str(8)
-            self.email = username + "@" + "localhost"
-            self.openid = openid
-            self.flag = flag
-            password = encrypt.random_str(12)
-        elif flag == "qq":
-            self.username = encrypt.random_str(8)
-            self.email = self.username + "@" + "localhost"
-            self.openid = openid
-            self.flag = flag
-            password = encrypt.random_str(12)
+        if flag == "E":
+            if username and password and email:
+                self.username = username
+                self.email = email
+                self.password = encrypt.sha512(password + self.salt)
+                self.flag = flag
+            else:
+                raise ValueError()
+        elif flag == "G":
+            if openid and token:
+                self.openid = openid
+                self.token = token
+                self.flag = flag
+            else:
+                raise ValueError()
+        elif flag == "Q":
+            if openid and token:
+                self.openid = openid
+                self.token = token
+                self.flag = flag
+                raise ValueError()
 
-        self.password = encrypt.sha512(password + self.salt)
-        self.created =datetime.datetime.now()
-
-    def check(self, password):
+    @staticmethod
+    def check(plain, salt, password):
         from brahma.env import encrypt
 
-        return encrypt.sha512(password + self.salt) == self.password
+        return encrypt.sha512(plain + salt) == password
 
     def __repr__(self):
-        return "<User('%s', '%s')>" % (self.email, self.username)
+        return "<User('%s', '%s')>" % (self.id, self.username)
+
+
+class Task(object):
+    @staticmethod
+    def set_next_run(tid, next_run=None):
+        pass
+    @staticmethod
+    def list_available():
+        return list()
+    @staticmethod
+    def get(tid):
+        return tid
+
+
+class Setting(object):
+    @staticmethod
+    def get(key, encrypt=False):
+        return key
+
+    @staticmethod
+    def set(key, val, encrypt=False):
+        pass
+
+
+class Log(object):
+    created = None
+
+    def __init__(self, message, user=None, flag='I'):
+        self.message = message
+        self.user = user
+        self.flag = flag
+
+    def __repr__(self):
+        return "<Log(%s, %s)>" % (self.created, self.message)
+
+
+tables = [
+    ("settings", False, True, True, [
+        "key_ VARCHAR(16) UNIQUE NOT NULL",
+        "val_ BLOB NOT NULL",
+    ]),
+    ("tasks", True, True, True, [
+        "flag_ CHAR(1) NOT NULL DEFAULT 'S'",
+        "request_ BLOB",
+        "index_ INTEGER NOT NULL DEFAULT 0",
+        "total_ INTEGER NOT NULL DEFAULT 0",
+        "space_ INTEGER NOT NULL DEFAULT 0",
+        "next_run DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
+        "begin_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.min,
+        "end_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
+    ]),
+    ("logs", True, True, False, [
+        "user_ INTEGER NOT NULL DEFAULT 0",
+        "message_ VARCHAR(255) NOT NULL",
+        "flag_ CHAR(1) NOT NULL DEFAULT 'I'",
+    ]),
+    ("permissions", True, True, True, [
+        "resource_ VARCHAR(16) NOT NULL",
+        "role_ VARCHAR(8) NOT NULL",
+        "operation_ CHAR(1) NOT NULL DEFAULT 'A'",
+        "begin_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.min,
+        "end_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
+    ]),
+    ("friend_links", True, True, False, [
+        "logo_ VARCHAR(255)",
+        "name_ VARCHAR(255) NOT NULL",
+        "domain_ VARCHAR(32) NOT NULL",
+    ]),
+    ("users", True, True, True, [
+        "email_ VARCHAR(32)",
+        "username_ VARCHAR(32) NOT NULL DEFAULT '用户'",
+        "password_ CHAR(128)",
+        "openid_ VARCHAR(255)",
+        "token_ VARCHAR(255)",
+        "flag_ CHAR(1) NOT NULL DEFAULT 'M'",
+        "salt_ CHAR(8) NOT NULL",
+        "state_ CHAR(1) NOT NULL DEFAULT 'S'",
+        "details_ BLOB NOT NULL",
+        "last_login_ DATETIME",
+    ])
+]

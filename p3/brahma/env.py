@@ -1,6 +1,5 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import logging
 import datetime
 
 import tornado.options
@@ -16,24 +15,22 @@ start_stamp = datetime.datetime.now()
 encrypt = Encrypt(tornado.options.options.app_secret)
 
 
-def db_call(func):
-    from sqlalchemy.exc import SQLAlchemyError
+def _get_db():
+    from brahma.database import Mysql
+    args = dict()
+    for k in ["host", "name", "user", "port", "password", "pool_size"]:
+        args[k] = getattr(tornado.options.options, "mysql_"+k)
 
-    def __decorator(*args, **kwargs):
-        session = None
-        kwargs['session'] = session
-        val = None
-        try:
-            val = func(*args, **kwargs)
-            session.commit()
-        except SQLAlchemyError:
-            session.rollback()
-            logging.exception("数据库操作出错")
+    import importlib
+    tables = list()
+    tables.extend(importlib.import_module("brahma.models").tables)
+    from brahma.utils import walk_plugin
+    walk_plugin(lambda p:tables.extend(importlib.import_module("brahma.plugins." + p + ".models").tables))
 
-        session.close()
-        return val
+    return Mysql(init=True, tables=tables, **args)
 
-    return __decorator
+db = _get_db()
+
 
 def _get_cache(path):
     opts = {

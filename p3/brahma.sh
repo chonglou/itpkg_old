@@ -1,6 +1,8 @@
 #!/bin/sh
 
-pid="/tmp/.brahma.pid"
+work_dir=`dirname $0`
+cd $work_dir
+pid="tmp/.brahma.pid"
 script="python app.py"
 
 function start(){
@@ -49,6 +51,7 @@ case "$1" in
 		;;
 	debug)
 		echo "调试模式启动..."
+		echo `pwd`
 		$script debug
 		;;
 	*)

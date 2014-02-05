@@ -1,8 +1,18 @@
 __author__ = 'zhengjitang@gmail.com'
 
 
+def walk_plugin(fun):
+    import tornado.options
+
+    for p in tornado.options.options.app_plugins:
+        fun(p)
+
+
 def list_mod(file):
     import os
+
+    def path(f):
+        return os.path.realpath(f)
 
     val = list()
     file = path(file)
@@ -14,8 +24,8 @@ def list_mod(file):
     return val
 
 
-def path(uri):
-    import os
-    #print(os.path.abspath(os.path.join(os.path.dirname(__file__), uri)))
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), uri))
+#def path(uri):
+#    import os
+#    #print(os.path.abspath(os.path.join(os.path.dirname(__file__), uri)))
+#    return os.path.abspath(os.path.join(os.path.dirname(__file__), uri))
 

@@ -1,5 +1,6 @@
 __author__ = 'zhengjitang@gmail.com'
 
+import logging
 import tornado.web
 import tornado.options
 import tornado.ioloop
@@ -10,8 +11,12 @@ class Server:
         self.__debug = debug
         self.__setup(cfg)
         self.__check_dirs()
-        self.__init_logger()
-        logger.debug("配置加载成功")
+        self.__init_logging()
+        logging.debug("配置加载成功")
+
+    def __jobs(self):
+        from brahma import jobs
+        jobs.start()
 
     def __setup(self, cfg):
         tornado.options.define("http_port", type=int, help="HTTP Server 监听端口")
@@ -21,8 +26,16 @@ class Server:
         tornado.options.define("app_secret", type=str, help="加密密钥")
         tornado.options.define("app_store", type=str, help="站点数据存储目录")
         tornado.options.define("app_plugins", type=list, help="插件列表", default=[])
+
         tornado.options.define("task_space", type=int, help="任务调度间隔", default=300)
-        tornado.options.define("mysql", type=str, help="MySQL连接", default="root@localhost/brahma")
+
+        tornado.options.define("mysql_host", type=str, help="MySQL主机", default="localhost")
+        tornado.options.define("mysql_port", type=int, help="MySQL端口", default=3306)
+        tornado.options.define("mysql_user", type=str, help="MySQL用户名", default="root")
+        tornado.options.define("mysql_password", type=str, help="MySQL登陆密码", default=None)
+        tornado.options.define("mysql_pool_size", type=int, help="MySQL连接池大小", default=5)
+
+        tornado.options.define("mysql_name", type=str, help="MySQL主机", default="localhost")
         tornado.options.define("redis_host", type=str, help="redis地址", default="localhost")
         tornado.options.define("redis_port", type=int, help="redis端口", default="6397")
         tornado.options.define("debug", type=bool, help="调试模式", default=self.__debug)
@@ -35,18 +48,17 @@ class Server:
 
         logging.info("从[%s]加载配置" % cfg)
 
-    def __init_logger(self):
-        global logger
+    def __init_logging(self):
         import logging.handlers
-
         logging.basicConfig()
-        logger = logging.getLogger(tornado.options.options.app_name)
-        logger.setLevel(logging.DEBUG if self.__debug else logging.INFO)
-        _file_handler = logging.handlers.TimedRotatingFileHandler(
-            tornado.options.options.app_store + "/logs/daemon.log", when='midnight')
-        _file_handler.suffix = '-%Y%m%d.log'
-        _file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-        logger.addHandler(_file_handler)
+        for name in ["sql", "redis"]:
+            logger = logging.getLogger(name)
+            logger.setLevel(logging.DEBUG if self.__debug else logging.INFO)
+            _file_handler = logging.handlers.TimedRotatingFileHandler(
+                "%s/logs/%s.log" % (tornado.options.options.app_store, name), when='midnight')
+            _file_handler.suffix = '-%Y%m%d.log'
+            _file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+            logger.addHandler(_file_handler)
 
     def __check_dirs(self):
         import tornado.options
@@ -59,10 +71,12 @@ class Server:
                 logging.debug("目录[%s]不存在，创建之" % d)
 
     def run(self):
+        self.__jobs()
+
         import tornado.options
 
         app = Application(tornado.options.options.debug)
-        logger.info("开始监听端口%d", tornado.options.options.http_port)
+        logging.info("开始监听端口%d", tornado.options.options.http_port)
 
         import socket
         from tornado.httpserver import HTTPServer
@@ -81,21 +95,38 @@ class Server:
         server = HTTPServer(app, xheaders=True)
         server.add_sockets(sockets)
 
-        def sig_handler(sig, frame):
-            logger.warning("捕获信号%s" % sig)
-            tornado.ioloop.IOLoop.instance().add_callback(shutdown)
+        if not self.__debug:
+            def sig_handler(sig, frame):
+                logging.warning("捕获信号%s" % sig)
+                tornado.ioloop.IOLoop.instance().add_callback(shutdown)
 
-        def shutdown():
-            logger.info("停止服务")
-            server.stop()
-            tornado.ioloop.IOLoop.instance().stop()
+            def shutdown():
+                logging.info("停止服务")
+                server.stop()
+                timeout = 5
+                logging.info("将在%d秒钟内关闭" % timeout)
 
-        import signal
-        signal.signal(signal.SIGTERM, sig_handler)
-        signal.signal(signal.SIGINT, sig_handler)
+
+                import time
+                deadline = time.time()+timeout
+
+                def stop():
+                    loop = tornado.ioloop.IOLoop.instance()
+                    now = time.time()
+                    if now < deadline and (loop._callbacks or loop._timeouts):
+                        loop.add_timeout(now+1, stop)
+                    else:
+                        loop.stop()
+
+                stop()
+
+            import signal
+            signal.signal(signal.SIGTERM, sig_handler)
+            signal.signal(signal.SIGINT, sig_handler)
 
         tornado.ioloop.IOLoop.instance().start()
-        logger.info("退出服务")
+        logging.info("退出服务")
+
 
 class Application(tornado.web.Application):
     def __init__(self, debug):
@@ -114,10 +145,11 @@ class Application(tornado.web.Application):
 
         routes.append((r".*", PageNotFoundHandler))
 
+        import os
         settings = dict(
             ui_modules=widgets,
-            template_path=utils.path("../../templates"),
-            static_path=utils.path("../../statics"),
+            template_path=os.path.realpath("templates"),
+            static_path=os.path.realpath("statics"),
             login_url="/main",
             cookie_secret=self.__key(),
             xsrf_cookies=True,
@@ -129,11 +161,9 @@ class Application(tornado.web.Application):
     def __key(self):
         import base64,uuid
         k = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
-        logger.debug("生成cookie key:%s" % k)
+        logging.debug("生成cookie key:%s" % k)
         return k
 
-
-logger = None
 
 
 
