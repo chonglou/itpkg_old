@@ -16,7 +16,7 @@ encrypt = Encrypt(tornado.options.options.app_secret)
 
 
 def _get_db():
-    from brahma.database import Mysql
+    from brahma.utils.database import Mysql
     args = dict()
     for k in ["host", "name", "user", "port", "password", "pool_size"]:
         args[k] = getattr(tornado.options.options, "mysql_"+k)

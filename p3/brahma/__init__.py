@@ -14,10 +14,6 @@ class Server:
         self.__init_logging()
         logging.debug("配置加载成功")
 
-    def __jobs(self):
-        from brahma import jobs
-        jobs.start()
-
     def __setup(self, cfg):
         tornado.options.define("http_port", type=int, help="HTTP Server 监听端口")
         tornado.options.define("http_host", type=str, help="HTTP Server 监听地址")
@@ -55,8 +51,8 @@ class Server:
             logger = logging.getLogger(name)
             logger.setLevel(logging.DEBUG if self.__debug else logging.INFO)
             _file_handler = logging.handlers.TimedRotatingFileHandler(
-                "%s/logs/%s.log" % (tornado.options.options.app_store, name), when='midnight')
-            _file_handler.suffix = '-%Y%m%d.log'
+                "%s/logs/%s" % (tornado.options.options.app_store, name), when='midnight')
+            _file_handler.suffix = '%Y%m%d'
             _file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
             logger.addHandler(_file_handler)
 
@@ -71,7 +67,7 @@ class Server:
                 logging.debug("目录[%s]不存在，创建之" % d)
 
     def run(self):
-        self.__jobs()
+        from brahma import jobs
 
         import tornado.options
 

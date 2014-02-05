@@ -77,16 +77,12 @@ class Setting(object):
         cursor = cnx.cursor()
         cursor.execute("SELECT COUNT(*) FROM settings WHERE key_=%s", [key])
         val = _encrypt.encode(val) if encrypt else pickle.dumps(val)
-
         row = cursor.fetchone()
-        import logging
-
-        logging.debug("########## %s %s" % (type(row[0]), row[0]))
-
         if row[0]:
             cursor.execute("UPDATE settings SET version_=version_+1,val_=%s WHERE key_=%s", [val, key])
         else:
             cursor.execute("INSERT INTO settings(key_,val_) VALUES(%s, %s)", [key, val])
+        cursor.close()
 
 
 class Log(object):

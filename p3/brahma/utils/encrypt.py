@@ -47,5 +47,6 @@ class Encrypt:
         return uuid.uuid4().hex
 
     @staticmethod
-    def random_str(length):
-        return ''.join(random.sample(string.ascii_uppercase + string.digits, length))
+    def random_str(length, chars=string.ascii_uppercase + string.digits):
+        return ''.join([random.choice(chars) for i in range(0, length)])
+        #return ''.join(random.sample(string.ascii_uppercase + string.digits, length))

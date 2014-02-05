@@ -2,13 +2,15 @@ __author__ = 'zhengjitang@gmail.com'
 
 import datetime
 
+
+
 tables = [
     ("settings", False, True, True, [
         "key_ VARCHAR(16) UNIQUE NOT NULL",
         "val_ BLOB NOT NULL",
     ]),
     ("tasks", True, True, True, [
-        "flag_ CHAR(1) NOT NULL DEFAULT 'S'",
+        "flag_ CHAR(1) NOT NULL DEFAULT ''",
         "request_ BLOB",
         "index_ INTEGER NOT NULL DEFAULT 0",
         "total_ INTEGER NOT NULL DEFAULT 0",

@@ -25,11 +25,12 @@ cd ..
 source tmp/python3/bin/activate
 pacman -S tcl tk
 pip install Pillow
-pip install tornado pycurl pycrypto redis WTForms wtforms-tornado beaker qrcode markdown mysql-connector-python psutil pexpect
+pip install tornado pycurl pycrypto redis WTForms wtforms-tornado beaker qrcode markdown psutil pexpect
+pip install --allow-all-external mysql-connector-python
 
 退出python环境：
 deactivate
 
-编辑器设定：禁止全屏
+ueditor编辑器设定：禁止全屏
 
 查看进程git：ps axjf | grep python

@@ -8,21 +8,15 @@ class Mysql(object):
     def bulk(self, lines):
         def query(cursor):
             for sql, items in lines:
-                self.__logger.debug(sql)
                 cursor.execute(sql, items)
 
         self.__query(query, read=False)
 
     def update(self, sql, items=None):
-        def query(cursor):
-            self.__logger.debug(sql)
-            cursor.execute(sql, items)
-
-        self.__query(query, read=False)
+        self.__query(lambda cursor: cursor.execute(sql, items), read=False)
 
     def count(self, sql, items=None):
         def query(cursor):
-            self.__logger.debug(sql)
             cursor.execute(sql, items)
             row = cursor.fetchone()
             return row[0]
@@ -30,15 +24,10 @@ class Mysql(object):
         return self.__query(query)
 
     def delete(self, sql, items=None):
-        def query(cursor):
-            self.__logger.debug(sql)
-            cursor.execute(sql, items)
-
-        self.__query(query, read=False)
+        self.__query(lambda cursor: cursor.execute(sql, items), read=False)
 
     def select(self, sql, items=None, one=False):
         def query(cursor):
-            self.__logger.debug(sql)
             rs = list()
             cursor.execute(sql, items)
             for record in cursor:
@@ -57,7 +46,6 @@ class Mysql(object):
 
     def insert(self, sql, items):
         def query(cursor):
-            self.__logger.debug(sql)
             cursor.execute(sql, items)
             return cursor.lastrowid
 
@@ -86,9 +74,7 @@ class Mysql(object):
 
     def __init__(self, name, tables=list(), password=None, host="localhost", port=3306, user="root", pool_size=5,
                  init=False):
-        import logging
-
-        self.__logger = logging.getLogger("sql")
+        self.__init_logging()
 
         args = {
             "user": user,
@@ -102,13 +88,32 @@ class Mysql(object):
 
         self.__pool = MySQLConnectionPool(pool_name=name, pool_size=pool_size, database=name, **args)
 
+    def __init_logging(self):
+        import logging
+
+        logger = logging.getLogger("sql")
+
+        def warp(func):
+            def wrapped_func(*args, **kwargs):
+                logger.debug("[%s]" % (args[1]))
+                return func(*args, **kwargs)
+
+            return wrapped_func
+
+        from mysql.connector.cursor import MySQLCursor
+
+        def warp_functions(clazz, method):
+            setattr(clazz, method, warp(getattr(clazz, method)))
+
+        warp_functions(MySQLCursor, "execute")
+
     def __check_database(self, name, tables, **kwargs):
         cnx = None
         try:
             cnx = mysql.connector.connect(**kwargs)
             cursor = cnx.cursor()
             sql = "CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET 'utf8'" % name
-            self.__logger.debug(sql)
+
             cursor.execute(sql)
             cnx.database = name
             for name, key, created, version, columns in tables:
@@ -120,7 +125,7 @@ class Mysql(object):
                     ", version_ INTEGER NOT NULL DEFAULT 0" if version else "",
                     ", PRIMARY KEY (id_)" if key else ""
                 )
-                self.__logger.debug(sql)
+
                 cursor.execute(sql)
             cursor.close()
         finally:
