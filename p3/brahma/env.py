@@ -70,9 +70,4 @@ def _get_cache(path):
 
 cache = _get_cache(tornado.options.options.app_store)
 
-redis = Redis(
-    name=tornado.options.options.app_name,
-    host=tornado.options.options.redis_host,
-    port=tornado.options.options.redis_port
-)
 

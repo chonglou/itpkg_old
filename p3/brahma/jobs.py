@@ -1,48 +1,85 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import logging
+from brahma.models import TaskFlag
 
-import tornado.options
+class _TaskQueueRedis:
+    def __init__(self):
+        import tornado.options
+        from brahma.utils.redis import Redis
 
-from brahma.env import redis as _redis
-from brahma.store import Setting as _Setting
+        self.__redis = Redis(
+            name=tornado.options.options.app_name,
+            host=tornado.options.options.redis_host,
+            port=tornado.options.options.redis_port
+        )
+
+    def put(self, flag, args):
+        self.__redis.lpush("tasks", (flag, args))
+
+    def get(self):
+        return self.__redis.brpop("tasks")
+
+
+class _TaskQueue:
+    def __init__(self):
+        import queue
+        self.__q = queue.Queue()
+
+    def put(self, flag, args):
+        self.__q.put_nowait((flag, args))
+
+    def get(self):
+        return self.__q.get()
+
+
+_Queue = _TaskQueue()
 
 
 class TaskSender:
     @staticmethod
     def robots():
-        _redis.lpush("tasks", ("robots", None))
+        TaskSender.__push(TaskFlag.ROBOTS, None)
 
     @staticmethod
     def sitemap():
-        _redis.lpush("tasks", ("sitemap", None))
+        TaskSender.__push(TaskFlag.SITEMAP, None)
 
     @staticmethod
     def rss():
-        _redis.lpush("tasks", ("rss", None))
+        TaskSender.__push(TaskFlag.RSS, None)
 
     @staticmethod
     def qr():
-        _redis.lpush("tasks", ("qr", None))
+        TaskSender.__push(TaskFlag.QR, None)
 
     @staticmethod
     def echo(message):
-        _redis.lpush("tasks", ("echo", message))
+        TaskSender.__push(TaskFlag.ECHO, message)
 
     @staticmethod
     def email(to, title, body, html=True):
-        _redis.lpush("tasks", ("email", (to, title, body, html)))
+        TaskSender.__push(TaskFlag.EMAIL, (to, title, body, html))
+
+    @staticmethod
+    def __push(flag, args):
+        _Queue.put(flag, args)
 
 
 class _TaskListener:
     @staticmethod
+    def echo(message):
+        import logging
+        logging.info("ECHO: %s" % message)
+
+    @staticmethod
     def robots():
         import os
-
+        from brahma.store import Setting 
         with open(os.path.realpath("statics/robots.txt"), "w") as f:
             f.write("User-agent: *\n")
             f.write("Disallow: /personal/\n")
-            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n" % _Setting.get("site.domain"))
+            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n" % Setting.get("site.domain"))
 
     @staticmethod
     def sitemap():
@@ -50,12 +87,13 @@ class _TaskListener:
             更新频率：yearly daily, monthly, hourly, weekly
         """
         import datetime, importlib, tornado.options, gzip
+        from brahma.store import Setting
 
         with open(_TaskListener.__seo_file("sitemap.xml"), "w") as sitemap:
             sitemap.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             sitemap.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-            domain = _Setting.get("site.domain")
-            init = _Setting.get("site.init")
+            domain = Setting.get("site.domain")
+            init = Setting.get("site.init")
 
             items = list()
             items.append(("main", datetime.datetime.now(), "daily", 1.0))
@@ -85,21 +123,22 @@ class _TaskListener:
     @staticmethod
     def rss():
         import importlib, tornado.options
+        from brahma.store import Setting
 
-        domain = _Setting.get("site.domain")
-        init = _Setting.get("site.init")
+        domain = Setting.get("site.domain")
+        init = Setting.get("site.init")
 
         with open(_TaskListener.__seo_file("rss.xml"), "w") as rss:
             rss.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             rss.write('<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">\n')
             rss.write('\t<channel>\n')
-            rss.write('\t\t<title>%s</title>\n' % _Setting.get("site.title"))
+            rss.write('\t\t<title>%s</title>\n' % Setting.get("site.title"))
             rss.write('\t\t<link>http://%s</link>\n' % domain)
-            rss.write('\t\t<description>%s</description>\n' % _Setting.get("site.description"))
+            rss.write('\t\t<description>%s</description>\n' % Setting.get("site.description"))
 
             items = list()
-            items.append(("关于我们", "aboutMe", _Setting.get("site.aboutMe"), init))
-            items.append(("帮助文档", "help", _Setting.get("site.help"), init))
+            items.append(("关于我们", "aboutMe", Setting.get("site.aboutMe"), init))
+            items.append(("帮助文档", "help", Setting.get("site.help"), init))
 
             for p in tornado.options.options.app_plugins:
                 items.extend(importlib.import_module("brahma.plugins." + p).rss())
@@ -124,6 +163,7 @@ class _TaskListener:
     @staticmethod
     def qr():
         import qrcode
+        from brahma.store import Setting
 
         qr = qrcode.QRCode(
             version=1,
@@ -132,7 +172,7 @@ class _TaskListener:
             border=1,
         )
 
-        qr.add_data("<a href='http://%s'>%s</a>" % (_Setting.get("site.domain"), _Setting.get("site.title")))
+        qr.add_data("<a href='http://%s'>%s</a>" % (Setting.get("site.domain"), Setting.get("site.title")))
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -151,8 +191,10 @@ class _TaskListener:
 
     @staticmethod
     def email(to, title, body, html):
-        smtp = _Setting.get("site.smtp", encrypt=True)
+        from brahma.store import Setting
+        smtp = Setting.get("site.smtp", encrypt=True)
         if smtp:
+            import tornado.options
             from brahma.utils.email import Email
 
             email = Email(
@@ -187,14 +229,19 @@ def _init():
     def _listener():
         logging.info("启动后台任务进程")
         while True:
-            flag, args = _redis.brpop("tasks")
-            if flag in ["email","rss", "sitemap", "qr", "robots"]:
-                import importlib
-                getattr(_TaskListener, flag)(*args)
-            elif flag == "echo":
-                logging.info(str(args))
-            else:
-                logging.error("丢弃任务[(%s, %s)]" % (type, str(args)))
+            flag, args = _Queue.get()
+            try:
+                if flag == TaskFlag.EMAIL:
+                    _TaskListener.email(**args)
+                elif flag in [TaskFlag.QR, TaskFlag.ROBOTS, TaskFlag.SITEMAP, TaskFlag.RSS]:
+                    import importlib
+                    getattr(_TaskListener, flag)()
+                elif flag == TaskFlag.ECHO:
+                    _TaskListener.echo(args)
+                else:
+                    raise ValueError("丢弃任务[%s, %s]" % (flag, args))
+            except Exception:
+                logging.exception("执行任务出错")
 
     def _scanner():
         logging.info("启动定时扫描进程")
@@ -204,12 +251,17 @@ def _init():
         s = sched.scheduler(time.time, time.sleep)
 
         def run():
+            import datetime
+            TaskSender.echo("测试消息%s" % datetime.datetime.now())
+
+            """
             for t in Task.list_available():
                 Task.set_next_run(t.id)
                 if t.flag in ['qr', 'sitemap', 'rss', 'robots']:
                     getattr(TaskSender, t.flag)()
                 else:
                     logging.error("未知的任务类型[%s]" % t.flag)
+            """
 
         while True:
             s.enter(tornado.options.options.task_space, 10, run)
@@ -217,6 +269,6 @@ def _init():
 
     _new_thread("task.listener", _listener)
     _new_thread("task.scanner", _scanner)
-    _Setting.set("aaa", "bbb")
+
 
 _init()
