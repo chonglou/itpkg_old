@@ -1,7 +1,6 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import datetime
-from brahma.utils.enum import Enum
 
 
 class Item(object):
@@ -74,6 +73,11 @@ class Item(object):
 
     def __str__(self):
         return "%s" % self.__dict__
+
+
+class Enum(object):
+    #todo 在python3.4中已有实现
+    pass
 
 
 class TaskFlag(Enum):
@@ -153,7 +157,13 @@ tables = [
         "flag_ CHAR(1) NOT NULL",
         "salt_ CHAR(8) NOT NULL",
         "state_ CHAR(1) NOT NULL DEFAULT '%s'" % State.SUBMIT,
+        "logo_ VARCHAR(128)",
+        "contact_ VARBINARY(255)",
         "details_ BLOB NOT NULL",
         "last_login_ DATETIME",
-    ])
+    ]),
+    ("histories", True, True, False, [
+        "url_ VARCHAR(32) UNIQUE NOT NULL",
+        "content_ BLOB NOT NULL",
+    ]),
 ]

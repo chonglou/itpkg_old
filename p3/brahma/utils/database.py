@@ -96,7 +96,7 @@ class Mysql(object):
 
         def warp(func):
             def wrapped_func(*args, **kwargs):
-                logger.debug("[%s]" % (args[1]))
+                logger.debug("[%s]" % args[1])
                 return func(*args, **kwargs)
 
             return wrapped_func
