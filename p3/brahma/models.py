@@ -19,22 +19,22 @@ class Item(object):
             (" and " if flag else " or ").join(["%s=%%s" % k for k in ks])
         ), vs
 
-    def update(self, name, i_id, i_name="id", version=False):
+    def update(self, name, id_val, id_name="id", version=False):
         ks, l, vs = self.__sql()
-        vs.append(i_id)
+        vs.append(id_val)
         return "UPDATE %s SET %s%s WHERE %s=%%s" % (
             name,
             ", ".join("%s=%%s" % i for i in ks),
             ", version_=version_+1" if version else "",
-            "%s_" % i_name
+            "%s_" % id_name
         ), vs
 
     def select(self, name, columns, flag=False):
         ks, l, vs = self.__sql()
-        return "SELECT %s FROM %s WHERE %s" % (
+        return "SELECT %s FROM %s %s" % (
             ", ".join(["%s_" % i for i in columns]),
             name,
-            (" and " if flag else " or ").join(["%s=%%s" % k for k in ks])
+            ("WHERE %s" % (" and " if flag else " or ").join(["%s=%%s" % k for k in ks])) if len(self) else ""
         ), vs
 
     def count(self, name, flag=False):
@@ -137,8 +137,8 @@ tables = [
         "flag_ CHAR(1) NOT NULL DEFAULT '%s'" % LogFlag.INFO,
     ]),
     ("permissions", True, True, True, [
-        "resource_ VARCHAR(16) NOT NULL",
-        "role_ VARCHAR(8) NOT NULL",
+        "resource_ VARCHAR(32) NOT NULL",
+        "role_ VARCHAR(32) NOT NULL",
         "operation_ CHAR(1) NOT NULL DEFAULT '%s'" % Operation.NONE,
         "begin_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.min,
         "end_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
@@ -158,8 +158,7 @@ tables = [
         "salt_ CHAR(8) NOT NULL",
         "state_ CHAR(1) NOT NULL DEFAULT '%s'" % State.SUBMIT,
         "logo_ VARCHAR(128)",
-        "contact_ VARBINARY(255)",
-        "details_ BLOB NOT NULL",
+        "contact_ BLOB",
         "last_login_ DATETIME",
     ]),
     ("histories", True, True, False, [

@@ -1,51 +1,66 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import pickle
-from brahma.models import Item, LogFlag
-from brahma.env import db_call, encrypt as _encrypt
+import datetime
+import logging
+
+from brahma.models import Item, LogFlag, Operation, UserFlag, State
+from brahma.env import transaction, encrypt as _encrypt
+from brahma.utils.database import insert, update, delete, count, select
 
 
 class User(object):
-    id = None
-    created = None
-
-    def __init__(self, flag, username=None, password=None, email=None, openid=None, token=None):
-        self.username = username
-
-        from brahma.env import encrypt
-
-        self.salt = encrypt.random_str(8)
-
-        if flag == "E":
-            if username and password and email:
-                self.username = username
-                self.email = email
-                self.password = encrypt.sha512(password + self.salt)
-                self.flag = flag
-            else:
-                raise ValueError()
-        elif flag == "G":
-            if openid and token:
-                self.openid = openid
-                self.token = token
-                self.flag = flag
-            else:
-                raise ValueError()
-        elif flag == "Q":
-            if openid and token:
-                self.openid = openid
-                self.token = token
-                self.flag = flag
-                raise ValueError()
+    @staticmethod
+    @transaction(readonly=False)
+    def enable(uid, flag, cursor=None):
+        User._set_state(uid, State.ENABLE if flag else State.DISABLE, cursor)
+        Log.add("启用用户" if flag else "禁用用户", user=uid)
 
     @staticmethod
-    def check(plain, salt, password):
-        from brahma.env import encrypt
+    @transaction
+    def all(cursor=None):
+        return select(Item().select("users", columns=["id", "username", "email", "logo"]))(cursor)
 
-        return encrypt.sha512(plain + salt) == password
+    @staticmethod
+    @transaction
+    def get_by_id(uid, cursor=None):
+        return select(
+            Item(id=uid).select("users", columns=["username", "email", "contact"]),
+            one=True)(cursor)
 
-    def __repr__(self):
-        return "<User('%s', '%s')>" % (self.id, self.username)
+
+    @staticmethod
+    @transaction
+    def get_id_by_email(email, cursor=None):
+        return User._get_id_by_email(email, cursor)
+
+    @staticmethod
+    def _auth_email(email, password, cursor):
+        row = select(
+            Item(flag=UserFlag.EMAIL, email=email).select("users",
+                                                          columns=["id", "username", "logo", "password"]),
+            one=True)(cursor)
+
+        rs = None
+        if row:
+            if _encrypt.check(password, row[4]):
+                rs = row(0), email, row(1), row(2)
+        return rs
+
+    @staticmethod
+    def _get_id_by_email(email, cursor):
+        return select(Item(email=email, flag=UserFlag.EMAIL).select("users", ["id"]))(cursor)
+
+    @staticmethod
+    def _set_state(uid, state, cursor):
+        update(Item(state=state).update("users", id_val=uid))(cursor)
+
+    @staticmethod
+    def _add_email(username, email, password, cursor):
+        return insert(
+            Item(username=username, email=email, password=_encrypt.password(password),
+                 flag=UserFlag.EMAIL).insert(
+                "users"))(cursor)
 
 
 class Task(object):
@@ -64,55 +79,108 @@ class Task(object):
 
 class Setting(object):
     @staticmethod
-    @db_call
-    def startup(flag=True, cnx=None):
+    @transaction(readonly=False)
+    def startup(flag=True, cursor=None):
         import datetime
 
-        cursor = cnx.cursor()
-        Setting._set("site.startup" if flag else "site.shutdown", datetime.datetime.now(), False, cursor=cursor)
-        cursor = cnx.cursor()
-        Log._log(message="启动系统" if flag else "关闭系统", user=None, flag=LogFlag.INFO, cursor=cursor)
-
-
-    @staticmethod
-    @db_call
-    def get(key, encrypt=False, cnx=None):
-        return Setting._get(key, encrypt, cnx.cursor())
+        Setting._set(
+            "site.startup" if flag else "site.shutdown",
+            datetime.datetime.now(),
+            False, cursor=cursor)
+        Log._add(message="启动系统" if flag else "关闭系统", user=None, flag=LogFlag.INFO, cursor=cursor)
 
     @staticmethod
-    @db_call
-    def set(key, val, encrypt=False, cnx=None):
-        Setting._set(key, val, encrypt, cnx.cursor())
+    @transaction
+    def get(key, encrypt=False, cursor=None):
+        return Setting._get(key, encrypt, cursor)
+
+    @staticmethod
+    @transaction(readonly=False)
+    def set(key, val, encrypt=False, cursor=None):
+        Setting._set(key, val, encrypt, cursor)
 
     @staticmethod
     def _get(key, encrypt, cursor):
-        cursor.execute(*Item(key=key).select(name="settings", columns=["val"]))
-        row = cursor.fetchone()
+        row = select(Item(key=key).select(name="settings", columns=["val"]))(cursor)
         return (_encrypt.decode(row[0]) if encrypt else pickle.loads(row[0])) if row else  None
 
 
     @staticmethod
     def _set(key, val, encrypt, cursor):
         name = "settings"
-        cursor.execute(*Item(key=key).count(name))
         val = _encrypt.encode(val) if encrypt else pickle.dumps(val)
-        row = cursor.fetchone()
-        if row[0]:
-            cursor.execute(*Item(val=val).update(name, i_name="key", i_id=key, version=True))
+        c = count(Item(key=key).count(name))(cursor)
+        if c:
+            update(Item(val=val).update(name, id_name="key", id_val=key, version=True))(cursor)
         else:
-            cursor.execute(*Item(key=key, val=val).insert(name))
-        cursor.close()
+            insert(Item(key=key, val=val).insert(name))(cursor)
+
+
+class FriendLink(object):
+    @staticmethod
+    @transaction(readonly=False)
+    def all(cursor=None):
+        return select(Item().select(name="friend_links", columns=["id", "logo", "name", "url"]))(cursor)
+
+
+class Permission(object):
+    @staticmethod
+    def _bind(role, operation, resource, begin, end, bind, cursor):
+        pid = select(
+            Item(role=role, operation=operation, resource=resource).select("permissions", ["id"]),
+            one=True)(cursor)
+        if bind:
+            if pid:
+                update(Item(begin=begin, end=end).update("permissions", id_val=pid))(cursor)
+            else:
+                insert(
+                    Item(role=role, operation=operation, resource=resource, begin=begin, end=end).insert(
+                        "permissions"
+                    ))(cursor)
+        else:
+            if pid:
+                delete(Item(id=pid).delete('permissions'))(cursor)
+            else:
+                logging.error("权限[%s,%s,%s]不存在" % (role, operation, resource))
+
+
+    @staticmethod
+    def _auth(role, operation, resource, cursor):
+        now = datetime.datetime.now()
+        row = select(
+            Item(role=role, operation=operation, resource=resource).select("permission", ["begin", "end"]),
+            one=True)(cursor)
+        rs = False
+        if row:
+            rs = row[0] < now < row[1]
+        return rs
+
+    @staticmethod
+    @transaction(readonly=True)
+    def bind2admin(uid, begin=None, end=datetime.datetime.max, bind=False, cursor=None):
+
+        Permission._bind(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
+                         begin=begin, end=end,
+                         bind=bind, cursor=cursor)
+
+
+    @staticmethod
+    @transaction
+    def auth4admin(uid, cursor=None):
+        return Permission._auth(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
+                                cursor=cursor)
 
 
 class Log(object):
     @staticmethod
-    @db_call
-    def log(message, user=None, flag=LogFlag.INFO, cursor=None):
-        Log._log(message, user, flag, cursor)
+    @transaction
+    def add(message, user=None, flag=LogFlag.INFO, cursor=None):
+        Log._add(message, user, flag, cursor)
+
 
     @staticmethod
-    def _log(message, user, flag, cursor):
+    def _add(message, user, flag, cursor):
         item = Item(message=message, flag=flag)
         if user:
             item.user = user
-        cursor.execute(*item.insert("logs"))
+        insert(item.insert("logs"))(cursor)

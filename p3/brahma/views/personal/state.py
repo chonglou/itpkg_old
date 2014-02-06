@@ -4,7 +4,7 @@ import logging
 import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
-from brahma.store.site import UserDao, SettingDao, LogDao
+from brahma.store import User, Setting
 
 
 class ValidHandler(BaseHandler):
@@ -14,23 +14,21 @@ class ValidHandler(BaseHandler):
         if self.check_non_login():
             import datetime
             from brahma.env import encrypt
-            from brahma.store.site import UserDao
 
             try:
                 flag, dt, args = encrypt.decode(self.get_argument("code").encode("utf-8"))
                 if dt > datetime.datetime.now():
                     if flag == "active":
-                        user = UserDao.get_by_email(args)
+                        uid = User.get_id_by_email(args)
                         if user and user.state == "SUBMIT":
-                            UserDao.set_state(user.id, "ENABLE")
-                            LogDao.add_log("账户激活", user=user.id)
+                            User.enable(user.id, True)
                             ok = True
-                            domain = SettingDao.get("site.domain")
-                            title = SettingDao.get("site.title")
+                            domain = Setting.get("site.domain")
+                            title = Setting.get("site.title")
                             from brahma.jobs import TaskSender
 
                             TaskSender.email(
-                                user.email,
+                                args,
                                 "账户激活成功--来自[%s](%s)的邮件" % (title, domain),
                                 "亲爱的[%s]：<br>您好<br>您刚刚激活了账户，祝您一切顺利。谢谢" % user.username)
                             messages.append("账户激活成功")

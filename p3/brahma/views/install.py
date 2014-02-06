@@ -5,7 +5,7 @@ import datetime
 import tornado.web
 
 from brahma.forms.site import InstallForm
-from brahma.models import Setting, User, Log, Permission
+from brahma.store import Setting, User, Log, Permission
 from brahma.web import Message
 
 
@@ -48,41 +48,41 @@ class InstallHandler(tornado.web.RequestHandler):
                     from brahma.env import db_call
 
                     @db_call
-                    def install(session):
-                        import pickle
-                        from brahma.env import encrypt
+                    def install(cnx):
+                        from brahma.models import Item, State, LogFlag, Operation
 
-                        session.add(Setting("site.init", pickle.dumps(datetime.datetime.now())))
-                        session.add(Setting("site.domain", pickle.dumps(form.siteDomain.data)))
-                        session.add(Setting("site.title", pickle.dumps(form.siteTitle.data)))
-                        session.add(Setting("site.keywords", pickle.dumps(form.siteKeywords.data)))
-                        session.add(Setting("site.description", pickle.dumps(form.siteDescription.data)))
+                        cursor = cnx.cursor()
+                        for k, v in [
+                            ("site.init", datetime.datetime.now()),
+                            ("site.domain", form.siteDomain.data),
+                            ("site.title", form.siteTitle.data),
+                            ("site.keywords", form.siteKeywords.data),
+                            ("site.description", form.siteDescription.data),
+                        ]:
+                            Setting._set(k, v, False, cursor)
 
-                        session.add(Setting("site.smtp",
-                                            encrypt.encode({
-                                                'host': form.smtpHost.data,
-                                                'port': form.smtpPort.data,
-                                                'ssl': form.smtpSsl.data,
-                                                'username': form.smtpUsername.data,
-                                                'password': form.smtpPassword.data,
-                                                'bcc': form.smtpBcc.data,
-                                            }))
-                        )
+                        Setting._set("site.smtp", Item(**{
+                            'host': form.smtpHost.data,
+                            'port': form.smtpPort.data,
+                            'ssl': form.smtpSsl.data,
+                            'username': form.smtpUsername.data,
+                            'password': form.smtpPassword.data,
+                            'bcc': form.smtpBcc.data,
+                        }),
+                                     True, cursor)
 
                         email = form.managerEmail.data
-                        user = User("email", email=email, username="超级管理员", password=form.managerPassword.data)
-                        user.state = "ENABLE"
-                        session.add(user)
-                        user = session.query(User).filter(User.email == email).one()
-                        session.add(Setting("site.manager", encrypt.encode(user.id)))
+                        manager = User._add_email(email=email, username="超级管理员", password=form.managerPassword.data,
+                                                  cursor=cursor)
+                        User._set_state(manager, State.ENABLE, cursor=cursor)
+                        Permission._bind("user://%d" % manager, Operation.MANAGER, "SITE", datetime.datetime.now(),
+                                         datetime.datetime.max, True, cursor)
 
-                        session.add(Setting("site.link.valid", pickle.dumps(24)))
+                        Setting._set("site.manager", manager, True, cursor)
+                        Setting._set("site.link.valid", 24, False, cursor)
+                        Setting._set("site.version", "v20140205", False, cursor)
 
-                        session.add(Setting("site.version", pickle.dumps("v20140112")))
-                        session.add(Log(user=user.id, flag="INFO", message="初始化系统"))
-
-                        session.add(Permission("user://%d" % user.id, "MANAGER", "SITE", datetime.datetime.now(),
-                                               datetime.datetime.max))
+                        Log._add(user=manager, flag=LogFlag.INFO, message="初始化系统", cursor=cursor)
 
                     install()
 

@@ -1,6 +1,5 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import logging
 import pickle
 import uuid
 import string
@@ -9,7 +8,7 @@ import binascii
 import hashlib
 import random
 from Crypto import Random
-from Crypto.Cipher import AES,Blowfish
+from Crypto.Cipher import AES, Blowfish
 
 
 class Encrypt:
@@ -45,11 +44,12 @@ class Encrypt:
         sha = Blowfish.new(key).encrypt(sha)
         sha = binascii.hexlify(sha).decode().upper()
         #logging.error("%s %s %s " % (key, slat, sha))
-        return "%s%s%s"%(key, sha, slat)
+        return "%s%s%s" % (key, sha, slat)
+
     @staticmethod
     def check(plain, password):
-        key=password[0:16]
-        sha=password[16:16+64]
+        key = password[0:16]
+        sha = password[16:16 + 64]
         #logging.error("%s %s"%(key, sha))
         sha = binascii.unhexlify(sha.lower().encode())
         sha = Blowfish.new(key).decrypt(sha).decode()

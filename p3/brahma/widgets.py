@@ -8,9 +8,9 @@ class FriendLinkBar(tornado.web.UIModule):
     def render(self):
         @cache.cache("site/friendLinks", expire=3600 * 24)
         def fl():
-            from brahma.store.site import FriendLinkDao
+            from brahma.store import FriendLink
 
-            return FriendLinkDao.all()
+            return FriendLink.all()
 
         return self.render_string("widgets/friendLinkBar.html", items=fl())
 
@@ -227,13 +227,14 @@ class TagCloud(tornado.web.UIModule):
     def render(self):
         @cache.cache("tagCloud", expire=3600 * 24)
         def tags():
-            import importlib, tornado.options
-            from brahma.store.site import SettingDao
+            import importlib
+            from brahma.store import Setting
+            from brahma.utils import walk_plugin
 
             items = list()
-            items.append(("/main", SettingDao.get("site.title")))
-            for p in tornado.options.options.app_plugins:
-                items.extend(importlib.import_module("brahma.plugins." + p).tags())
+            items.append(("/main", Setting.get("site.title")))
+            walk_plugin(lambda p: items.extend(importlib.import_module("brahma.plugins." + p).tags()))
+
             return items
 
         return self.render_string("widgets/tagCloud.html", tags=tags())
@@ -256,7 +257,6 @@ class Advert(tornado.web.UIModule):
 
 class NavBar(tornado.web.UIModule):
     def embedded_javascript(self):
-
         return """
                 function clear_navbar(){
                     $("div#navBar li").each(function () {
@@ -277,23 +277,27 @@ class NavBar(tornado.web.UIModule):
                 """)
 
     def render(self):
-        import importlib, tornado.options
+        import importlib
         from brahma.web import NavBar
-        from brahma.store.site import SettingDao
+        from brahma.store import Setting
+        from brahma.utils import walk_plugin
 
         navbars = list()
-        for p in tornado.options.options.app_plugins:
+
+        def func(p):
             nb = importlib.import_module("brahma.plugins." + p).navbar(
                 self.current_user['id'] if self.current_user else None)
             if nb:
                 navbars.append(nb)
+
+        walk_plugin(func)
 
         @cache.cache("nav/cal", expire=3600 * 24)
         def nv_cal():
             from brahma.utils.time import last_months
 
             cal = NavBar("归档列表")
-            init = SettingDao.get("site.init")
+            init = Setting.get("site.init")
             cal.items.extend(
                 map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
             return cal

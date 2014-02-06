@@ -4,7 +4,7 @@ import tornado.web
 
 from brahma.cache import cache, get_site_info
 from brahma.views import BaseHandler, plugin_cards_links
-from brahma.store.site import UserDao
+from brahma.store import User
 
 
 class MainHandler(BaseHandler):
@@ -65,8 +65,9 @@ class UserHandler(BaseHandler):
     def get(self, uid=None):
         manager = get_site_info("manager", encrypt=True)
         if uid:
-            user = UserDao.get_by_id(uid)
+            user = User.get(uid)
             if user:
+                #fixme 变成bin了
                 import json
 
                 if user.contact:
@@ -87,7 +88,7 @@ class UserHandler(BaseHandler):
             def user2card(u):
                 return "/user/%s" % u.id, u.logo, u.username, "" if "localhost" in u.email or manager == u.id else u.email
 
-            cards = [user2card(u) for u in UserDao.list_user()]
+            cards = [user2card(u) for u in User.all()]
             self.render_template("用户列表", "/user/", cards=cards)
 
 

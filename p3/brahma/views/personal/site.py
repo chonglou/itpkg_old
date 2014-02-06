@@ -3,7 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm, ValidCodeForm, FriendLinkForm, TimerForm
-from brahma.store.site import SettingDao, UserDao, FriendLinkDao
+from brahma.store import Setting, User
 from brahma.cache import get_site_info
 
 
@@ -13,19 +13,19 @@ class AdminHandler(BaseHandler):
         if self.is_admin():
             if act == "info":
                 fmInfo = InfoForm("info", "基本信息", "/personal/site/info")
-                fmInfo.title.data = SettingDao.get("site.title")
-                fmInfo.domain.data = SettingDao.get("site.domain")
-                fmInfo.description.data = SettingDao.get("site.description")
-                fmInfo.keywords.data = SettingDao.get("site.keywords")
+                fmInfo.title.data = Setting.get("site.title")
+                fmInfo.domain.data = Setting.get("site.domain")
+                fmInfo.description.data = Setting.get("site.description")
+                fmInfo.keywords.data = Setting.get("site.keywords")
 
                 fmHelp = ContentForm("help", "帮助文档", "/personal/site/help")
-                fmHelp.content.data = SettingDao.get("site.help")
+                fmHelp.content.data = Setting.get("site.help")
 
                 fmAboutMe = ContentForm("aboutMe", "关于我们", "/personal/site/aboutMe")
-                fmAboutMe.content.data = SettingDao.get("site.aboutMe")
+                fmAboutMe.content.data = Setting.get("site.aboutMe")
 
                 fmProtocol = ProtocolForm("protocol", "注册协议", "/personal/site/protocol")
-                fmProtocol.content.data = SettingDao.get("site.protocol")
+                fmProtocol.content.data = Setting.get("site.protocol")
 
                 self.render("widgets/forms.html", forms=[fmInfo, fmHelp, fmAboutMe, fmProtocol])
 
@@ -35,14 +35,14 @@ class AdminHandler(BaseHandler):
 
             elif act == "seo":
                 fmGoogle = ValidCodeForm("google", "GOOGLE网站验证", "/personal/site/seo.google")
-                fmGoogle.code.data = "google%s.html" % SettingDao.get("site.seo.google")
+                fmGoogle.code.data = "google%s.html" % Setting.get("site.seo.google")
                 fmBaidu = ValidCodeForm("baidu", "百度网站验证", "/personal/site/seo.baidu")
-                fmBaidu.code.data = "baidu_verify_%s.html" % SettingDao.get("site.seo.baidu")
+                fmBaidu.code.data = "baidu_verify_%s.html" % Setting.get("site.seo.baidu")
                 self.render("widgets/forms.html", forms=[fmGoogle, fmBaidu])
 
             elif act == "smtp":
                 fmSmtp = SmtpForm("smtp", "邮件信息", "/personal/site/smtp")
-                smtp = SettingDao.get("site.smtp", True)
+                smtp = Setting.get("site.smtp", True)
                 fmSmtp.bcc.data = smtp["bcc"]
                 fmSmtp.ssl.data = smtp["ssl"]
                 fmSmtp.host.data = smtp["host"]
@@ -53,11 +53,11 @@ class AdminHandler(BaseHandler):
             elif act == "advert":
                 fmLeft = AdvertForm("advertLeft", "左侧广告栏", "/personal/site/advert")
                 fmLeft.aid.data = "left"
-                fmLeft.script.data = SettingDao.get("site.advert.left")
+                fmLeft.script.data = Setting.get("site.advert.left")
 
                 fmBottom = AdvertForm("advertBottom", "底部广告栏", "/personal/site/advert")
                 fmBottom.aid.data = "bottom"
-                fmBottom.script.data = SettingDao.get("site.advert.bottom")
+                fmBottom.script.data = Setting.get("site.advert.bottom")
 
                 self.render("widgets/forms.html", forms=[fmLeft, fmBottom])
             elif act == "status":
@@ -78,7 +78,7 @@ class AdminHandler(BaseHandler):
 
                 self.render_list_widget("系统状态", items)
             elif act == "user":
-                manager = SettingDao.get("site.manager", True)
+                manager = Setting.get("site.manager", True)
 
                 def act(id, state):
                     if id == manager:
@@ -145,11 +145,11 @@ class AdminHandler(BaseHandler):
             if act == "user":
                 uid = self.get_argument("uid")
                 state = self.get_argument("state")
-                if int(uid) != SettingDao.get("site.manager", True):
-                    user = UserDao.get_by_id(uid)
+                if int(uid) != Setting.get("site.manager", True):
+                    user = User.get_by_id(uid)
                     if user and user.state != "SUBMIT":
                         if state in ["ENABLE", "DISABLE"]:
-                            UserDao.set_state(uid, state)
+                            User.set_state(uid, state)
                             self.log("变更用户状态[%s=>%s]" % (uid, state))
                             self.render_message_widget(ok=True)
                             return
@@ -159,7 +159,7 @@ class AdminHandler(BaseHandler):
             elif act == "advert":
                 fm = AdvertForm(formdata=self.request.arguments)
                 aid = fm.aid.data
-                SettingDao.set("site.advert." + aid, fm.script.data)
+                Setting.set("site.advert." + aid, fm.script.data)
                 from brahma.cache import get_advert
 
                 get_advert(aid, True)
@@ -169,7 +169,7 @@ class AdminHandler(BaseHandler):
                 fm = SmtpForm(formdata=self.request.arguments)
                 messages = []
                 if fm.validate():
-                    SettingDao.set("site.smtp", {
+                    Setting.set("site.smtp", {
                         "host": fm.host.data,
                         "port": fm.port.data,
                         "username": fm.username.data,
@@ -184,12 +184,12 @@ class AdminHandler(BaseHandler):
                     self.render_message_widget(messages=messages)
             elif act == "seo.google":
                 fm = ValidCodeForm(formdata=self.request.arguments)
-                SettingDao.set("site.seo.google", fm.code.data[6:-5])
+                Setting.set("site.seo.google", fm.code.data[6:-5])
                 self.log("更新google网站验证")
                 self.render_message_widget(ok=True)
             elif act == "seo.baidu":
                 fm = ValidCodeForm(formdata=self.request.arguments)
-                SettingDao.set("site.seo.baidu", fm.code.data[13:-5])
+                Setting.set("site.seo.baidu", fm.code.data[13:-5])
                 self.log("更新百度网站验证")
                 self.render_message_widget(ok=True)
             elif act == "info":
@@ -197,7 +197,7 @@ class AdminHandler(BaseHandler):
                 messages = []
                 if fm.validate():
                     for s in ["domain", "title", "keywords", "description"]:
-                        SettingDao.set("site." + s, getattr(fm, s).data)
+                        Setting.set("site." + s, getattr(fm, s).data)
                         get_site_info(s, True)
                     self.log("修改站点信息")
                     self.render_message_widget(ok=True)
@@ -207,19 +207,19 @@ class AdminHandler(BaseHandler):
 
             elif act == "help":
                 fm = ContentForm(formdata=self.request.arguments)
-                SettingDao.set("site.help", fm.content.data)
+                Setting.set("site.help", fm.content.data)
                 get_site_info("help", True)
                 self.log("修改帮助文档")
                 self.render_message_widget(ok=True)
             elif act == "aboutMe":
                 fm = ContentForm(formdata=self.request.arguments)
-                SettingDao.set("site.aboutMe", fm.content.data)
+                Setting.set("site.aboutMe", fm.content.data)
                 get_site_info("aboutMe", True)
                 self.log("修改关于我们")
                 self.render_message_widget(ok=True)
             elif act == "protocol":
                 fm = ProtocolForm(formdata=self.request.arguments)
-                SettingDao.set("site.protocol", fm.content.data)
+                Setting.set("site.protocol", fm.content.data)
                 get_site_info("protocol", True)
                 self.log("修改用户注册协议")
                 self.render_message_widget(ok=True)
@@ -244,7 +244,7 @@ class AdminHandler(BaseHandler):
 
                     getattr(TaskSender, fm.act.data)()
                     self.__set_clock(fm.act.data, fm.clock.data)
-                    #SettingDao.set("site.task.%s" % fm.act.data, fm.clock.data)
+                    #Setting.set("site.task.%s" % fm.act.data, fm.clock.data)
                     self.render_message_widget(ok=True)
             else:
                 self.render_message_widget(messages=["错误请求"])

@@ -35,29 +35,32 @@ def _get_db():
 _db = _get_db()
 
 
-def db_call(func):
-    def __decorator(*args, **kwargs):
-        val = None
-        cnx = _db.connection
-
-        try:
-
-            kwargs['cnx'] = cnx
-            val = func(*args, **kwargs)
-            cnx.commit()
-        except Exception:
-            if cnx:
-                cnx.rollback()
-            import logging
-
-            logging.exception("数据库操作出错")
-
-        finally:
-            cnx.close()
-
-        return val
-
-    return __decorator
+def transaction(readonly=True):
+    def _decorator(func):
+        def __decorator(*args, **kwargs):
+            val = None
+            cnx = None
+            cursor = None
+            try:
+                cnx = _db.connection
+                cursor = cnx.cursor()
+                kwargs['cursor'] = cursor
+                val = func(*args, **kwargs)
+                if not readonly:
+                    cnx.commit()
+            except Exception:
+                if cnx:
+                    cnx.rollback()
+                import logging
+                logging.exception("数据库操作失败")
+            finally:
+                if cursor:
+                    cursor.close()
+                if cnx:
+                    cnx.close()
+            return val
+        return __decorator
+    return _decorator
 
 
 def _get_cache(path):

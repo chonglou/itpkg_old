@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
+from brahma.models import LogFlag
 from brahma.cache import get_site_info
 from brahma.web import Message
 
@@ -12,10 +13,10 @@ class PageNotFoundHandler(tornado.web.RequestHandler):
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    def log(self, message, flag="INFO"):
-        from brahma.store.site import LogDao
+    def log(self, message, flag=LogFlag.INFO):
+        from brahma.store import Log
 
-        LogDao.add_log(message, flag=flag, user=self.current_user['id'] if self.current_user else None)
+        Log.add(message, flag=flag, user=self.current_user['id'] if self.current_user else None)
 
     def is_admin(self):
         return self.current_user and self.current_user["admin"]

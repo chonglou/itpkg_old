@@ -133,18 +133,18 @@ class Server:
 
 class Application(tornado.web.Application):
     def __init__(self, debug):
-        import tornado.options
+        import tornado.options, importlib
         from brahma import utils, widgets
         from brahma.views import PageNotFoundHandler
 
         routes = []
 
-        #for i in utils.list_mod("../views"):
-        #    routes.extend(importlib.import_module("brahma.views." + i).handlers)
+        for i in utils.list_mod("../views"):
+            routes.extend(importlib.import_module("brahma.views." + i).handlers)
 
-        #for p in tornado.options.options.app_plugins:
-        #    for i in utils.list_mod("../plugins/" + p + "/views"):
-        #        routes.extend(importlib.import_module("brahma.plugins." + p + ".views." + i).handlers)
+        for p in tornado.options.options.app_plugins:
+            for i in utils.list_mod("../plugins/" + p + "/views"):
+                routes.extend(importlib.import_module("brahma.plugins." + p + ".views." + i).handlers)
 
         routes.append((r".*", PageNotFoundHandler))
 

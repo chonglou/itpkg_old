@@ -4,37 +4,35 @@ import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
 
 
-class Mysql(object):
-    def bulk(self, lines):
-        def query(cursor):
-            for sql, items in lines:
-                cursor.execute(sql, items)
+def bulk(lines):
+    def query(cursor):
+        for line in lines:
+            cursor.execute(*line)
 
-        self.__query(query, read=False)
+    return query
 
-    def update(self, sql, items=None):
-        self.__query(lambda cursor: cursor.execute(sql, items), read=False)
 
-    def count(self, sql, items=None):
-        def query(cursor):
-            cursor.execute(sql, items)
-            row = cursor.fetchone()
-            return row[0]
+def update(line):
+    return lambda cursor: cursor.execute(*line)
 
-        return self.__query(query)
 
-    def delete(self, sql, items=None):
-        self.__query(lambda cursor: cursor.execute(sql, items), read=False)
+def count(line):
+    def query(cursor):
+        cursor.execute(*line)
+        row = cursor.fetchone()
+        return row[0]
 
-    def select(self, sql, items=None, one=False):
-        def query(cursor):
-            rs = list()
-            cursor.execute(sql, items)
-            for record in cursor:
-                rs.append(record)
-            return rs
+    return query
 
-        result = self.__query(query)
+
+def delete(line):
+    return lambda cursor: cursor.execute(*line)
+
+
+def select(line, one=False):
+    def query(cursor):
+        cursor.execute(*line)
+        result = cursor.fetchall()
         if one:
             if result:
                 if len(result) == 1:
@@ -43,35 +41,18 @@ class Mysql(object):
             return None
         else:
             return result
+    return query
 
-    def insert(self, sql, items):
-        def query(cursor):
-            cursor.execute(sql, items)
-            return cursor.lastrowid
 
-        return self.__query(query, read=False)
+def insert(line):
+    def query(cursor):
+        cursor.execute(*line)
+        return cursor.lastrowid
 
-    def __query(self, query, read=True):
-        cnx = None
-        try:
-            cnx = self.connection
-            cursor = cnx.cursor()
-            result = query(cursor)
-            if not read:
-                cnx.commit()
-            cursor.close()
-            return result
-        except Exception as e:
-            if not read and cnx:
-                cnx.rollback()
-            raise e
-        finally:
-            if cnx:
-                cnx.close()
+    return query
 
-    def close(self):
-        self.__pool._remove_connections()
 
+class Mysql(object):
     def __init__(self, name, tables=list(), password=None, host="localhost", port=3306, user="root", pool_size=5,
                  init=False, echo=False):
         if echo:
@@ -136,3 +117,6 @@ class Mysql(object):
     @property
     def connection(self):
         return self.__pool.get_connection()
+
+    def close(self):
+        self.__pool._remove_connections()
