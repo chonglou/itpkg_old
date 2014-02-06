@@ -10,11 +10,11 @@ class FileHandler(tornado.web.RequestHandler):
         pass
 
     def _list_files(self, types={".gif", ".png", ".jpg", ".jpeg", ".bmp"}):
-        import os, brahma.utils
+        import os
 
         val = list()
 
-        path = "%s/%s" % (brahma.utils.path("../../statics/tmp/attach"), self.__user_path())
+        path = "%s/%s" % (os.path.realpath("statics/tmp/attach"), self.__user_path())
         l = len(path)
         for root, dirs, files in os.walk(path, True):
             for name in files:
@@ -86,9 +86,9 @@ class FileHandler(tornado.web.RequestHandler):
         return "%s/%s" % (self.__virtual_path(path), name)
 
     def __physics_path(self, path):
-        import os, brahma.utils
+        import os
 
-        d = "%s/%s" % (brahma.utils.path("../../statics/tmp/attach"), self.__virtual_path(path))
+        d = "%s/%s" % (os.path.realpath("statics/tmp/attach"), self.__virtual_path(path))
         if not os.path.exists(d):
             os.makedirs(d)
         return d

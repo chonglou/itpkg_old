@@ -48,18 +48,22 @@ def transaction(readonly=True):
                 val = func(*args, **kwargs)
                 if not readonly:
                     cnx.commit()
-            except Exception:
+            except Exception as e:
                 if cnx:
                     cnx.rollback()
                 import logging
+
                 logging.exception("数据库操作失败")
+                raise ValueError()
             finally:
                 if cursor:
                     cursor.close()
                 if cnx:
                     cnx.close()
             return val
+
         return __decorator
+
     return _decorator
 
 

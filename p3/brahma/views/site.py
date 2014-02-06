@@ -19,7 +19,7 @@ class MainHandler(BaseHandler):
                 index = "/aboutMe"
             return index
 
-        self.redirect(get_index(), permanent=True)
+        self.redirect(get_index(), permanent=False)
 
 
 class SearchHandler(BaseHandler):
@@ -65,14 +65,10 @@ class UserHandler(BaseHandler):
     def get(self, uid=None):
         manager = get_site_info("manager", encrypt=True)
         if uid:
-            user = User.get(uid)
+            user = User.get_by_id(uid)
             if user:
-                #fixme 变成bin了
-                import json
-
                 if user.contact:
-                    contact = json.loads(user.contact)
-                    content = contact['details']
+                    content = user.contact['details']
                 else:
                     content = None
 
@@ -86,7 +82,7 @@ class UserHandler(BaseHandler):
 
         else:
             def user2card(u):
-                return "/user/%s" % u.id, u.logo, u.username, "" if "localhost" in u.email or manager == u.id else u.email
+                return "/user/%s" % u.id, u.logo, u.username, "" if manager == u.id else u.email
 
             cards = [user2card(u) for u in User.all()]
             self.render_template("用户列表", "/user/", cards=cards)

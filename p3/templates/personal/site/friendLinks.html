@@ -22,7 +22,7 @@
         <tr>
             <td>{{l.id}}</td>
             <td>{{l.name}}</td>
-            <td><a href="{{l.url}}" target="_blank">{{l.url}}</a></td>
+            <td><a href="http://{{l.domain}}" target="_blank">{{l.domain}}</a></td>
             <td>{% raw ("<img src='%s'>" % l.logo) if l.logo else "" %}</td>
             <td>
                 <div class="btn-group btn-group-sm">

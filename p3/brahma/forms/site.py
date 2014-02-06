@@ -12,7 +12,7 @@ class TimerForm(Form):
 class FriendLinkForm(Form):
     flid = HiddenField()
     name = TextField("名称", validators=[validators.Required()])
-    url = TextField("地址", validators=[validators.Required()])
+    domain = TextField("域名", validators=[validators.Required()])
     logo = TextField("图标")
 
 

@@ -1,4 +1,6 @@
+{%if form.body%}
 <body>
+{%end%}
 {% autoescape xhtml_escape %}
 {% autoescape None %}
 <h3 class="glyphicon glyphicon-list">{{form.label}} </h3>
@@ -75,6 +77,7 @@
         <label class="col-sm-2 control-label">
             {{field.label.text}}：
         </label>
+
         <div class="col-sm-6">
             {% for v,k in field.choices%}
             <div class="radio col-sm-3">
@@ -95,6 +98,7 @@
         <label class="col-sm-2 control-label">
             {{field.label.text}}：
         </label>
+
         <div class="col-sm-6">
             {% for v,k in field.choices%}
             <div class="radio col-sm-3">
@@ -140,6 +144,7 @@
             <script id="fm-html-{{form.fid}}-{{field.id}}" name="fm-html-{{form.fid}}-{{field.id}}"
                     style="height:350px;" type="text/plain">
                 {{field.data or ""}}
+
 
 
 
@@ -193,5 +198,7 @@
         </div>
     </div>
 </form>
+{%if form.body%}
 </body>
+{%end%}
 

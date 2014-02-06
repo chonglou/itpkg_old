@@ -12,11 +12,11 @@ class Item(object):
             ", ".join(["%s" for i in range(0, l)])
         ), vs
 
-    def delete(self, name, flag=True):
+    def delete(self, name, flag=False):
         ks, l, vs = self.__sql()
         return "DELETE %s WHERE %s" % (
             name,
-            (" and " if flag else " or ").join(["%s=%%s" % k for k in ks])
+            (" or " if flag else " and ").join(["%s=%%s" % k for k in ks])
         ), vs
 
     def update(self, name, id_val, id_name="id", version=False):
@@ -34,14 +34,14 @@ class Item(object):
         return "SELECT %s FROM %s %s" % (
             ", ".join(["%s_" % i for i in columns]),
             name,
-            ("WHERE %s" % (" and " if flag else " or ").join(["%s=%%s" % k for k in ks])) if len(self) else ""
+            ("WHERE %s" % (" or " if flag else " and ").join(["%s=%%s" % k for k in ks])) if len(self) else ""
         ), vs
 
     def count(self, name, flag=False):
         ks, l, vs = self.__sql()
         return "SELECT COUNT(*) FROM %s WHERE %s" % (
             name,
-            (" and " if flag else " or ").join(["%s=%%s" % k for k in ks])
+            (" or " if flag else " and ").join(["%s=%%s" % k for k in ks])
         ), vs
 
     def __sql(self):
@@ -62,7 +62,6 @@ class Item(object):
         for k in self.__dict__:
             if not k.startswith('__'):
                 yield k
-
 
     def __init__(self, *args, **kwargs):
         for k in kwargs:
@@ -118,16 +117,16 @@ class Operation(Enum):
 
 tables = [
     ("settings", False, True, True, [
-        "key_ VARCHAR(16) UNIQUE NOT NULL",
+        "key_ VARCHAR(32) UNIQUE NOT NULL",
         "val_ BLOB NOT NULL",
     ]),
     ("tasks", True, True, True, [
-        "flag_ CHAR(1) NOT NULL",
+        "flag_ CHAR(8) NOT NULL",
         "request_ BLOB",
         "index_ INTEGER NOT NULL DEFAULT 0",
         "total_ INTEGER NOT NULL DEFAULT 0",
         "space_ INTEGER NOT NULL DEFAULT 0",
-        "next_run DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
+        "next_run_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
         "begin_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.min,
         "end_ DATETIME NOT NULL DEFAULT '%s'" % datetime.datetime.max,
     ]),

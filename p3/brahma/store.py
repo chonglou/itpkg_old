@@ -12,40 +12,82 @@ from brahma.utils.database import insert, update, delete, count, select
 class User(object):
     @staticmethod
     @transaction(readonly=False)
+    def set_info(uid, username, logo, contact, cursor=None):
+        update(Item(username=username, logo=logo, contact=pickle.dumps(contact)).update("users", id_val=uid))(cursor)
+
+    @staticmethod
+    @transaction(readonly=False)
+    def set_password(uid, password, cursor=None):
+        update(Item(password=_encrypt.password(password)).update("users", id_val=uid))(cursor)
+        Log._add(message="修改密码", user=uid, flag=LogFlag.INFO, cursor=cursor)
+
+    @staticmethod
+    @transaction(readonly=False)
     def enable(uid, flag, cursor=None):
         User._set_state(uid, State.ENABLE if flag else State.DISABLE, cursor)
         Log.add("启用用户" if flag else "禁用用户", user=uid)
 
     @staticmethod
-    @transaction
+    @transaction()
     def all(cursor=None):
-        return select(Item().select("users", columns=["id", "username", "email", "logo"]))(cursor)
+        users = select(Item().select("users", columns=["id", "flag", "email", "username", "logo", "state"]))(cursor)
+        return [Item(id=id, flag=flag, email=email, username=username, logo=logo,state=state) for id, flag, email, username, logo,state in
+                users]
 
     @staticmethod
-    @transaction
+    @transaction()
     def get_by_id(uid, cursor=None):
-        return select(
-            Item(id=uid).select("users", columns=["username", "email", "contact"]),
-            one=True)(cursor)
+        u = select(Item(id=uid).select("users", columns=User._mapper_columns()), one=True)(cursor)
+        return User._mapper_row(u)
+
+    @staticmethod
+    def _mapper_columns():
+        return ["id", "username", "email", "logo", "contact", "state", "flag"]
+
+    @staticmethod
+    def _mapper_row(u):
+        uid, username, email, logo, contact, state, flag = u
+        return Item(id=uid, username=username, email=email, logo=logo, state=state, flag=flag,
+                    contact=pickle.loads(contact) if contact else None)
 
 
     @staticmethod
-    @transaction
-    def get_id_by_email(email, cursor=None):
-        return User._get_id_by_email(email, cursor)
+    @transaction()
+    def get_by_email(email, cursor=None):
+        u = select(Item(email=email, flag=UserFlag.EMAIL).select("users", columns=User._mapper_columns()), one=True)(
+            cursor)
+        return User._mapper_row(u)
 
     @staticmethod
-    def _auth_email(email, password, cursor):
+    @transaction(False)
+    def set_state(uid, state, cursor=None):
+        User._set_state(uid, state, cursor)
+
+    @staticmethod
+    @transaction()
+    def check(uid, password, cursor=None):
+        row = select(Item(id=uid).select("users", ["password"]), one=True)(cursor)
+        return row and _encrypt.check(password, row[0])
+
+
+    @staticmethod
+    @transaction(False)
+    def auth_email(email, password, cursor=None):
+        cs = ["password"]
+        cs.extend(User._mapper_columns())
         row = select(
-            Item(flag=UserFlag.EMAIL, email=email).select("users",
-                                                          columns=["id", "username", "logo", "password"]),
-            one=True)(cursor)
+            Item(flag=UserFlag.EMAIL, email=email).select("users", columns=cs), one=True)(cursor)
 
-        rs = None
         if row:
-            if _encrypt.check(password, row[4]):
-                rs = row(0), email, row(1), row(2)
-        return rs
+            user = User._mapper_row(row[1:])
+            if _encrypt.check(password, row[0]):
+
+                update(Item(last_login=datetime.datetime.now()).update("users", id_val=user.id))
+                Log._add("成功登录", user.id, LogFlag.INFO, cursor)
+                return user
+            else:
+                Log._add("登录验证失败", user.id, LogFlag.INFO, cursor)
+        return None
 
     @staticmethod
     def _get_id_by_email(email, cursor):
@@ -54,6 +96,12 @@ class User(object):
     @staticmethod
     def _set_state(uid, state, cursor):
         update(Item(state=state).update("users", id_val=uid))(cursor)
+
+    @staticmethod
+    @transaction(False)
+    def add_email(username, email, password, cursor=None):
+        uid = User._add_email(username, email, password, cursor)
+        Log._add("创建用户", uid, LogFlag.INFO, cursor)
 
     @staticmethod
     def _add_email(username, email, password, cursor):
@@ -65,16 +113,26 @@ class User(object):
 
 class Task(object):
     @staticmethod
-    def set_next_run(tid, next_run=None):
-        pass
+    def _set_next_run(tid, next_run, cursor):
+        update("UPDATE tasks SET next_run_=%s, index_=index_+1 WHERE id_=%s", [next_run, tid])(cursor)
 
     @staticmethod
-    def list_available():
-        return list()
+    @transaction()
+    def list_available(cursor=None):
+        ts = select("SELECT id_, flag_, request_ FROM tasks WHERE next_run_<=%s", [datetime.datetime.now()])(cursor)
+        return [Task._row_mapper(t) for t in ts]
 
     @staticmethod
-    def get(tid):
-        return tid
+    def _row_mapper(task):
+        id, flag, request = task
+        return Item(id=id, flag=flag, request=pickle.loads(request))
+
+    @staticmethod
+    @transaction()
+    def list_by_flag(flag, cursor=None):
+        cursor.execute("SELECT id_, flag_, request_ FROM tasks WHERE flag_=%s", [flag])
+        ts = cursor.fetchall()
+        return [Task._row_mapper(t) for t in ts]
 
 
 class Setting(object):
@@ -90,18 +148,18 @@ class Setting(object):
         Log._add(message="启动系统" if flag else "关闭系统", user=None, flag=LogFlag.INFO, cursor=cursor)
 
     @staticmethod
-    @transaction
+    @transaction(readonly=True)
     def get(key, encrypt=False, cursor=None):
         return Setting._get(key, encrypt, cursor)
 
     @staticmethod
-    @transaction(readonly=False)
+    @transaction()
     def set(key, val, encrypt=False, cursor=None):
         Setting._set(key, val, encrypt, cursor)
 
     @staticmethod
     def _get(key, encrypt, cursor):
-        row = select(Item(key=key).select(name="settings", columns=["val"]))(cursor)
+        row = select(Item(key=key).select(name="settings", columns=["val"]), one=True)(cursor)
         return (_encrypt.decode(row[0]) if encrypt else pickle.loads(row[0])) if row else  None
 
 
@@ -118,9 +176,38 @@ class Setting(object):
 
 class FriendLink(object):
     @staticmethod
-    @transaction(readonly=False)
+    @transaction(False)
+    def add(domain, name, logo, cursor=None):
+        return insert(Item(domain=domain, name=name, logo=logo).insert("friend_links"))(cursor)
+
+    @staticmethod
+    @transaction(False)
+    def set(flid, domain, name, logo, cursor=None):
+        update(Item(domain=domain, name=name, logo=logo).update("friend_links", id_val=flid))(cursor)
+
+    @staticmethod
+    @transaction()
     def all(cursor=None):
-        return select(Item().select(name="friend_links", columns=["id", "logo", "name", "url"]))(cursor)
+        fls = select(Item().select(name="friend_links", columns=["id", "logo", "name", "domain"]))(cursor)
+        return [FriendLink._row_mapper(fl) for fl in fls]
+
+    @staticmethod
+    @transaction()
+    def get(flid, cursor=None):
+        fl = select(Item(id=flid).select(name="friend_links", columns=["id", "logo", "name", "domain"]), one=True)(
+            cursor)
+        return FriendLink._row_mapper(fl)
+
+    @staticmethod
+    @transaction()
+    def delete(flid, cursor=None):
+        fl = delete(Item(id=flid).delete(name="friend_links"))(cursor)
+        return FriendLink._row_mapper(fl)
+
+    @staticmethod
+    def _row_mapper(fl):
+        id, logo, name, domain = fl
+        return Item(id=id, logo=logo, name=name, domain=domain)
 
 
 class Permission(object):
@@ -148,7 +235,7 @@ class Permission(object):
     def _auth(role, operation, resource, cursor):
         now = datetime.datetime.now()
         row = select(
-            Item(role=role, operation=operation, resource=resource).select("permission", ["begin", "end"]),
+            Item(role=role, operation=operation, resource=resource).select("permissions", ["begin", "end"]),
             one=True)(cursor)
         rs = False
         if row:
@@ -165,7 +252,7 @@ class Permission(object):
 
 
     @staticmethod
-    @transaction
+    @transaction()
     def auth4admin(uid, cursor=None):
         return Permission._auth(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
                                 cursor=cursor)
@@ -173,7 +260,20 @@ class Permission(object):
 
 class Log(object):
     @staticmethod
-    @transaction
+    @transaction()
+    def list_range(begin, end, user, limit, cursor=None):
+        cursor.execute(
+            "SELECT id_, user_, message_, flag_, created_ FROM logs WHERE created_ > %s AND created_ < %s AND user_=%s ORDER BY id_ DESC LIMIT %s",
+            [begin, end, user, limit])
+        return [Log._row_mapper(i) for i in cursor.fetchall()]
+
+    @staticmethod
+    def _row_mapper(l):
+        iid, user, message, flag, created = l
+        return Item(id=iid, user=user, message=message, flag=flag, created=created)
+
+    @staticmethod
+    @transaction()
     def add(message, user=None, flag=LogFlag.INFO, cursor=None):
         Log._add(message, user, flag, cursor)
 

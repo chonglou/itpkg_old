@@ -5,7 +5,8 @@ from brahma.models import Enum, State
 
 
 class RouterFlag(Enum):
-    ARCH_LINUX = "A"
+    ARCH_LINUX_OLD = "A"
+    ARCH_LINUX_NEW = "B"
     OPEN_WRT = "O"
 
 

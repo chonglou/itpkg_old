@@ -36,7 +36,7 @@ class InstallHandler(tornado.web.RequestHandler):
             import uuid
 
             self.__render_page("install.html", "初始化安装", jsessionid=uuid.uuid4().hex,
-                               form=InstallForm("install", "初始化安装", "/install", captcha=True))
+                               form=InstallForm("install", "初始化安装", "/install", captcha=True, body=False))
 
     def post(self):
         if self.__check():
@@ -45,13 +45,12 @@ class InstallHandler(tornado.web.RequestHandler):
             messages = []
             if form.validate():
                 if self.get_argument("captcha") == self.get_secure_cookie("captcha").decode("utf-8"):
-                    from brahma.env import db_call
+                    from brahma.env import transaction
 
-                    @db_call
-                    def install(cnx):
+                    @transaction(False)
+                    def install(cursor=None):
                         from brahma.models import Item, State, LogFlag, Operation
 
-                        cursor = cnx.cursor()
                         for k, v in [
                             ("site.init", datetime.datetime.now()),
                             ("site.domain", form.siteDomain.data),
@@ -61,14 +60,14 @@ class InstallHandler(tornado.web.RequestHandler):
                         ]:
                             Setting._set(k, v, False, cursor)
 
-                        Setting._set("site.smtp", Item(**{
-                            'host': form.smtpHost.data,
-                            'port': form.smtpPort.data,
-                            'ssl': form.smtpSsl.data,
-                            'username': form.smtpUsername.data,
-                            'password': form.smtpPassword.data,
-                            'bcc': form.smtpBcc.data,
-                        }),
+                        Setting._set("site.smtp", Item(
+                            host=form.smtpHost.data,
+                            port=form.smtpPort.data,
+                            ssl=form.smtpSsl.data,
+                            username=form.smtpUsername.data,
+                            password=form.smtpPassword.data,
+                            bcc=form.smtpBcc.data,
+                        ).__dict__,
                                      True, cursor)
 
                         email = form.managerEmail.data
@@ -90,7 +89,7 @@ class InstallHandler(tornado.web.RequestHandler):
 
                     for s in ["title", "description", "keywords", "version"]:
                         get_site_info(s, True)
-                    self.__render_message(Message(ok=True, messages=["请刷新页面"], goto="/main"))
+                    self.__render_message(Message(ok=True, messages=["将跳转至主页"], goto="/main"))
                     return
                 messages.append("验证码不对")
             else:

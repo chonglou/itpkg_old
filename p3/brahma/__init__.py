@@ -139,14 +139,14 @@ class Application(tornado.web.Application):
 
         routes = []
 
-        for i in utils.list_mod("../views"):
+        for i in utils.list_mod("brahma/views"):
             routes.extend(importlib.import_module("brahma.views." + i).handlers)
 
         for p in tornado.options.options.app_plugins:
-            for i in utils.list_mod("../plugins/" + p + "/views"):
+            for i in utils.list_mod("brahma/plugins/" + p + "/views"):
                 routes.extend(importlib.import_module("brahma.plugins." + p + ".views." + i).handlers)
 
-        routes.append((r".*", PageNotFoundHandler))
+        routes.append((r".*", PageNotFoundHandler), )
 
         import os
 
@@ -155,18 +155,20 @@ class Application(tornado.web.Application):
             template_path=os.path.realpath("templates"),
             static_path=os.path.realpath("statics"),
             login_url="/main",
-            cookie_secret=self.__key(),
+            cookie_secret=self.__key(debug),
             xsrf_cookies=True,
             debug=debug,
         )
 
         tornado.web.Application.__init__(self, routes, **settings)
 
-    def __key(self):
-        import base64, uuid
-
-        k = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
-        logging.debug("生成cookie key:%s" % k)
+    def __key(self, debug):
+        if debug:
+            k = "debug"
+        else:
+            import base64, uuid
+            k = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
+            logging.info("重新生成cookie key")
         return k
 
 

@@ -31,12 +31,13 @@ class Translations(object):
 
 
 class Form(wtforms_tornado.Form):
-    def __init__(self, fid=None, label="表单", action="#", captcha=False, formdata=None, scroll=False):
+    def __init__(self, fid=None, label="表单", action="#", captcha=False, formdata=None, scroll=False, body=True):
         self.fid = fid
         self.label = label
         self.action = action
         self.captcha = captcha
         self.scroll = scroll
+        self.body = body
         super().__init__(formdata=formdata)
 
     def messages(self):

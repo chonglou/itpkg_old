@@ -20,7 +20,7 @@ class Encrypt:
             x = AES.block_size - len(s) % AES.block_size
             return s + (bytes([x]) * x)
 
-        padded = pad(pickle.dumps((obj, self.random_str(8))))
+        padded = pad(pickle.dumps((obj, Encrypt.random_str(8))))
 
         iv = Random.OSRNG.posix.new().read(AES.block_size)
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
