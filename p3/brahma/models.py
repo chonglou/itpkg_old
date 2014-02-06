@@ -151,7 +151,7 @@ tables = [
     ("users", True, True, True, [
         "email_ VARCHAR(32)",
         "username_ VARCHAR(32) NOT NULL DEFAULT '用户'",
-        "password_ CHAR(128)",
+        "password_ CHAR(96)",
         "openid_ VARCHAR(255)",
         "token_ VARCHAR(255)",
         "flag_ CHAR(1) NOT NULL",
