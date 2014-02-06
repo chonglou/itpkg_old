@@ -201,8 +201,8 @@ class FriendLink(object):
     @staticmethod
     @transaction()
     def delete(flid, cursor=None):
-        fl = delete(Item(id=flid).delete(name="friend_links"))(cursor)
-        return FriendLink._row_mapper(fl)
+        delete(Item(id=flid).delete(name="friend_links"))(cursor)
+
 
     @staticmethod
     def _row_mapper(fl):
@@ -284,3 +284,8 @@ class Log(object):
         if user:
             item.user = user
         insert(item.insert("logs"))(cursor)
+
+class History(object):
+    @staticmethod
+    def _add(url, content, version, cursor):
+        return insert(Item(url=url,content=content, version=version).insert("histories"))(cursor)

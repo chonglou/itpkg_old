@@ -14,7 +14,7 @@ class SelfHandler(BaseHandler):
         author = self.current_user['id']
         if self.is_admin():
             author = None
-        items = WikiDao.list_wiki(datetime.datetime.min, datetime.datetime.max, author=author)
+        items = Wiki.list_range(datetime.datetime.min, datetime.datetime.max, author=author)
 
         self.render("wiki/self.html", items=items)
 

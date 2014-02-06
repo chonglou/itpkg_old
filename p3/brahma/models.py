@@ -14,7 +14,7 @@ class Item(object):
 
     def delete(self, name, flag=False):
         ks, l, vs = self.__sql()
-        return "DELETE %s WHERE %s" % (
+        return "DELETE FROM %s WHERE %s" % (
             name,
             (" or " if flag else " and ").join(["%s=%%s" % k for k in ks])
         ), vs
@@ -160,8 +160,8 @@ tables = [
         "contact_ BLOB",
         "last_login_ DATETIME",
     ]),
-    ("histories", True, True, False, [
-        "url_ VARCHAR(32) UNIQUE NOT NULL",
+    ("histories", True, True, True, [
+        "url_ VARCHAR(32) NOT NULL",
         "content_ BLOB NOT NULL",
     ]),
 ]

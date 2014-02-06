@@ -19,15 +19,15 @@
         </tr>
         </thead>
         <tbody>
-        {% for w in items %}
+        {% for name,title,created in items %}
         <tr>
-            <td><a href="/wiki/{{w.name}}" target="_blank">{{w.name}}</a></td>
-            <td>{{w.title}}</td>
-            <td>{{w.created}}</td>
+            <td><a href="/wiki/{{name}}" target="_blank">{{name}}</a></td>
+            <td>{{title}}</td>
+            <td>{{created}}</td>
             <td>
                 <div class="btn-group btn-group-sm">
-                    <button id="/wiki/{{w.name}}-PUT" class="btn btn-primary">编辑</button>
-                    <button id="/wiki/{{w.name}}-DELETE" class="btn btn-danger">删除</button>
+                    <button id="/wiki/{{name}}-PUT" class="btn btn-primary">编辑</button>
+                    <button id="/wiki/{{name}}-DELETE" class="btn btn-danger">删除</button>
                 </div>
             </td>
         </tr>

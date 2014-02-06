@@ -23,11 +23,12 @@ class WikiHandler(BaseHandler):
 
             @cache.cache("wiki", expire=3600 * 24)
             def list_wiki():
-                return [("/wiki/%s" % w.name, w.title) for w in
-                        WikiDao.list_wiki(datetime.datetime.min, datetime.datetime.max)]
+                return [("/wiki/%s" % name, title) for name,title,created in
+                        Wiki.list_range(datetime.datetime.min, datetime.datetime.max)]
 
             wikiItems = list_wiki()
             wiki = None
+
         buttons = []
         if name and self.current_user:
             url = "/wiki/%s" % name
@@ -43,12 +44,12 @@ class WikiHandler(BaseHandler):
     @tornado.web.authenticated
     def put(self, name=None):
         if name:
-            wiki = WikiDao.get_wiki(name)
+            wiki = Wiki.get(name)
             form = WikiForm("wiki", "编辑知识库[%s]" % name, "/wiki/%s" % name, True)
             if wiki:
                 if self.__can_edit(wiki):
                     form.title.data = wiki.title
-                    form.body.data = wiki.body
+                    form.content.data = wiki.body
                     self.render_form_widget(form=form)
                 else:
                     self.render_message_widget(messages=["你没有编辑[%s]页的权限" % name])
@@ -63,17 +64,17 @@ class WikiHandler(BaseHandler):
             messages = []
             if self.check_captcha():
                 if fm.validate():
-                    wiki = WikiDao.get_wiki(name=name)
+                    wiki = Wiki.get(name=name)
                     if wiki:
                         if self.__can_edit(wiki):
-                            WikiDao.set_wiki(name, fm.title.data, fm.body.data)
+                            Wiki.set(name, fm.title.data, fm.content.data)
                             get_wiki(name, True)
                             self.render_message_widget(ok=True)
                             return
                         else:
                             messages.append("你没有编辑[%s]页的权限" % name)
                     else:
-                        WikiDao.add_wiki(name, fm.title.data, fm.body.data, self.current_user["id"])
+                        Wiki.set(name, fm.title.data, fm.content.data, self.current_user["id"])
                         self.render_message_widget(ok=True)
                         return
                 else:
@@ -86,10 +87,10 @@ class WikiHandler(BaseHandler):
     def delete(self, name=None):
         messages = []
         if name:
-            wiki = WikiDao.get_wiki(name=name)
+            wiki = Wiki.get(name=name)
             if wiki:
                 if self.__can_edit(wiki):
-                    WikiDao.del_wiki(name)
+                    Wiki.delete(name)
                     self.render_message_widget(ok=True)
                     return
                 else:
@@ -97,7 +98,6 @@ class WikiHandler(BaseHandler):
             else:
                 messages.append("知识库[%s]不存在" % name)
             self.render_message_widget(messages=messages)
-
 
     def __can_edit(self, wiki):
         return wiki.author == self.current_user["id"] or self.is_admin()
