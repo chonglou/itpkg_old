@@ -82,3 +82,6 @@ def _get_cache(path):
 cache = _get_cache(tornado.options.options.app_store)
 
 
+attach_dir = "%s/attach" % tornado.options.options.app_store
+
+

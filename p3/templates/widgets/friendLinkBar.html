@@ -1,11 +1,11 @@
 <div class="row">
-    {% for fl in items %}
+    {% for name,logo,domain in items %}
     <div class="col-lg-1">
-        <a href="{{fl.url}}" target="_blank">
-            {% if fl.logo %}
-            <img src="{{fl.logo}}" alt="{{fl.name}}">
+        <a href="http://{{domain}}" target="_blank">
+            {% if logo %}
+            <img src="{{logo}}" alt="{{name}}">
             {% else %}
-            {{fl.name}}
+            {{name}}
             {% end %}
         </a>
     </div>

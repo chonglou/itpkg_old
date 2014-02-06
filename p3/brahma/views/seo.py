@@ -2,11 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 import tornado.options
-
-
-class AttachHandler(tornado.web.RequestHandler):
-    def get(self, name):
-        self.redirect("/static/tmp/attach/%s" % name, permanent=True)
+from brahma.env import attach_dir
 
 
 class GoogleHandler(tornado.web.RequestHandler):
@@ -30,8 +26,8 @@ class BaiduHandler(tornado.web.RequestHandler):
 handlers = [
     (r"/google(.*).html", GoogleHandler),
     (r"/baidu_verify_(.*).html", BaiduHandler),
-    (r"/attachments/(.*)", AttachHandler),
-    (r"/rss.xml", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/rss.xml"}),
-    (r"/sitemap.xml", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/sitemap.xml"}),
-    (r"/sitemap.xml.gz", tornado.web.RedirectHandler, {"url": "/static/tmp/seo/sitemap.xml.gz"}),
+    (r"/attachments/(.*)", tornado.web.StaticFileHandler, dict(path=attach_dir)),
+    (r"/rss.xml", tornado.web.RedirectHandler, {"url": "/attachments/seo/rss.xml"}),
+    (r"/sitemap.xml", tornado.web.RedirectHandler, {"url": "/attachments/seo/sitemap.xml"}),
+    (r"/sitemap.xml.gz", tornado.web.RedirectHandler, {"url": "/attachments/seo/sitemap.xml.gz"}),
 ]

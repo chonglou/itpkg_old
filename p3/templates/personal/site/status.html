@@ -1,0 +1,17 @@
+<div class="btn-group btn-group-sm">
+    <button id="refresh" class="btn btn-info">刷新</button>
+    <button id="cache" class="btn btn-danger">清理缓存</button>
+</div>
+<p></p>
+<div id="status-root"></div>
+{%module List("系统状态", items)%}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("button#cache").click(function(){
+            new Ajax("status-root", "/personal/site/cache", "DELETE");
+        });
+        $("button#refresh").click(function(){
+            new Ajax("tab-item-status", "/personal/site/status");
+        });
+    });
+</script>

@@ -5,7 +5,7 @@ import datetime
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.plugins.wiki.store import WikiDao
+from brahma.plugins.wiki.store import Wiki
 from brahma.plugins.wiki.forms import WikiForm
 from brahma.env import cache
 from brahma.plugins.wiki.cache import get_wiki

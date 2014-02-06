@@ -8,9 +8,13 @@ class FriendLinkBar(tornado.web.UIModule):
     def render(self):
         @cache.cache("site/friendLinks", expire=3600 * 24)
         def fl():
-            from brahma.store import FriendLink
+            from brahma.env import transaction
+            @transaction()
+            def list_all(cursor=None):
+                cursor.execute("SELECT name_,logo_, domain_ FROM friend_links")
+                return cursor.fetchall()
 
-            return FriendLink.all()
+            return list_all()
 
         return self.render_string("widgets/friendLinkBar.html", items=fl())
 

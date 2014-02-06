@@ -3,6 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 import logging
 
 import tornado.web
+from brahma.env import attach_dir
 
 
 class FileHandler(tornado.web.RequestHandler):
@@ -14,7 +15,7 @@ class FileHandler(tornado.web.RequestHandler):
 
         val = list()
 
-        path = "%s/%s" % (os.path.realpath("statics/tmp/attach"), self.__user_path())
+        path = "%s/%s" % (attach_dir, self.__user_path())
         l = len(path)
         for root, dirs, files in os.walk(path, True):
             for name in files:
@@ -88,7 +89,7 @@ class FileHandler(tornado.web.RequestHandler):
     def __physics_path(self, path):
         import os
 
-        d = "%s/%s" % (os.path.realpath("statics/tmp/attach"), self.__virtual_path(path))
+        d = "%s/%s" % (attach_dir, self.__virtual_path(path))
         if not os.path.exists(d):
             os.makedirs(d)
         return d

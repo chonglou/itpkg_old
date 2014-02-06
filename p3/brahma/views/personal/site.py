@@ -66,17 +66,16 @@ class AdminHandler(BaseHandler):
                 import datetime, psutil, tornado.options, sys, os
 
                 items = list()
-                items.append("Python Home：%s" % sys.exec_prefix)
-                items.append("附件目录：%s" % os.path.realpath("../../statics/tmp/attach"))
-                items.append("临时数据：%s" % tornado.options.options.app_store)
+                items.append("Python目录：%s" % sys.exec_prefix)
+                items.append("数据目录：%s" % tornado.options.options.app_store)
                 items.append("CPU：%s%%" % psutil.cpu_percent(1))
                 phymem = psutil.phymem_usage()
                 items.append("内存：%s%%  %sM/%sM" % (
                     phymem.percent, int(phymem.used / 1024 / 1024), int(phymem.total / 1024 / 1024)))
                 items.append("当前时间：%s" % datetime.datetime.now())
                 items.append("启动时间：%s" % start_stamp)
+                self.render("personal/site/status.html", items=items)
 
-                self.render_list_widget("系统状态", items)
             elif act == "user":
                 manager = Setting.get("site.manager", True)
 
@@ -258,8 +257,8 @@ class AdminHandler(BaseHandler):
             elif act == "task":
                 fm = TimerForm(formdata=self.request.arguments)
                 if fm.act.data in [TaskFlag.QR, TaskFlag.RSS, TaskFlag.SITEMAP, TaskFlag.ROBOTS]:
-                    #from brahma.jobs import TaskSender
-                    #getattr(TaskSender, fm.act.data)()
+                    from brahma.jobs import TaskSender
+                    getattr(TaskSender, fm.act.data)()
                     self.__set_clock(fm.act.data, fm.clock.data)
                     #Setting.set("site.task.%s" % fm.act.data, fm.clock.data)
                     self.render_message_widget(ok=True)
@@ -289,6 +288,14 @@ class AdminHandler(BaseHandler):
                 FriendLink.delete(flid)
                 self.log("删除友情链接[%s]" % flid)
                 self.render_message_widget(ok=True)
+            elif act == "cache":
+                from beaker.cache import cache_managers
+                for c in cache_managers.values():
+                    c.clear()
+
+                self.render_message_widget(ok=True)
+            else:
+                self.render_message_widget(messages=["未知操作"])
 
 
 class SiteHandler(BaseHandler):

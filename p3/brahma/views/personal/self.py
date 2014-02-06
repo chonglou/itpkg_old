@@ -30,8 +30,8 @@ class InfoHandler(BaseHandler):
             self.render_form_widget(form=form)
         elif act == "attach":
             import os
-
-            path = os.path.realpath("statics/tmp/attach")
+            from brahma.env import attach_dir
+            path = attach_dir
             if not self.is_admin():
                 path = "%s/u%d" % (path, self.current_user['id'])
 
@@ -145,9 +145,9 @@ class InfoHandler(BaseHandler):
         if attach.startswith("attach/"):
             attach = attach[7:]
             import os, logging
-
+            from brahma.env import attach_dir
             logging.debug("用户[%s]请求删除[%s]" % (self.current_user["id"], attach))
-            d = "statics/tmp/attach"
+            d = attach_dir
             if self.is_admin():
                 tmp = os.path.realpath(d)
                 attach = os.path.realpath("%s/%s" % (d, attach))

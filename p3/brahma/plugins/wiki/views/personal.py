@@ -5,7 +5,7 @@ import datetime
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.plugins.wiki.store import WikiDao
+from brahma.plugins.wiki.store import Wiki
 
 
 class SelfHandler(BaseHandler):

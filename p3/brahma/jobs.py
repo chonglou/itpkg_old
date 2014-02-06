@@ -186,8 +186,8 @@ class _TaskListener:
     @staticmethod
     def __seo_file(name):
         import os
-
-        d = os.path.realpath("statics/tmp/seo")
+        from brahma.env import attach_dir
+        d = "%s/seo"%attach_dir
         if not os.path.exists(d):
             os.makedirs(d)
         return d + "/" + name
