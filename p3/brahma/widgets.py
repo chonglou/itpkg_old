@@ -9,6 +9,7 @@ class FriendLinkBar(tornado.web.UIModule):
         @cache.cache("site/friendLinks", expire=3600 * 24)
         def fl():
             from brahma.env import transaction
+
             @transaction()
             def list_all(cursor=None):
                 cursor.execute("SELECT name_,logo_, domain_ FROM friend_links")
@@ -75,8 +76,13 @@ class ButtonGroup(tornado.web.UIModule):
             $("div.btn-group button").each(function () {
                 $(this).click(function () {
                     var ss = $(this).attr("id").split('-');
-                    if(ss[1]!="DELETE" || confirm("你确定要删除此项么？")){
+                    var act = ss[1];
+                    if(act=="GET"||act=="POST"||act=="PUT"||(act=="DELETE" && confirm("你确定要删除此项么？"))){
                         new Ajax("%s", ss[0], ss[1]);
+                    }
+                    else if(act == "REFRESH"){
+                        window.location.reload();
+                        scroll(0,0);
                     }
                 });
             });
@@ -232,11 +238,11 @@ class TagCloud(tornado.web.UIModule):
         @cache.cache("tagCloud", expire=3600 * 24)
         def tags():
             import importlib
-            from brahma.store import Setting
+            from brahma.store import SettingDao
             from brahma.utils import walk_plugin
 
             items = list()
-            items.append(("/main", Setting.get("site.title")))
+            items.append(("/main", SettingDao.get("site.title")))
             walk_plugin(lambda p: items.extend(importlib.import_module("brahma.plugins." + p).tags()))
 
             return items
@@ -283,7 +289,7 @@ class NavBar(tornado.web.UIModule):
     def render(self):
         import importlib
         from brahma.web import NavBar
-        from brahma.store import Setting
+        from brahma.store import SettingDao
         from brahma.utils import walk_plugin
 
         navbars = list()
@@ -301,7 +307,7 @@ class NavBar(tornado.web.UIModule):
             from brahma.utils.time import last_months
 
             cal = NavBar("归档列表")
-            init = Setting.get("site.init")
+            init = SettingDao.get("site.init")
             cal.items.extend(
                 map(lambda dt: (dt.strftime("/calendar/%Y/%m"), dt.strftime("%Y年%m月")), last_months(init, 5)))
             return cal

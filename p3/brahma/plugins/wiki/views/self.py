@@ -5,7 +5,7 @@ import datetime
 import tornado.web
 
 from brahma.views import BaseHandler
-from brahma.plugins.wiki.store import Wiki
+from brahma.plugins.wiki.store import WikiDao
 
 
 class SelfHandler(BaseHandler):
@@ -14,7 +14,7 @@ class SelfHandler(BaseHandler):
         author = self.current_user['id']
         if self.is_admin():
             author = None
-        items = Wiki.list_range(datetime.datetime.min, datetime.datetime.max, author=author)
+        items = WikiDao.list_page(datetime.datetime.min, datetime.datetime.max, author=author)
 
         self.render("wiki/self.html", items=items)
 

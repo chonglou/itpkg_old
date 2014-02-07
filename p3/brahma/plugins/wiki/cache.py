@@ -6,12 +6,14 @@ from brahma.env import cache
 def get_wiki(name, invalidate=False):
     @cache.cache("wiki/%s" % name)
     def wiki():
-        from brahma.plugins.wiki.store import Wiki
-        w = Wiki.get(name)
+        from brahma.plugins.wiki.store import WikiDao
+
+        w = WikiDao.get(name)
         if w:
             import markdown
+
             w.body = markdown.markdown(w.body)
-        return w.__dict__
+        return w
 
     if invalidate:
         cache.invalidate(wiki, "wiki/%s" % name)

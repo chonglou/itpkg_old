@@ -5,7 +5,7 @@ import datetime
 import tornado.web
 
 from brahma.forms.site import InstallForm
-from brahma.store import Setting, User, Log, Permission
+from brahma.store import SettingDao, UserDao, LogDao, PermissionDao
 from brahma.web import Message
 
 
@@ -58,9 +58,9 @@ class InstallHandler(tornado.web.RequestHandler):
                             ("site.keywords", form.siteKeywords.data),
                             ("site.description", form.siteDescription.data),
                         ]:
-                            Setting._set(k, v, False, cursor)
+                            SettingDao._set(k, v, False, cursor)
 
-                        Setting._set("site.smtp", Item(
+                        SettingDao._set("site.smtp", Item(
                             host=form.smtpHost.data,
                             port=form.smtpPort.data,
                             ssl=form.smtpSsl.data,
@@ -68,20 +68,20 @@ class InstallHandler(tornado.web.RequestHandler):
                             password=form.smtpPassword.data,
                             bcc=form.smtpBcc.data,
                         ).__dict__,
-                                     True, cursor)
+                                        True, cursor)
 
                         email = form.managerEmail.data
-                        manager = User._add_email(email=email, username="超级管理员", password=form.managerPassword.data,
-                                                  cursor=cursor)
-                        User._set_state(manager, State.ENABLE, cursor=cursor)
-                        Permission._bind("user://%d" % manager, Operation.MANAGER, "SITE", datetime.datetime.now(),
-                                         datetime.datetime.max, True, cursor)
+                        manager = UserDao._add_email(email=email, username="超级管理员", password=form.managerPassword.data,
+                                                     cursor=cursor)
+                        UserDao._set_state(manager, State.ENABLE, cursor=cursor)
+                        PermissionDao._bind("user://%d" % manager, Operation.MANAGER, "SITE", datetime.datetime.now(),
+                                            datetime.datetime.max, True, cursor)
 
-                        Setting._set("site.manager", manager, True, cursor)
-                        Setting._set("site.link.valid", 24, False, cursor)
-                        Setting._set("site.version", "v20140205", False, cursor)
+                        SettingDao._set("site.manager", manager, True, cursor)
+                        SettingDao._set("site.link.valid", 24, False, cursor)
+                        SettingDao._set("site.version", "v20140205", False, cursor)
 
-                        Log._add(user=manager, flag=LogFlag.INFO, message="初始化系统", cursor=cursor)
+                        LogDao._add(user=manager, flag=LogFlag.INFO, message="初始化系统", cursor=cursor)
 
                     install()
 

@@ -4,8 +4,9 @@ import logging
 import tornado.web
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
-from brahma.store import User, Setting,Log
-from brahma.models import UserFlag,State
+from brahma.store import UserDao, SettingDao, LogDao
+from brahma.models import UserFlag, State
+
 
 class ValidHandler(BaseHandler):
     def get(self):
@@ -19,12 +20,12 @@ class ValidHandler(BaseHandler):
                 flag, dt, args = encrypt.decode(self.get_argument("code").encode("utf-8"))
                 if dt > datetime.datetime.now():
                     if flag == "active":
-                        user = User.get_by_email(args)
+                        user = UserDao.get_by_email(args)
                         if user and user.state == State.SUBMIT:
-                            User.enable(user.id, True)
+                            UserDao.enable(user.id, True)
                             ok = True
-                            domain = Setting.get("site.domain")
-                            title = Setting.get("site.title")
+                            domain = SettingDao.get("site.domain")
+                            title = SettingDao.get("site.title")
                             from brahma.jobs import TaskSender
 
                             TaskSender.email(
@@ -36,12 +37,12 @@ class ValidHandler(BaseHandler):
                             messages.append("账户状态不对")
                     elif flag == "resetPwd":
                         uid, password = args
-                        user = User.get_by_id(uid)
+                        user = UserDao.get_by_id(uid)
                         if user and user.state == State.ENABLE:
-                            User.set_password(uid, password)
+                            UserDao.set_password(uid, password)
                             ok = True
-                            domain = Setting.get("site.domain")
-                            title = Setting.get("site.title")
+                            domain = SettingDao.get("site.domain")
+                            title = SettingDao.get("site.title")
                             from brahma.jobs import TaskSender
 
                             TaskSender.email(
@@ -75,7 +76,7 @@ class ActiveHandler(BaseHandler):
                 if fm.validate():
                     if fm.agree.data:
                         email = fm.email.data
-                        user = User.get_by_email(email)
+                        user = UserDao.get_by_email(email)
                         if user:
                             if user.state == "SUBMIT":
                                 _send_active_email(email, user.username)
@@ -108,7 +109,7 @@ class ResetPwdHandler(BaseHandler):
             if self.check_captcha():
                 if fm.validate():
                     email = fm.email.data
-                    user = User.get_by_email(email)
+                    user = UserDao.get_by_email(email)
                     if user and user.state == "ENABLE":
                         from brahma.env import encrypt
 
@@ -140,9 +141,9 @@ class RegisterHandler(BaseHandler):
                     if fm.agree.data:
                         email = fm.email.data
                         username = fm.username.data
-                        user = User.get_by_email(email)
+                        user = UserDao.get_by_email(email)
                         if not user:
-                            User.add_email("email", username=username, email=email, password=fm.password.data)
+                            UserDao.add_email("email", username=username, email=email, password=fm.password.data)
                             _send_active_email(email, username)
                             self.render_message_widget(
                                 ok=True, messages=["账户添加成功", "现在你需要进入邮箱点击链接激活邮件"], goto="/main")
@@ -159,9 +160,9 @@ class RegisterHandler(BaseHandler):
 
 
 def _send_valid_email(flag, email, username, action, args):
-    domain = Setting.get("site.domain")
-    title = Setting.get("site.title")
-    linkValid = Setting.get("site.link.valid")
+    domain = SettingDao.get("site.domain")
+    title = SettingDao.get("site.title")
+    linkValid = SettingDao.get("site.link.valid")
 
     from brahma.jobs import TaskSender
     from brahma.env import encrypt
@@ -197,11 +198,11 @@ class LoginHandler(BaseHandler):
             messages = []
             if self.check_captcha():
                 if fm.validate():
-                    user = User.auth_email(email=fm.email.data, password=fm.password.data)
+                    user = UserDao.auth_email(email=fm.email.data, password=fm.password.data)
                     if user:
                         if user.state == State.ENABLE:
                             import uuid
-                            from brahma.store import Permission
+                            from brahma.store import PermissionDao
                             from brahma.env import encrypt
                             from brahma.cache import j_u_id
 
@@ -210,7 +211,7 @@ class LoginHandler(BaseHandler):
                                 "id": user.id,
                                 "logo": user.logo,
                                 "username": user.username,
-                                "admin": Permission.auth4admin(user.id),
+                                "admin": PermissionDao.auth4admin(user.id),
                                 "jid": jid,
                             })
                             j_u_id(jid, uid=user.id)
@@ -230,7 +231,7 @@ class LoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        Log.add("安全退出", user=self.current_user['id'])
+        LogDao.add("安全退出", user=self.current_user['id'])
         from brahma.cache import j_u_id
 
         j_u_id(self.current_user['jid'], invalidate=True)

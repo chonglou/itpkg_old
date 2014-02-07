@@ -78,12 +78,12 @@ class _TaskListener:
     @staticmethod
     def robots():
         import os
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
         with open(os.path.realpath("statics/robots.txt"), "w") as f:
             f.write("User-agent: *\n")
             f.write("Disallow: /personal/\n")
-            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n" % Setting.get("site.domain"))
+            f.write("Sitemap: <http://%s/sitemap.xml.gz>\n" % SettingDao.get("site.domain"))
 
     @staticmethod
     def sitemap():
@@ -91,13 +91,13 @@ class _TaskListener:
             更新频率：yearly daily, monthly, hourly, weekly
         """
         import datetime, importlib, tornado.options, gzip
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
         with open(_TaskListener.__seo_file("sitemap.xml"), "w") as sitemap:
             sitemap.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             sitemap.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-            domain = Setting.get("site.domain")
-            init = Setting.get("site.init")
+            domain = SettingDao.get("site.domain")
+            init = SettingDao.get("site.init")
 
             items = list()
             items.append(("main", datetime.datetime.now(), "daily", 1.0))
@@ -127,22 +127,22 @@ class _TaskListener:
     @staticmethod
     def rss():
         import importlib, tornado.options
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
-        domain = Setting.get("site.domain")
-        init = Setting.get("site.init")
+        domain = SettingDao.get("site.domain")
+        init = SettingDao.get("site.init")
 
         with open(_TaskListener.__seo_file("rss.xml"), "w") as rss:
             rss.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             rss.write('<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">\n')
             rss.write('\t<channel>\n')
-            rss.write('\t\t<title>%s</title>\n' % Setting.get("site.title"))
+            rss.write('\t\t<title>%s</title>\n' % SettingDao.get("site.title"))
             rss.write('\t\t<link>http://%s</link>\n' % domain)
-            rss.write('\t\t<description>%s</description>\n' % Setting.get("site.description"))
+            rss.write('\t\t<description>%s</description>\n' % SettingDao.get("site.description"))
 
             items = list()
-            items.append(("关于我们", "aboutMe", Setting.get("site.aboutMe"), init))
-            items.append(("帮助文档", "help", Setting.get("site.help"), init))
+            items.append(("关于我们", "aboutMe", SettingDao.get("site.aboutMe"), init))
+            items.append(("帮助文档", "help", SettingDao.get("site.help"), init))
 
             for p in tornado.options.options.app_plugins:
                 items.extend(importlib.import_module("brahma.plugins." + p).rss())
@@ -153,7 +153,7 @@ class _TaskListener:
                 rss.write('\t\t\t<title>%s</title>\n' % title)
                 rss.write('\t\t\t<link>%s</link>\n' % link)
                 rss.write((
-                    '\t\t\t<description>%s</description>\n' % description) if description else '\t\t\t<description/>\n')
+                              '\t\t\t<description>%s</description>\n' % description) if description else '\t\t\t<description/>\n')
                 rss.write('\t\t\t<pubDate>%s</pubDate>\n' % init.isoformat())
                 rss.write('\t\t\t<guid>%s</guid>\n' % link)
                 rss.write('\t\t\t<dc:date>%s</dc:date>\n' % init.isoformat())
@@ -167,7 +167,7 @@ class _TaskListener:
     @staticmethod
     def qr():
         import qrcode
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
         qr = qrcode.QRCode(
             version=1,
@@ -176,7 +176,7 @@ class _TaskListener:
             border=1,
         )
 
-        qr.add_data("<a href='http://%s'>%s</a>" % (Setting.get("site.domain"), Setting.get("site.title")))
+        qr.add_data("<a href='http://%s'>%s</a>" % (SettingDao.get("site.domain"), SettingDao.get("site.title")))
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -187,7 +187,8 @@ class _TaskListener:
     def __seo_file(name):
         import os
         from brahma.env import attach_dir
-        d = "%s/seo"%attach_dir
+
+        d = "%s/seo" % attach_dir
         if not os.path.exists(d):
             os.makedirs(d)
         return d + "/" + name
@@ -195,9 +196,9 @@ class _TaskListener:
 
     @staticmethod
     def email(to, title, body, html):
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
-        smtp = Setting.get("site.smtp", encrypt=True)
+        smtp = SettingDao.get("site.smtp", encrypt=True)
         if smtp:
             import tornado.options
             from brahma.utils.email import Email
@@ -217,9 +218,9 @@ class _TaskListener:
 
 def _init():
     logging.info("进程管理")
-    from brahma.store import Setting
+    from brahma.store import SettingDao
 
-    Setting.startup(True)
+    SettingDao.startup(True)
 
     def _new_thread(name, target):
         import threading

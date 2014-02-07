@@ -4,22 +4,16 @@ import tornado.web
 
 from brahma.cache import cache, get_site_info
 from brahma.views import BaseHandler, plugin_cards_links
-from brahma.store import User
+from brahma.store import UserDao
 
 
 class MainHandler(BaseHandler):
     def get(self):
-        @cache.cache("site/index")
-        def get_index():
-            import tornado.options
+        import tornado.options
 
-            if tornado.options.options.app_plugins:
-                index = "/%s/" % tornado.options.options.app_plugins[0]
-            else:
-                index = "/aboutMe"
-            return index
-
-        self.redirect(get_index(), permanent=False)
+        self.redirect(
+            "/%s/" % tornado.options.options.app_plugins[0] if tornado.options.options.app_plugins else "/aboutMe",
+            permanent=True)
 
 
 class SearchHandler(BaseHandler):
@@ -65,7 +59,7 @@ class UserHandler(BaseHandler):
     def get(self, uid=None):
         manager = get_site_info("manager", encrypt=True)
         if uid:
-            user = User.get_by_id(uid)
+            user = UserDao.get_by_id(uid)
             if user:
                 if user.contact:
                     content = user.contact['details']
@@ -84,7 +78,7 @@ class UserHandler(BaseHandler):
             def user2card(u):
                 return "/user/%s" % u.id, u.logo, u.username, "" if manager == u.id else u.email
 
-            cards = [user2card(u) for u in User.all()]
+            cards = [user2card(u) for u in UserDao.all()]
             self.render_template("用户列表", "/user/", cards=cards)
 
 

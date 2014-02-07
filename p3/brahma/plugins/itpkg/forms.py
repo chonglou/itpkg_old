@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
-from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField, IntegerField, RadioField
+from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField, IntegerField, \
+    RadioField
 
 from brahma.web import Form, HtmlField, ListField
 

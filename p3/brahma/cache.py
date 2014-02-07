@@ -17,9 +17,9 @@ def j_u_id(jid, uid=None, invalidate=False):
 def get_advert(key, invalidate=False):
     @cache.cache("site/advert/%s" % key)
     def info():
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
-        return Setting.get("site.advert.%s" % key)
+        return SettingDao.get("site.advert.%s" % key)
 
     if invalidate:
         cache.invalidate(info, "site/advert/%s" % key)
@@ -30,9 +30,9 @@ def get_advert(key, invalidate=False):
 def get_site_info(key, invalidate=False, encrypt=False):
     @cache.cache("site/%s" % key)
     def info():
-        from brahma.store import Setting
+        from brahma.store import SettingDao
 
-        return Setting.get("site.%s" % key, encrypt)
+        return SettingDao.get("site.%s" % key, encrypt)
 
     if invalidate:
         cache.invalidate(info, "site/%s" % key)

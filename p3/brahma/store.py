@@ -9,7 +9,7 @@ from brahma.env import transaction, encrypt as _encrypt
 from brahma.utils.database import insert, update, delete, count, select
 
 
-class User(object):
+class UserDao(object):
     @staticmethod
     @transaction(readonly=False)
     def set_info(uid, username, logo, contact, cursor=None):
@@ -19,26 +19,27 @@ class User(object):
     @transaction(readonly=False)
     def set_password(uid, password, cursor=None):
         update(Item(password=_encrypt.password(password)).update("users", id_val=uid))(cursor)
-        Log._add(message="修改密码", user=uid, flag=LogFlag.INFO, cursor=cursor)
+        LogDao._add(message="修改密码", user=uid, flag=LogFlag.INFO, cursor=cursor)
 
     @staticmethod
     @transaction(readonly=False)
     def enable(uid, flag, cursor=None):
-        User._set_state(uid, State.ENABLE if flag else State.DISABLE, cursor)
-        Log.add("启用用户" if flag else "禁用用户", user=uid)
+        UserDao._set_state(uid, State.ENABLE if flag else State.DISABLE, cursor)
+        LogDao.add("启用用户" if flag else "禁用用户", user=uid)
 
     @staticmethod
     @transaction()
     def all(cursor=None):
         users = select(Item().select("users", columns=["id", "flag", "email", "username", "logo", "state"]))(cursor)
-        return [Item(id=id, flag=flag, email=email, username=username, logo=logo,state=state) for id, flag, email, username, logo,state in
+        return [Item(id=id, flag=flag, email=email, username=username, logo=logo, state=state) for
+                id, flag, email, username, logo, state in
                 users]
 
     @staticmethod
     @transaction()
     def get_by_id(uid, cursor=None):
-        u = select(Item(id=uid).select("users", columns=User._mapper_columns()), one=True)(cursor)
-        return User._mapper_row(u)
+        u = select(Item(id=uid).select("users", columns=UserDao._mapper_columns()), one=True)(cursor)
+        return UserDao._mapper_row(u)
 
     @staticmethod
     def _mapper_columns():
@@ -54,14 +55,14 @@ class User(object):
     @staticmethod
     @transaction()
     def get_by_email(email, cursor=None):
-        u = select(Item(email=email, flag=UserFlag.EMAIL).select("users", columns=User._mapper_columns()), one=True)(
+        u = select(Item(email=email, flag=UserFlag.EMAIL).select("users", columns=UserDao._mapper_columns()), one=True)(
             cursor)
-        return User._mapper_row(u)
+        return UserDao._mapper_row(u)
 
     @staticmethod
     @transaction(False)
     def set_state(uid, state, cursor=None):
-        User._set_state(uid, state, cursor)
+        UserDao._set_state(uid, state, cursor)
 
     @staticmethod
     @transaction()
@@ -74,19 +75,19 @@ class User(object):
     @transaction(False)
     def auth_email(email, password, cursor=None):
         cs = ["password"]
-        cs.extend(User._mapper_columns())
+        cs.extend(UserDao._mapper_columns())
         row = select(
             Item(flag=UserFlag.EMAIL, email=email).select("users", columns=cs), one=True)(cursor)
 
         if row:
-            user = User._mapper_row(row[1:])
+            user = UserDao._mapper_row(row[1:])
             if _encrypt.check(password, row[0]):
 
                 update(Item(last_login=datetime.datetime.now()).update("users", id_val=user.id))
-                Log._add("成功登录", user.id, LogFlag.INFO, cursor)
+                LogDao._add("成功登录", user.id, LogFlag.INFO, cursor)
                 return user
             else:
-                Log._add("登录验证失败", user.id, LogFlag.INFO, cursor)
+                LogDao._add("登录验证失败", user.id, LogFlag.INFO, cursor)
         return None
 
     @staticmethod
@@ -100,8 +101,8 @@ class User(object):
     @staticmethod
     @transaction(False)
     def add_email(username, email, password, cursor=None):
-        uid = User._add_email(username, email, password, cursor)
-        Log._add("创建用户", uid, LogFlag.INFO, cursor)
+        uid = UserDao._add_email(username, email, password, cursor)
+        LogDao._add("创建用户", uid, LogFlag.INFO, cursor)
 
     @staticmethod
     def _add_email(username, email, password, cursor):
@@ -111,7 +112,7 @@ class User(object):
                 "users"))(cursor)
 
 
-class Task(object):
+class TaskDao(object):
     @staticmethod
     def _set_next_run(tid, next_run, cursor):
         update("UPDATE tasks SET next_run_=%s, index_=index_+1 WHERE id_=%s", [next_run, tid])(cursor)
@@ -120,7 +121,7 @@ class Task(object):
     @transaction()
     def list_available(cursor=None):
         ts = select("SELECT id_, flag_, request_ FROM tasks WHERE next_run_<=%s", [datetime.datetime.now()])(cursor)
-        return [Task._row_mapper(t) for t in ts]
+        return [TaskDao._row_mapper(t) for t in ts]
 
     @staticmethod
     def _row_mapper(task):
@@ -132,30 +133,30 @@ class Task(object):
     def list_by_flag(flag, cursor=None):
         cursor.execute("SELECT id_, flag_, request_ FROM tasks WHERE flag_=%s", [flag])
         ts = cursor.fetchall()
-        return [Task._row_mapper(t) for t in ts]
+        return [TaskDao._row_mapper(t) for t in ts]
 
 
-class Setting(object):
+class SettingDao(object):
     @staticmethod
     @transaction(readonly=False)
     def startup(flag=True, cursor=None):
         import datetime
 
-        Setting._set(
+        SettingDao._set(
             "site.startup" if flag else "site.shutdown",
             datetime.datetime.now(),
             False, cursor=cursor)
-        Log._add(message="启动系统" if flag else "关闭系统", user=None, flag=LogFlag.INFO, cursor=cursor)
+        LogDao._add(message="启动系统" if flag else "关闭系统", user=None, flag=LogFlag.INFO, cursor=cursor)
 
     @staticmethod
     @transaction(readonly=True)
     def get(key, encrypt=False, cursor=None):
-        return Setting._get(key, encrypt, cursor)
+        return SettingDao._get(key, encrypt, cursor)
 
     @staticmethod
     @transaction()
     def set(key, val, encrypt=False, cursor=None):
-        Setting._set(key, val, encrypt, cursor)
+        SettingDao._set(key, val, encrypt, cursor)
 
     @staticmethod
     def _get(key, encrypt, cursor):
@@ -174,7 +175,7 @@ class Setting(object):
             insert(Item(key=key, val=val).insert(name))(cursor)
 
 
-class FriendLink(object):
+class FriendLinkDao(object):
     @staticmethod
     @transaction(False)
     def add(domain, name, logo, cursor=None):
@@ -189,14 +190,14 @@ class FriendLink(object):
     @transaction()
     def all(cursor=None):
         fls = select(Item().select(name="friend_links", columns=["id", "logo", "name", "domain"]))(cursor)
-        return [FriendLink._row_mapper(fl) for fl in fls]
+        return [FriendLinkDao._row_mapper(fl) for fl in fls]
 
     @staticmethod
     @transaction()
     def get(flid, cursor=None):
         fl = select(Item(id=flid).select(name="friend_links", columns=["id", "logo", "name", "domain"]), one=True)(
             cursor)
-        return FriendLink._row_mapper(fl)
+        return FriendLinkDao._row_mapper(fl)
 
     @staticmethod
     @transaction()
@@ -210,7 +211,7 @@ class FriendLink(object):
         return Item(id=id, logo=logo, name=name, domain=domain)
 
 
-class Permission(object):
+class PermissionDao(object):
     @staticmethod
     def _bind(role, operation, resource, begin, end, bind, cursor):
         pid = select(
@@ -246,26 +247,26 @@ class Permission(object):
     @transaction(readonly=True)
     def bind2admin(uid, begin=None, end=datetime.datetime.max, bind=False, cursor=None):
 
-        Permission._bind(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
-                         begin=begin, end=end,
-                         bind=bind, cursor=cursor)
+        PermissionDao._bind(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
+                            begin=begin, end=end,
+                            bind=bind, cursor=cursor)
 
 
     @staticmethod
     @transaction()
     def auth4admin(uid, cursor=None):
-        return Permission._auth(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
-                                cursor=cursor)
+        return PermissionDao._auth(role="user://%d" % uid, operation=Operation.MANAGER, resource="SITE",
+                                   cursor=cursor)
 
 
-class Log(object):
+class LogDao(object):
     @staticmethod
     @transaction()
     def list_range(begin, end, user, limit, cursor=None):
         cursor.execute(
             "SELECT id_, user_, message_, flag_, created_ FROM logs WHERE created_ > %s AND created_ < %s AND user_=%s ORDER BY id_ DESC LIMIT %s",
             [begin, end, user, limit])
-        return [Log._row_mapper(i) for i in cursor.fetchall()]
+        return [LogDao._row_mapper(i) for i in cursor.fetchall()]
 
     @staticmethod
     def _row_mapper(l):
@@ -275,7 +276,7 @@ class Log(object):
     @staticmethod
     @transaction()
     def add(message, user=None, flag=LogFlag.INFO, cursor=None):
-        Log._add(message, user, flag, cursor)
+        LogDao._add(message, user, flag, cursor)
 
 
     @staticmethod
@@ -285,7 +286,8 @@ class Log(object):
             item.user = user
         insert(item.insert("logs"))(cursor)
 
-class History(object):
+
+class HistoryDao(object):
     @staticmethod
     def _add(url, content, version, cursor):
-        return insert(Item(url=url,content=content, version=version).insert("histories"))(cursor)
+        return insert(Item(url=url, content=content, version=version).insert("histories"))(cursor)

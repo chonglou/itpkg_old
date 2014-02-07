@@ -6,7 +6,7 @@ import tornado.web
 
 from brahma.views import BaseHandler
 from brahma.forms.personal import ContactForm, SetPwdForm
-from brahma.store import Log, User
+from brahma.store import LogDao, UserDao
 
 
 class InfoHandler(BaseHandler):
@@ -15,14 +15,14 @@ class InfoHandler(BaseHandler):
         if act == "logs":
             self.render_list_widget("日志列表", items=[
                 "[%s] %s： %s" % (l.flag, l.created.isoformat(), l.message) for l in
-                Log.list_range(datetime.datetime.min, datetime.datetime.max,
-                               user=self.current_user['id'], limit=20)])
+                LogDao.list_range(datetime.datetime.min, datetime.datetime.max,
+                                  user=self.current_user['id'], limit=20)])
         elif act == "setPwd":
             form = SetPwdForm("setPwd", "修改密码", "/personal/self/setPwd")
             self.render_form_widget(form=form)
         elif act == "contact":
             form = ContactForm("contact", "联系信息", "/personal/self/contact")
-            user = User.get_by_id(self.current_user['id'])
+            user = UserDao.get_by_id(self.current_user['id'])
             if user.contact:
                 form.from_dict(user.contact)
             form.username.data = user.username
@@ -31,6 +31,7 @@ class InfoHandler(BaseHandler):
         elif act == "attach":
             import os
             from brahma.env import attach_dir
+
             path = attach_dir
             if not self.is_admin():
                 path = "%s/u%d" % (path, self.current_user['id'])
@@ -57,8 +58,8 @@ class InfoHandler(BaseHandler):
             fm = SetPwdForm(formdata=self.request.arguments)
             if fm.validate():
                 uid = self.current_user['id']
-                if User.check(uid, fm.oldPassword.data):
-                    User.set_password(uid, fm.password.data)
+                if UserDao.check(uid, fm.oldPassword.data):
+                    UserDao.set_password(uid, fm.password.data)
                     self.render_message_widget(ok=True)
                     return
                 else:
@@ -68,9 +69,9 @@ class InfoHandler(BaseHandler):
         elif act == "contact":
             fm = ContactForm(formdata=self.request.arguments)
             if fm.validate():
-                User.set_info(self.current_user['id'], fm.username.data, fm.logo.data,
-                              fm.to_dict(
-                                  ["qq", "email", "website", "wechat", "weibo", "address", "fax", "tel", "details"]))
+                UserDao.set_info(self.current_user['id'], fm.username.data, fm.logo.data,
+                                 fm.to_dict(
+                                     ["qq", "email", "website", "wechat", "weibo", "address", "fax", "tel", "details"]))
                 self.render_message_widget(ok=True)
                 return
             else:
@@ -146,6 +147,7 @@ class InfoHandler(BaseHandler):
             attach = attach[7:]
             import os, logging
             from brahma.env import attach_dir
+
             logging.debug("用户[%s]请求删除[%s]" % (self.current_user["id"], attach))
             d = attach_dir
             if self.is_admin():

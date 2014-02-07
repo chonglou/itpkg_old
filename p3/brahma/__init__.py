@@ -167,6 +167,7 @@ class Application(tornado.web.Application):
             k = "debug"
         else:
             import base64, uuid
+
             k = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
             logging.info("重新生成cookie key")
         return k
