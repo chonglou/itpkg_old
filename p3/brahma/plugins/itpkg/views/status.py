@@ -10,7 +10,7 @@ class StatusHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_manager(rid):
-            self.render("itpkg/status.html", router=RouterDao.get(rid), rid=rid)
+            self.render("itpkg/status.html", router=RouterDao.get_info(rid), rid=rid)
 
     @tornado.web.authenticated
     def put(self, rid):

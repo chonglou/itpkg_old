@@ -3,7 +3,8 @@ __author__ = 'zhengjitang@gmail.com'
 from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField, IntegerField, \
     RadioField
 
-from brahma.plugins.itpkg.models import WanFlag, RouterFlag
+from brahma.plugins.itpkg.models import RouterFlag
+
 from brahma.web import Form, HtmlField, ListField
 
 

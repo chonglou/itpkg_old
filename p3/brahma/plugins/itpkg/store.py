@@ -36,12 +36,45 @@ class RouterDao:
 
     @staticmethod
     @transaction(False)
+    def set_lan(rid, lan, cursor=None):
+        update(Item(lan=lan).update(RouterDao._name(), rid, version=True))(cursor)
+
+    @staticmethod
+    @transaction(False)
+    def set_wan(rid, wan, cursor=None):
+        update(Item(wan=wan).update(RouterDao._name(), rid, version=True))(cursor)
+
+    @staticmethod
+    @transaction(False)
     def init(rid, flag, wan, lan, cursor=None):
         update(
             Item(flag=flag, lan=pickle.dumps(lan), wan=pickle.dumps(wan), state=State.ENABLE).update(RouterDao._name(),
                                                                                                      rid,
                                                                                                      version=True))(
             cursor)
+
+    @staticmethod
+    @transaction()
+    def list_by_manager(manager, cursor=None):
+        columns = ["id", "name", "details", "flags"]
+        return [row2item(row, columns) for row in
+                select(Item(manager=manager).select(RouterDao._name(), columns=columns))(cursor)]
+
+    @staticmethod
+    @transaction
+    def get_info(rid, cursor=None):
+        columns = ["name", "details"]
+        return row2item(select(Item(id=rid).select(RouterDao._name(), columns=columns), one=True)(cursor))
+
+    @staticmethod
+    @transaction(False)
+    def set_info(rid, name, details, cursor=None):
+        update(Item(name=name, details=details).update(RouterDao._name(), rid))(cursor)
+
+    @staticmethod
+    @transaction(False)
+    def add(manager, name, details, cursor):
+        return insert(Item(name=name, manager=manager, details=details).insert(RouterDao._name()))(cursor)
 
 
 class DeviceDao:
@@ -128,50 +161,105 @@ class DeviceDao:
 
 class UserDao:
     @staticmethod
+    def _name(): return "itpkg_users"
+
+    @staticmethod
     @transaction()
     def get_name(uid, cursor=None):
-        return select(Item(id=uid).select("itpkg_users", columns=["name"]), one=True)(cursor)
+        return select(Item(id=uid).select(UserDao._name(), columns=["name"]), one=True)(cursor)
 
     @staticmethod
     @transaction()
     def choices_by_manager(manager, cursor=None):
-        return select(Item(manager=manager).select("itpkg_users", columns=["id", "name"]))(cursor)
+        return select(Item(manager=manager).select(UserDao._name(), columns=["id", "name"]))(cursor)
 
     @staticmethod
     @transaction()
-    def get_manager(uid, cursor):
-        return select((Item(id=uid).select("itpkg_users", columns=["manager"])), one=True)(cursor)
+    def get_manager(uid, cursor=None):
+        return select((Item(id=uid).select(UserDao._name(), columns=["manager"])), one=True)(cursor)
+
+    @staticmethod
+    def _columns():
+        return ["id", "name", "details"]
+
+    @staticmethod
+    @transaction()
+    def list_by_manager(manager, cursor=None):
+        return [row2item(row, UserDao._columns()) for row in
+                select(Item(manager=manager).select(UserDao._name(), UserDao._columns()))(cursor)]
+
+    @staticmethod
+    @transaction()
+    def get(uid, cursor=None):
+        return row2item(select(Item(id=uid).select(UserDao._name(), UserDao._columns()), one=True)(cursor),
+                        UserDao._columns())
+
+    @staticmethod
+    @transaction(False)
+    def add(manager, name, details, cursor=None):
+        return insert(Item(manager=manager, name=name, details=details).insert(UserDao._name()))(cursor)
+
+    @staticmethod
+    @transaction(False)
+    def set(uid, name, details, cursor=None):
+        return update(Item(name=name, details=details).update(UserDao._name(), uid))(cursor)
 
 
 class LimitDao:
     @staticmethod
+    def _name(): return "itpkg_limits"
+
+    @staticmethod
     @transaction()
     def choices_by_manager(manager, cursor=None):
-        return select(Item(manager=manager).select("itpkg_limits", columns=["id", "name"]))(cursor)
+        return select(Item(manager=manager).select(LimitDao._name(), columns=["id", "name"]))(cursor)
 
     @staticmethod
     @transaction()
     def get_name(lid, cursor=None):
-        return select(Item(id=lid).select("itpkg_limits", columns=["name"]), one=True)(cursor)
+        return select(Item(id=lid).select(LimitDao._name(), columns=["name"]), one=True)(cursor)
 
     @staticmethod
     @transaction()
     def check_state(lid, cursor=None):
-        return select(Item(id=lid).select("itpkg_limits", columns=["manager", "state"]), one=True)(cursor)
+        return select(Item(id=lid).select(LimitDao._name(), columns=["manager", "state"]), one=True)(cursor)
 
     @staticmethod
     @transaction()
     def get_manager(uid, cursor):
-        return select((Item(id=uid).select("itpkg_limits", columns=["manager"])), one=True)(cursor)
+        return select((Item(id=uid).select(LimitDao._name(), columns=["manager"])), one=True)(cursor)
 
     @staticmethod
-    def _row_columns():
+    def _columns():
         return ["id", "manager", "name", "up_max", "down_max", "up_min", "down_min"]
 
     @staticmethod
-    def _get(lid, cursor):
-        row = select(Item(id=lid).select("itpkg_limits", LimitDao._row_columns()), one=True)(cursor)
-        return row2item(row, LimitDao._row_columns()) if row else None
+    @transaction()
+    def list_by_manager(manager, cursor=None):
+        return [row2item(row, LimitDao._columns()) for row in
+                select(Item(manager=manager).select(LimitDao._name(), LimitDao._columns()))(cursor)]
+
+    @staticmethod
+    @transaction(False)
+    def add(manager, name, up_max, down_max, up_min, down_min, cursor=None):
+        insert(
+            Item(manager=manager, name=name, up_max=up_max, down_max=down_max, up_min=up_min, down_min=down_min).insert(
+                LimitDao._name()))(cursor)
+
+    @staticmethod
+    @transaction(False)
+    def set(lid, name, up_max, down_max, up_min, down_min, cursor=None):
+        update(
+            Item(name=name, up_max=up_max, down_max=down_max, up_min=up_min, down_min=down_min).update(LimitDao._name(),
+                                                                                                       lid,
+                                                                                                       version=True))(
+            cursor)
+
+    @staticmethod
+    @transaction()
+    def get(lid, cursor):
+        return row2item(select(Item(id=lid).select(LimitDao._name(), LimitDao._columns()), one=True)(cursor),
+                        LimitDao._columns())
 
 
 class InputDao:

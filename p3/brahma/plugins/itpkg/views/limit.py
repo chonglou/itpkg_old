@@ -11,10 +11,10 @@ class LimitHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         manager = self.current_user['id']
-        items = LimitDao.all(manager)
+        items = LimitDao.list_by_manager(manager)
         if not items:
             LimitDao.add(manager, "默认规则", 100, 200, 50, 100)
-            items = LimitDao.all(manager)
+            items = LimitDao.list_by_manager(manager)
         self.render("itpkg/limit.html", items=items)
 
     @tornado.web.authenticated
@@ -62,9 +62,8 @@ class LimitHandler(BaseHandler):
 
 
     def __check_limit(self, lid):
-        l = LimitDao.get(lid)
         manager = self.current_user['id']
-        if l.manager == manager:
+        if LimitDao.get_manager(lid) == manager:
             return True
         self.render_message_widget(messages=['没有权限'])
         return False

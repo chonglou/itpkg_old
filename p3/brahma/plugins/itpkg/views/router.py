@@ -25,7 +25,7 @@ class RouterHandler(BaseHandler):
 class ListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("itpkg/router.html", routers=RouterDao.all(self.current_user['id']))
+        self.render("itpkg/router.html", routers=RouterDao.list_by_manager(self.current_user['id']))
 
     @tornado.web.authenticated
     def post(self):
@@ -52,8 +52,8 @@ class ListHandler(BaseHandler):
         if rid:
             if self.check_manager(rid):
                 form.label = "编辑路由器[%s]" % rid
-                r = RouterDao.get(rid)
-                form.iid.data = r.id
+                r = RouterDao.get_info(rid)
+                form.iid.data = rid
                 form.name.data = r.name
                 form.details.data = r.details
                 self.render_form_widget(form=form)

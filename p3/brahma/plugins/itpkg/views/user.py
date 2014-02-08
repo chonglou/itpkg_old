@@ -11,10 +11,10 @@ class UserHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         manager = self.current_user['id']
-        users = UserDao.all(manager)
+        users = UserDao.list_by_manager(manager)
         if not users:
             UserDao.add(manager, "默认用户", "")
-            users = UserDao.all(manager)
+            users = UserDao.list_by_manager(manager)
         self.render("itpkg/user.html", users=users)
 
     @tornado.web.authenticated
@@ -41,7 +41,7 @@ class UserHandler(BaseHandler):
         if fm.validate():
             if uid:
                 if self.__check_user(uid):
-                    UserDao.set_info(uid, fm.name.data, fm.details.data)
+                    UserDao.set(uid, fm.name.data, fm.details.data)
                     self.render_message_widget(ok=True)
                     return
             else:
@@ -56,9 +56,8 @@ class UserHandler(BaseHandler):
 
 
     def __check_user(self, uid):
-        u = UserDao.get(uid)
         manager = self.current_user['id']
-        if u.manager == manager:
+        if UserDao.get_manager(uid) == manager:
             return True
         self.render_message_widget(messages=['没有权限'])
         return False
