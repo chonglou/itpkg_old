@@ -277,7 +277,7 @@ class ArchLinux:
 
 
 class Rpc:
-    def __init__(self, host, user="root", password=None, port=22, flag="ArchLinux"):
+    def __init__(self, flag, host, user="root", password=None, port=22):
         self.__host = host
         self.__user = user
         self.__password = password
@@ -399,9 +399,7 @@ class Rpc:
 
 
 def create(rid):
-    import json
     from brahma.plugins.itpkg.store import RouterDao
 
-    r = RouterDao.get(rid)
-    wan = json.loads(r.wan)
-    return Rpc(host=wan['ip'], flag=r.flag)
+    wan, flag = RouterDao.get_wan_flag(rid)
+    return Rpc(host=wan.ip, flag=flag)

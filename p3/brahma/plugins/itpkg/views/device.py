@@ -1,19 +1,17 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
+
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import DeviceDao, RouterDao, UserDao, LimitDao
 from brahma.plugins.itpkg.rpc import create as create_rpc
 from brahma.plugins.itpkg.forms import DeviceForm
+from brahma.models import State
 
 
 class DeviceHandler(BaseHandler):
     def __check_device(self, rid, did):
-        d = DeviceDao.get(did)
-        if type(rid) == str:
-            rid = int(rid)
-
-        if d.router == rid:
+        if DeviceDao.get_router(did) == int(rid):
             return True
         self.render_message_widget(messages=['没有权限'])
         return False
@@ -21,17 +19,14 @@ class DeviceHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_state(rid):
-            import json
-
-            r = RouterDao.get(rid)
-            lan = json.loads(r.lan)
-            devices = DeviceDao.all(rid)
+            wan, lan = RouterDao.get_network(rid)
+            devices = DeviceDao.list_by_router(rid)
             users = {}
             limits = {}
             if devices:
                 for d in devices:
-                    users[d.id] = UserDao.get(d.user).name if d.user else None
-                    limits[d.id] = LimitDao.get(d.limit).name if d.limit else None
+                    users[d.id] = UserDao.get_name(d.user) if d.user else None
+                    limits[d.id] = LimitDao.get_name(d.limit) if d.limit else None
             self.render("itpkg/device/list.html", rid=rid, devices=devices, users=users, limits=limits, net=lan['net'])
 
     @tornado.web.authenticated
@@ -41,12 +36,12 @@ class DeviceHandler(BaseHandler):
         if self.check_state(rid):
             if act == "edit":
                 fm = DeviceForm(formdata=self.request.arguments)
-                fm.user.choices = [(u.id, u.name) for u in UserDao.all(manager)]
-                fm.limit.choices = [(l.id, l.name) for l in LimitDao.all(manager)]
+                fm.user.choices = UserDao.choices_by_manager(manager)
+                fm.limit.choices = LimitDao.choices_by_manager(manager)
                 if self.__check_device(rid, fm.id.data):
                     if fm.validate():
                         DeviceDao.set(fm.id.data, fm.user.data, fm.limit.data,
-                                      "ENABLE" if fm.enable.data else "DISABLE", fm.details.data)
+                                      State.ENABLE if fm.enable.data else State.DISABLE, fm.details.data)
                         self.render_message_widget(ok=True)
                     else:
                         self.render_message_widget(messages=fm.messages())
@@ -58,22 +53,20 @@ class DeviceHandler(BaseHandler):
         manager = self.current_user['id']
         act = self.get_argument("act")
         if self.check_state(rid):
-            import json
 
-            r = RouterDao.get(rid)
-            net = json.loads(r.lan)['net']
+            wan, lan = RouterDao.get_network(rid)
             if act == "edit":
                 did = self.get_argument("id")
                 if self.__check_device(rid, did):
-                    users = UserDao.all(manager)
-                    limits = LimitDao.all(manager)
+                    users = UserDao.choices_by_manager(manager)
+                    limits = UserDao.choices_by_manager(manager)
                     if users and limits:
                         device = DeviceDao.get(did)
                         form = DeviceForm("device", "设备[%s]详细信息" % device.id, "/itpkg/%s/device" % rid)
                         form.act.data = "edit"
                         form.id.data = device.id
-                        form.user.choices = [(u.id, u.name) for u in users]
-                        form.limit.choices = [(l.id, l.name) for l in limits]
+                        form.user.choices = users
+                        form.limit.choices = limits
                         form.enable.data = device.state == "ENABLE"
                         form.user.data = device.user
                         form.limit.data = device.limit
@@ -84,13 +77,13 @@ class DeviceHandler(BaseHandler):
             elif act == "view":
                 did = self.get_argument("id")
                 if self.__check_device(rid, did):
-                    self.render("itpkg/device/view.html", net=net, device=DeviceDao.get(did))
+                    self.render("itpkg/device/view.html", net=lan.net, device=DeviceDao.get(did))
             elif act == "scan":
-                #test
+                #todo
                 rpc = create_rpc(rid)
                 ok, result = rpc.scan()
                 if ok:
-                    i, u = DeviceDao.fill(rid, result)
+                    i, u = DeviceDao.add_all(rid, result)
                     self.render_message_widget(ok=True,
                                                messages=[
                                                    "新增了%s条记录" % i,
@@ -99,12 +92,6 @@ class DeviceHandler(BaseHandler):
                     )
                 else:
                     self.render_message_widget(messages=result)
-            elif act == "debug":
-                items = list()
-                for i in range(1, 20):
-                    items.append(("mac-%s" % i, i))
-                DeviceDao.fill(rid, items)
-                self.render_message_widget(ok=True)
             else:
                 self.render_message_widget(messages=['错误请求'])
 

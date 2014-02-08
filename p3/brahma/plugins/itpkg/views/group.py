@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
+
 from brahma.views import BaseHandler
 from brahma.plugins.itpkg.store import GroupDao
 from brahma.plugins.itpkg.forms import InfoForm
@@ -40,7 +41,7 @@ class GroupHandler(BaseHandler):
         if fm.validate():
             if gid:
                 if self.__check_group(gid):
-                    GroupDao.set_info(gid, fm.name.data, fm.details.data)
+                    GroupDao.set(gid, fm.name.data, fm.details.data)
                     self.render_message_widget(ok=True)
                     return
             else:
@@ -55,9 +56,9 @@ class GroupHandler(BaseHandler):
 
 
     def __check_group(self, gid):
-        g = GroupDao.get(gid)
+
         manager = self.current_user['id']
-        if g.manager == manager:
+        if GroupDao.get_manager(gid) == manager:
             return True
         self.render_message_widget(messages=['没有权限'])
         return False

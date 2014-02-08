@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import datetime
+
 from brahma.models import Enum, State
 
 
@@ -21,6 +22,12 @@ class Protocol(Enum):
     UDP = "U"
 
 
+class WanFlag(Enum):
+    PPPOE = "P"
+    STATIC = "S"
+    DHCP = "D"
+
+
 class Weekday(Enum):
     "mon,tue,wed,thu,fri,sat,sun"
     MONDAY = "mon"
@@ -39,12 +46,32 @@ class Weekday(Enum):
         return ",".join(days)
 
 
+class Wan(object):
+    def __init__(self, mac, flag, ip=None, netmask=None, gateway=None, dns1=None, dns2=None, username=None,
+                 password=None):
+        self.mac = mac
+        self.flag = flag
+        self.ip = ip
+        self.netmask = netmask
+        self.gateway = gateway
+        self.dns1 = dns1
+        self.dns2 = dns2
+        self.username = username
+        self.password = password
+
+
+class Lan(object):
+    def __init__(self, mac, net, domain):
+        self.mac = mac
+        self.net = net
+        self.domain = domain
+
+
 tables = [
     ("itpkg_routers", True, True, False, [
         "name_ VARCHAR(32) UNIQUE NOT NULL",
         "wan_ VARBINARY(255) NOT NULL",
         "lan_ VARBINARY(255) NOT NULL",
-        "ping_ TINYINT NOT NULL DEFAULT 1",
         "flag_ CHAR(1) NOT NULL",
         "manager_ INTEGER NOT NULL DEFAULT 0",
         "details_ TEXT",
@@ -76,7 +103,7 @@ tables = [
         "output_ INTEGER NOT NULL",
         "device_ INTEGER NOT NULL",
     ]),
-    ("itpkg_device", True, True, False, [
+    ("itpkg_devices", True, True, False, [
         "mac_ CHAR(20) NOT NULL",
         "ip_ TINYINT UNSIGNED NOT NULL",
         "fix_ TINYINT NOT NULL DEFAULT 0",

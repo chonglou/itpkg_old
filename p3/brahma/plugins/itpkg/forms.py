@@ -3,6 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField, IntegerField, \
     RadioField
 
+from brahma.plugins.itpkg.models import WanFlag, RouterFlag
 from brahma.web import Form, HtmlField, ListField
 
 
@@ -101,7 +102,7 @@ class LanForm(Form):
 
 
 class InitForm(Form):
-    flag = SelectField("类型", choices=[('ArchLinux', 'ArchLinux'), ('DIR-615', 'DIR-615')])
+    flag = SelectField("类型", choices=[(RouterFlag.ARCH_LINUX_OLD, '旧版ArchLinux')])
     host = TextField("主机&端口", validators=[validators.Required()])
     password = PasswordField("ROOT密码")
     wanMac = TextField("WAN MAC")

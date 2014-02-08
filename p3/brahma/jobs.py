@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import logging
+
 from brahma.models import TaskFlag
 
 

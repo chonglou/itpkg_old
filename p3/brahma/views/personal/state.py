@@ -1,11 +1,13 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import logging
+
 import tornado.web
+
 from brahma.views import BaseHandler
 from brahma.forms.personal import LoginForm, RegisterForm, ActiveForm, ResetPwdForm
 from brahma.store import UserDao, SettingDao, LogDao
-from brahma.models import UserFlag, State
+from brahma.models import State
 
 
 class ValidHandler(BaseHandler):

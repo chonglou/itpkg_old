@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
+
 from brahma.views import BaseHandler
 from brahma.forms.site import InfoForm, SmtpForm, ContentForm, AdvertForm, ProtocolForm, ValidCodeForm, FriendLinkForm, \
     TimerForm
@@ -64,7 +65,7 @@ class AdminHandler(BaseHandler):
                 self.render("widgets/forms.html", forms=[fmLeft, fmBottom])
             elif act == "status":
                 from brahma.env import start_stamp
-                import datetime, psutil, tornado.options, sys, os
+                import datetime, psutil, tornado.options, sys
 
                 items = list()
                 items.append("Python目录：%s" % sys.exec_prefix)

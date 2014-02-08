@@ -4,6 +4,15 @@ import mysql.connector
 from mysql.connector.pooling import MySQLConnectionPool
 
 
+def row2item(row, columns):
+    from brahma.models import Item
+
+    d = dict()
+    for i in range(0, len(columns)):
+        d[columns[i]] = row[i]
+    return Item(**d)
+
+
 def bulk(lines):
     def query(cursor):
         for line in lines:

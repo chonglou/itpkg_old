@@ -2,7 +2,7 @@ __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
 
-from brahma.cache import cache, get_site_info
+from brahma.cache import get_site_info
 from brahma.views import BaseHandler, plugin_cards_links
 from brahma.store import UserDao
 

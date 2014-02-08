@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
+
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import RouterDao, InputDao, OutputDao, NatDao, OutputDeviceDao, DeviceDao
 from brahma.plugins.itpkg.forms import InputForm, OutputForm, NatForm, ip_choices
@@ -10,11 +11,8 @@ class FirewallHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_state(rid):
-            r = RouterDao.get(rid)
-            import json
-
-            lan = json.loads(r.lan)
-            self.render("itpkg/firewall.html", rid=rid, net=lan['net'],
+            wan, lan = RouterDao.get_network(rid)
+            self.render("itpkg/firewall.html", rid=rid, net=lan.net,
                         inputs=InputDao.all(rid),
                         outputs=OutputDao.all(rid),
                         nats=NatDao.all(rid))
@@ -27,12 +25,7 @@ class FirewallHandler(BaseHandler):
             from brahma.plugins.itpkg.rpc import create
 
             rpc = create(rid)
-            r = RouterDao.get(rid)
-
-            import json
-
-            lan = json.loads(r.lan)
-
+            wan, lan = RouterDao.get_network(rid)
             if act == "apply":
                 #test
                 ins = []
@@ -43,8 +36,8 @@ class FirewallHandler(BaseHandler):
                 for o in OutputDao.all(rid):
                     #todo 当前只支持关键字
                     ms = []
-                    for od in OutputDeviceDao.all(o.id):
-                        ms.append(DeviceDao.get(od.device).mac)
+                    for od in OutputDeviceDao.list_device(o.id):
+                        ms.append(DeviceDao.get_mac(od.device))
 
                     outs.append(
                         (o.keyword, o.begin, o.end, o.weekdays, ms))
@@ -53,22 +46,18 @@ class FirewallHandler(BaseHandler):
                 for n in NatDao.all(rid):
                     nats.append((n.sport, n.protocol, n.dip, n.dport))
 
-                macs = []
-                for d in DeviceDao.all(rid):
-                    if d.state == "ENABLE":
-                        macs.append(d.mac)
-
-                ok, result = rpc.apply_firewall(net=lan['net'], ins=ins, outs=outs, nats=nats, macs=macs)
+                macs = DeviceDao.list_enable_mac(rid)
+                ok, result = rpc.apply_firewall(net=lan.net, ins=ins, outs=outs, nats=nats, macs=macs)
                 if ok:
                     self.render_message_widget(ok=True)
                 else:
                     self.render_message_widget(messages=result)
             elif act == "clear":
-                #test
-                ok, result = rpc.clear_firewall(lan['net'])
+                #todo test
+                ok, result = rpc.clear_firewall(lan.net)
                 self.render_message_widget(ok=ok, messages=result)
             elif act == "status":
-                #test
+                #todo test
                 ok, result = rpc.status_firewall()
                 self.render_message_widget(ok=ok, messages=result)
             else:
@@ -127,15 +116,11 @@ class NatHandler(BaseHandler):
 
 
     def __set_ip_choices(self, rid, form):
-        r = RouterDao.get(rid)
-        import json
-
-        lan = json.loads(r.lan)
-        form.dip.choices = ip_choices(lan['net'])
+        lan = RouterDao.get_network(rid)
+        form.dip.choices = ip_choices(lan.net)
 
     def __check(self, rid, nid):
-        i = NatDao.get(nid)
-        if i.router == int(rid):
+        if NatDao.get_router(nid) == int(rid):
             return True
         self.render_message_widget(messages=["没有权限"])
         return False
@@ -186,8 +171,7 @@ class InputHandler(BaseHandler):
             self.render_message_widget(ok=True)
 
     def __check(self, rid, iid):
-        i = InputDao.get(iid)
-        if i.router == int(rid):
+        if InputDao.get_router(iid) == int(rid):
             return True
         self.render_message_widget(messages=["没有权限"])
         return False
@@ -218,7 +202,7 @@ class OutputHandler(BaseHandler):
     @tornado.web.authenticated
     def delete(self, rid, oid=None):
         if oid and self.check_state(rid) and self.__check(rid, oid):
-            if OutputDeviceDao.all(oid):
+            if OutputDeviceDao.list_device(oid):
                 self.render_message_widget(messages=['该规则正在被使用'])
             else:
                 OutputDao.delete(oid)
@@ -253,8 +237,7 @@ class OutputHandler(BaseHandler):
                 self.render_message_widget(messages=fm.messages())
 
     def __check(self, rid, oid):
-        i = OutputDao.get(oid)
-        if i.router == int(rid):
+        if OutputDao.get_router(oid) == int(rid):
             return True
         self.render_message_widget(messages=["没有权限"])
         return False

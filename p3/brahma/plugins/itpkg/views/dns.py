@@ -1,6 +1,7 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import tornado.web
+
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import RouterDao
 
@@ -17,19 +18,16 @@ class DnsHandler(BaseHandler):
             act = self.get_argument("act")
             from brahma.plugins.itpkg.rpc import create
 
-            r = RouterDao.get(rid)
-            rpc = create(rid)
             if act == "apply":
-                import json
-
-                lan = json.loads(r.lan)
-                wan = json.loads(r.wan)
-                ok, result = rpc.apply_named(lan['net'], wan['dns1'], wan['dns2'])
+                wan, lan = RouterDao.get_network(rid)
+                rpc = create(rid)
+                ok, result = rpc.apply_named(lan.net, wan.dns1, wan.dns2)
                 if ok:
                     self.render_message_widget(ok=True)
                 else:
                     self.render_message_widget(messages=result)
             elif act == "status":
+                rpc = create(rid)
                 ok, result = rpc.status_named()
                 self.render_message_widget(ok=ok, messages=result)
             else:
