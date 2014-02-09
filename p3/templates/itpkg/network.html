@@ -8,7 +8,7 @@
     $(document).ready(function () {
 
         $("button#refresh").click(function () {
-            new Ajax("tab-item-init", "/itpkg/{{rid}}/network");
+            new Ajax("tab-item-network", "/itpkg/{{rid}}/network");
         });
         $("button#wan").click(function () {
             if(confirm("变更WAN信息之后需要切换物理线路，确认要继续么？")){

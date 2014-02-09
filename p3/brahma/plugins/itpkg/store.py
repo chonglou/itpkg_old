@@ -10,6 +10,11 @@ from brahma.utils.database import insert, update, delete, select, count, row2ite
 class RouterDao:
     @staticmethod
     @transaction()
+    def choices(manager, cursor=None):
+        return select(Item(manager=manager).select(RouterDao._name(), ["id", "name"]))(cursor)
+
+    @staticmethod
+    @transaction()
     def get_manager_state(rid, cursor=None):
         return select(Item(id=rid).select(RouterDao._name(), ["manager", "state"]), one=True)(cursor)
 
@@ -32,17 +37,18 @@ class RouterDao:
     @staticmethod
     @transaction()
     def get_state(rid, cursor=None):
-        return select(Item(id=rid).select(RouterDao._name(), ["state"]))(cursor)
+        row = select(Item(id=rid).select(RouterDao._name(), ["state"]), one=True)(cursor)
+        return row[0] if row else None
 
     @staticmethod
     @transaction(False)
     def set_lan(rid, lan, cursor=None):
-        update(Item(lan=lan).update(RouterDao._name(), rid, version=True))(cursor)
+        update(Item(lan=pickle.dumps(lan)).update(RouterDao._name(), rid, version=True))(cursor)
 
     @staticmethod
     @transaction(False)
     def set_wan(rid, wan, cursor=None):
-        update(Item(wan=wan).update(RouterDao._name(), rid, version=True))(cursor)
+        update(Item(wan=pickle.dumps(wan)).update(RouterDao._name(), rid, version=True))(cursor)
 
     @staticmethod
     @transaction(False)
@@ -56,15 +62,15 @@ class RouterDao:
     @staticmethod
     @transaction()
     def list_by_manager(manager, cursor=None):
-        columns = ["id", "name", "details", "flags"]
+        columns = ["id", "name", "details", "flag", "state"]
         return [row2item(row, columns) for row in
                 select(Item(manager=manager).select(RouterDao._name(), columns=columns))(cursor)]
 
     @staticmethod
-    @transaction
+    @transaction()
     def get_info(rid, cursor=None):
-        columns = ["name", "details"]
-        return row2item(select(Item(id=rid).select(RouterDao._name(), columns=columns), one=True)(cursor))
+        columns = ["name", "details", "state"]
+        return row2item(select(Item(id=rid).select(RouterDao._name(), columns=columns), one=True)(cursor), columns)
 
     @staticmethod
     @transaction(False)
@@ -84,7 +90,7 @@ class DeviceDao:
 
     @staticmethod
     def _columns():
-        return ["id", "mac", "ip", "fix", "state", "limit", "user"]
+        return ["id", "mac", "ip", "fix", "state", "limit", "user", "created"]
 
     @staticmethod
     @transaction()
@@ -101,10 +107,12 @@ class DeviceDao:
     def add_all(rid, mac_ips, cursor=None):
         i, u = 0, 0
         for mac, ip in mac_ips:
-            did = select(Item(router=rid, mac=mac).select(DeviceDao._name(), ["id"]))(cursor)
-            if did:
-                update(Item(ip=ip).update(DeviceDao._name(), id_val=id, version=True))(cursor)
-                u += 1
+            row = select(Item(router=rid, mac=mac).select(DeviceDao._name(), ["id", "ip"]), one=True)(cursor)
+            if row:
+                did, dip = row
+                if dip != ip:
+                    update(Item(ip=ip).update(DeviceDao._name(), id_val=did))(cursor)
+                    u += 1
             else:
                 insert(Item(router=rid, ip=ip, mac=mac).insert(DeviceDao._name()))(cursor)
                 i += 1
@@ -113,7 +121,8 @@ class DeviceDao:
     @staticmethod
     @transaction()
     def get_router(did, cursor=None):
-        return select(Item(id=did).select(DeviceDao._name(), ["router"]), one=True)(cursor)
+        row = select(Item(id=did).select(DeviceDao._name(), ["router"]), one=True)(cursor)
+        return row[0] if row else None
 
     @staticmethod
     @transaction()
@@ -124,7 +133,7 @@ class DeviceDao:
     @staticmethod
     @transaction()
     def choices(rid, state, cursor=None):
-        return select(Item(router=rid, state=state).select(DeviceDao._name(), ["id", "state"]))(cursor)
+        return select(Item(router=rid, state=state).select(DeviceDao._name(), ["id", "mac"]))(cursor)
 
     @staticmethod
     @transaction()
@@ -166,7 +175,8 @@ class UserDao:
     @staticmethod
     @transaction()
     def get_name(uid, cursor=None):
-        return select(Item(id=uid).select(UserDao._name(), columns=["name"]), one=True)(cursor)
+        row = select(Item(id=uid).select(UserDao._name(), columns=["name"]), one=True)(cursor)
+        return row[0] if row else None
 
     @staticmethod
     @transaction()
@@ -176,7 +186,8 @@ class UserDao:
     @staticmethod
     @transaction()
     def get_manager(uid, cursor=None):
-        return select((Item(id=uid).select(UserDao._name(), columns=["manager"])), one=True)(cursor)
+        row = select((Item(id=uid).select(UserDao._name(), columns=["manager"])), one=True)(cursor)
+        return row[0] if row else None
 
     @staticmethod
     def _columns():
@@ -217,7 +228,8 @@ class LimitDao:
     @staticmethod
     @transaction()
     def get_name(lid, cursor=None):
-        return select(Item(id=lid).select(LimitDao._name(), columns=["name"]), one=True)(cursor)
+        row = select(Item(id=lid).select(LimitDao._name(), columns=["name"]), one=True)(cursor)
+        return row[0] if row else None
 
     @staticmethod
     @transaction()
@@ -227,7 +239,8 @@ class LimitDao:
     @staticmethod
     @transaction()
     def get_manager(uid, cursor):
-        return select((Item(id=uid).select(LimitDao._name(), columns=["manager"])), one=True)(cursor)
+        row = select((Item(id=uid).select(LimitDao._name(), columns=["manager"])), one=True)(cursor)
+        return row[0] if row else None
 
     @staticmethod
     def _columns():
@@ -276,13 +289,14 @@ class InputDao:
 
     @staticmethod
     @transaction(False)
-    def add(router, port, protocol, cursor=None):
-        return insert(Item(router=router, port=port, protocol=protocol).insert(InputDao._name()))(cursor) > 0
+    def add(router, name, port, protocol, cursor=None):
+        return insert(Item(router=router, name=name, port=port, protocol=protocol).insert(InputDao._name()))(cursor) > 0
 
     @staticmethod
     @transaction(False)
-    def set(iid, port, protocol, cursor=None):
-        return update(Item(port=port, protocol=protocol).update(InputDao._name(), iid, version=True))(cursor) > 0
+    def set(iid, name, port, protocol, cursor=None):
+        return update(Item(port=port, name=name, protocol=protocol).update(InputDao._name(), iid, version=True))(
+            cursor) > 0
 
 
     @staticmethod
@@ -306,7 +320,8 @@ class InputDao:
     @staticmethod
     @transaction()
     def get_router(iid, cursor=None):
-        return select(Item(id=iid).select(InputDao._name(), ["router"]))(cursor)
+        row = select(Item(id=iid).select(InputDao._name(), ["router"]))(cursor)
+        return row[0] if row else None
 
 
 class OutputDao:
@@ -337,7 +352,8 @@ class OutputDao:
     @staticmethod
     @transaction()
     def get_router(oid, cursor=None):
-        return select(Item(id=oid).select(OutputDao._name(), ["router"]))(cursor)
+        row = select(Item(id=oid).select(OutputDao._name(), ["router"]))(cursor)
+        return row[0] if row else None
 
     @staticmethod
     @transaction(False)
@@ -396,7 +412,8 @@ class NatDao:
     @staticmethod
     @transaction()
     def get_router(nid, cursor=None):
-        return select(Item(id=nid).select(NatDao._name(), ["router"]))(cursor)
+        row = select(Item(id=nid).select(NatDao._name(), ["router"]))(cursor)
+        return row[0] if row else None
 
 
 class OutputDeviceDao:
@@ -441,4 +458,5 @@ class GroupDao:
     @staticmethod
     @transaction()
     def get_manager(gid, cursor):
-        return select((Item(id=gid).select(GroupDao._name(), columns=["manager"])), one=True)(cursor)
+        row = select((Item(id=gid).select(GroupDao._name(), columns=["manager"])), one=True)(cursor)
+        return row[0] if row else None

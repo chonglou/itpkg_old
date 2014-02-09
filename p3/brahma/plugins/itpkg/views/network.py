@@ -5,7 +5,6 @@ import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.forms import WanForm, LanForm
 from brahma.plugins.itpkg.store import RouterDao
-from brahma.plugins.itpkg.models import WanFlag
 
 
 class NetworkHandler(BaseHandler):
@@ -24,10 +23,9 @@ class NetworkHandler(BaseHandler):
             if act == "wan":
                 form = WanForm("wan", "WAN 配置", "/itpkg/%s/network" % rid)
                 form.act.data = "wan"
-                if wan.flag == WanFlag.STATIC:
-                    form.ip.data = wan.ip
-                    form.netmask.data = wan.netmask
-                    form.gateway.data = wan.gateway
+                form.ip.data = wan.ip
+                form.netmask.data = wan.netmask
+                form.gateway.data = wan.gateway
                 form.dns1.data = wan.dns1
                 form.dns2.data = wan.dns2
                 self.render_form_widget(form)

@@ -1,11 +1,13 @@
 __author__ = 'zhengjitang@gmail.com'
 
 import datetime
+import logging
 
 import tornado.options
 
 from brahma.utils.encrypt import Encrypt
 from brahma.utils.ssh import Ssh
+
 
 ssh = Ssh()
 
@@ -38,7 +40,6 @@ _db = _get_db()
 def transaction(readonly=True):
     def _decorator(func):
         def __decorator(*args, **kwargs):
-            val = None
             cnx = None
             cursor = None
             try:
@@ -48,19 +49,18 @@ def transaction(readonly=True):
                 val = func(*args, **kwargs)
                 if not readonly:
                     cnx.commit()
-            except Exception as e:
+                return val
+            except Exception:
                 if cnx:
                     cnx.rollback()
-                import logging
-
-                logging.exception("数据库操作失败")
+                logging.error("数据库操作失败")
                 raise ValueError()
             finally:
                 if cursor:
                     cursor.close()
                 if cnx:
                     cnx.close()
-            return val
+
 
         return __decorator
 

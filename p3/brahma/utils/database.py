@@ -41,15 +41,7 @@ def delete(line):
 def select(line, one=False):
     def query(cursor):
         cursor.execute(*line)
-        result = cursor.fetchall()
-        if one:
-            if result:
-                if len(result) == 1:
-                    return result[0]
-                raise Exception("多条记录")
-            return None
-        else:
-            return result
+        return cursor.fetchone() if one else cursor.fetchall()
 
     return query
 

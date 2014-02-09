@@ -6,7 +6,7 @@ from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import DeviceDao, RouterDao, UserDao, LimitDao
 from brahma.plugins.itpkg.rpc import create as create_rpc
 from brahma.plugins.itpkg.forms import DeviceForm
-from brahma.models import State
+from brahma.models import State, enum2str
 
 
 class DeviceHandler(BaseHandler):
@@ -27,7 +27,10 @@ class DeviceHandler(BaseHandler):
                 for d in devices:
                     users[d.id] = UserDao.get_name(d.user) if d.user else None
                     limits[d.id] = LimitDao.get_name(d.limit) if d.limit else None
-            self.render("itpkg/device/list.html", rid=rid, devices=devices, users=users, limits=limits, net=lan['net'])
+
+            self.render("itpkg/device/list.html",
+                        state=State, enum2str=enum2str,
+                        rid=rid, devices=devices, users=users, limits=limits, net=lan.net)
 
     @tornado.web.authenticated
     def post(self, rid):
@@ -59,7 +62,7 @@ class DeviceHandler(BaseHandler):
                 did = self.get_argument("id")
                 if self.__check_device(rid, did):
                     users = UserDao.choices_by_manager(manager)
-                    limits = UserDao.choices_by_manager(manager)
+                    limits = LimitDao.choices_by_manager(manager)
                     if users and limits:
                         device = DeviceDao.get(did)
                         form = DeviceForm("device", "设备[%s]详细信息" % device.id, "/itpkg/%s/device" % rid)
@@ -79,11 +82,13 @@ class DeviceHandler(BaseHandler):
                 if self.__check_device(rid, did):
                     self.render("itpkg/device/view.html", net=lan.net, device=DeviceDao.get(did))
             elif act == "scan":
-                #todo
                 rpc = create_rpc(rid)
                 ok, result = rpc.scan()
                 if ok:
-                    i, u = DeviceDao.add_all(rid, result)
+                    if result:
+                        i, u = DeviceDao.add_all(rid, result)
+                    else:
+                        i, u = 0, 0
                     self.render_message_widget(ok=True,
                                                messages=[
                                                    "新增了%s条记录" % i,

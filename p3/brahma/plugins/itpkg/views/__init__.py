@@ -28,7 +28,7 @@ class BaseHandler(brahma.views.BaseHandler):
         row = RouterDao.get_manager_state(rid)
         if row and self.current_user['id'] == row[0]:
             return True
-        self.render_message_widget(messages="没有权限")
+        self.render_message_widget(messages=["没有权限"])
         return False
 
 

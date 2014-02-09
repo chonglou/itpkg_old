@@ -34,7 +34,7 @@ def navbar(uid=None):
         nb.add("/itpkg/router", "路由设备")
         from brahma.plugins.itpkg.store import RouterDao
 
-        items = [("/itpkg/router/%s" % r.id, "路由-%s" % r.name) for r in RouterDao.all(uid)]
+        items = [("/itpkg/router/%s" % rid, "路由-%s" % name) for rid, name in RouterDao.choices(uid)]
         nb.items.extend(items)
         return nb
     return None

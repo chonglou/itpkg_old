@@ -1,10 +1,10 @@
 <div class="btn-group">
     <button id="refresh" class="btn btn-primary">刷新</button>
-    <button id="status" class="btn btn-success">当前状态</button>
+    <button id="status" class="btn btn-success">查询</button>
 </div>
 <div id="status-root"></div>
 <p>&nbsp;</p>
-<h3>{{router.name}}[{{router.state}}]</h3>
+<h3>{{router.name}}[{{ enum2str(state, router.state)}}]</h3>
 <hr>{% raw router.details %}
 <script type="text/javascript">
     $(document).ready(function () {

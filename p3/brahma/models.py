@@ -94,6 +94,13 @@ class State(Enum):
     DONE = 'D'
 
 
+def enum2str(flag, val):
+    for k, v in flag.__dict__.items():
+        if val == v:
+            return k
+    return "未知"
+
+
 class UserFlag(Enum):
     GOOGLE = 'G'
     EMAIL = 'M'

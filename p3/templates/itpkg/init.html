@@ -7,12 +7,20 @@
 </div>
 <script type="text/javascript">
     function showFlag(flag) {
-        if (flag == "ArchLinux") {
+        if (flag == "A") {
+            $("input#fm-init-host").parent().parent().hide();
             $("input#fm-init-lanMac").parent().parent().show();
             $("input#fm-init-wanMac").parent().parent().show();
             $("input#fm-init-password").parent().parent().hide();
         }
-        else if (flag == "DIR-615") {
+        else if (flag == "B") {
+            $("input#fm-init-host").parent().parent().show();
+            $("input#fm-init-lanMac").parent().parent().show();
+            $("input#fm-init-wanMac").parent().parent().show();
+            $("input#fm-init-password").parent().parent().hide();
+        }
+        else if (flag == "O") {
+            $("input#fm-init-host").parent().parent().show();
             $("input#fm-init-lanMac").parent().parent().hide();
             $("input#fm-init-wanMac").parent().parent().hide();
             $("input#fm-init-password").parent().parent().show();
@@ -20,15 +28,26 @@
     }
 
     function showWanFlag(flag) {
-        if (flag == "static") {
+        if (flag == "S") {
             $("input#fm-init-wanIp").parent().parent().show();
             $("input#fm-init-wanNetmask").parent().parent().show();
             $("input#fm-init-wanGateway").parent().parent().show();
+            $("input#fm-init-wanUsername").parent().parent().hide();
+            $("input#fm-init-wanPassword").parent().parent().hide();
         }
-        else {
+        else if(flag == "D") {
             $("input#fm-init-wanIp").parent().parent().hide();
             $("input#fm-init-wanNetmask").parent().parent().hide();
             $("input#fm-init-wanGateway").parent().parent().hide();
+            $("input#fm-init-wanUsername").parent().parent().hide();
+            $("input#fm-init-wanPassword").parent().parent().hide();
+        }
+        else if(flag == "P"){
+            $("input#fm-init-wanIp").parent().parent().hide();
+            $("input#fm-init-wanNetmask").parent().parent().hide();
+            $("input#fm-init-wanGateway").parent().parent().hide();
+            $("input#fm-init-wanUsername").parent().parent().show();
+            $("input#fm-init-wanPassword").parent().parent().show();
         }
     }
     $(document).ready(function () {
@@ -39,11 +58,11 @@
             showWanFlag($(this).val());
         });
         $("a#fm-btn-init-reset").click(function () {
-            showFlag("ArchLinux");
-            showWanFlag("static");
+            showFlag("A");
+            showWanFlag("S");
         });
-        showFlag("ArchLinux");
-        showWanFlag("static");
+        showFlag("A");
+        showWanFlag("S");
     });
 
 </script>

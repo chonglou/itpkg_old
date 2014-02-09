@@ -5,6 +5,7 @@ import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import RouterDao, DeviceDao
 from brahma.plugins.itpkg.forms import DhcpForm, ip_choices
+from brahma.models import State
 
 
 class DhcpHandler(BaseHandler):
@@ -14,7 +15,7 @@ class DhcpHandler(BaseHandler):
             wan, lan = RouterDao.get_network(rid)
             form = DhcpForm("bind", "IP绑定", "/itpkg/%s/dhcp" % rid)
             form.ip.choices = ip_choices(lan.net)
-            form.mac.choices = [(d.id, d.mac) for d in DeviceDao.choices(rid, "ENABLE")]
+            form.mac.choices = DeviceDao.choices(rid, State.ENABLE)
             form.flag.data = True
             self.render("itpkg/dhcp.html", rid=rid, net=lan.net, form=form, devices=DeviceDao.list_all_fix(rid))
 
@@ -26,7 +27,7 @@ class DhcpHandler(BaseHandler):
             wan, lan = RouterDao.get_network(rid)
             fm = DhcpForm(formdata=self.request.arguments)
             fm.ip.choices = ip_choices(lan.net)
-            fm.mac.choices = [(d.id, d.mac) for d in DeviceDao.choices(rid)]
+            fm.mac.choices = DeviceDao.choices(rid, State.ENABLE)
             msg = []
             if fm.validate():
                 if (not fm.flag.data) or (not DeviceDao.is_ip_inuse(rid, fm.ip.data)):
@@ -49,8 +50,7 @@ class DhcpHandler(BaseHandler):
                 #todo test
                 rpc = create(rid)
                 wan, lan = RouterDao.get_network(rid)
-                ok, result = rpc.apply_dhcpd(lan.domain, lan.net,
-                                             [(d.mac, d.ip) for d in DeviceDao.mac_ip_all_fix(rid)])
+                ok, result = rpc.apply_dhcpd(lan.domain, lan.net, DeviceDao.mac_ip_all_fix(rid))
                 if ok:
                     self.render_message_widget(ok=True)
                 else:

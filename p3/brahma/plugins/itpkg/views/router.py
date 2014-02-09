@@ -5,6 +5,7 @@ import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.forms import InfoForm
 from brahma.plugins.itpkg.store import RouterDao
+from brahma.models import State
 
 
 class RouterHandler(BaseHandler):
@@ -25,7 +26,11 @@ class RouterHandler(BaseHandler):
 class ListHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("itpkg/router.html", routers=RouterDao.list_by_manager(self.current_user['id']))
+        from brahma.plugins.itpkg.models import RouterFlag
+        from brahma.models import enum2str
+
+        self.render("itpkg/router.html", state=State, flag=RouterFlag, enum2str=enum2str,
+                    routers=RouterDao.list_by_manager(self.current_user['id']))
 
     @tornado.web.authenticated
     def post(self):

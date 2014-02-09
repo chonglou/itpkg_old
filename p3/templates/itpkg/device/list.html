@@ -29,7 +29,7 @@
             <td>{{d.mac}}</td>
             <td>{{"%s.%s"% (net,d.ip)}}</td>
             <td>{% raw "<b>固定</b>" if d.fix else "动态" %}</td>
-            <td>{{d.state}}</td>
+            <td>{{enum2str(state, d.state)}}</td>
             <td>{{users[d.id] or ""}}</td>
             <td>{{limits[d.id] or ""}}</td>
             <td>{{d.lastUpdated if d.lastUpdated else d.created }}</td>

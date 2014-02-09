@@ -4,17 +4,18 @@ import tornado.web
 
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import RouterDao
+from brahma.models import enum2str, State
 
 
 class StatusHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_manager(rid):
-            self.render("itpkg/status.html", router=RouterDao.get_info(rid), rid=rid)
+            self.render("itpkg/status.html", state=State, enum2str=enum2str, router=RouterDao.get_info(rid), rid=rid)
 
     @tornado.web.authenticated
     def put(self, rid):
-        if self.check_manager(rid):
+        if self.check_state(rid):
             from brahma.plugins.itpkg.rpc import create
 
             rpc = create(rid)

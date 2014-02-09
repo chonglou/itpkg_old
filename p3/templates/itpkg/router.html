@@ -23,15 +23,15 @@
         <tr>
             <td>{{r.id}}</td>
             <td>{{r.name}}</td>
-            <td>{{r.flag or ""}}</td>
-            <td>{{r.state}}</td>
+            <td>{{ enum2str(flag, r.flag)}}</td>
+            <td>{{ enum2str(state, r.state)}}</td>
             <td>{% raw r.details %}</td>
             <td>
                 <div class="btn-group btn-group-sm">
                     <button id="/itpkg/router-{{r.id}}-edit" class="btn btn-success">
                         编辑
                     </button>
-                    {% if r.state == 'SUBMIT' %}
+                    {% if r.state == state.SUBMIT %}
                     <button id="/itpkg/router-{{r.id}}-init" class="btn btn-danger">
                         初始化
                     </button>

@@ -5,8 +5,8 @@ import tornado.web
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.forms import InitForm
 from brahma.plugins.itpkg.store import RouterDao
-from brahma.plugins.itpkg.rpc import Rpc
 from brahma.plugins.itpkg.models import WanFlag, RouterFlag, Wan, Lan
+from brahma.models import State
 
 
 class InitHandler(BaseHandler):
@@ -21,15 +21,13 @@ class InitHandler(BaseHandler):
             self.render("itpkg/init.html", form=form)
 
     def __check_wan(self, fm, messages):
-        if fm.wanFlag.data == 'static':
+        if fm.wanFlag.data == WanFlag.STATIC:
             if not fm.wanIp.data:
                 messages.append("WAN IP不能为空")
             if not fm.wanNetmask.data:
                 messages.append("WAN 掩码不能为空")
             if not fm.wanGateway.data:
                 messages.append("WAN 网关不能为空")
-        elif fm.wanFlag.data == 'dhcp':
-            pass
         else:
             messages.append("暂不支持的网络类型[%s]" % fm.wanFlag.data)
 
@@ -55,7 +53,7 @@ class InitHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self, rid):
         if self.check_manager(rid):
-            if RouterDao.get_state(rid) != "SUBMIT":
+            if RouterDao.get_state(rid) != State.SUBMIT:
                 self.render_message_widget(messages=['已经初始化'])
                 return
 
@@ -63,69 +61,45 @@ class InitHandler(BaseHandler):
             messages = []
 
             if fm.validate():
-                self.__check_wan(fm, messages)
-                lanNet = self.__get_lan_net(fm, messages)
-                host, port = self.__get_host_port(fm)
-
-                if fm.flag.data == RouterFlag:
-                    if not fm.wanMac.data:
-                        messages.append("WAN MAC不能为空")
-                    if not fm.lanMac.data:
-                        messages.append("LAN MAC不能为空")
-
-                    from brahma.plugins.itpkg.rpc import ArchLinux
-
-                    if fm.wanFlag.data == WanFlag.STATIC:
-                        f_wan = ArchLinux.wan_static(
-                            ip=fm.wanIp.data,
-                            netmask=fm.wanNetmask.data,
-                            gateway=fm.wanGateway.data,
-                            dns1=fm.wanDns1.data, dns2=fm.wanDns2.data)
-                    elif fm.wanFlag.data == WanFlag.DHCP:
-                        f_wan = ArchLinux.wan_dhcp(fm.wanDns1.data, fm.wanDns2.data)
-                    else:
-                        messages.append("错误的WAN网络类型")
-                        f_wan = None
-
-                    if not messages:
-                        rpc = Rpc(host=host, port=port, flag=fm.flag.data)
-                        cmds = []
-                        cmds.extend(ArchLinux.udev(fm.wanMac.data.lower(), fm.lanMac.data.lower()))
-                        cmds.extend(f_wan)
-                        cmds.extend(ArchLinux.lan(lanNet))
-                        #ok,result=True,[]
-                        ok, result = rpc.call(cmds)
-                        if ok:
-                            if fm.wanFlag.data == WanFlag.STATIC:
-                                wan = Wan(
-                                    flag=fm.flag.data,
-                                    mac=fm.wanMac.data.lower(),
-                                    ip=fm.wanIp.data,
-                                    netmask=fm.wanNetmask.data,
-                                    gateway=fm.wanGateway.data,
-                                    dns1=fm.wanDns1.data,
-                                    dns2=fm.wanDns2.data)
-
-                            elif fm.wanFlag.data == WanFlag.DHCP:
-                                wan = Wan(mac=fm.wanMac.data.lower(), flag="dhcp")
-                            else:
-                                wan = None
-                            lan = Lan(
-                                mac=fm.lanMac.data.lower(),
-                                net=lanNet,
-                                domain=fm.lanDomain.data)
-
-                            RouterDao.init(rid, wan=wan, lan=lan, flag=fm.flag.data, state="ENABLE")
-                            self.render_message_widget(ok=True)
-                            return
-                        else:
-                            messages.append(result)
+                if fm.flag.data == RouterFlag.ARCH_LINUX_OLD:
+                    if getattr(self, "_init_%s" % fm.flag.data.lower())(rid, fm, messages):
+                        return
                 else:
                     messages.append("暂不支持的设备类型[%s]" % fm.flag.data)
             else:
                 messages.extend(fm.messages())
 
             self.render_message_widget(messages=messages)
+
+    def _init_a(self, rid, fm, messages):
+        self.__check_wan(fm, messages)
+        lanNet = self.__get_lan_net(fm, messages)
+        if not fm.wanMac.data:
+            messages.append("WAN MAC不能为空")
+        if not fm.lanMac.data:
+            messages.append("LAN MAC不能为空")
+        if not messages:
+            wan = Wan(
+                flag=fm.wanFlag.data,
+                mac=fm.wanMac.data.lower(),
+                ip=fm.wanIp.data,
+                username=fm.wanUsername.data,
+                password=fm.wanPassword.data,
+                netmask=fm.wanNetmask.data,
+                gateway=fm.wanGateway.data,
+                dns1=fm.wanDns1.data,
+                dns2=fm.wanDns2.data)
+
+            lan = Lan(
+                mac=fm.lanMac.data.lower(),
+                net=lanNet,
+                domain=fm.lanDomain.data)
+
+            RouterDao.init(rid, wan=wan, lan=lan, flag=fm.flag.data)
+            self.render_message_widget(ok=True)
+            return True
+
+        return False
 
 
 handlers = [

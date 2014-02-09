@@ -53,13 +53,11 @@ class FirewallHandler(BaseHandler):
                 else:
                     self.render_message_widget(messages=result)
             elif act == "clear":
-                #todo test
                 ok, result = rpc.clear_firewall(lan.net)
-                self.render_message_widget(ok=ok, messages=result)
+                self.render_message_widget(ok=ok)
             elif act == "status":
-                #todo test
                 ok, result = rpc.status_firewall()
-                self.render_message_widget(ok=ok, messages=result)
+                self.render_message_widget(ok=ok)
             else:
                 self.render_message_widget(messages=["未知操作"])
 

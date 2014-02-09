@@ -13,7 +13,7 @@ class UserHandler(BaseHandler):
         manager = self.current_user['id']
         users = UserDao.list_by_manager(manager)
         if not users:
-            UserDao.add(manager, "默认用户", "")
+            UserDao.add(manager, "默认用户", "默认用户")
             users = UserDao.list_by_manager(manager)
         self.render("itpkg/user.html", users=users)
 

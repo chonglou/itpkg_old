@@ -68,21 +68,22 @@ class Lan(object):
 
 
 tables = [
-    ("itpkg_routers", True, True, False, [
+    ("itpkg_routers", True, True, True, [
         "name_ VARCHAR(32) UNIQUE NOT NULL",
-        "wan_ VARBINARY(255) NOT NULL",
-        "lan_ VARBINARY(255) NOT NULL",
+        "wan_ VARBINARY(10240) NOT NULL",
+        "lan_ VARBINARY(10240) NOT NULL",
         "flag_ CHAR(1) NOT NULL",
+        "state_ CHAR(1) NOT NULL DEFAULT '%s'" % State.SUBMIT,
         "manager_ INTEGER NOT NULL DEFAULT 0",
         "details_ TEXT",
     ]),
-    ("itpkg_inputs", True, True, False, [
+    ("itpkg_inputs", True, True, True, [
         "name_ VARCHAR(32) NOT NULL",
         "port_ SMALLINT UNSIGNED NOT NULL",
         "protocol_ CHAR(1) NOT NULL",
         "router_ INTEGER NOT NULL",
     ]),
-    ("itpkg_outputs", True, True, False, [
+    ("itpkg_outputs", True, True, True, [
         "name_ VARCHAR(32) NOT NULL",
         "flag_ CHAR(1) NOT NULL",
         "keyword_ VARCHAR(32) NOT NULL",
@@ -91,7 +92,7 @@ tables = [
         "weekdays_ CHAR(27) NOT NULL DEFAULT '%s'" % Weekday.all(),
         "router_ INTEGER NOT NULL",
     ]),
-    ("itpkg_nats", True, True, False, [
+    ("itpkg_nats", True, True, True, [
         "name_ VARCHAR(32) NOT NULL",
         "sport_ SMALLINT UNSIGNED NOT NULL",
         "protocol_ CHAR(1) NOT NULL",
@@ -103,7 +104,7 @@ tables = [
         "output_ INTEGER NOT NULL",
         "device_ INTEGER NOT NULL",
     ]),
-    ("itpkg_devices", True, True, False, [
+    ("itpkg_devices", True, True, True, [
         "mac_ CHAR(20) NOT NULL",
         "ip_ TINYINT UNSIGNED NOT NULL",
         "fix_ TINYINT NOT NULL DEFAULT 0",
@@ -113,13 +114,13 @@ tables = [
         "user_ INTEGER NOT NULL",
         "router_ INTEGER NOT NULL",
     ]),
-    ("itpkg_groups", True, True, False, [
+    ("itpkg_groups", True, True, True, [
         "name_ VARCHAR(32) NOT NULL",
         "state_ CHAR(1) NOT NULL DEFAULT '%s'" % State.SUBMIT,
         "manager_ INTEGER NOT NULL",
         "details_ TEXT",
     ]),
-    ("itpkg_users", True, True, False, [
+    ("itpkg_users", True, True, True, [
         "name_ VARCHAR(32) NOT NULL",
         "state_ CHAR(1) NOT NULL DEFAULT '%s'" % State.SUBMIT,
         "manager_ INTEGER NOT NULL",
@@ -130,13 +131,13 @@ tables = [
         "user_ INTEGER NOT NULL",
         "router_ INTEGER NOT NULL",
     ]),
-    ("itpkg_limits", True, True, False, [
+    ("itpkg_limits", True, True, True, [
         "name_ VARCHAR(32) NOT NULL",
         "manager_ INTEGER NOT NULL",
-        "max_up_ SMALLINT UNSIGNED NOT NULL",
-        "max_down_ SMALLINT UNSIGNED NOT NULL",
-        "min_up_ SMALLINT UNSIGNED NOT NULL",
-        "min_down_ SMALLINT UNSIGNED NOT NULL",
+        "up_max_ SMALLINT UNSIGNED NOT NULL",
+        "up_min_ SMALLINT UNSIGNED NOT NULL",
+        "down_max_ SMALLINT UNSIGNED NOT NULL",
+        "down_min_ SMALLINT UNSIGNED NOT NULL",
         "begin_ TIME NOT NULL DEFAULT '%s'" % datetime.time.min,
         "end_ TIME NOT NULL DEFAULT '%s'" % datetime.time.max,
         "weekdays_ CHAR(27) NOT NULL DEFAULT '%s'" % Weekday.all(),

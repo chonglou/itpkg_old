@@ -3,7 +3,7 @@ __author__ = 'zhengjitang@gmail.com'
 from wtforms import validators, TextField, HiddenField, PasswordField, SelectField, BooleanField, IntegerField, \
     RadioField
 
-from brahma.plugins.itpkg.models import RouterFlag
+from brahma.plugins.itpkg.models import RouterFlag, WanFlag
 
 from brahma.web import Form, HtmlField, ListField
 
@@ -26,7 +26,9 @@ def _time_choices():
 
 
 def _protocol_choices():
-    return [("tcp", "TCP"), ("udp", "UDP")]
+    from brahma.plugins.itpkg.models import Protocol
+
+    return [(Protocol.TCP, "TCP"), (Protocol, "UDP")]
 
 
 class LimitForm(Form):
@@ -88,7 +90,7 @@ class DeviceForm(Form):
 
 class WanForm(Form):
     act = HiddenField()
-    flag = SelectField("WAN类型", choices=[('static', "固定IP"), ])
+    flag = SelectField("WAN类型", choices=[(WanFlag.STATIC, "固定IP"), ])
     ip = TextField("IP地址")
     netmask = TextField("掩码")
     gateway = TextField("网关")
@@ -104,14 +106,15 @@ class LanForm(Form):
 
 class InitForm(Form):
     flag = SelectField("类型", choices=[(RouterFlag.ARCH_LINUX_OLD, '旧版ArchLinux')])
-    host = TextField("主机&端口", validators=[validators.Required()])
+    host = TextField("主机&端口")
     password = PasswordField("ROOT密码")
     wanMac = TextField("WAN MAC")
-    #('dhcp', '动态分配')
-    wanFlag = SelectField("WAN类型", choices=[('static', "固定IP"), ])
+    wanFlag = SelectField("WAN类型", choices=[(WanFlag.STATIC, "固定IP"), ])
     wanIp = TextField("WAN IP地址")
     wanNetmask = TextField("WAN 掩码")
     wanGateway = TextField("WAN 网关")
+    wanUsername = TextField("PPPOE 用户名")
+    wanPassword = TextField("PPPOE 密码")
     wanDns1 = TextField("WAN DNS1", validators=[validators.Required()])
     wanDns2 = TextField("WAN DNS2", validators=[validators.Required()])
     lanMac = TextField("LAN MAC")
