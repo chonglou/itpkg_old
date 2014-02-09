@@ -27,7 +27,7 @@
             <td>{{i.id}}</td>
             <td>{{i.name}}</td>
             <td>{{i.port}}</td>
-            <td>{{i.protocol}}</td>
+            <td>{{enum2str(protocol, i.protocol)}}</td>
             <td>
                 <div class="btn-group btn-group-sm">
                     <button id="item-input-{{i.id}}-EDIT" class="btn btn-warning">
@@ -64,7 +64,7 @@
             <td>{{i.id}}</td>
             <td>{{i.name}}</td>
             <td>{{i.keyword}}</td>
-            <td>{{i.weekdays_cn()}}</td>
+            <td>{{weekdays_cn(i)}}</td>
             <td>
                 <div class="btn-group btn-group-sm">
                     <button id="item-output-{{i.id}}-EDIT" class="btn btn-warning">
@@ -103,7 +103,7 @@
             <td>{{i.id}}</td>
             <td>{{i.name}}</td>
             <td>{{i.sport}}</td>
-            <td>{{i.protocol}}</td>
+            <td>{{enum2str(protocol, i.protocol) }}</td>
             <td>{{net}}.{{i.dip}}</td>
             <td>{{i.dport}}</td>
             <td>

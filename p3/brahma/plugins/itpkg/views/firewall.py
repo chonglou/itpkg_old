@@ -1,18 +1,27 @@
 __author__ = 'zhengjitang@gmail.com'
 
-import tornado.web
+import tornado.web,datetime
 
 from brahma.plugins.itpkg.views import BaseHandler
 from brahma.plugins.itpkg.store import RouterDao, InputDao, OutputDao, NatDao, OutputDeviceDao, DeviceDao
 from brahma.plugins.itpkg.forms import InputForm, OutputForm, NatForm, ip_choices
+from brahma.plugins.itpkg.models import Protocol
+from brahma.models import enum2str
 
+def format_time(t):
+    return (datetime.datetime.min+t).time().strftime("%H:%M")
 
 class FirewallHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, rid):
         if self.check_state(rid):
             wan, lan = RouterDao.get_network(rid)
+            def weekdays_cn(i):
+                return "[%s-%s]@(%s)"%(format_time(i.begin),format_time(i.end),i.weekdays)
             self.render("itpkg/firewall.html", rid=rid, net=lan.net,
+                        enum2str=enum2str,
+                        weekdays_cn=weekdays_cn,
+                        protocol=Protocol,
                         inputs=InputDao.all(rid),
                         outputs=OutputDao.all(rid),
                         nats=NatDao.all(rid))
@@ -27,10 +36,18 @@ class FirewallHandler(BaseHandler):
             rpc = create(rid)
             wan, lan = RouterDao.get_network(rid)
             if act == "apply":
-                #test
+
+                def enum2protocol(p):
+                    if p==Protocol.TCP:
+                        return "tcp"
+                    elif p==Protocol.UDP:
+                        return "udp"
+                    else:
+                        return None
+
                 ins = []
                 for i in InputDao.all(rid):
-                    ins.append((i.protocol, i.port))
+                    ins.append((enum2protocol(i.protocol), i.port))
 
                 outs = []
                 for o in OutputDao.all(rid):
@@ -44,7 +61,7 @@ class FirewallHandler(BaseHandler):
 
                 nats = []
                 for n in NatDao.all(rid):
-                    nats.append((n.sport, n.protocol, n.dip, n.dport))
+                    nats.append((n.sport, enum2protocol(n.protocol), n.dip, n.dport))
 
                 macs = DeviceDao.list_enable_mac(rid)
                 ok, result = rpc.apply_firewall(net=lan.net, ins=ins, outs=outs, nats=nats, macs=macs)
@@ -79,7 +96,7 @@ class NatHandler(BaseHandler):
                 form.name.data = n.name
                 form.label = "编辑映射规则[%s]" % n.id
             else:
-                form.protocol.data = "tcp"
+                form.protocol.data = Protocol.TCP
 
             self.__set_ip_choices(rid, form)
             self.render_form_widget(form=form)
@@ -91,8 +108,8 @@ class NatHandler(BaseHandler):
             fm = NatForm(formdata=self.request.arguments)
             self.__set_ip_choices(rid, fm)
             if fm.validate():
-                if NatDao.is_exist(rid, fm.sport.data, fm.protocol.data):
-                    self.render_message_widget(messages=["规则已存在"])
+                if InputDao.is_exist(rid,fm.sport.data, fm.protocol.data) or NatDao.is_exist(rid, fm.sport.data, fm.protocol.data):
+                    self.render_message_widget(messages=["规则已存在或端口已占用"])
                 else:
                     if fm.id.data:
                         nid = fm.id.data
@@ -114,7 +131,7 @@ class NatHandler(BaseHandler):
 
 
     def __set_ip_choices(self, rid, form):
-        lan = RouterDao.get_network(rid)
+        wan, lan = RouterDao.get_network(rid)
         form.dip.choices = ip_choices(lan.net)
 
     def __check(self, rid, nid):
@@ -139,7 +156,7 @@ class InputHandler(BaseHandler):
                 form.id.data = i.id
                 form.label = "修改入口规则[%s]" % i.id
             else:
-                form.protocol.data = "tcp"
+                form.protocol.data = Protocol.TCP
             self.render_form_widget(form=form)
 
     @tornado.web.authenticated
@@ -147,8 +164,8 @@ class InputHandler(BaseHandler):
         if self.check_state(rid):
             fm = InputForm(formdata=self.request.arguments)
             if fm.validate():
-                if InputDao.is_exist(rid, fm.port.data, fm.protocol.data):
-                    self.render_message_widget(messages=["规则已存在"])
+                if fm.port.data==22 or InputDao.is_exist(rid, fm.port.data, fm.protocol.data) or NatDao.is_exist(rid, fm.port.data, fm.protocol.data):
+                    self.render_message_widget(messages=["规则已存在或端口被占用"])
                 else:
                     if fm.id.data:
                         iid = fm.id.data
@@ -186,8 +203,8 @@ class OutputHandler(BaseHandler):
                 o = OutputDao.get(oid)
                 form.id.data = o.id
                 form.name.data = o.name
-                form.begin.data = o.begin
-                form.end.data = o.end
+                form.begin.data = format_time(o.begin)
+                form.end.data = format_time(o.end)
                 form.keyword.data = o.keyword
                 form.weekdays.data = o.weekdays
                 form.label = "编辑出口规则[%s]" % o.id

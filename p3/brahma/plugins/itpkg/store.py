@@ -100,7 +100,7 @@ class DeviceDao:
     @staticmethod
     @transaction()
     def list_enable_mac(rid, cursor=None):
-        return select(Item(router=rid, state=State.ENABLE).select(DeviceDao._name(), ["id"]))(cursor)
+        return select(Item(router=rid, state=State.ENABLE).select(DeviceDao._name(), ["mac"]))(cursor)
 
     @staticmethod
     @transaction(False)
@@ -295,8 +295,8 @@ class InputDao:
     @staticmethod
     @transaction(False)
     def set(iid, name, port, protocol, cursor=None):
-        return update(Item(port=port, name=name, protocol=protocol).update(InputDao._name(), iid, version=True))(
-            cursor) > 0
+        update(Item(port=port, name=name, protocol=protocol).update(InputDao._name(), iid, version=True))(
+            cursor)
 
 
     @staticmethod
@@ -320,7 +320,7 @@ class InputDao:
     @staticmethod
     @transaction()
     def get_router(iid, cursor=None):
-        row = select(Item(id=iid).select(InputDao._name(), ["router"]))(cursor)
+        row = select(Item(id=iid).select(InputDao._name(), ["router"]), one=True)(cursor)
         return row[0] if row else None
 
 
@@ -352,7 +352,7 @@ class OutputDao:
     @staticmethod
     @transaction()
     def get_router(oid, cursor=None):
-        row = select(Item(id=oid).select(OutputDao._name(), ["router"]))(cursor)
+        row = select(Item(id=oid).select(OutputDao._name(), ["router"]), one=True)(cursor)
         return row[0] if row else None
 
     @staticmethod
@@ -395,14 +395,14 @@ class NatDao:
 
     @staticmethod
     @transaction(False)
-    def set(nid, sport, protocol, dip, dport, cursor=None):
-        update(Item(sport=sport, protocol=protocol, dip=dip, dport=dport).update(NatDao._name(), nid, version=True))(
+    def set(nid, name, sport, protocol, dip, dport, cursor=None):
+        update(Item(sport=sport, name=name, protocol=protocol, dip=dip, dport=dport).update(NatDao._name(), nid, version=True))(
             cursor)
 
     @staticmethod
     @transaction(False)
-    def add(router, sport, protocol, dip, dport, cursor=None):
-        insert(Item(router=router, sport=sport, protocol=protocol, dip=dip, dport=dport).insert(NatDao._name()))(cursor)
+    def add(router, name, sport, protocol, dip, dport, cursor=None):
+        insert(Item(router=router, name=name, sport=sport, protocol=protocol, dip=dip, dport=dport).insert(NatDao._name()))(cursor)
 
     @staticmethod
     @transaction(False)
@@ -412,7 +412,7 @@ class NatDao:
     @staticmethod
     @transaction()
     def get_router(nid, cursor=None):
-        row = select(Item(id=nid).select(NatDao._name(), ["router"]))(cursor)
+        row = select(Item(id=nid).select(NatDao._name(), ["router"]), one=True)(cursor)
         return row[0] if row else None
 
 

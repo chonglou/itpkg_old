@@ -39,33 +39,41 @@ class ArchLinux:
     def firewall_apply(net, ins=list(), nats=list(), outs=list(), macs=list()):
         #基本规则
         rules = [
-            ArchLinux.firewall_empty(),
+            "#!/bin/sh",
+            "iptables -F",
+            "iptables -X",
+            "iptables -t nat -F",
+            "iptables -t nat -X",
+            "iptables -t mangle -F",
+            "iptables -t mangle -X",
+            "iptables -t raw -F",
+            "iptables -t raw -X",
+            "iptables -t security -F",
+            "iptables -t security -X",
+            "iptables -P INPUT DROP",
+            "iptables -P OUTPUT ACCEPT",
             "iptables -N TCP",
             "iptables -N UDP",
-            "iptables -P OUTPUT ACCEPT",
-            "iptables -P INPUT DROP",
             "iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
             "iptables -A INPUT -i lo -j ACCEPT",
             "iptables -A INPUT -m conntrack --ctstate INVALID -j DROP",
             "iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT",
             "iptables -A INPUT -p udp -m conntrack --ctstate NEW -j UDP",
-            "iptables -A INPUT -p tcp --syn -m conntrack --ctstate NEW -j TCP",
+            "iptables -A INPUT -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack --ctstate NEW -j TCP",
             "iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable",
             "iptables -A INPUT -p tcp -j REJECT --reject-with tcp-rst",
             "iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable",
-            "iptables -A TCP -p tcp -m tcp --dport 22 -j ACCEPT",
+            "iptables -A TCP -p tcp --dport 22 -j ACCEPT",
         ]
 
         #入口规则
         for protocol, port in ins:
-            if protocol == "tcp":
-                rules.append("iptables -A TCP -p tcp -m tcp --dport %s -j ACCEPT" % port)
-            elif protocol == "udp":
-                rules.append("iptables -A UDP -p udp -m udp --dport %s -j ACCEPT" % port)
+            rules.append("iptables -A %s -p %s --dport %s -j ACCEPT" % (protocol.upper(), protocol, port))
 
         #转发规则
         rules.extend([
             "echo 1 > /proc/sys/net/ipv4/ip_forward",
+            "for f in /proc/sys/net/ipv4/conf/*/rp_filter ; do echo 1 > $f ; done",
             "iptables -N fw-interfaces",
             "iptables -N fw-open",
             "iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
@@ -91,6 +99,7 @@ class ArchLinux:
         for m in macs:
             rules.append("iptables -A fw-interfaces -m mac --mac-source %s -j ACCEPT" % m)
 
+        #fixme 有bug
         rules.append("iptables -t nat -A POSTROUTING -s %s.0/24 -o wan -j MASQUERADE" % net)
 
         # nat 规则
@@ -100,7 +109,11 @@ class ArchLinux:
                 "iptables -t nat -A PREROUTING -i wan -p %s --dport %s -j DNAT --to %s.%s:%s" % (
                     protocol, sport, net, dip, dport),
             ])
-        return rules
+
+        name = ArchLinux._sh_name()
+        cmds = ArchLinux.file(name, rules)
+        #fixme cmds.append("sh %s"%name)
+        return cmds
 
     @staticmethod
     def _sh_name():
@@ -110,8 +123,8 @@ class ArchLinux:
 
     @staticmethod
     def firewall_clear(net):
-        sh = ArchLinux._sh_name()
-        rules = ArchLinux.file(sh, [
+        name = ArchLinux._sh_name()
+        cmds = ArchLinux.file(name, [
             "#!/bin/sh",
             "iptables -F",
             "iptables -X",
@@ -151,8 +164,8 @@ class ArchLinux:
             "iptables -A fw-interfaces -i lan -j ACCEPT",
             "iptables -t nat -A POSTROUTING -s %s.0/24 -o wan -j MASQUERADE" % net,
         ])
-        rules.append("sh %s" % sh)
-        return rules
+        cmds.append("sh %s" % name)
+        return cmds
 
     @staticmethod
     def named(net, dns1, dns2, zones=None):
@@ -334,9 +347,8 @@ class Rpc:
         return self.__fail()
 
     def apply_firewall(self, net, ins, outs, nats, macs):
-        if self.__is_archLinux():
+        if self.__flag==RouterFlag.ARCH_LINUX_OLD or self.__flag==RouterFlag.ARCH_LINUX_NEW:
             cmds = ArchLinux.firewall_apply(net=net, ins=ins, outs=outs, nats=nats, macs=macs)
-            cmds.append(ArchLinux.firewall_save())
             return self.call(cmds)
         return self.__fail()
 

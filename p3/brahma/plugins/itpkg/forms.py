@@ -28,7 +28,7 @@ def _time_choices():
 def _protocol_choices():
     from brahma.plugins.itpkg.models import Protocol
 
-    return [(Protocol.TCP, "TCP"), (Protocol, "UDP")]
+    return [(Protocol.TCP, "TCP"), (Protocol.UDP, "UDP")]
 
 
 class LimitForm(Form):
