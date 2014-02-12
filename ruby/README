@@ -1,0 +1,13 @@
+ruby版
+
+环境:
+\curl -sSL https://get.rvm.io | bash -s stable
+source ~/.rvm/scripts/rvm
+rvm list known
+rvm install 2.1.0
+rvm list
+rvm use 2.1.0 --default
+ruby -v
+gem install rails
+
+

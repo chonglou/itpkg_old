@@ -264,17 +264,15 @@ def _init():
 
         def run():
             import datetime
-
-            TaskSender.echo("测试消息%s" % datetime.datetime.now())
-
-            """
-            for t in Task.list_available():
-                Task.set_next_run(t.id)
-                if t.flag in ['qr', 'sitemap', 'rss', 'robots']:
+            from brahma.models import TaskFlag
+            from brahma.store import TaskDao
+            now = datetime.datetime.now()
+            for t in TaskDao.list_available():
+                if t.flag in [TaskFlag.QR, TaskFlag.ROBOTS, TaskFlag.SITEMAP, TaskFlag.RSS]:
+                    TaskDao.set_next_run(t.id, datetime.datetime(year=now.year, month=now.month,day=now.day))
                     getattr(TaskSender, t.flag)()
                 else:
                     logging.error("未知的任务类型[%s]" % t.flag)
-            """
 
         while True:
             s.enter(tornado.options.options.task_space, 10, run)

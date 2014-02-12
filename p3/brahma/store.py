@@ -6,7 +6,7 @@ import logging
 
 from brahma.models import Item, LogFlag, Operation, UserFlag, State
 from brahma.env import transaction, encrypt as _encrypt
-from brahma.utils.database import insert, update, delete, count, select
+from brahma.utils.database import insert, update, delete, count, select,row2item
 
 
 class UserDao(object):
@@ -114,26 +114,32 @@ class UserDao(object):
 
 class TaskDao(object):
     @staticmethod
+    @transaction(False)
+    def set_next_run(tid, next_run, cursor=None):
+        TaskDao._set_next_run(tid, next_run, cursor)
+
+    @staticmethod
     def _set_next_run(tid, next_run, cursor):
-        update("UPDATE tasks SET next_run_=%s, index_=index_+1 WHERE id_=%s", [next_run, tid])(cursor)
+        cursor.execute("UPDATE tasks SET next_run_=%s, index_=index_+1 WHERE id_=%s", [next_run, tid])
 
     @staticmethod
     @transaction()
     def list_available(cursor=None):
-        ts = select("SELECT id_, flag_, request_ FROM tasks WHERE next_run_<=%s", [datetime.datetime.now()])(cursor)
-        return [TaskDao._row_mapper(t) for t in ts]
+        cursor.execute("SELECT id_, flag_, space_, request_ FROM tasks WHERE next_run_<=%s", [datetime.datetime.now()])
+        return [TaskDao._row_mapper(t) for t in cursor.fetchall()]
 
     @staticmethod
+    def _columns():
+        return ["id", "flag", "space", "request"]
+    @staticmethod
     def _row_mapper(task):
-        id, flag, request = task
-        return Item(id=id, flag=flag, request=pickle.loads(request))
+        id, flag,space, request = task
+        return Item(id=id, flag=flag, space=space, request=pickle.loads(request))
 
     @staticmethod
     @transaction()
     def list_by_flag(flag, cursor=None):
-        cursor.execute("SELECT id_, flag_, request_ FROM tasks WHERE flag_=%s", [flag])
-        ts = cursor.fetchall()
-        return [TaskDao._row_mapper(t) for t in ts]
+        return [TaskDao._row_mapper(t) for t in select(Item(flag=flag).select("tasks", TaskDao._columns()))(cursor)]
 
 
 class SettingDao(object):

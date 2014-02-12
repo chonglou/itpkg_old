@@ -44,9 +44,9 @@ def search(keyword):
 
 def sitemap():
     def list_wiki():
+        import datetime
         from brahma.plugins.wiki.store import WikiDao
-
-        return [("wiki/%s" % name, created, "monthly", 0.5) for name, title, created in WikiDao.list_page()]
+        return [("wiki/%s" % name, created, "monthly", 0.5) for name, title, created in WikiDao.list_page(datetime.datetime.min, datetime.datetime.max)]
 
     return list_wiki()
 
