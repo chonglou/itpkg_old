@@ -2,3 +2,4 @@ rails new brahma
 cd brahma
 rails server
 rails generate controller wiki index
+rake routes

@@ -1,0 +1,24 @@
+ruby虚拟环境：
+git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+.bashrc中添加:
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+重新登录,检查:
+type rbenv
+
+可安装的版本
+rbenv install -l
+安装
+rbenv install 2.1.0
+刷新
+rbenv rehash
+
+本地版本
+rbenv local 2.1.0
+全局版本
+rbenv global 2.1.0
+可用版本
+rbenv versions
