@@ -1,0 +1,8 @@
+source "http://rubygems.org"
+
+gem "sinatra"
+gem "slim"
+gem "sequel"
+gem "rdiscount"
+gem "rerun"
+gem "rack-test"
