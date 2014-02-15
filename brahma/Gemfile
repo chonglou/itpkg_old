@@ -1,8 +1,10 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
-gem "sinatra"
-gem "slim"
-gem "sequel"
-gem "rdiscount"
-gem "rerun"
-gem "rack-test"
+gem 'sinatra'
+gem 'slim'
+gem 'sequel'
+gem 'rdiscount'
+gem 'rerun'
+gem 'rack-test'
+gem 'net-ssh'
+gem 'parseconfig'

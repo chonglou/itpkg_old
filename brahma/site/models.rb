@@ -1,6 +1,7 @@
 module Brahma::Site
   class SmtpCfg
-    attr_reader :host,:port,:username,:password
+    attr_reader :host, :port, :username, :password
+
     def initialize(host, port, username, password)
       @host = host
       @port = port

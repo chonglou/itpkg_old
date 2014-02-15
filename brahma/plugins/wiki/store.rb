@@ -1,3 +1,5 @@
 require "sequel"
 
-module
+module Brahma::Wiki
+
+end

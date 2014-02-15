@@ -6,6 +6,8 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
+    net-ssh (2.8.0)
+    parseconfig (1.0.4)
     rack (1.5.2)
     rack-protection (1.5.2)
       rack
@@ -34,6 +36,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  net-ssh
+  parseconfig
   rack-test
   rdiscount
   rerun
