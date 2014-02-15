@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'securerandom'
 require 'digest'
 require 'yaml'
@@ -5,7 +6,6 @@ require 'singleton'
 require 'openssl'
 require 'net/ssh'
 require 'logger'
-require 'rubygems'
 require 'parseconfig'
 require File.dirname(__FILE__)+'/../brahma'
 

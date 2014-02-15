@@ -1,11 +1,13 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    connection_pool (1.2.0)
     ffi (1.9.3)
     listen (1.0.3)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
+    mysql (2.9.1)
     net-ssh (2.8.0)
     parseconfig (1.0.4)
     rack (1.5.2)
@@ -19,6 +21,7 @@ GEM
     rb-kqueue (0.2.0)
       ffi (>= 0.5.0)
     rdiscount (2.1.7)
+    redis (3.0.7)
     rerun (0.8.2)
       listen (~> 1.0.3)
     sequel (4.7.0)
@@ -36,10 +39,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  connection_pool
+  mysql
   net-ssh
   parseconfig
   rack-test
   rdiscount
+  redis
   rerun
   sequel
   sinatra

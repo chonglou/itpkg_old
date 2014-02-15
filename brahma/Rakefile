@@ -1,0 +1,40 @@
+require 'rake/testtask'
+
+def p_s(message)
+  print "\e[35;1m#{message}\e[0m\n"
+end
+
+desc '统计信息'
+task :status do
+  p_s '当前状态'
+end
+
+desc '测试'
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+  t.test_files = FileList['test/test_*.rb']
+  t.verbose = true
+end
+
+desc '启动服务'
+task :server do |t|
+
+end
+
+desc '任务列表'
+task :default do
+  p_s 'rake -T 可以查看详细信息'
+  puts Rake.application.tasks
+end
+
+
+namespace 'db' do
+  desc '初始化数据库'
+  task :init do
+    puts ''
+  end
+  desc '更新数据库'
+  task :migrate do
+    puts ''
+  end
+end
