@@ -7,9 +7,10 @@ require 'openssl'
 require 'net/ssh'
 require 'logger'
 require 'parseconfig'
+require 'base64'
 require File.dirname(__FILE__)+'/../brahma'
 
-module Brahma::Site
+module Brahma
   class Setting
     include Singleton
     attr_reader :debug, :mysql, :redis
@@ -103,8 +104,8 @@ module Brahma::Site
       if File.exist?(kf)
         log.info '加载KEY文件'
         f = File.new(kf, 'r')
-        @key= f.gets
-        @iv = f.gets
+        @key=  f.gets
+        @iv =  f.gets
         f.close
       else
         log.info '初始化KEY文件'
@@ -112,8 +113,8 @@ module Brahma::Site
         @key = c.random_key
         @iv = c.random_iv
         f = File.new(kf, 'w')
-        f.puts @key
-        f.puts @iv
+        f.puts  @key
+        f.puts  @iv
         f.chmod 0400
         f.close
       end
@@ -162,11 +163,20 @@ module Brahma::Site
       ss
     end
 
-    def obj2str(obj, encrypt=false)
-      Marshal.dump obj
+    def obj2str(obj, flag=false)
+      str = Marshal.dump obj
+      if flag
+        str = encrypt str
+      end
+      Base64.encode64 str
     end
 
-    def str2obj(str, encrypt=false)
+    def str2obj(str, flag=false)
+      str = Base64.decode64 str
+      if flag
+        str = decrypt str
+      end
+
       Marshal.load str
     end
 

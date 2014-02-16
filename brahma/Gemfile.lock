@@ -7,7 +7,7 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
-    mysql (2.9.1)
+    mysql2 (0.3.15)
     net-ssh (2.8.0)
     parseconfig (1.0.4)
     rack (1.5.2)
@@ -24,7 +24,6 @@ GEM
     redis (3.0.7)
     rerun (0.8.2)
       listen (~> 1.0.3)
-    sequel (4.7.0)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -40,13 +39,12 @@ PLATFORMS
 
 DEPENDENCIES
   connection_pool
-  mysql
+  mysql2
   net-ssh
   parseconfig
   rack-test
   rdiscount
   redis
   rerun
-  sequel
   sinatra
   slim
