@@ -1,3 +1,4 @@
-require File.dirname(__FILE__)+'/site/app'
+
+require_relative 'site/app'
 
 run Brahma::Site::App

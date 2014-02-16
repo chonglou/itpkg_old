@@ -1,15 +1,18 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    backports (3.6.0)
     connection_pool (1.2.0)
+    daemons (1.1.9)
+    eventmachine (1.0.3)
     ffi (1.9.3)
     listen (1.0.3)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
+    multi_json (1.8.4)
     mysql2 (0.3.15)
     net-ssh (2.8.0)
-    parseconfig (1.0.4)
     rack (1.5.2)
     rack-protection (1.5.2)
       rack
@@ -28,10 +31,21 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
+    sinatra-contrib (1.4.2)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (~> 1.3)
     slim (2.0.2)
       temple (~> 0.6.6)
       tilt (>= 1.3.3, < 2.1)
     temple (0.6.7)
+    thin (1.6.1)
+      daemons (>= 1.0.9)
+      eventmachine (>= 1.0.0)
+      rack (>= 1.0.0)
     tilt (1.4.1)
 
 PLATFORMS
@@ -41,10 +55,11 @@ DEPENDENCIES
   connection_pool
   mysql2
   net-ssh
-  parseconfig
   rack-test
   rdiscount
   redis
   rerun
   sinatra
+  sinatra-contrib
   slim
+  thin

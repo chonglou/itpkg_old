@@ -1,12 +1,21 @@
-require File.dirname(__FILE__)+'/../brahma'
-require File.dirname(__FILE__) + "/../plugins/wiki/app"
+require_relative '../brahma'
+require_relative '../plugins/wiki/app'
+
 
 module Brahma::Site
   class App < Brahma::Base
     use Brahma::Wiki::App
 
+
     get "/" do
-      "Index"
+      logger.info "Hello Index #{request.host}"
+      "Index1"
+    end
+
+    get '/attachments/*' do
+      f = "#{Brahma::Config.instance.store}/#{request.host}/attach/#{params[:splat][0]}"
+      logger.info f
+      File.exist?(f) ? send_file(f) : 404
     end
   end
 end

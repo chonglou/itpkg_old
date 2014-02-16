@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'singleton'
 require 'mysql2'
+require 'connection_pool'
+require_relative 'log'
 
 class Mysql2::Result
   def empty?

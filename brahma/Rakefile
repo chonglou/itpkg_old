@@ -28,13 +28,40 @@ task :default do
 end
 
 
-namespace 'db' do
-  desc '初始化数据库'
-  task :init do
-    puts ''
+namespace :server do
+  PID='tmp/.pid'
+
+  desc '启动服务'
+  task :start do
+    if File.exist?(PID)
+      p_s "服务已经启动，如果进程不存在，请删除[#{PID}]文件"
+    else
+      system "rackup -s thin config.ru -P #{PID} -p 8080 -E production -D"
+      p_s '操作成功'
+    end
   end
-  desc '更新数据库'
-  task :migrate do
-    puts ''
+
+  desc '停止服务'
+  task :stop do
+    if File.exist?(PID)
+      File.open PID do |file|
+        system "kill -9 #{file.read}"
+      end
+      FileUtils.rm PID
+      p_s '操作成功'
+    else
+      p_s '服务未启动'
+    end
   end
+
+  desc '重启服务'
+  task :restart => [:stop, :start]
+
+  desc '调试模式'
+  task :debug do
+    system "rerun 'rackup -p 8080'"
+  end
+
 end
+
+

@@ -2,12 +2,13 @@ require 'rubygems'
 require 'redis'
 require 'connection_pool'
 require 'singleton'
+require_relative 'log'
 
 module Brahma::Redis
   class Pool
     include Singleton
 
-    def connect(host, port, size, db)
+    def connect(host, port, db, size)
       @redis = ConnectionPool::Wrapper.new(:size => size, :timeout => 3) {
         Redis.new(:host => host, :port => port, :db => db)
       }
