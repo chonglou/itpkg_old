@@ -1,6 +1,6 @@
 
 module Brahma::Wiki
-  class App < Brahma::Base
+  class WikiView < Brahma::Base
     get "/wiki" do
       "Wiki"
     end

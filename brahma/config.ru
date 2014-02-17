@@ -1,4 +1,4 @@
 
-require_relative 'site/app'
+require_relative 'brahma'
 
-run Brahma::Site::App
+run Brahma::Main

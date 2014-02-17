@@ -56,8 +56,8 @@ module Brahma::Mysql
       log("DROP TABLE #{table}")
     end
 
-    def self.create_table(table, domain, created, version, columns)
-      log("CREATE TABLE IF NOT EXISTS #{table}(id_ INTEGER NOT NULL AUTO_INCREMENT, #{domain ? "domain_ VARCHAR(32) NOT NULL DEFAULT 'localhost'," : ''}#{columns.to_a.map { |k, v| "#{k}_ #{v}" }.join(', ')}#{created ? ', created_ TIMESTAMP NOT NULL DEFAULT NOW()' : ''}#{version ? ', version_ INTEGER NOT NULL DEFAULT 0' : ''}, PRIMARY KEY (id_)) ENGINE=InnoDB")
+    def self.create_table(table, created, version, columns)
+      log("CREATE TABLE IF NOT EXISTS #{table}(id_ INTEGER NOT NULL AUTO_INCREMENT, #{columns.to_a.map { |k, v| "#{k}_ #{v}" }.join(', ')}#{created ? ', created_ TIMESTAMP NOT NULL DEFAULT NOW()' : ''}#{version ? ', version_ INTEGER NOT NULL DEFAULT 0' : ''}, PRIMARY KEY (id_)) ENGINE=InnoDB")
     end
 
     def self.log(sql)
