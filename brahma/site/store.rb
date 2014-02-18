@@ -18,7 +18,7 @@ module Brahma::Site
     end
 
     def set(key, val, encrypt=false)
-      val=Brahma::Encryptor.instance.obj2str val, encrypt
+      val=Brahma::Encryptor.instance.obj2hex val, encrypt
 
       Brahma::Mysql::Pool.instance.execute { |conn|
         rs = conn.query Brahma::Mysql::Sql.select 'settings', ['id'], {key: key}, 1
@@ -34,7 +34,7 @@ module Brahma::Site
         rs = conn.query Brahma::Mysql::Sql.select 'settings', %w'val', {key: key}, 1
         val=nil
         rs.each do |row|
-          val = Brahma::Encryptor.instance.str2obj row['val_'], encrypt
+          val = Brahma::Encryptor.instance.hex2obj row['val_'], encrypt
         end
         val
       }

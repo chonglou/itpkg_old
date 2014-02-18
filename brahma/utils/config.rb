@@ -9,32 +9,35 @@ module Brahma
     def initialize
       begin
         cfg = "#{File.dirname(__FILE__)}/../config/web.cfg"
-        puts "加载配置[#{cfg}]"
-        cfg = YAML.load File.open(cfg)
+        if File.exist?(cfg)
+          puts "加载配置[#{cfg}]"
+          cfg = YAML.load_file cfg
 
-        @debug = cfg['app']['debug']
-        @store = cfg['app']['store']
-        @plugins = cfg['app']['plugins']
+          @debug = cfg['app']['debug']
+          @store = cfg['app']['store']
+          @plugins = cfg['app']['plugins']
 
-        @redis = {
-            host: cfg['redis']['host'],
-            port: cfg['redis']['port'],
-            db: cfg['redis']['db'],
-            pool: cfg['redis']['pool'],
-        }
+          @redis = {
+              host: cfg['redis']['host'],
+              port: cfg['redis']['port'],
+              db: cfg['redis']['db'],
+              pool: cfg['redis']['pool'],
+          }
 
-        @mysql = {
-            host: cfg['mysql']['host'],
-            port: cfg['mysql']['port'],
-            username: cfg['mysql']['username'],
-            password: cfg['mysql']['password'],
-            database: cfg['mysql']['database'],
-            pool: cfg['mysql']['pool'],
-        }
-
-      rescue ArgumentError => e
-        fail Brahma::Error.new('读取配置文件失败')
+          @mysql = {
+              host: cfg['mysql']['host'],
+              port: cfg['mysql']['port'],
+              username: cfg['mysql']['username'],
+              password: cfg['mysql']['password'],
+              database: cfg['mysql']['database'],
+              pool: cfg['mysql']['pool'],
+          }
+        else
+          fail Brahma::Error.new('读取配置文件失败')
+        end
       end
+
+
     end
 
     def setup(devel=false)

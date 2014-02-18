@@ -18,8 +18,8 @@ module Brahma
       if File.exist?(kf)
         log.info '加载KEY文件'
         f = File.new(kf, 'r')
-        @key= f.gets
-        @iv = f.gets
+        @key= hex2obj f.gets
+        @iv = hex2obj f.gets
         f.close
       else
         log.info '初始化KEY文件'
@@ -27,8 +27,8 @@ module Brahma
         @key = c.random_key
         @iv = c.random_iv
         f = File.new(kf, 'w')
-        f.puts @key
-        f.puts @iv
+        f.puts(obj2hex @key)
+        f.puts(obj2hex @iv)
         f.chmod 0400
         f.close
       end
@@ -77,16 +77,16 @@ module Brahma
       ss
     end
 
-    def obj2str(obj, flag=false)
+    def obj2hex(obj, flag=false)
       str = Marshal.dump obj
       if flag
         str = encrypt str
       end
-      Base64.encode64 str
+      str.unpack('H*')[0]
     end
 
-    def str2obj(str, flag=false)
-      str = Base64.decode64 str
+    def hex2obj(hex, flag=false)
+      str = [hex].pack('H*')
       if flag
         str = decrypt str
       end

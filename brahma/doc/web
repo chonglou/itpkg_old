@@ -1,0 +1,3 @@
+cd config
+cp web.cfg.tmp web.cfg
+vi web.cfg
