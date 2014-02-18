@@ -19,10 +19,13 @@ module Brahma
     configure :development do
       enable :logging
       Brahma::Config.instance.setup true
+      require_relative 'site/store'
+      Brahma::Site::SettingDao.instance.set 'site.startup', Time.now
+      Brahma::Site::LogDao.instance.log '系统启动'
     end
 
     before do
-      #@_domain =request.host
+
     end
 
     after do
@@ -42,17 +45,13 @@ module Brahma
   Error = Class.new(StandardError)
 
   class Main < Base
-    require_relative 'site/views/seo'
-    require_relative 'site/views/attach'
-    require_relative 'site/views/site'
-    use Brahma::Site::SeoView
-    use Brahma::Site::AttachView
-    use Brahma::Site::SiteView
+    require_relative 'site/app'
+    use Brahma::Site::App
 
     plugins = Brahma::Config.instance.plugins
     if plugins.include?('wiki')
-      require_relative 'plugins/wiki/views'
-      use Brahma::Wiki::WikiView
+      require_relative 'plugins/wiki/app'
+      use Brahma::Wiki::App
     end
 
 
