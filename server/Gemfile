@@ -1,0 +1,14 @@
+source 'https://rubygems.org'
+
+gem 'sequel'
+gem 'redis'
+gem 'connection_pool'
+gem 'grape'
+gem 'puma'
+
+gem 'brahma_utils', git: 'git@github.com:chonglou/utils.git'
+gem 'brahma_daemon', git: 'git@github.com:chonglou/daemon.git'
+
+group :development, :test do
+  gem 'rerun'
+end

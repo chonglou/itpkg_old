@@ -1,0 +1,11 @@
+production:
+  domain: YOUR DOMAIN NAME
+  port: 8888
+
+development:
+  domain: YOUR DOMAIN NAME
+  port: 8888
+
+test:
+  domain: YOUR DOMAIN NAME
+  port: 8888
