@@ -1,22 +1,3 @@
-GIT
-  remote: git@github.com:chonglou/daemon.git
-  revision: 66f1011575fa48fc48e1d16a842f56df2f16ca99
-  specs:
-    brahma_daemon (0.0.1)
-
-GIT
-  remote: git@github.com:chonglou/utils.git
-  revision: d7e097735c51427a6e1b9a173a51f0ef716d72bc
-  specs:
-    brahma_utils (0.0.1)
-      connection_pool
-      highline
-      mysql2
-      nokogiri
-      redcarpet
-      redis
-      sequel
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -30,6 +11,15 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    brahma_daemon (0.0.1)
+    brahma_utils (0.0.1)
+      connection_pool
+      highline
+      mysql2
+      nokogiri
+      redcarpet
+      redis
+      sequel
     builder (3.2.2)
     celluloid (0.15.2)
       timers (~> 1.1.0)
@@ -95,8 +85,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  brahma_daemon!
-  brahma_utils!
+  brahma_daemon
+  brahma_utils
   connection_pool
   grape
   puma

@@ -1,4 +1,3 @@
-require 'yaml'
 require 'brahma/config/_store'
 
 module Itpkg
