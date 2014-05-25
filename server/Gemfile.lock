@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git@github.com:chonglou/utils.git
-  revision: b5447e157d3f7f003721ede2279114e47419b56f
+  revision: d7e097735c51427a6e1b9a173a51f0ef716d72bc
   specs:
     brahma_utils (0.0.1)
       connection_pool

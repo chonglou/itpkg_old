@@ -1,4 +1,4 @@
-namespace :itpkg do
+namespace :brahma do
   namespace :nginx do
     desc 'nginx配置文件'
     task :conf do

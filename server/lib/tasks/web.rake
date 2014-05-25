@@ -1,4 +1,4 @@
-namespace :itpkg do
+namespace :brahma do
   namespace :web do
     desc '启动'
     task :start do

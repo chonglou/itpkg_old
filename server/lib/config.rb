@@ -1,3 +1,4 @@
+require 'yaml'
 require 'brahma/config/_store'
 
 module Itpkg
@@ -19,12 +20,10 @@ module Itpkg
       end
       data = {}
       Brahma::Config::ENVIRONMENTS.each do |env|
-        data[env] = {domain:domain, port:port}
+        data[env] = {'domain'=>domain, 'port'=>port}
       end
       p_s '检查完毕'
       write data
-
-
     end
   end
 end
