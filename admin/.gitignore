@@ -1,0 +1,11 @@
+/log
+/tmp
+.idea
+/config/*.yml
+/config/deploy/*.rb
+/config/deploy_env.rb
+/public/3rd
+/public/assets
+/public/robots.txt
+/public/*.html
+/public/sitemap.xml.gz
