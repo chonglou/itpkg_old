@@ -1,6 +1,6 @@
-class CreateRouterHosts < ActiveRecord::Migration
+class CreateFirewallHosts < ActiveRecord::Migration
   def change
-    create_table :router_hosts do |t|
+    create_table :firewall_hosts do |t|
       t.integer :user_id, null: false
       t.integer :client_id, null: false
       t.string :name, null: false

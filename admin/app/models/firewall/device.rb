@@ -1,4 +1,4 @@
-class Router::Firewall::Device < ActiveRecord::Base
+class Firewall::Device < ActiveRecord::Base
   belongs_to :host
   belongs_to :limit
   has_many :output_devices

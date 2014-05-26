@@ -8,9 +8,11 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
-    links['/routers'] = '局域网'
-    links['/cdn'] = 'CDN系统'
-    links['/monitors'] = '监控系统'
+    links['/firewall'] = '防火墙'
+    links['/cdn'] = 'CDN'
+    links['/vpn'] = 'VPN'
+    links['/dns'] = 'DNS'
+    links['/monitor'] = '监控'
     links['/about_me']='关于我们'
     links
   end

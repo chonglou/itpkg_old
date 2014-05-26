@@ -1,6 +1,6 @@
-class CreateRouterDnsRecords < ActiveRecord::Migration
+class CreateDnsRecords < ActiveRecord::Migration
   def change
-    create_table :router_dns_records do |t|
+    create_table :dns_records do |t|
       t.string :name, null: false
       t.integer :flag, null: false, default: 0, limit: 2
       t.string :value, null: false

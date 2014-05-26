@@ -1,6 +1,6 @@
-class CreateRouterFirewallDevices < ActiveRecord::Migration
+class CreateFirewallDevices < ActiveRecord::Migration
   def change
-    create_table :router_firewall_devices do |t|
+    create_table :firewall_devices do |t|
       t.string :mac, null: false
       t.string :name, null: false
       t.integer :state, null: false, limit: 2, default: 0

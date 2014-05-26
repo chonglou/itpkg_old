@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526022156) do
+ActiveRecord::Schema.define(version: 20140526032633) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -106,7 +106,14 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created", null: false
   end
 
-  create_table "monitor_hosts", force: true do |t|
+  create_table "dns_domains", force: true do |t|
+    t.string   "name",                  null: false
+    t.integer  "host_id",               null: false
+    t.integer  "ttl",     default: 300, null: false
+    t.datetime "created",               null: false
+  end
+
+  create_table "dns_hosts", force: true do |t|
     t.string   "name",      null: false
     t.text     "details"
     t.integer  "user_id",   null: false
@@ -114,14 +121,7 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",   null: false
   end
 
-  create_table "router_dns_domains", force: true do |t|
-    t.string   "name",                  null: false
-    t.integer  "host_id",               null: false
-    t.integer  "ttl",     default: 300, null: false
-    t.datetime "created",               null: false
-  end
-
-  create_table "router_dns_records", force: true do |t|
+  create_table "dns_records", force: true do |t|
     t.string   "name",                            null: false
     t.integer  "flag",      limit: 2, default: 0, null: false
     t.string   "value",                           null: false
@@ -130,7 +130,7 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created"
   end
 
-  create_table "router_firewall_devices", force: true do |t|
+  create_table "firewall_devices", force: true do |t|
     t.string   "mac",                           null: false
     t.string   "name",                          null: false
     t.integer  "state",   limit: 2, default: 0, null: false
@@ -140,7 +140,18 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",                       null: false
   end
 
-  create_table "router_firewall_inputs", force: true do |t|
+  create_table "firewall_hosts", force: true do |t|
+    t.integer  "user_id",   null: false
+    t.integer  "client_id", null: false
+    t.string   "name",      null: false
+    t.text     "details"
+    t.string   "wan",       null: false
+    t.string   "lan",       null: false
+    t.string   "dmz"
+    t.datetime "created",   null: false
+  end
+
+  create_table "firewall_inputs", force: true do |t|
     t.string   "name",                   null: false
     t.integer  "host_id",                null: false
     t.integer  "s_port",                 null: false
@@ -149,7 +160,7 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",                null: false
   end
 
-  create_table "router_firewall_limits", force: true do |t|
+  create_table "firewall_limits", force: true do |t|
     t.string   "name",     null: false
     t.integer  "host_id",  null: false
     t.integer  "max_up",   null: false
@@ -159,7 +170,7 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",  null: false
   end
 
-  create_table "router_firewall_nats", force: true do |t|
+  create_table "firewall_nats", force: true do |t|
     t.string   "name",                 null: false
     t.integer  "host_id",              null: false
     t.integer  "s_port",               null: false
@@ -169,13 +180,13 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",              null: false
   end
 
-  create_table "router_firewall_output_devices", force: true do |t|
+  create_table "firewall_output_devices", force: true do |t|
     t.integer  "output_id", null: false
     t.integer  "device_id", null: false
     t.datetime "created",   null: false
   end
 
-  create_table "router_firewall_outputs", force: true do |t|
+  create_table "firewall_outputs", force: true do |t|
     t.integer  "host_id",  null: false
     t.string   "name",     null: false
     t.string   "keyword",  null: false
@@ -185,15 +196,28 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",  null: false
   end
 
-  create_table "router_hosts", force: true do |t|
-    t.integer  "user_id",   null: false
-    t.integer  "client_id", null: false
+  create_table "monitor_hosts", force: true do |t|
     t.string   "name",      null: false
     t.text     "details"
-    t.string   "wan",       null: false
-    t.string   "lan",       null: false
-    t.string   "dmz"
+    t.integer  "user_id",   null: false
+    t.integer  "client_id", null: false
     t.datetime "created",   null: false
+  end
+
+  create_table "vpn_hosts", force: true do |t|
+    t.string   "name",      null: false
+    t.text     "details"
+    t.integer  "user_id",   null: false
+    t.integer  "client_id", null: false
+    t.datetime "created",   null: false
+  end
+
+  create_table "vpn_users", force: true do |t|
+    t.integer  "host_id",                        null: false
+    t.string   "username",                       null: false
+    t.string   "password",                       null: false
+    t.integer  "state",    limit: 2, default: 0, null: false
+    t.datetime "created",                        null: false
   end
 
 end

@@ -1,5 +1,5 @@
-module Router::Dns
+module Dns
   def self.table_name_prefix
-    'router_dns_'
+    'dns_'
   end
 end

@@ -1,6 +1,6 @@
-class CreateRouterFirewallInputs < ActiveRecord::Migration
+class CreateFirewallInputs < ActiveRecord::Migration
   def change
-    create_table :router_firewall_inputs do |t|
+    create_table :firewall_inputs do |t|
       t.string :name, null: false
       t.integer :host_id, null: false
       t.integer :s_port, null: false

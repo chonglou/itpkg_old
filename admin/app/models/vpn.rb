@@ -1,5 +1,5 @@
-module Router
+module Vpn
   def self.table_name_prefix
-    'router_'
+    'vpn_'
   end
 end

@@ -1,6 +1,6 @@
-class CreateRouterFirewallNats < ActiveRecord::Migration
+class CreateFirewallNats < ActiveRecord::Migration
   def change
-    create_table :router_firewall_nats do |t|
+    create_table :firewall_nats do |t|
       t.string :name, null: false
       t.integer :host_id, null: false
       t.integer :s_port, null: false
