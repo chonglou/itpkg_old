@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140525173441) do
+ActiveRecord::Schema.define(version: 20140526022156) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -82,5 +82,118 @@ ActiveRecord::Schema.define(version: 20140525173441) do
 
   add_index "brahma_bodhi_users", ["open_id"], name: "index_brahma_bodhi_users_on_open_id", unique: true, using: :btree
   add_index "brahma_bodhi_users", ["token"], name: "index_brahma_bodhi_users_on_token", unique: true, using: :btree
+
+  create_table "cdn_hosts", force: true do |t|
+    t.string   "name",      null: false
+    t.text     "details"
+    t.integer  "user_id",   null: false
+    t.integer  "client_id", null: false
+    t.datetime "created",   null: false
+  end
+
+  create_table "clients", force: true do |t|
+    t.string   "serial",  null: false
+    t.string   "secret",  null: false
+    t.datetime "created", null: false
+  end
+
+  add_index "clients", ["serial"], name: "index_clients_on_serial", unique: true, using: :btree
+
+  create_table "companies", force: true do |t|
+    t.string   "name",    null: false
+    t.text     "details"
+    t.integer  "user_id", null: false
+    t.datetime "created", null: false
+  end
+
+  create_table "monitor_hosts", force: true do |t|
+    t.string   "name",      null: false
+    t.text     "details"
+    t.integer  "user_id",   null: false
+    t.integer  "client_id", null: false
+    t.datetime "created",   null: false
+  end
+
+  create_table "router_devices", force: true do |t|
+    t.string   "mac",                           null: false
+    t.string   "name",                          null: false
+    t.integer  "state",   limit: 2, default: 0, null: false
+    t.integer  "host_id",                       null: false
+    t.text     "details"
+    t.integer  "ip",      limit: 2,             null: false
+    t.datetime "created",                       null: false
+  end
+
+  create_table "router_dns_domains", force: true do |t|
+    t.string   "name",                  null: false
+    t.integer  "host_id",               null: false
+    t.integer  "ttl",     default: 300, null: false
+    t.datetime "created",               null: false
+  end
+
+  create_table "router_dns_records", force: true do |t|
+    t.string   "name",                            null: false
+    t.integer  "flag",      limit: 2, default: 0, null: false
+    t.string   "value",                           null: false
+    t.integer  "domain_id",                       null: false
+    t.integer  "priority",  limit: 2, default: 0, null: false
+    t.datetime "created"
+  end
+
+  create_table "router_firewall_inputs", force: true do |t|
+    t.string   "name",                   null: false
+    t.integer  "host_id",                null: false
+    t.integer  "s_port",                 null: false
+    t.integer  "protocol", default: 0,   null: false
+    t.string   "s_ip",     default: "*", null: false
+    t.datetime "created",                null: false
+  end
+
+  create_table "router_firewall_limits", force: true do |t|
+    t.string   "name",     null: false
+    t.integer  "host_id",  null: false
+    t.integer  "max_up",   null: false
+    t.integer  "max_down", null: false
+    t.integer  "min_down", null: false
+    t.integer  "min_up",   null: false
+    t.datetime "created",  null: false
+  end
+
+  create_table "router_firewall_nats", force: true do |t|
+    t.string   "name",                 null: false
+    t.integer  "host_id",              null: false
+    t.integer  "s_port",               null: false
+    t.integer  "protocol", default: 0, null: false
+    t.integer  "d_port",               null: false
+    t.integer  "d_ip",                 null: false
+    t.datetime "created",              null: false
+  end
+
+  create_table "router_firewall_output_devices", force: true do |t|
+    t.integer  "output_id", null: false
+    t.integer  "device_id", null: false
+    t.datetime "created",   null: false
+  end
+
+  create_table "router_firewall_outputs", force: true do |t|
+    t.integer  "host_id",  null: false
+    t.string   "name",     null: false
+    t.string   "keyword",  null: false
+    t.string   "weekly",   null: false
+    t.time     "startup",  null: false
+    t.time     "shutdown", null: false
+    t.datetime "created",  null: false
+  end
+
+  create_table "router_hosts", force: true do |t|
+    t.integer  "user_id",   null: false
+    t.integer  "client_id", null: false
+    t.string   "name",      null: false
+    t.text     "details"
+    t.string   "wan",       null: false
+    t.string   "lan",       null: false
+    t.string   "dmz"
+    t.datetime "created",   null: false
+  end
 
 end
