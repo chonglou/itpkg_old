@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526032633) do
+ActiveRecord::Schema.define(version: 20140526201544) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -127,6 +127,25 @@ ActiveRecord::Schema.define(version: 20140526032633) do
     t.integer  "domain_id",                       null: false
     t.integer  "priority",  limit: 2, default: 0, null: false
     t.datetime "created"
+  end
+
+  create_table "email_domains", force: true do |t|
+    t.integer  "host_id", null: false
+    t.string   "name",    null: false
+    t.datetime "created", null: false
+  end
+
+  create_table "email_hosts", force: true do |t|
+    t.integer  "client_id", null: false
+    t.datetime "created",   null: false
+  end
+
+  create_table "email_users", force: true do |t|
+    t.integer  "domain_id",                       null: false
+    t.string   "username",                        null: false
+    t.string   "password",                        null: false
+    t.integer  "state",     limit: 2, default: 0, null: false
+    t.datetime "created",                         null: false
   end
 
   create_table "firewall_devices", force: true do |t|
