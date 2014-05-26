@@ -84,14 +84,14 @@ ActiveRecord::Schema.define(version: 20140526032633) do
   add_index "brahma_bodhi_users", ["token"], name: "index_brahma_bodhi_users_on_token", unique: true, using: :btree
 
   create_table "cdn_hosts", force: true do |t|
-    t.string   "name",      null: false
-    t.text     "details"
-    t.integer  "user_id",   null: false
     t.integer  "client_id", null: false
     t.datetime "created",   null: false
   end
 
   create_table "clients", force: true do |t|
+    t.integer  "user_id", null: false
+    t.string   "name",    null: false
+    t.text     "details"
     t.string   "serial",  null: false
     t.string   "secret",  null: false
     t.datetime "created", null: false
@@ -114,9 +114,6 @@ ActiveRecord::Schema.define(version: 20140526032633) do
   end
 
   create_table "dns_hosts", force: true do |t|
-    t.string   "name",      null: false
-    t.text     "details"
-    t.integer  "user_id",   null: false
     t.integer  "client_id", null: false
     t.datetime "created",   null: false
   end
@@ -141,10 +138,7 @@ ActiveRecord::Schema.define(version: 20140526032633) do
   end
 
   create_table "firewall_hosts", force: true do |t|
-    t.integer  "user_id",   null: false
     t.integer  "client_id", null: false
-    t.string   "name",      null: false
-    t.text     "details"
     t.string   "wan",       null: false
     t.string   "lan",       null: false
     t.string   "dmz"
@@ -197,17 +191,11 @@ ActiveRecord::Schema.define(version: 20140526032633) do
   end
 
   create_table "monitor_hosts", force: true do |t|
-    t.string   "name",      null: false
-    t.text     "details"
-    t.integer  "user_id",   null: false
     t.integer  "client_id", null: false
     t.datetime "created",   null: false
   end
 
   create_table "vpn_hosts", force: true do |t|
-    t.string   "name",      null: false
-    t.text     "details"
-    t.integer  "user_id",   null: false
     t.integer  "client_id", null: false
     t.datetime "created",   null: false
   end
