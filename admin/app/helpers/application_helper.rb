@@ -1,3 +1,5 @@
+require 'brahma/factory'
+
 module ApplicationHelper
   include BrahmaBodhi::ApplicationHelper
   def nav_links
@@ -5,9 +7,9 @@ module ApplicationHelper
     if current_user
       links['/personal'] = '用户中心'
     end
-    links['/routers'] = '路由主机'
-    links['/cdn'] = 'CDN主机'
-    links['/monitors'] = '监控面板'
+    links['/routers'] = '局域网'
+    links['/cdn'] = 'CDN系统'
+    links['/monitors'] = '监控系统'
     links['/about_me']='关于我们'
     links
   end

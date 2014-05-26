@@ -24,6 +24,10 @@ Rails.application.routes.draw do
   #---------站点其它-------------------------------------------
   get 'about_me' => 'main#about_me'
   get 'main' => 'main#index'
+  post 'search' => 'main#search'
+  get '/archive/:year/:month/:day' => 'main#archive'
+  get '/archive/:year/:month' => 'main#archive'
+
   root 'main#index'
-  mount BrahmaBodhi::Engine, at:'/core'
+  mount BrahmaBodhi::Engine, at: '/core'
 end

@@ -1,2 +1,8 @@
-<h1>Main#index</h1>
-<p>Find me in app/views/main/index.html.erb</p>
+- @index='/main'
+- @title='首页'
+-content_for :content
+  -@notices.each do |n|
+    h3 #{n.created}
+    hr
+    |#{{n.content}}
+    br
