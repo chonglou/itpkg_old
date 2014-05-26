@@ -89,12 +89,14 @@ ActiveRecord::Schema.define(version: 20140526032633) do
   end
 
   create_table "clients", force: true do |t|
-    t.integer  "user_id", null: false
-    t.string   "name",    null: false
+    t.integer  "user_id",                       null: false
+    t.string   "name",                          null: false
     t.text     "details"
-    t.string   "serial",  null: false
-    t.string   "secret",  null: false
-    t.datetime "created", null: false
+    t.integer  "flag",    limit: 2, default: 0, null: false
+    t.integer  "state",   limit: 2, default: 0, null: false
+    t.string   "serial",                        null: false
+    t.string   "secret",                        null: false
+    t.datetime "created",                       null: false
   end
 
   add_index "clients", ["serial"], name: "index_clients_on_serial", unique: true, using: :btree

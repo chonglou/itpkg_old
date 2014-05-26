@@ -4,4 +4,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   layout 'bodhi/main'
   include ApplicationHelper
+
+
+  def require_login
+    unless current_user
+      not_found
+    end
+  end
 end

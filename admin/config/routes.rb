@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'clients/index'
+
   #--------------个人中心------------------------
   get 'personal'=>'personal#index'
   get 'personal/company'

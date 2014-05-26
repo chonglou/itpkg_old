@@ -6,8 +6,6 @@ class PersonalController < ApplicationController
   before_action :require_login
 
   def index
-    user = current_user
-
     @ctl_links = {
         '/clients' => '终端管理',
         '/personal/company' => '公司信息'
@@ -55,10 +53,4 @@ class PersonalController < ApplicationController
     end
   end
 
-  private
-  def require_login
-    unless current_user
-      not_found
-    end
-  end
 end

@@ -9,10 +9,11 @@ module ApplicationHelper
       links['/personal'] = '用户中心'
     end
     links['/firewall'] = '防火墙'
-    links['/cdn'] = 'CDN'
-    links['/vpn'] = 'VPN'
-    links['/dns'] = 'DNS'
-    links['/monitor'] = '监控'
+    links['/cdn'] = 'CDN服务'
+    links['/vpn'] = 'VPN服务'
+    links['/dns'] = 'DNS服务'
+    links['/monitor'] = '监控服务'
+    links['/email'] = '邮件服务'
     links['/about_me']='关于我们'
     links
   end
