@@ -5,7 +5,6 @@ require 'brahma/web/fall'
 require 'brahma/web/validator'
 require 'brahma/web/response'
 require 'brahma/services/site'
-require 'brahma/utils/string_helper'
 require 'brahma/services/client'
 
 class ClientsController < ApplicationController
@@ -89,9 +88,9 @@ class ClientsController < ApplicationController
     vat.empty? :name, '名称'
     dlg = Brahma::Web::Dialog.new
     if vat.ok?
-      sh = Brahma::Utils::StringHelper
+      serial, secret=Brahma::ClientService.generate
       Client.create user_id: current_user.fetch(:id), name: params[:name], details: params[:details],
-                    secret: sh.rand_s!(64), serial: sh.uuid,
+                    secret: secret, serial: serial,
                     flag: params[:flag], state: :submit, created: Time.now
       dlg.ok = true
     else
@@ -104,13 +103,67 @@ class ClientsController < ApplicationController
     if current_user
       fm = Brahma::Web::Form.new '增加终端', '/clients'
       fm.text 'name', '名称'
-      fm.radio 'flag', '类型', 'firewall', [['firewall', '防火墙'], ['cdn', 'CDN'], ['vpn', 'VPN'], ['dns', 'DNS'], ['email', '邮件'], ['monitor', '监控']]
+      fm.radio 'flag', '类型', 'firewall', [
+          %w(firewall 防火墙),
+          %w(cdn CDN),
+          %w(vpn VPN),
+          %w(dns DNS),
+          %w(email 邮件),
+          %w(monitor 监控)
+      ]
       fm.html 'details', '内容'
       fm.ok = true
       render json: fm.to_h
     else
       not_found
     end
+  end
+
+  def state
+    user_id = current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], user_id
+    if c
+      case request.method
+        when 'GET'
+          fm = Brahma::Web::Form.new '状态管理', "/clients/#{c.id}/state"
+          fm.radio 'state', '状态', c.state, [%w(enable 启用), %w(disable 禁用)]
+          fm.ok = true
+          render json: fm.to_h and return
+        when 'POST'
+          dlg = Brahma::Web::Dialog.new
+          c.update state: params[:state]
+          Brahma::LogService.add "变更终端[#{c.id}]状态为[#{params[:state]}]", user_id
+          dlg.ok = true
+          render json: dlg.to_h and return
+        else
+      end
+    end
+    not_found
+  end
+
+  def reset
+    user_id = current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], user_id
+    if c
+      case request.method
+        when 'GET'
+          fm = Brahma::Web::Form.new '重新生成KEY', "/clients/#{c.id}/reset"
+          fm.ok = true
+          render json: fm.to_h and return
+        when 'POST'
+          dlg = Brahma::Web::Dialog.new
+          serial, secret=Brahma::ClientService.generate
+          c.update secret: secret, serial: serial
+          Brahma::LogService.add "重新生成[#{c.id}]的KEY信息", user_id
+          dlg.add '请妥善保管验证信息'
+          dlg.add "ID: #{serial}"
+          dlg.add "KEY: #{secret}"
+          dlg.ok = true
+          render json: dlg.to_h and return
+        else
+      end
+    end
+    not_found
   end
 
 end

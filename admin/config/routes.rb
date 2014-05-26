@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   namespace :vpn do
     resources :users
     get 'help'
+    get 'clients/:id' => 'clients#show'
   end
   get 'vpn' => 'vpn#index'
   #---------------监控管理-----------------------
@@ -39,7 +40,12 @@ Rails.application.routes.draw do
   end
   get 'cdn' => 'cdn#index'
   #---------------终端管理-----------------------
-  resources :clients
+  resources :clients do
+    %w(state reset).each do |act|
+      get act, on: :member
+      post act, on: :member
+    end
+  end
   #---------站点其它-------------------------------------------
   get 'about_me' => 'main#about_me'
   get 'main' => 'main#index'
