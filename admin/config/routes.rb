@@ -7,35 +7,35 @@ Rails.application.routes.draw do
   #--------------邮件服务器管理------------------
   namespace :email do
     resources :users, :domains
-    get 'status'
+    get 'help'
   end
   get 'email' => 'email#index'
   #---------------防火墙-----------------------
   namespace :firewall do
     resources :outputs, :nats, :inputs, :devices
-    get 'status'
+    get 'help'
   end
   get 'firewall' => 'firewall#index'
   #--------------DNS--------------------------
   namespace :dns do
     resources :domains, :records
-    get 'status'
+    get 'help'
   end
   get 'dns' => 'dns#index'
   #--------------VPN--------------------------
   namespace :vpn do
     resources :users
-    get 'status'
+    get 'help'
   end
   get 'vpn' => 'vpn#index'
   #---------------监控管理-----------------------
   namespace :monitor do
-    get 'status'
+    get 'help'
   end
   get 'monitor' => 'monitor#index'
   #---------------CDN管理-----------------------
   namespace :cdn do
-    get 'status'
+    get 'help'
   end
   get 'cdn' => 'cdn#index'
   #---------------终端管理-----------------------

@@ -6,6 +6,7 @@ require 'brahma/web/validator'
 require 'brahma/web/response'
 require 'brahma/services/site'
 require 'brahma/utils/string_helper'
+require 'brahma/services/client'
 
 class ClientsController < ApplicationController
   before_action :require_login
@@ -35,12 +36,13 @@ class ClientsController < ApplicationController
   def show
     id = params[:id]
     if id
-      c = Client.find_by id: id, user_id: current_user.fetch(:id)
+      c = Brahma::ClientService.get id, current_user.fetch(:id)
       if c
         list = Brahma::Web::List.new "终端[#{c.id}]"
         list.add "名称：#{c.name}"
         list.add "类型：#{c.flag}"
         list.add "状态：#{c.state}"
+        list.add "认证信息:<br/> ID: #{c.serial}<br/>KEY: #{c.secret}"
         list.add "创建时间： #{c.created}"
         list.add "详细信息： #{c.details}"
         render(json: list.to_h) and return
@@ -52,7 +54,7 @@ class ClientsController < ApplicationController
   def update
     vat = Brahma::Web::Validator.new params
     vat.empty? :name, '名称'
-    c = Client.find_by id: params[:id], user_id: current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], current_user.fetch(:id)
     unless c
       vat.add '没有权限'
     end
@@ -68,7 +70,7 @@ class ClientsController < ApplicationController
 
   def edit
 
-    c = Client.find_by id: params[:id], user_id: current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], current_user.fetch(:id)
     fm = Brahma::Web::Form.new '编辑终端', "/clients/#{params[:id]}"
     if c
       fm.text 'name', '名称', c.name
