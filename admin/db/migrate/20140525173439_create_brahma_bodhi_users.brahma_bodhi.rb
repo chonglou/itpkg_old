@@ -6,7 +6,7 @@ class CreateBrahmaBodhiUsers < ActiveRecord::Migration
       t.string :token, null: false
       t.integer :flag, null: false, default: 0, limit: 1
       t.integer :state, null: false, default: 0, limit: 1
-      t.string :username, null:false
+      t.string :username, null: false
       t.binary :contact
       t.datetime :last_login
       t.datetime :created, null: false

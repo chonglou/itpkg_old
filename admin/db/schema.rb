@@ -114,16 +114,6 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.datetime "created",   null: false
   end
 
-  create_table "router_devices", force: true do |t|
-    t.string   "mac",                           null: false
-    t.string   "name",                          null: false
-    t.integer  "state",   limit: 2, default: 0, null: false
-    t.integer  "host_id",                       null: false
-    t.text     "details"
-    t.integer  "ip",      limit: 2,             null: false
-    t.datetime "created",                       null: false
-  end
-
   create_table "router_dns_domains", force: true do |t|
     t.string   "name",                  null: false
     t.integer  "host_id",               null: false
@@ -138,6 +128,16 @@ ActiveRecord::Schema.define(version: 20140526022156) do
     t.integer  "domain_id",                       null: false
     t.integer  "priority",  limit: 2, default: 0, null: false
     t.datetime "created"
+  end
+
+  create_table "router_firewall_devices", force: true do |t|
+    t.string   "mac",                           null: false
+    t.string   "name",                          null: false
+    t.integer  "state",   limit: 2, default: 0, null: false
+    t.integer  "host_id",                       null: false
+    t.text     "details"
+    t.integer  "ip",      limit: 2,             null: false
+    t.datetime "created",                       null: false
   end
 
   create_table "router_firewall_inputs", force: true do |t|

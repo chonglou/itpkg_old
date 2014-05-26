@@ -2,12 +2,12 @@
 class CreateBrahmaBodhiAttachments < ActiveRecord::Migration
   def change
     create_table :brahma_bodhi_attachments do |t|
-      t.integer :user_id, null:false
-      t.integer :size, null:false
-      t.string :file_name, null:false
-      t.string :content_type, null:false
-      t.string :original_filename, null:false
-      t.binary :content, null: false, limit:10.megabyte
+      t.integer :user_id, null: false
+      t.integer :size, null: false
+      t.string :file_name, null: false
+      t.string :content_type, null: false
+      t.string :original_filename, null: false
+      t.binary :content, null: false, limit: 10.megabyte
       t.datetime :last_edit, null: false
       t.datetime :created, null: false
     end
