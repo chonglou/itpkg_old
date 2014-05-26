@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
 
+  #--------------个人中心------------------------
+  get 'personal'=>'personal#index'
+  get 'personal/company'
+  post 'personal/company'
+
   #---------------IT-PACKAGE-----------------------
   namespace :itpkg do
     namespace :dns do
@@ -25,8 +30,8 @@ Rails.application.routes.draw do
   get 'about_me' => 'main#about_me'
   get 'main' => 'main#index'
   post 'search' => 'main#search'
-  get '/archive/:year/:month/:day' => 'main#archive'
-  get '/archive/:year/:month' => 'main#archive'
+  get 'archive/:year/:month/:day' => 'main#archive'
+  get 'archive/:year/:month' => 'main#archive'
 
   root 'main#index'
   mount BrahmaBodhi::Engine, at: '/core'

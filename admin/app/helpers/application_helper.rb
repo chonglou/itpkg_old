@@ -2,6 +2,7 @@ require 'brahma/factory'
 
 module ApplicationHelper
   include BrahmaBodhi::ApplicationHelper
+
   def nav_links
     links = {'/main' => '本站首页'}
     if current_user
