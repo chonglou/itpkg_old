@@ -1,4 +1,4 @@
 class Vpn::Host < ActiveRecord::Base
-  has_one :client
+  belongs_to :client
   has_many :users
 end

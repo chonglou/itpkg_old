@@ -23,7 +23,7 @@ class VpnController < ApplicationController
 
   def info
     user_id = current_user.fetch(:id)
-    c = Brahma::ClientService.get params[:id], user_id, :vpn
+    c = Brahma::ClientService.get params[:client_id], user_id, :vpn
     if c
       case request.method
         when 'GET'
@@ -50,10 +50,11 @@ class VpnController < ApplicationController
 
   def show
     bg = Brahma::Web::ButtonGroup.new
-    bg.add "/clients/#{params[:id]}", '基本信息', 'info'
-    bg.add "/vpn/info/#{params[:id]}", '参数设置', 'warning'
-    bg.add "/clients/#{params[:id]}/reset", '重设KEY', 'danger'
-    bg.add "/vpn/user/#{params[:id]}", '用户管理', 'primary'
+    c_id = params[:client_id]
+    bg.add "/clients/#{c_id}", '基本信息', 'info'
+    bg.add "/vpn/info/#{c_id}", '参数设置', 'warning'
+    bg.add "/clients/#{c_id}/reset", '重设KEY', 'danger'
+    bg.add "/vpn/user/#{c_id}", '用户管理', 'primary'
     render(json: bg.to_h)
   end
 

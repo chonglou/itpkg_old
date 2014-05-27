@@ -24,13 +24,16 @@ Rails.application.routes.draw do
   get 'dns' => 'dns#index'
   #--------------VPN--------------------------
   namespace :vpn do
-    resources :users
+    resources :users do
+      get 'state', on: :member
+      post 'state', on: :member
+    end
     get 'help'
-    get 'user/:id' => 'users#index'
+    get 'user/:client_id' => 'users#index'
   end
-  get 'vpn/show/:id' => 'vpn#show'
-  get 'vpn/info/:id' => 'vpn#info'
-  post 'vpn/info/:id' => 'vpn#info'
+  get 'vpn/show/:client_id' => 'vpn#show'
+  get 'vpn/info/:client_id' => 'vpn#info'
+  post 'vpn/info/:client_id' => 'vpn#info'
   get 'vpn' => 'vpn#index'
   #---------------监控管理-----------------------
   namespace :monitor do
