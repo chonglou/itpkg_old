@@ -1,4 +1,8 @@
+require 'brahma/web/dialog'
+require 'brahma/web/form'
 require 'brahma/web/response'
+require 'brahma/services/client'
+require 'brahma/services/site'
 require 'brahma/services/vpn'
 
 class VpnController < ApplicationController
@@ -6,7 +10,7 @@ class VpnController < ApplicationController
 
   def index
     @ctl_links ={}
-    Brahma::ClientService.list(current_user.fetch(:id), :vpn).each{|c|@ctl_links["/vpn/clients/#{c.id}"]=c.name}
+    Brahma::ClientService.list(current_user.fetch(:id), :vpn).each{|c|@ctl_links["/vpn/show/#{c.id}"]=c.name}
     @ctl_links['/vpn/help']='帮助文档'
     @index='/vpn'
     goto_admin
@@ -15,6 +19,42 @@ class VpnController < ApplicationController
   def help
     list = Brahma::Web::List.new '帮助文档'
     render(json: list.to_h)
+  end
+
+  def info
+    user_id = current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], user_id, :vpn
+    if c
+      case request.method
+        when 'GET'
+          fm = Brahma::Web::Form.new '参数设置', "/vpn/info/#{c.id}"
+          fm.radio 'state', '状态', c.state, [%w(enable 启用), %w(disable 禁用)]
+          fm.ok = true
+          render json: fm.to_h and return
+        when 'POST'
+          dlg = Brahma::Web::Dialog.new
+          host = Brahma::VpnService.get_host c.id
+          unless host
+            Vpn::Host.create client_id:c.id, created:Time.now
+          end
+          c.update state: params[:state]
+          Brahma::LogService.add "变更终端[#{c.id}]状态为[#{params[:state]}]", user_id
+          dlg.ok = true
+          render json: dlg.to_h and return
+        else
+      end
+    end
+    not_found
+  end
+
+
+  def show
+    bg = Brahma::Web::ButtonGroup.new
+    bg.add "/clients/#{params[:id]}", '基本信息', 'info'
+    bg.add "/vpn/info/#{params[:id]}", '参数设置', 'warning'
+    bg.add "/clients/#{params[:id]}/reset", '重设KEY', 'danger'
+    bg.add "/vpn/user/#{params[:id]}", '用户管理', 'primary'
+    render(json: bg.to_h)
   end
 
 end

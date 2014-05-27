@@ -1,3 +1,38 @@
+GIT
+  remote: git@github.com:chonglou/bodhi.git
+  revision: 27e76b4a3cd6a279f8c452220861d9de587e5bb6
+  specs:
+    brahma_bodhi (0.0.1)
+      bootstrap-sass
+      brahma_utils
+      jquery-rails
+      mysql2
+      nokogiri
+      puma
+      rails (~> 4.1.0)
+      redcarpet
+      slim
+      turbolinks
+
+GIT
+  remote: git@github.com:chonglou/daemon.git
+  revision: 66f1011575fa48fc48e1d16a842f56df2f16ca99
+  specs:
+    brahma_daemon (0.0.1)
+
+GIT
+  remote: git@github.com:chonglou/utils.git
+  revision: d7e097735c51427a6e1b9a173a51f0ef716d72bc
+  specs:
+    brahma_utils (0.0.1)
+      connection_pool
+      highline
+      mysql2
+      nokogiri
+      redcarpet
+      redis
+      sequel
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -30,26 +65,6 @@ GEM
     arel (5.0.1.20140414130214)
     bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
-    brahma_bodhi (0.0.1)
-      bootstrap-sass
-      brahma_utils
-      jquery-rails
-      mysql2
-      nokogiri
-      puma
-      rails (~> 4.1.0)
-      redcarpet
-      slim
-      turbolinks
-    brahma_daemon (0.0.1)
-    brahma_utils (0.0.1)
-      connection_pool
-      highline
-      mysql2
-      nokogiri
-      redcarpet
-      redis
-      sequel
     builder (3.2.2)
     capistrano (3.2.1)
       i18n
@@ -64,7 +79,7 @@ GEM
     capistrano-rbenv (2.0.2)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
-    capistrano3-puma (0.5.0)
+    capistrano3-puma (0.5.1)
       capistrano (~> 3.0)
       puma (>= 2.6)
     celluloid (0.15.2)
@@ -197,7 +212,7 @@ GEM
       polyglot (>= 0.3.1)
     turbolinks (2.2.2)
       coffee-rails
-    tzinfo (1.1.0)
+    tzinfo (1.2.0)
       thread_safe (~> 0.1)
     uglifier (2.5.0)
       execjs (>= 0.3.0)
@@ -208,9 +223,9 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap-sass
-  brahma_bodhi
-  brahma_daemon
-  brahma_utils
+  brahma_bodhi!
+  brahma_daemon!
+  brahma_utils!
   capistrano (~> 3.1)
   capistrano-rails
   capistrano-rbenv (~> 2.0)

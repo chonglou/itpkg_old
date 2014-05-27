@@ -26,8 +26,11 @@ Rails.application.routes.draw do
   namespace :vpn do
     resources :users
     get 'help'
-    get 'clients/:id' => 'clients#show'
+    get 'user/:id' => 'users#index'
   end
+  get 'vpn/show/:id' => 'vpn#show'
+  get 'vpn/info/:id' => 'vpn#info'
+  post 'vpn/info/:id' => 'vpn#info'
   get 'vpn' => 'vpn#index'
   #---------------监控管理-----------------------
   namespace :monitor do
