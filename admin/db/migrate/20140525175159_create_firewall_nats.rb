@@ -4,7 +4,7 @@ class CreateFirewallNats < ActiveRecord::Migration
       t.string :name, null: false
       t.integer :host_id, null: false
       t.integer :s_port, null: false
-      t.integer :protocol, null: false, default: 0
+      t.integer :protocol, null: false, default: 0, limit: 2
       t.integer :d_port, null: false
       t.integer :d_ip, null: false
       t.datetime :created, null: false
