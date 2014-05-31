@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 27e76b4a3cd6a279f8c452220861d9de587e5bb6
+  revision: 7010006882914f206ac30102e3309a01793c2cf7
   specs:
     brahma_bodhi (0.0.1)
       bootstrap-sass
@@ -22,9 +22,10 @@ GIT
 
 GIT
   remote: git@github.com:chonglou/utils.git
-  revision: d7e097735c51427a6e1b9a173a51f0ef716d72bc
+  revision: fe81c5941200b1e85d1d2c4aaf2c330ca9e56b1f
   specs:
     brahma_utils (0.0.1)
+      bunny
       connection_pool
       highline
       mysql2
@@ -62,10 +63,13 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    amq-protocol (1.9.2)
     arel (5.0.1.20140414130214)
     bootstrap-sass (3.1.1.1)
       sass (~> 3.2)
     builder (3.2.2)
+    bunny (1.2.2)
+      amq-protocol (>= 1.9.2)
     capistrano (3.2.1)
       i18n
       rake (>= 10.0.0)
@@ -91,10 +95,11 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
+    colorize (0.7.3)
     connection_pool (2.0.0)
     diff-lcs (1.2.5)
     erubis (2.7.0)
-    execjs (2.0.2)
+    execjs (2.1.0)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.4.1)
@@ -128,7 +133,7 @@ GEM
     net-ssh (2.9.1)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
-    polyglot (0.3.4)
+    polyglot (0.3.5)
     puma (2.8.2)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)
@@ -195,18 +200,15 @@ GEM
       activesupport (>= 3.0)
       sprockets (~> 2.8)
     sqlite3 (1.3.9)
-    sshkit (1.4.0)
+    sshkit (1.5.1)
+      colorize
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-      term-ansicolor
     temple (0.6.7)
-    term-ansicolor (1.3.0)
-      tins (~> 1.0)
     thor (0.19.1)
-    thread_safe (0.3.3)
+    thread_safe (0.3.4)
     tilt (1.4.1)
     timers (1.1.0)
-    tins (1.3.0)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -226,6 +228,7 @@ DEPENDENCIES
   brahma_bodhi!
   brahma_daemon!
   brahma_utils!
+  bunny
   capistrano (~> 3.1)
   capistrano-rails
   capistrano-rbenv (~> 2.0)

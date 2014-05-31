@@ -22,7 +22,7 @@ module ApplicationHelper
     if current_user
       {'/personal' => '个人中心', '/core/personal/logout' => '安全退出'}
     else
-      auth = Brahma::FACTORY.oauth2
+      auth = Brahma::Factory.instance.oauth2
       state = auth.state
       oauth2_state! state
       {

@@ -70,7 +70,7 @@ class Vpn::UsersController < ApplicationController
     end
     dlg = Brahma::Web::Dialog.new
     if vat.ok?
-      user.update password: Brahma::FACTORY.encryptor.encrypt(params[:password])
+      user.update password: Brahma::Factory.instance.encryptor.encrypt(params[:password])
       dlg.ok = true
     else
       dlg.data += vat.messages
@@ -111,7 +111,7 @@ class Vpn::UsersController < ApplicationController
 
     dlg = Brahma::Web::Dialog.new
     if vat.ok?
-      Vpn::User.create username: params[:username], password: Brahma::FACTORY.encryptor.encrypt(params[:password]),
+      Vpn::User.create username: params[:username], password: Brahma::Factory.instance.encryptor.encrypt(params[:password]),
                        host_id: host.id, created: Time.now
       dlg.ok = true
     else

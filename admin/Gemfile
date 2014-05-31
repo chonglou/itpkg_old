@@ -47,6 +47,7 @@ gem 'sequel'
 gem 'redis'
 gem 'connection_pool'
 gem 'redcarpet'
+gem 'bunny'
 #gem 'coderay'
 
 
