@@ -48,6 +48,8 @@ gem 'redis'
 gem 'connection_pool'
 gem 'redcarpet'
 gem 'bunny'
+gem 'mongo'
+gem 'bson_ext'
 #gem 'coderay'
 
 
