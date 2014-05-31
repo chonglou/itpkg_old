@@ -10,7 +10,7 @@ class VpnController < ApplicationController
 
   def index
     @ctl_links ={}
-    Brahma::ClientService.list(current_user.fetch(:id), :vpn).each{|c|@ctl_links["/vpn/show/#{c.id}"]=c.name}
+    Brahma::ClientService.list(current_user.fetch(:id), :vpn).each { |c| @ctl_links["/vpn/show/#{c.id}"]=c.name }
     @ctl_links['/vpn/help']='帮助文档'
     @index='/vpn'
     goto_admin
@@ -35,7 +35,7 @@ class VpnController < ApplicationController
           dlg = Brahma::Web::Dialog.new
           host = Brahma::VpnService.get_host c.id
           unless host
-            Vpn::Host.create client_id:c.id, created:Time.now
+            Vpn::Host.create client_id: c.id, created: Time.now
           end
           c.update state: params[:state]
           Brahma::LogService.add "变更终端[#{c.id}]状态为[#{params[:state]}]", user_id

@@ -4,12 +4,13 @@ require 'brahma/web/dialog'
 require 'brahma/web/validator'
 require 'brahma/web/response'
 require 'brahma/services/client'
-require 'brahma/services/vpn'
+require 'brahma/services/email'
 require 'brahma/services/site'
 require 'brahma/factory'
 
-class Vpn::UsersController < ApplicationController
+class Email::UsersController < ApplicationController
   before_action :require_login
+
 
   def index
     user_id = current_user.fetch(:id)

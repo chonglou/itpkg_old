@@ -1,3 +1,3 @@
 class Monitor::Host < ActiveRecord::Base
-  has_one :client
+  belongs_to :client
 end

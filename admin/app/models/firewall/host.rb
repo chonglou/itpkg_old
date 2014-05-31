@@ -1,5 +1,5 @@
 class Firewall::Host < ActiveRecord::Base
-  has_one :client
+  belongs_to :client
   has_many :devices
   has_many :domains
   has_many :limits

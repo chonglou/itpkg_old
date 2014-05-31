@@ -8,7 +8,13 @@ Rails.application.routes.draw do
   namespace :email do
     resources :users, :domains
     get 'help'
+    get 'user/:client_id' => 'users#index'
+    get 'domain/:client_id' => 'domains#index'
   end
+
+  get 'email/show/:client_id' => 'email#show'
+  get 'email/info/:client_id' => 'email#info'
+  post 'email/info/:client_id' => 'email#info'
   get 'email' => 'email#index'
   #---------------防火墙-----------------------
   namespace :firewall do
