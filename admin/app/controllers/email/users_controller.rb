@@ -15,19 +15,21 @@ class Email::UsersController < ApplicationController
   def index
     user_id = current_user.fetch(:id)
     c_id = params[:client_id]
-    tab = Brahma::Web::Table.new "/vpn/users?client_id=#{c_id}", '用户列表', %w(ID 名称 状态 创建日期)
-    client = Brahma::ClientService.get c_id, user_id, :vpn
+    tab = Brahma::Web::Table.new "/email/users?client_id=#{c_id}", '用户列表', %w(ID 名称 状态 创建日期)
+    client = Brahma::ClientService.get c_id, user_id, :email
     if client && client.enable?
-      host = Brahma::VpnService.get_host(client.id)
-      host.users.each do |u|
+      host = Brahma::EmailService.get_host(client.id)
+      host.domains.each do |d|
+      d.users.each do |u|
         tab.insert [u.id, u.username, u.state, u.created], [
-            ['info', 'GET', "/vpn/users/#{u.id}", '查看'],
-            ['primary', 'GET', "/vpn/users/#{u.id}/edit", '修改密码'],
-            ['warning', 'GET', "/vpn/users/#{u.id}/state", '状态变更'],
-            ['danger', 'DELETE', "/vpn/users/#{u.id}", '删除']
+            ['info', 'GET', "/email/users/#{u.id}", '查看'],
+            ['primary', 'GET', "/email/users/#{u.id}/edit", '修改密码'],
+            ['warning', 'GET', "/email/users/#{u.id}/state", '状态变更'],
+            ['danger', 'DELETE', "/email/users/#{u.id}", '删除']
         ]
       end
-      tab.toolbar = [['primary', 'GET', "/vpn/users/new?client_id=#{c_id}", '新增']]
+      end
+      tab.toolbar = [['primary', 'GET', "/email/users/new?client_id=#{c_id}", '新增']]
       tab.ok = true
     else
       tab.add '没有权限'
@@ -36,10 +38,10 @@ class Email::UsersController < ApplicationController
   end
 
   def destroy
-    user = Vpn::User.find_by params[:id]
+    user = Email::User.find_by params[:id]
     dlg = Brahma::Web::Dialog.new
     if can_edit?(user)
-      Brahma::LogService.add "删除VPN用户#{user.username}", current_user.fetch(:id)
+      Brahma::LogService.add "删除Email用户#{user.username}", current_user.fetch(:id)
       user.destroy
       dlg.ok = true
     else
@@ -49,9 +51,9 @@ class Email::UsersController < ApplicationController
   end
 
   def show
-    user = Vpn::User.find_by id: params[:id]
+    user = Email::User.find_by id: params[:id]
     if can_edit?(user)
-      list = Brahma::Web::List.new "VPN用户[#{user.id}]"
+      list = Brahma::Web::List.new "EMAIL用户[#{user.id}]"
       list.add "用户名：#{user.username}"
       list.add "状态：#{user.state}"
       list.add "创建时间： #{user.created}"
@@ -64,7 +66,7 @@ class Email::UsersController < ApplicationController
   def update
     vat = Brahma::Web::Validator.new params
     vat.password? :password, true
-    user = Vpn::User.find_by id: params[:id]
+    user = Email::User.find_by id: params[:id]
     unless can_edit?(user)
       vat.add '没有权限'
     end
@@ -79,8 +81,8 @@ class Email::UsersController < ApplicationController
   end
 
   def edit
-    user = Vpn::User.find_by id: params[:id]
-    fm = Brahma::Web::Form.new '', "/vpn/users/#{params[:id]}"
+    user = Email::User.find_by id: params[:id]
+    fm = Brahma::Web::Form.new '', "/email/users/#{params[:id]}"
     if can_edit?(user)
       fm.label = "编辑用户[#{user.username}]"
       fm.password 'password', '密码'
@@ -99,11 +101,20 @@ class Email::UsersController < ApplicationController
     vat.empty? :username, '用户名'
     vat.password? :password, true
 
-    client = Brahma::ClientService.get(params[:client_id], user_id, :vpn)
+    domain = Email::Domain.find_by id:params[:domain]
+    if domain && domain.host.client.enable?
+      if Email::User.find_by username:params[:username], domain_id:params[:domain]
+        vat.add '用户名已存在'
+      end
+    else
+      vat.add '没有权限'
+    end
+
+    client = Brahma::ClientService.get(params[:client_id], user_id, :email)
     if client && client.enable?
       host = Brahma::VpnService.get_host client.id
       if Vpn::User.find_by username: params[:username], host_id: host.id
-        vat.add '用户名已存在'
+
       end
     else
       vat.add '没有权限'
