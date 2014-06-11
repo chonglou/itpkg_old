@@ -1,5 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'highline'
-#gem 'brahma_daemon', git: 'git@github.com:chonglou/daemon.git'
-gem 'brahma_daemon'

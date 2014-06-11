@@ -1,9 +1,0 @@
-require_relative 'lib/config'
-
-namespace :brahma do
-  desc '参数设置'
-  task :setup, [:path] do |_, args|
-    args.with_defaults(path: 'config/itpkg.yml')
-    Itpkg::Config.new(args[:path]).setup!
-  end
-end

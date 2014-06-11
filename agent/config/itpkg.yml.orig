@@ -1,7 +1,0 @@
-server:
-  host: 'YOUR HOST'
-  port: 8888
-
-client:
-  id: 'YOUR CLIENT ID'
-  key: 'YOUR KEY'
