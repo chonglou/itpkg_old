@@ -52,7 +52,6 @@ gem 'mongo'
 gem 'bson_ext'
 #gem 'coderay'
 gem 'eventmachine'
-gem 'faye'
 gem 'multi_json'
 gem 'oj'
 
