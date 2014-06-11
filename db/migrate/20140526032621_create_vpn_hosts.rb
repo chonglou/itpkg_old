@@ -1,0 +1,8 @@
+class CreateVpnHosts < ActiveRecord::Migration
+  def change
+    create_table :vpn_hosts do |t|
+      t.integer :client_id, null: false
+      t.datetime :created, null: false
+    end
+  end
+end

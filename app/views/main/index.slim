@@ -1,0 +1,8 @@
+- @index='/main'
+- @title='首页'
+-content_for :content
+  -@notices.each do |n|
+    h3 #{n.created}
+    hr
+    |#{{n.content}}
+    br
