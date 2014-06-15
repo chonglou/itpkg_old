@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140615165321) do
+ActiveRecord::Schema.define(version: 20140526201544) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -117,9 +117,9 @@ ActiveRecord::Schema.define(version: 20140615165321) do
 
   create_table "dns_hosts", force: true do |t|
     t.integer  "client_id",                     null: false
-    t.datetime "created",                       null: false
     t.string   "dns1",      default: "8.8.8.8", null: false
     t.string   "dns2",      default: "8.8.4.4", null: false
+    t.datetime "created",                       null: false
   end
 
   create_table "dns_records", force: true do |t|
@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(version: 20140615165321) do
     t.string   "value",                           null: false
     t.integer  "domain_id",                       null: false
     t.integer  "priority",  limit: 2, default: 0, null: false
-    t.datetime "created"
+    t.datetime "created",                         null: false
   end
 
   create_table "email_domains", force: true do |t|
@@ -162,19 +162,19 @@ ActiveRecord::Schema.define(version: 20140615165321) do
 
   create_table "firewall_hosts", force: true do |t|
     t.integer  "client_id", null: false
-    t.string   "wan",       null: false
-    t.string   "lan",       null: false
-    t.string   "dmz"
+    t.text     "wan",       null: false
+    t.text     "lan",       null: false
+    t.text     "dmz",       null: false
     t.datetime "created",   null: false
   end
 
   create_table "firewall_inputs", force: true do |t|
-    t.string   "name",                   null: false
-    t.integer  "host_id",                null: false
-    t.integer  "s_port",                 null: false
-    t.integer  "protocol", default: 0,   null: false
-    t.string   "s_ip",     default: "*", null: false
-    t.datetime "created",                null: false
+    t.string   "name",                             null: false
+    t.integer  "host_id",                          null: false
+    t.integer  "s_port",                           null: false
+    t.integer  "protocol", limit: 2, default: 0,   null: false
+    t.string   "s_ip",               default: "*", null: false
+    t.datetime "created",                          null: false
   end
 
   create_table "firewall_limits", force: true do |t|
@@ -188,13 +188,13 @@ ActiveRecord::Schema.define(version: 20140615165321) do
   end
 
   create_table "firewall_nats", force: true do |t|
-    t.string   "name",                 null: false
-    t.integer  "host_id",              null: false
-    t.integer  "s_port",               null: false
-    t.integer  "protocol", default: 0, null: false
-    t.integer  "d_port",               null: false
-    t.integer  "d_ip",                 null: false
-    t.datetime "created",              null: false
+    t.string   "name",                           null: false
+    t.integer  "host_id",                        null: false
+    t.integer  "s_port",                         null: false
+    t.integer  "protocol", limit: 2, default: 0, null: false
+    t.integer  "d_port",                         null: false
+    t.integer  "d_ip",                           null: false
+    t.datetime "created",                        null: false
   end
 
   create_table "firewall_output_devices", force: true do |t|

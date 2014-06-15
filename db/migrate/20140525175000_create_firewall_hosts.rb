@@ -2,9 +2,9 @@ class CreateFirewallHosts < ActiveRecord::Migration
   def change
     create_table :firewall_hosts do |t|
       t.integer :client_id, null: false
-      t.string :wan, null: false
-      t.string :lan, null: false
-      t.string :dmz
+      t.text :wan, null: false
+      t.text :lan, null: false
+      t.text :dmz, null:false
       t.datetime :created, null: false
     end
   end

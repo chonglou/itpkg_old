@@ -23,6 +23,10 @@ Rails.application.routes.draw do
     resources :outputs, :nats, :inputs, :devices
     get 'help', to: redirect('/help/firewall')
   end
+
+  get 'firewall/show/:client_id' => 'firewall#show'
+  get 'firewall/info/:client_id' => 'firewall#info'
+  post 'firewall/info/:client_id' => 'firewall#info'
   get 'firewall' => 'firewall#index'
   #--------------DNS--------------------------
   namespace :dns do
