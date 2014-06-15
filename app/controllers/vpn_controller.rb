@@ -49,7 +49,7 @@ class VpnController < ApplicationController
     bg.add "/clients/#{c_id}", '基本信息', 'info'
     bg.add "/vpn/info/#{c_id}", '参数设置', 'warning'
     bg.add "/clients/#{c_id}/reset", '重设KEY', 'danger'
-    bg.add "/vpn/user/#{c_id}", '用户管理', 'primary'
+    bg.add "/vpn/users?client_id=#{c_id}", '用户管理', 'primary'
     render(json: bg.to_h)
   end
 

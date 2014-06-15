@@ -12,8 +12,6 @@ Rails.application.routes.draw do
     end
     resources :domains
     get 'help', to: redirect('/help/email')
-    get 'user/:client_id' => 'users#index'
-    get 'domain/:client_id' => 'domains#index'
   end
 
   get 'email/show/:client_id' => 'email#show'
@@ -30,8 +28,6 @@ Rails.application.routes.draw do
   namespace :dns do
     resources :domains, :records
     get 'help', to: redirect('/help/dns')
-    get 'record/:client_id' => 'records#index'
-    get 'domain/:client_id' => 'domains#index'
   end
   get 'dns/show/:client_id' => 'dns#show'
   get 'dns/info/:client_id' => 'dns#info'
@@ -44,7 +40,6 @@ Rails.application.routes.draw do
       post 'state', on: :member
     end
     get 'help', to: redirect('/help/vpn')
-    get 'user/:client_id' => 'users#index'
   end
   get 'vpn/show/:client_id' => 'vpn#show'
   get 'vpn/info/:client_id' => 'vpn#info'
