@@ -30,7 +30,12 @@ Rails.application.routes.draw do
   namespace :dns do
     resources :domains, :records
     get 'help', to: redirect('/help/dns')
+    get 'record/:client_id' => 'records#index'
+    get 'domain/:client_id' => 'domains#index'
   end
+  get 'dns/show/:client_id' => 'dns#show'
+  get 'dns/info/:client_id' => 'dns#info'
+  post 'dns/info/:client_id' => 'dns#info'
   get 'dns' => 'dns#index'
   #--------------VPN--------------------------
   namespace :vpn do
