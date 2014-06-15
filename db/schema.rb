@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526201544) do
+ActiveRecord::Schema.define(version: 20140615165321) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",                            null: false
@@ -116,8 +116,10 @@ ActiveRecord::Schema.define(version: 20140526201544) do
   end
 
   create_table "dns_hosts", force: true do |t|
-    t.integer  "client_id", null: false
-    t.datetime "created",   null: false
+    t.integer  "client_id",                     null: false
+    t.datetime "created",                       null: false
+    t.string   "dns1",      default: "8.8.8.8", null: false
+    t.string   "dns2",      default: "8.8.4.4", null: false
   end
 
   create_table "dns_records", force: true do |t|

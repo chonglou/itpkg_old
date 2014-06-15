@@ -26,15 +26,18 @@ class DnsController < ApplicationController
         when 'GET'
           fm = Brahma::Web::Form.new '参数设置', "/dns/info/#{c.id}"
           fm.radio 'state', '状态', c.state, [%w(enable 启用), %w(disable 禁用)]
-          fm.text 'dns1', 'DNS1',''
-          fm.text 'dns1', 'DNS1',''
+          host = Brahma::DnsService.get_host c.id
+          fm.text 'dns1', 'DNS1',host ? host.dns1 : '8.8.8.8'
+          fm.text 'dns2', 'DNS1', host ? host.dns2 : '8.8.4.4'
           fm.ok = true
           render json: fm.to_h and return
         when 'POST'
           dlg = Brahma::Web::Dialog.new
           host = Brahma::DnsService.get_host c.id
-          unless host
-            Dns::Host.create client_id: c.id, created: Time.now
+          if host
+            host.update dns1:params[:dns1], dns2:params[:dns2]
+            else
+            Dns::Host.create client_id: c.id, dns1:params[:dns1], dns2:params[:dns2], created: Time.now
           end
           c.update state: params[:state]
           Brahma::LogService.add "变更终端[#{c.id}]状态为[#{params[:state]}]", user_id
