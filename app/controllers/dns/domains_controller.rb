@@ -9,7 +9,7 @@ require 'brahma/services/site'
 require 'brahma/factory'
 
 class Dns::DomainsController < ApplicationController
-
+  before_action :require_login
   def index
     user_id = current_user.fetch(:id)
     c_id = params[:client_id]

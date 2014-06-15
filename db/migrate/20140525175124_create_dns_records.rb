@@ -6,7 +6,7 @@ class CreateDnsRecords < ActiveRecord::Migration
       t.string :value, null: false
       t.integer :domain_id, null: false
       t.integer :priority, null: false, default: 0, limit: 2
-      t.datetime :created
+      t.datetime :created, null:false
     end
   end
 end
