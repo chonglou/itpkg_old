@@ -26,6 +26,8 @@ class DnsController < ApplicationController
         when 'GET'
           fm = Brahma::Web::Form.new '参数设置', "/dns/info/#{c.id}"
           fm.radio 'state', '状态', c.state, [%w(enable 启用), %w(disable 禁用)]
+          fm.text 'dns1', 'DNS1',''
+          fm.text 'dns1', 'DNS1',''
           fm.ok = true
           render json: fm.to_h and return
         when 'POST'
@@ -52,7 +54,7 @@ class DnsController < ApplicationController
     bg.add "/dns/info/#{c_id}", '参数设置', 'warning'
     bg.add "/clients/#{c_id}/reset", '重设KEY', 'danger'
     bg.add "/dns/domains?client_id=#{c_id}", '域名管理', 'primary'
-    bg.add "/dns/record/#{c_id}", '记录管理', 'info'
+    bg.add "/dns/records?client_id=#{c_id}", '记录管理', 'info'
     render(json: bg.to_h)
   end
 
