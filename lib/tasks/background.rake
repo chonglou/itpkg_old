@@ -5,18 +5,18 @@ namespace :brahma do
       `cd agent && make`
     end
   end
-  
+
   namespace :listener do
     desc '启动[id]'
     task :start, [:id] do |_, args|
       args.with_defaults(id: 0)
-      require 'brahma/listener'
+      require 'brahma/backgrounds/listener'
       Brahma::Listener.new(args[:id].to_i).run
     end
     desc '停止[id]'
     task :stop, [:id] do |_, args|
       args.with_defaults(id: 0)
-      require 'brahma/listener'
+      require 'brahma/backgrounds/listener'
       Brahma::Listener.new(args[:id].to_i).kill
     end
   end
@@ -25,13 +25,13 @@ namespace :brahma do
     desc '启动[id]'
     task :start, [:id] do |_, args|
       args.with_defaults(id: 0)
-      require 'brahma/worker'
+      require 'brahma/backgrounds/worker'
       Brahma::Worker.new(args[:id]).start
     end
     desc '停止[id]'
     task :stop, [:id] do |_, args|
       args.with_defaults(id: 0)
-      require 'brahma/worker'
+      require 'brahma/backgrounds/worker'
       Brahma::Worker.new(args[:id]).stop
     end
   end
@@ -39,12 +39,12 @@ namespace :brahma do
   namespace :dispatcher do
     desc '启动'
     task :start do
-      require 'brahma/dispatcher'
+      require 'brahma/backgrounds/dispatcher'
       Brahma::Dispatcher.new.start
     end
     desc '停止[port]'
     task :stop do
-      require 'brahma/dispatcher'
+      require 'brahma/backgrounds/dispatcher'
       Brahma::Dispatcher.new.stop
     end
   end
