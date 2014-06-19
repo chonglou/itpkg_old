@@ -1,8 +1,8 @@
 build:
-	go build main.go
+	go build -o itpkg-agent main.go
 
 clean:
-	-rm main
+	-rm itpkg-agent
 
 format:
 	gofmt -w main.go
