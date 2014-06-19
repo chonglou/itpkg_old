@@ -6,4 +6,4 @@ itpkg 代理端
 	make build
 
 #### 运行
-	./main
+	./itpkg-agent
