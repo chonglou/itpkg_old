@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:chonglou/bodhi.git
-  revision: 12601a6a8708f805d6abb85643ff1e9f6b98b72a
+  revision: 5a268958f4d871db05ed598799d82f7fff700cb9
   specs:
     brahma_bodhi (0.0.1)
       bootstrap-sass
@@ -11,7 +11,7 @@ GIT
       mysql2
       nokogiri
       puma
-      rails (~> 4.1.0)
+      rails
       redcarpet
       slim
       turbolinks
@@ -73,7 +73,7 @@ GEM
     bson_ext (1.10.2)
       bson (~> 1.10.2)
     builder (3.2.2)
-    bunny (1.3.0)
+    bunny (1.3.1)
       amq-protocol (>= 1.9.2)
     capistrano (3.2.1)
       i18n
@@ -125,7 +125,7 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
-    listen (2.7.8)
+    listen (2.7.9)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -176,12 +176,12 @@ GEM
     redis (3.1.0)
     rerun (0.10.0)
       listen (~> 2.7, >= 2.7.3)
-    rspec-core (3.0.1)
+    rspec-core (3.0.2)
       rspec-support (~> 3.0.0)
-    rspec-expectations (3.0.1)
+    rspec-expectations (3.0.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.0.0)
-    rspec-mocks (3.0.1)
+    rspec-mocks (3.0.2)
       rspec-support (~> 3.0.0)
     rspec-rails (3.0.1)
       actionpack (>= 3.0)
@@ -191,7 +191,7 @@ GEM
       rspec-expectations (~> 3.0.0)
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
-    rspec-support (3.0.0)
+    rspec-support (3.0.2)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)

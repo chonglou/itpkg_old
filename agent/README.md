@@ -11,7 +11,7 @@ itpkg 代理端
 
 #### vim设置
 	set nobackup
-		if exists("g:did\_load\_filetypes")
+		if exists("g:did_load_filetypes")
 		filetype off
 		filetype plugin indent off
 	endif

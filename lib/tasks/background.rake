@@ -66,7 +66,7 @@ namespace :brahma do
       Brahma::Dispatcher.new.start
     end
 
-    desc '停止[port]'
+    desc '停止'
     task :stop do
       require 'brahma/backgrounds/dispatcher'
       Brahma::Dispatcher.new.stop
