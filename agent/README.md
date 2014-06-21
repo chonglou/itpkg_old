@@ -7,3 +7,15 @@ itpkg 代理端
 
 #### 运行
 	./itpkg-agent
+
+
+#### vim设置
+	set nobackup
+		if exists("g:did\_load\_filetypes")
+		filetype off
+		filetype plugin indent off
+	endif
+	set runtimepath+=$GOROOT/misc/vim 
+	filetype plugin indent on
+	syntax on
+
