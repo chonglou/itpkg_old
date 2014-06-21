@@ -65,6 +65,7 @@ Rails.application.routes.draw do
       get act, on: :member
       post act, on: :member
     end
+    get 'demo', on: :member
   end
   #---------站点其它-------------------------------------------
   get 'about_me' => 'main#about_me'

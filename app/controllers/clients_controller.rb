@@ -1,3 +1,4 @@
+require 'json'
 require 'brahma/web/table'
 require 'brahma/web/form'
 require 'brahma/web/dialog'
@@ -41,7 +42,7 @@ class ClientsController < ApplicationController
         list.add "名称：#{c.name}"
         list.add "类型：#{c.flag}"
         list.add "状态：#{c.state}"
-        list.add "认证信息:<br/> ID: #{c.serial}<br/>KEY: #{c.secret}"
+        list.add "配置文件: <a href='/clients/#{c.id}/demo'>点击下载</a>"
         list.add "创建时间： #{c.created}"
         list.add "详细信息： #{c.details}"
         render(json: list.to_h) and return
@@ -164,6 +165,20 @@ class ClientsController < ApplicationController
       end
     end
     not_found
+  end
+
+  def demo
+    user_id = current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], user_id
+    if c
+      send_data(JSON.pretty_generate({
+                    server: 'CHANGE_ME',
+                    mysql: {user: 'CHANGE_ME', password: 'CHANGE_ME'},
+                    agent: {serial: c.serial, key: c.secret}
+                }), filename:'agent.json')
+    else
+      not_found
+    end
   end
 
 end
