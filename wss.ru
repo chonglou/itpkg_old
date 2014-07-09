@@ -35,9 +35,10 @@ APP = lambda do |env|
         lines = json2msg event.data
         case lines[0]
           when 'login'
-            if lines[1] == 'aaa'
+            c = Client.find_by serial:lines[1]
+            if c && c.secret == lines[2]
               data[0] = 'hello'
-              serial = lines[1]
+              serial = c.serial
               channel = CONNECTION.create_channel
               channel.queue("agent://#{serial}", auto_delete: true).subscribe do |_, _, payload|
                 ws.send msg2json(JSON.parse(payload))
