@@ -4,4 +4,4 @@ Brahma::Factory.instance.load_encryptor
 Brahma::Factory.instance.load_database
 Brahma::Factory.instance.load_jobber
 Brahma::Factory.instance.load_oauth2
-Brahma::Factory.instance.load_attachment
+
