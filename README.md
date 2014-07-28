@@ -1,6 +1,8 @@
 IT-PACKAGE 自动化运维系统
 ==========
 
+#### Python2版在（完整可运行）：https://github.com/chonglou/itpkg/tree/python2
+
 #### 管理端
     rake brahma:web:start # 启动
     
