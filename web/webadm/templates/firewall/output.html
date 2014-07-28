@@ -1,0 +1,68 @@
+{%set act='out' %}
+{% extends 'firewall/index.html' %}
+{%block title%}出口规则{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{% if allow_lan%}
+{%if fm_out %}
+{{render_form2table(fm_out, '出口规则', url_for('ff_out_page.save'))}}
+<ul>
+    <li>域名关键字不要太简单了，警惕误伤友站，比如封‘56.com’要是用‘56’就悲催了</li>
+</ul>
+<br>
+{{render_form2table(fm_else, '例外主机', url_for('ff_out_page.else_save'))}}
+<br>
+{%endif%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">入口规则列表［{{rules|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>域名关键字</td>
+                    <td nowrap class='maintitle'>起始时间</td>
+                    <td nowrap class='maintitle'>截止时间</td>
+                    <td nowrap class='maintitle'>工作日</td>
+                    <td nowrap class='maintitle'>例外主机</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('ff_out_page.index', host_id=host_id)}}">增加新规则</a>］
+                    </td>
+                </tr>
+                {% for i in rules: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">{{i.domain}}</td>
+                    <td class="forum2">{{i.start}}</td>
+                    <td class="forum1">{{i.end}}</td>
+                    <td class="forum1">{{i.weekdays_cn()}}</td>
+                    <td class="forum1">
+                        {%if i.macs%}
+                        <ul>
+                            {%for m in i.macs%}
+                            <li>{{m}} &nbsp; <a
+                                    href="{{url_for('ff_out_page.else_delete', host_id=host_id, item_id=i.id, mac_id=m.id)}}">删除</a>
+                            </li>
+                            {%endfor%}
+                        </ul>
+                        {%endif%}
+                    </td>
+                    <td class="forum1" align="center"><a
+                            href="{{url_for('ff_out_page.index', host_id=host_id, item_id=i.id)}}">编辑</a> &nbsp;
+                        <a href="{{url_for('ff_out_page.delete', host_id=host_id, item_id=i.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endif%}
+{%endblock%}

@@ -1,0 +1,14 @@
+RPC服务端
+
+1：安装
+virtualenv2 --no-sitepackages python2
+source python2/bin/active
+pacman -S libmysqlclient
+
+
+2：依赖库 ［protobuf］
+cd python
+python setup.py install
+
+3：启动
+./run.sh

@@ -1,0 +1,25 @@
+{%set page='firewall'%}
+{% extends 'layout.html' %}
+{%block title%}防火墙管理{%endblock%}
+{%block main%}
+<h4>共有［{{g.hosts|count}}］台防火墙主机</h4>
+<ul>
+    <li>当前提供MAC管理 规则调整 基础信息设置功能</li>
+</ul>
+{%endblock%}
+{%block left%}
+{% from "_ctl_helpers.html" import render_ctl_goto_panel %}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+        <div class="body">
+            <div class="content odd">
+                {{ render_ctl_goto_panel(url_for('firewall_page.action'), host_id, g.hosts,  {'item':'基本信息','wan':'WAN设置', 'lan':'LAN设置', 'mac':'MAC管理', 'out':'出口规则',
+                                'in':'入口规则', 'nat':'映射规则', 'flow':'流量控制', 'mgr':'服务管理'}, act) }}
+                <br>
+            </div>
+        </div>
+    </div>
+    <br>
+</td>
+{%endblock%}

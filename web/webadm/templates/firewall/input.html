@@ -1,0 +1,55 @@
+{%set act='in' %}
+{% extends 'firewall/index.html' %}
+{%block title%}入口规则{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{% if allow_lan%}
+{%if form %}
+{{render_form2table(form, '入口规则', url_for('ff_in_page.save'))}}
+<ul>
+    <li>来源ip为*表示为所有IP</li>
+    <li>NAT端口会自动放行</li>
+</ul>
+<br>
+{%endif%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">入口规则列表［{{rules|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>来源IP</td>
+                    <td nowrap class='maintitle'>协议</td>
+                    <td nowrap class='maintitle'>目的IP</td>
+                    <td nowrap class='maintitle'>目的Port</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('ff_in_page.index', host_id=host_id)}}">增加新规则</a>］
+                    </td>
+                </tr>
+                {% for i in rules: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">{{i.s_ip}}</td>
+                    <td class="forum2">{{i.protocol}}</td>
+                    <td class="forum1">{{i.d_ip}}</td>
+                    <td class="forum1">{{i.d_port}}</td>
+                    <td class="forum1" align="center"><a
+                            href="{{url_for('ff_in_page.index', host_id=host_id, item_id=i.id)}}">编辑</a> &nbsp;
+                        <a href="{{url_for('ff_in_page.delete', host_id=host_id, item_id=i.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endif%}
+{%endblock%}

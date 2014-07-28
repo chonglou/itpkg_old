@@ -1,0 +1,21 @@
+{%set page='employee'%}
+{% extends 'layout.html' %}
+{%block left%}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('employee_page.unit')}}"> 部门管理 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('employee_page.user')}}"> 雇员管理 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('employee_page.contact')}}"> 通讯录 </a><br>
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}

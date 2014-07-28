@@ -1,0 +1,50 @@
+{%set act='user'%}
+{% extends 'vpn/index.html' %}
+{%block title%}VPN账户管理{%endblock%}
+{%block main%}
+{% if form%}
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, 'VPN用户管理', url_for('vpn_page.user', host_id=host_id))}}
+{%endif%}
+<ul>
+    <li>密码无法找回，只能重置</li>
+    <li>如果数据库连接出错，请<a href="{{url_for('vpn_page.setup', host_id=host_id)}}">设置数据库</a></li>
+    <li>如果当前没有雇员，请<a href="{{url_for('employee_page.user')}}">添加雇员</a></li>
+</ul>
+<br>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">VPN用户［{{users|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>用户</td>
+                    <td nowrap class='maintitle'>状态</td>
+                    <td align="center" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('vpn_page.user', host_id=host_id)}}">新增VPN用户</a>］
+                    </td>
+                </tr>
+                {% for u in users: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td align="center" class="forum2">{{u.name}}</td>
+                    <td align="center" class="forum2">{%if u.active:%}启用{%else:%}禁用{%endif%}</td>
+                    <td class="forum1" align="center">
+                        <a href="{{url_for('vpn_page.user', host_id=host_id, name=u.name)}}">编辑</a> &nbsp;
+                        <a href="{{url_for('vpn_page.delete_user', host_id=host_id, name=u.name)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

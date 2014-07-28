@@ -1,0 +1,21 @@
+{%set page='personal'%}
+{% extends 'layout.html' %}
+{%block left%}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('personal_page.set_pwd')}}"> 设置密码 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('personal_page.note')}}"> 笔记管理 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('personal_page.log')}}"> 日志管理 </a><br>
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}

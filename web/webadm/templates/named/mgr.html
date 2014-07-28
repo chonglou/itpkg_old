@@ -1,0 +1,13 @@
+{%set act='mgr' %}
+{% extends 'named/index.html' %}
+{%block title%}DNS服务管理{%endblock%}
+{%block main%}
+{% from "_ctl_helpers.html" import render_ctl_service_panel %}
+{%if forms%}
+{{ render_ctl_service_panel('DNS服务管理', forms)}}
+<ul>
+    <li>保存配置同时会重启DNS服务</li>
+</ul>
+<br>
+{%endif%}
+{%endblock%}

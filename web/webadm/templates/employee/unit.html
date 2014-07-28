@@ -1,0 +1,44 @@
+{% extends 'employee/index.html' %}
+{%block title%}部门管理{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, '部门管理', url_for('employee_page.unit'))}}
+<ul>
+    <li>为简便其见，雇员只做部门区分，不区分企业。</li>
+</ul>
+<br>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">部门列表［{{units|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="12%" nowrap class='maintitle'>名称</td>
+                    <td nowrap class='maintitle'>详细信息</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('employee_page.unit')}}">添加部门</a>］
+                    </td>
+                </tr>
+                {% for u in units: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">{{u.caption}}</td>
+                    <td class="forum1">{{u.details}}</td>
+                    <td class="forum1" align="center"><a href="{{url_for('employee_page.unit', unit_id=u.id)}}">编辑</a>&nbsp;<a
+                            href="{{url_for('employee_page.unit_delete', unit_id=u.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

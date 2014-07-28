@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <link rel="shortcut icon" href="{{url_for('static', filename='favicon.ico')}}"
+          mce_href="{{url_for('static', filename='favicon.ico')}}" type="image/x-icon">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="{{url_for('static', filename='style/plone.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{url_for('static', filename='style/stylesheet_1.css')}}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery-1.6.4.min.js')}}"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename='editor/themes/default/default.css')}}"/>
+    <script type="text/javascript" src="{{url_for('static', filename='editor/kindeditor.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='editor/lang/zh_CN.js')}}"></script>
+    <title>{%block title%}{%endblock%}-{{g.site.title}}</title>
+</head>
+<body>
+<div class="top">
+    <div class="searchBox">
+        <form name="searchform" action="/search" method="post">
+            <input type="text" name="key" size="20">
+            <input type="submit" name="btnG" value="快速搜索">
+        </form>
+    </div>
+    <img src="{{url_for('static', filename='style/logo.png')}}" border="0" width="397" height="78" alt="0-dong logo">
+    <img src="{{url_for('static', filename='style/title.gif')}}" border="0" width="230" height="20" alt="0-dong title">
+</div>
+<div class="tabs">
+    {%set pages = {'site':'站点设置', 'personal':'个人信息', 'about_me':'关于我们', 'firewall':'防火墙', 'vpn':'VPN管理', 'flow':'流量控制',
+    'named':'域名解析','dhcpd':'DHCP服务',
+    'employee':'雇员管理', 'status':'当前状态', 'host':'远程主机'}%}
+    {%if session.who%}
+    {%set sorts=['host','employee', 'vpn','named','dhcpd', 'firewall', 'site','personal','about_me']%}
+    {%else%}
+    {%set sorts=['personal', 'about_me']%}
+    {%endif%}
+    {%for i in sorts%}
+    <a href="/{{i}}" class='{% if i == page %}selected{% else%}plain{% endif %}'>{{ pages[i] }}</a> {{login_id}}
+    {%endfor%}
+</div>
+<div class="personalBar">
+    {%if session.who %}
+    <a href="{{url_for('personal_page.logout')}}">安全退出</a>
+    {%else%}
+    <a href="{{url_for('personal_page.login')}}">请先登录</a>
+    {%endif%}
+    &nbsp;
+</div>
+<table class="columns">
+    <tr>
+        {% block left %}{% endblock %}
+        <td class="main"><br>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <table width="98%" align="center">
+                <tr>
+                    <td>
+                        <div class="box">
+                            <h5>&nbsp;提示信息&nbsp;</h5>
+
+                            <div class="body">
+                                <div class="content odd">
+                                    {% for msg in messages%}
+                                    <img src="{{ url_for('static', filename='style/link.gif') }}" border='0'> <span
+                                        class="flash">{{ msg }}</span><br>
+                                    {% endfor %}
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            {% endif %}
+            {% endwith %}
+            {% block main %}{% endblock %}
+        </td>
+        {% block right %}{% endblock %}
+    </tr>
+</table>
+<div class="footer">
+    {{g.site.copy_right | safe}} <a href="mailto:{{g.site.admin_email}}">{{g.site.admin_user}}</a> . All Rights Reserved
+</div>
+</body>
+</html>

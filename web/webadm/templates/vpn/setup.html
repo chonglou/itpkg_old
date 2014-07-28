@@ -1,0 +1,14 @@
+{%set act='setup'%}
+{% extends 'vpn/index.html' %}
+{%block title%}VPN账户数据库设定{%endblock%}
+{%block main%}
+{% if form%}
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, '数据库连接设置', url_for('vpn_page.setup', host_id=host_id))}}
+{%endif%}
+<ul>
+    <li>目前只支持MySQL数据库</li>
+    <li>创建用户表脚本：{{sql}}</li>
+    <li>默认端口号为3306</li>
+</ul>
+{%endblock%}

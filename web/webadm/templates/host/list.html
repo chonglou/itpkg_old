@@ -1,0 +1,52 @@
+{% extends 'host/index.html' %}
+{%block title%}远程主机列表{%endblock%}
+{%block main%}
+<br>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">主机列表［{{g.hosts|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="12%" nowrap class='maintitle'>名称</td>
+                    <td width="12%" nowrap class='maintitle'>监听IP</td>
+                    <td width="12%" nowrap class='maintitle'>管理机IP</td>
+                    <td width="5%" nowrap class='maintitle'>DHCP</td>
+                    <td width="5%" nowrap class='maintitle'>DNS</td>
+                    <td width="5%" nowrap class='maintitle'>邮件管理</td>
+                    <td width="5%" nowrap class='maintitle'>VPN管理</td>
+                    <td width="5%" nowrap class='maintitle'>防火墙</td>
+                    <td nowrap class='maintitle'>详细信息</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a href="{{url_for('host_page.edit')}}">添加主机</a>］
+                    </td>
+                </tr>
+                {% for h in g.hosts: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">{{h.caption}}</td>
+                    <td class="forum2">{{h.listen_ip}}</td>
+                    <td class="forum2">{{h.manager_ip}}</td>
+                    <td align="center" class="forum2">{%if h.allow_dhcpd4%}<b>启用</b>{%else%}禁用{%endif%}</td>
+                    <td align="center" class="forum2">{%if h.allow_named%}<b>启用</b>{%else%}禁用{%endif%}</td>
+                    <td align="center" class="forum2">{%if h.allow_mail%}<b>启用</b>{%else%}禁用{%endif%}</td>
+                    <td align="center" class="forum2">{%if h.allow_vpn%}<b>启用</b>{%else%}禁用{%endif%}</td>
+                    <td align="center" class="forum2">{%if h.allow_mail%}<b>启用</b>{%else%}禁用{%endif%}</td>
+                    <td class="forum1">{{h.details}}</td>
+                    <td class="forum1" align="center"><a href="{{url_for('host_page.edit', host_id=h.id)}}">编辑</a>&nbsp;<a
+                            href="{{url_for('host_page.delete', host_id=h.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

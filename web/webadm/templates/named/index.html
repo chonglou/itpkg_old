@@ -1,0 +1,24 @@
+{%set page='named'%}
+{% extends 'layout.html' %}
+{%block title%}DNS服务管理{%endblock%}
+{%block main%}
+<h4>共有［{{g.hosts|count}}］台DNS主机</h4>
+<ul>
+    <li>请注意，如果为公网DNS，udp,tcp53端口都要放开</li>
+</ul>
+{%endblock%}
+{%block left%}
+{% from "_ctl_helpers.html" import render_ctl_goto_panel %}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                 {{ render_ctl_goto_panel(url_for('named_page.action'), host_id, g.hosts,  {'item':'基本参数','zone':'域名解析', 'mgr':'服务管理'}, act) }}
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}

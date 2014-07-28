@@ -1,0 +1,23 @@
+{%set act='item' %}
+{% extends 'dhcpd/index.html' %}
+{%block title%}DHCP服务器设定{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{% from "_ctl_helpers.html" import render_ctl_panel %}
+{% if base_form%}
+{{render_form2table(base_form, 'DHCP服务器基本信息', url_for('dhcpd_page.save'))}}
+<br>
+{%endif%}
+{% if setup_form%}
+{{render_form2table(setup_form, 'DHCP服务器网络参数设定', url_for('dhcpd_page.setup'))}}
+<ul>
+    <li>默认子网为：192.168.0.0</li>
+    <li>为简便起见：子网掩码统一为255.255.255.0</li>
+    <li>默认的DNS为：192.168.0.1 请改为自己的DNS</li>
+    <li>默认的域为lzl98.com 请改为自己的子域</li>
+    <li>动态分配IP范围从2到254</li>
+</ul>
+<br>
+{%endif%}
+
+{%endblock%}

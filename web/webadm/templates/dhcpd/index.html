@@ -1,0 +1,23 @@
+{%set page='dhcpd'%}
+{% extends 'layout.html' %}
+{%block title%}局域网管理{%endblock%}
+{%block main%}
+<h4>共有［{{g.hosts|count}}］台DHCP服务器主机</h4>
+<ul>
+    <li>注意：一个局域网内部不要有多台DHCP服务器，否则容易引发冲突</li>
+</ul>
+{%endblock%}
+{%block left%}
+{% from "_ctl_helpers.html" import render_ctl_goto_panel %}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+        <div class="body">
+            <div class="content odd">
+                {{ render_ctl_goto_panel(url_for('dhcpd_page.action'), host_id, g.hosts,  {'item':'基本信息','mac':'MAC绑定', 'mgr':'服务管理'}, act) }}
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}

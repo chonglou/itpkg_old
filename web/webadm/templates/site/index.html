@@ -1,0 +1,43 @@
+{%set page='site'%}
+{% extends 'layout.html' %}
+{%block title%}站点设置{%endblock%}
+
+{% block main%}
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('#about_me', {width: '900px',height: '300px'});
+    });
+</script>
+{% from "_form_helpers.html" import render_form2table %}
+<a name="title"></a>
+{{render_form2table(title_fm, '设置网站标题', url_for('site_page.title'))}}
+<br><a name="about_me"></a>
+{{render_form2table(about_me_fm, '设置关于我们', url_for('site_page.about_me'))}}
+<br><a name="admin"></a>
+{{render_form2table(admin_fm, '设网站管理员信息', url_for('site_page.admin'))}}
+<br><a name="copy_right"></a>
+{{render_form2table(copy_right_fm, '设置版权信息', url_for('site_page.copy_right'))}}
+{%endblock%}
+
+{%block left%}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('site_page.index')}}#title"> 标题 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('site_page.index')}}#about_me"> 关于我们 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('site_page.index')}}#admin"> 管理员 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('site_page.index')}}#copy_right"> 版权信息 </a><br>
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}

@@ -1,0 +1,79 @@
+{% macro render_ctl_service_panel(caption, forms) %}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">{{caption}}</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td colspan="{{forms|count}}" class='maintitle'>操作</td>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum2"></td>
+                    {% for fm in forms: %}
+                    <td align="center" class="forum2">
+                        <form method="post" action="{{fm.action}}">
+                            <input type="hidden" name="id" value="{{fm.id}}">
+                            <input type="submit" value="{{fm.caption}}">
+                        </form>
+                    </td>
+                    {%endfor%}
+                    <td class="forum2"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+{% endmacro %}
+
+{% macro render_ctl_goto_panel(action, item_id, items, acts, act) %}
+                <form method="post" action="{{action}}">
+                    <table width="100%" align="center">
+                        <tr>
+                            <td >主机：</td>
+                            <td>
+                                <select name="id">
+                                    {%for i in items%}
+                                    {%if i.id==item_id%}
+                                    <option selected value="{{i.id}}">{{i}}</option>
+                                    {%else%}
+                                    <option value="{{i.id}}">{{i}}</option>
+                                    {%endif%}
+                                    {%endfor%}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">动作：</td>
+                            <td rowspan="2">
+                                {%for k,v in acts.items() %}
+                                <div>
+                                    {%if k == act %}
+                                    <input type="radio" value="{{k}}" checked name="act">{{v}}
+                                    {%else%}
+                                    <input type="radio" value="{{k}}" name="act">{{v}}
+                                    {%endif%}
+                                </div>
+                                {%endfor%}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center"><input type="submit" name="submit" value="打开"> &nbsp; <input
+                                    type="reset" name="reset" value="重写"></td>
+                        </tr>
+                    </table>
+                </form>
+{% endmacro %}

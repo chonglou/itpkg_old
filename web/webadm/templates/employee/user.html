@@ -1,0 +1,56 @@
+{% extends 'employee/index.html' %}
+{%block title%}雇员管理{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, '雇员管理', url_for('employee_page.user'))}}
+<ul>
+    <li>如果部门为空，请先<a href="{{url_for('employee_page.unit')}}"> 添加部门</a>。</li>
+</ul>
+<br>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">雇员列表［{{users|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="10%" nowrap class='maintitle'>昵称</td>
+                    <td width="12%" nowrap class='maintitle'>姓名</td>
+                    <td width="16%" nowrap class='maintitle'>部门</td>
+                    <td width="20%" nowrap class="maintitle">联系方式</td>
+                    <td nowrap class='maintitle'>详细信息</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('employee_page.user')}}">添加雇员</a>］
+                    </td>
+                </tr>
+                {% for u in users: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">&nbsp; {{u.nick_name}}</td>
+                    <td class="forum2">&nbsp; {{u.real_name}}</td>
+                    <td class="forum2">&nbsp; {{u.unit}}</td>
+                    <td class="forum1"><a href="{{url_for('employee_page.contact', user_id=u.id)}}">
+                        {% if u.contact%}
+                        {{u.contact}}
+                        {%else%}
+                        添加通讯录
+                        {%endif%}</a>
+                    </td>
+                    <td class="forum1">{{u.details}}</td>
+                    <td class="forum1" align="center"><a href="{{url_for('employee_page.user', user_id=u.id)}}">编辑</a>&nbsp;<a
+                            href="{{url_for('employee_page.user_delete', user_id=u.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

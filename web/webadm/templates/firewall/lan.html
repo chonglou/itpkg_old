@@ -1,0 +1,13 @@
+{%set act='lan' %}
+{% extends 'firewall/index.html' %}
+{%block title%}LAN设定{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{%if allow %}
+{{render_form2table(fm_allow, '开启局域网功能', url_for('ff_lan_page.on_allow'))}}
+<br>
+{%if fm_lan%}
+{{render_form2table(fm_lan, '局域网设定', url_for('ff_lan_page.on_lan'))}}
+{%endif%}
+{%endif%}
+{%endblock%}

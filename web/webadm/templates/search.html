@@ -1,0 +1,42 @@
+{%set page='about_me'%}
+{% extends 'layout.html' %}
+{%block title%}搜索结果{%endblock%}
+{%block main%}
+<table align="center" width="98%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
+            <div class="box">
+                <h5>&nbsp;MAC信息&nbsp;</h5>
+
+                <div class="body">
+                    <div class="content odd"> {% for m in macs%}
+                        <img src="{{url_for('static', filename='style/link.gif')}}" border='0'>
+                        <a href="{{url_for('ff_mac_page.index', host_id=m.host.id, mac_id=m.id)}}">{{ m }}</a>
+                        <br>
+                        {% endfor %}<br>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>
+            <div class="box">
+                <h5>&nbsp;雇员信息&nbsp;</h5>
+
+                <div class="body">
+                    <div class="content odd"> {% for u in employees%}
+                        <img src="{{url_for('static', filename='style/link.gif')}}" border='0'>
+                        <a href="{{url_for('employee_page.user')}}/{{u.id}}">{{ u }}</a>
+                        <br>
+                        {% endfor %}<br>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+{%endblock%}

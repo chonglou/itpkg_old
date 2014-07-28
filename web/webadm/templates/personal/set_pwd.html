@@ -1,0 +1,7 @@
+{% extends 'personal/index.html' %}
+{%block title%}设置密码{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+<a name="set_pwd"></a>
+{{render_form2table(form, '设置密码', url_for('personal_page.set_pwd'))}}
+{%endblock%}

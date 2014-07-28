@@ -1,0 +1,211 @@
+td {
+    font-size: 9pt;
+    color: #254949;
+    word-break: break-all;
+}
+
+a:link {
+    color: #254949;
+}
+
+a:visited {
+    color: #77979F;
+}
+
+a:active {
+    color: #77979F;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 用于链接字体需要是白色 */
+a.white:link {
+    color: #FFFFFF;
+}
+
+a.white:visited {
+    color: #FFFFFF;
+}
+
+a.white:active {
+    color: #FFFFFF;
+}
+
+a.white:hover {
+    text-decoration: underline;
+}
+
+/* 底色为白，为了得出白边效果 */
+.mainbg {
+    background-color: #FFFFFF;
+}
+
+/* 底边框颜色 */
+.mainfoot {
+    background-color: #C4D2D5;
+}
+
+/* 首栏 */
+.alt1 {
+    background-color: #DEE7EC;
+}
+
+/* 版面背景色，暂时两个设成一样 */
+.forum1 {
+    background-color: #EBF0F2;
+}
+
+.forum2 {
+    background-color: #EBF0F2;
+}
+
+/* 最后回复，小一号字体 */
+.forum_small {
+    background-color: #EBF0F2;
+    font-size: 8pt;
+}
+
+/* 头 */
+.titlemedium {
+    font-weight: bold;
+    color: #FFFFFF;
+    height: 14pt;
+    background-color: #8CACBB;
+}
+
+/* 尾，和头颜色隔开 */
+.titlefoot {
+    background-color: #BCD0ED;
+}
+
+/* 淡色的标题 */
+.maintitle {
+    font-weight: bold;
+    height: 12pt;
+    color: #8CACBB;
+    background-color: #DEE7EC;
+}
+
+/* 帖子内容背景 */
+.post1 {
+    background-color: #F5F9FD;
+}
+
+/* 帖子作者横条 */
+.posthead {
+    background-color: #C4D2D5;
+}
+
+/* 条项 */
+.row1 {
+    background-color: #EEF2F7;
+}
+
+.row2 {
+    background-color: #F5F9FD;
+}
+
+/* 显示较显眼的标题等 */
+.pagetitle {
+    color: #4C77B6;
+    font-size: 14pt;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 120%;
+}
+
+/* 错误警告 */
+.alert {
+    color: #990000;
+    font-size: 12pt;
+}
+
+/* 签名 */
+.signature {
+    font-size: 9pt;
+    color: #333399
+}
+
+/* 预览用到了 */
+.postcolor {
+    font-size: 9pt;
+    line-height: 150%;
+}
+
+/* 虚线 */
+.fancyborder {
+    border: 1px dashed #999999;
+}
+
+/* 实线 */
+.solidborder {
+    border: 1px solid #999999;
+}
+
+/* 导航链接 */
+.nav {
+    font-weight: bold;
+    color: #000000;
+    font-size: 9pt;
+}
+
+/* 显示引用 */
+.QUOTE {
+    font-family: verdana, helvetica, sans-serif;
+    font-size: 8pt;
+    color: #333333;
+    background-color: #FAFCFE;
+    border: 1px solid Black;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    text-indent: 2pt;
+}
+
+/* 显示代码 */
+.CODE {
+    font-family: verdana, helvetica, sans-serif;
+    font-size: 8pt;
+    color: #333333;
+    background-color: #FAFCFE;
+    border: 1px solid Black;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    text-indent: 2pt;
+}
+
+.forminput {
+    font-size: 8pt;
+    font-family: verdana, helvetica, sans-serif;
+    vertical-align: middle
+}
+
+.textinput {
+    font-size: 9pt;
+    font-family: verdana, helvetica, sans-serif;
+    vertical-align: middle
+}
+
+.green {
+    background-color: #caf2d9
+}
+
+.red {
+    background-color: #f5cdcd
+}
+
+.white {
+    color: #FFFFFF;
+}
+
+/* 版权信息 */
+.copyright {
+    font-family: Verdana, Tahoma, Arial;
+    font-size: 8.5pt;
+    line-height: 12px;
+}

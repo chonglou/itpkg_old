@@ -1,0 +1,59 @@
+{% extends 'employee/index.html' %}
+{%block title%}雇员管理{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{% if form %}
+{{render_form2table(form, '联系方式', url_for('employee_page.contact'))}}
+{%endif%}
+<ul>
+    <li>如果雇员为空，请先<a href="{{url_for('employee_page.user')}}"> 添加雇员</a>。</li>
+</ul>
+<br>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">通讯录［{{contacts|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="15%" nowrap class='maintitle'>雇员</td>
+                    <td width="10%" nowrap class='maintitle'>QQ</td>
+                    <td width="10%" nowrap class='maintitle'>MSN</td>
+                    <td width="10%" nowrap class='maintitle'>邮箱</td>
+                    <td width="10%" nowrap class='maintitle'>手机</td>
+                    <td width="10%" nowrap class='maintitle'>座机</td>
+                    <td width="10%" nowrap class='maintitle'>传真</td>
+                    <td nowrap class='maintitle'>家庭住址</td>
+                    <td nowrap class='maintitle'>工作地点</td>
+                    <td align="center" width="4%" nowrap class='maintitle'>操作</td>
+                </tr>
+                {% for c in contacts: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td align="center" class="forum2"><a
+                            href="{{url_for('employee_page.user', user_id=c.employee.id)}}"> {{c.employee}}</a></td>
+                    <td align="center" class="forum2">{{c.qq}}</td>
+                    <td align="center" class="forum2">{{c.msn}}</td>
+                    <td align="center" class="forum2">{{c.email}}</td>
+                    <td align="center" class="forum2">{{c.phone}}</td>
+                    <td align="center" class="forum2">{{c.tel}}</td>
+                    <td align="center" class="forum2">{{c.fax}}</td>
+                    <td align="center" class="forum2">{{c.home}}</td>
+                    <td align="center" class="forum2">{{c.work}}</td>
+                    <td class="forum1" align="center"><a
+                            href="{{url_for('employee_page.contact', user_id=c.employee.id)}}">编辑</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

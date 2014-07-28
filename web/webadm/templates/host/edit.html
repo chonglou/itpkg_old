@@ -1,0 +1,6 @@
+{% extends 'host/index.html' %}
+{%block title%}管理远程主机{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, '远程主机', url_for('host_page.edit'))}}
+{%endblock%}

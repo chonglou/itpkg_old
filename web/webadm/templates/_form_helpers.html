@@ -1,0 +1,95 @@
+{%macro render_form2field_head(name, action) %}
+<fieldset>
+    <legend>{{name}}</legend>
+    <form action="{{action}}" method="post">&nbsp;
+        {%endmacro%}
+
+        {%macro render_form2field_foot() %}
+        &nbsp; &nbsp; <input type="submit" value="  确 定  "> &nbsp; <input type="reset" value="  重 写  "></form>
+</fieldset>
+{%endmacro%}
+
+{%macro render_form2table(form, name, action) %}
+<form action="{{action}}" method="post" accept-charset="utf-8">
+    {%for field in form%}
+    {% if field.type=='HiddenField' %}
+    {{field()}}
+    {%endif%}
+    {%endfor%}
+    <table cellpadding='0' cellspacing='0' border='0' width='98%' bgcolor='#999999' align='center'>
+        <tr>
+            <td>
+                <table cellpadding='3' cellspacing='1' border='0' width='100%'>
+                    <tr>
+                        <td colspan='2' class='titlemedium'>{{name}}</td>
+
+                    </tr>
+                    {%for field in form%}
+                    {% if field.type!='HiddenField' %}
+                    {{render_field2table(field)}}
+                    {%endif%}
+                    {%endfor%}
+                    <tr>
+                        <td class='row2' align='center' colspan='2'>
+                            <input type="submit" value="  提 交  " class='forminput'>
+                            &nbsp; &nbsp;
+                            <input type="reset" value="  重 写  " class='forminput'>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</form>
+{%endmacro%}
+
+{% macro render_form2table_head(name, action) %}
+<form action="{{action}}" method="post" accept-charset="utf-8">
+    <table cellpadding='0' cellspacing='0' border='0' width='98%' bgcolor='#999999' align='center'>
+        <tr>
+            <td>
+                <table cellpadding='3' cellspacing='1' border='0' width='100%'>
+                    <tr>
+                        <td colspan='2' class='titlemedium'>{{name}}</td>
+
+                    </tr>
+                    {%endmacro%}
+
+                    {% macro render_form2table_foot() %}
+                    <tr>
+                        <td class='row2' align='center' colspan='2'>
+                            <input type="submit" value="  提 交  " class='forminput'>
+                            &nbsp; &nbsp;
+                            <input type="reset" value="  重 写  " class='forminput'>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</form>
+{%endmacro%}
+
+{% macro render_field2table(field) %}
+<tr>
+    <td class="row1">
+        {%if field.flags.required%}*{%endif%}{{field.label}}：
+    </td>
+    <td class="row1">
+        {% if field.type == 'RadioField'%}
+            {%for subfield in field%}
+                &nbsp; &nbsp; {{subfield}} {{subfield.label}}
+            {%endfor%}
+        {%else%}
+        {{field(**kwargs) | safe }}
+        {%endif%}
+        {% if field.errors %}
+        <ul class="errors">
+            {%for error in field.errors %}
+            <li>{{error}}</li>
+            {%endfor%}
+        </ul>
+        {% endif %}
+    </td>
+</tr>
+{% endmacro %}

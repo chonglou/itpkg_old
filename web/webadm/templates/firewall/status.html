@@ -1,0 +1,139 @@
+{%set act='mgr' %}
+{% extends 'firewall/index.html' %}
+{%block title%}防火墙服务管理{%endblock%}
+{%block main%}
+<div align="right">
+    <h4><a href="{{next}}">返回上一页</a></h4>
+</div>
+        <br>
+{%if msgs%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">返回结果［{{msgs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>内容</td>
+                </tr>
+                {% for msg in msgs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum1">{{msg}}</td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+<br>
+{%endif%}
+{%if tcs%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">当前限速状态［{{tcs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>内容</td>
+                </tr>
+                {% for tc in tcs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum1">{{tc}}</td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+<br>
+{%endif%}
+{%if ffs%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">当前防火墙状态［{{ffs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>内容</td>
+                </tr>
+                {% for f in ffs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum1">{{f}}</td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+<br>
+{%endif%}
+{%if macs%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">当前MAC状态［{{macs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>Address</td>
+                    <td nowrap class='maintitle'>HWtype</td>
+                    <td nowrap class='maintitle'>HWaddress</td>
+                    <td nowrap class='maintitle'>Flags Mask</td>
+                    <td nowrap class='maintitle'>Iface</td>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                </tr>
+                {% for m in macs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum1"> &nbsp; &nbsp; {{m.address}}</td>
+                    <td align="center" class="forum1">{{m.hw_type}}</td>
+                    <td class="forum1"> &nbsp; &nbsp; {{m.hw_address}}</td>
+                    <td align="center" class="forum1">{{m.flags_mask}}</td>
+                    <td align="center" class="forum1">{{m.i_face}}</td>
+                    <td class="forum2"></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+<br>
+{%endif%}
+{%endblock%}

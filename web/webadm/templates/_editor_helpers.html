@@ -1,0 +1,9 @@
+{% macro render_editor_head() %}
+<link rel="stylesheet" href="{{ url_for('static', filename='editor/themes/default/default.css') }}"/>
+<script charset="utf-8" src="{{ url_for('static', filename='editor/kindeditor.js') }}"></script>
+<script charset="utf-8" src="{{ url_for('static', filename='editor/lang/zh_CN.js') }}"></script>
+{% endmacro %}
+
+{% macro render_editor_body(id, name='content', style="width:700px;height:400px;", value='') %}
+<textarea id='{{id}}' name='{{name}}' style="{{style}}">{{value}}</textarea>
+{% endmacro %}

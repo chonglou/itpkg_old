@@ -1,0 +1,40 @@
+{% extends 'personal/index.html' %}
+{%block title%}日志信息{%endblock%}
+{%block main%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">系统日志［{{logs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="5%" nowrap class='maintitle'>用户</td>
+                    <td width="12%" nowrap class='maintitle'>时间</td>
+                    <td nowrap class='maintitle'>内容</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('personal_page.log_clear')}}">清除所有</a>］
+                    </td>
+                </tr>
+                {% for l in logs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td align="center" class="forum2">{%if l.who:%}{{l.who.nick_name}}{%else:%}系统{%endif%}</td>
+                    <td align="center" class="forum2">{{l.created}}</td>
+                    <td class="forum1">{{l.message}}</td>
+                    <td class="forum1" align="center"><a
+                            href="{{url_for('personal_page.log_delete', log_id=l.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

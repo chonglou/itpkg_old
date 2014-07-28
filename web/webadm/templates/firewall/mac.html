@@ -1,0 +1,59 @@
+{%set act='mac' %}
+{% extends 'firewall/index.html' %}
+{%block title%}MAC信息{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{% if allow_lan%}
+{%if form %}
+{{render_form2table(form, 'MAC信息', url_for('ff_mac_page.save'))}}
+<ul>
+    <li>如果雇员信息不存在，请<a href="{{url_for('employee_page.user')}}">添加雇员</a></li>
+</ul>
+<br>
+{%endif%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">局域网MAC列表［{{macs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td nowrap class='maintitle'>MAC</td>
+                    <td nowrap class='maintitle'>IP</td>
+                    <td nowrap class='maintitle'>所有者</td>
+                    <td width="8%" nowrap class='maintitle'>IP类型</td>
+                    <td width="8%" nowrap class='maintitle'>网络权限</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('ff_mac_page.sync', host_id=host_id)}}">扫描局域网MAC信息</a>］
+                    </td>
+                </tr>
+                {% for m in macs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">{{m.mac}}</td>
+                    <td class="forum2">{{m.ip}}</td>
+                    <td class="forum1">{{m.employee}}</td>
+                    <td class="forum1">{%if m.bind%}<b>固定</b>{%else%}动态{%endif%}</td>
+                    <td class="forum1"> {%if m.allow%}允许{%else%}<b>禁止</b>{%endif%}</td>
+                    <td class="forum1" align="center"><a
+                            href="{{url_for('ff_mac_page.index', host_id=host_id, mac_id=m.id)}}">编辑</a> &nbsp;
+                        <a href="{{url_for('ff_mac_page.delete', host_id=host_id, mac_id=m.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+<ul>
+    <li>如果扫描不到新的mac，请检查局域网设置。</li>
+</ul>
+{%endif%}
+{%endblock%}

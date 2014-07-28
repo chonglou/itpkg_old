@@ -1,0 +1,53 @@
+{% extends 'personal/index.html' %}
+{%block title%}工作笔记{%endblock%}
+{%block main%}
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('#content', {width: '900px',height: '300px'});
+    });
+</script>
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, '撰写工作笔记', url_for('personal_page.note'))}}
+<br>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">工作笔记［{{notes|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="5%" nowrap class='maintitle'>管理员</td>
+                    <td width="5%" nowrap class='maintitle'>雇员</td>
+                    <td width="12%" nowrap class='maintitle'>时间</td>
+                    <td nowrap class='maintitle'>内容</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('personal_page.note')}}">撰写新笔记</a>］
+                    </td>
+                </tr>
+                {% for n in notes: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td align="center" class="forum2">{{n.author.nick_name}}</td>
+                    <td align="center" class="forum2">{{n.employee}}</td>
+                    <td align="center" class="forum2">{{n.created}}</td>
+                    <td class="forum1">
+                        {{n.content | safe}}
+                    </td>
+                    <td class="forum1" align="center"><a href="{{url_for('personal_page.note', note_id=n.id)}}">编辑</a>&nbsp;<a
+                            href="{{url_for('personal_page.note_delete', note_id=n.id)}}">删除</a></td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}

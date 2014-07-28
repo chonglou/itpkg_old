@@ -1,0 +1,19 @@
+{%set page='host'%}
+{% extends 'layout.html' %}
+{%block left%}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('host_page.edit')}}"> 主机管理 </a><br>
+                <img src="{{url_for('static', filename='style/document.gif')}}" border='0'> <a
+                    href="{{url_for('host_page.list')}}"> 主机列表 </a><br>
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}

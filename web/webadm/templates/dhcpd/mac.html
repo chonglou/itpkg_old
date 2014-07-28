@@ -1,0 +1,52 @@
+{%set act='mac' %}
+{% extends 'dhcpd/index.html' %}
+{%block title%}MAC绑定{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{%if allow%}
+{% if bind_form%}
+{{render_form2table(bind_form, 'MAC与IP地址绑定', url_for('dhcpd_page.bind'))}}
+<ul>
+    <li>MAC地址需要 防火墙=》MAC管理=》扫描局域网MAC信息 才能录入</li>
+</ul>
+<br>
+{%endif%}
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">已绑定的MAC列表［{{macs|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td  nowrap class='maintitle'>MAC</td>
+                    <td  nowrap class='maintitle'>IP</td>
+                    <td nowrap class='maintitle'>所有者</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('dhcpd_page.mac', host_id=host_id)}}">添加绑定</a>］
+                    </td>
+                </tr>
+                {% for m in macs: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2">{{m.mac}}</td>
+                    <td class="forum2">{{m.ip}}</td>
+                    <td class="forum1">{{m.employee}}</td>
+                    <td class="forum1" align="center"><a
+                            href="{{url_for('dhcpd_page.mac', host_id=host_id, mac_id=m.id)}}">编辑</a>
+
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endif%}
+{%endblock%}

@@ -1,0 +1,13 @@
+{%set act='mgr' %}
+{% extends 'firewall/index.html' %}
+{%block title%}防火墙服务管理{%endblock%}
+{%block main%}
+{% from "_ctl_helpers.html" import render_ctl_service_panel %}
+{%if allow%}
+{{ render_ctl_service_panel('防火墙服务管理', forms)}}<br>
+<ul>
+    <li>网络延迟为{{timeout}}秒</li>
+    <li>如果超出{{timeout}}秒还没响应，说明出错提示信息比较多，请耐心等待</li>
+</ul>
+{%endif%}
+{%endblock%}

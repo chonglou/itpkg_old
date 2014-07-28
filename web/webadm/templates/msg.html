@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{%block title%}提示信息{%endblock%}
+{%block main%}
+<div class="box">
+    <h5>&nbsp;提示信息&nbsp;</h5>
+
+    <div class="body">
+        <div class="content odd"> {% for msg in msgs%}
+            <img src="{{url_for('static', filename='style/link.gif')}}" border='0'> {{ msg }}<br>
+            {% endfor %}<br>
+
+            <div style="text-align: right;"><a href="{{next}}">返回上一页面</a></div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

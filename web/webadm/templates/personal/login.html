@@ -1,0 +1,7 @@
+{%set page='personal'%}
+{% extends 'layout.html' %}
+{%block title%}欢迎登录{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{{render_form2table(form, '请先登录', url_for('personal_page.login'))}}
+{%endblock%}

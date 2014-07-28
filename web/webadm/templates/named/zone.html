@@ -1,0 +1,68 @@
+{%set act='zone' %}
+{% extends 'named/index.html' %}
+{%block title%}域名解析管理{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{%if fm_zone%}
+{{render_form2table(fm_zone, '根域名设定', url_for('named_page.on_zone'))}}
+<ul>
+    <li>当前不支持中文域名</li>
+</ul>
+<br>
+{%endif%}
+{%if allow%}
+        {{render_form2table(fm_a, '%s A记录设定' % domain, url_for('named_page.on_a'))}}
+        <ul>
+            <li>当前不支持中文子域名</li>
+            <li>子域名只需要输入前缀就行了</li>
+            <li>请注意要解析ns域名</li>
+        </ul>
+<br>
+        {{render_form2table(fm_mx, '%s MX记录设定' % domain, url_for('named_page.on_mx'))}}<br>
+
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">域名列表［{{zones|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="12%" nowrap class='maintitle'>域名</td>
+                    <td class="maintitle">解析记录</td>
+                    <td align="center" width="10%" nowrap class='maintitle'>操作［<a
+                            href="{{url_for('named_page.item', host_id=host_id)}}">添加域名</a>］
+                    </td>
+                </tr>
+                {% for z in zones: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td class="forum2" valign="top">{{z.domain}}</td>
+                    <td class="forum2">
+                        {%if z.ns_items%}
+                        <ul>{%for i in z.ns_items%}
+                            <li>{{i}} &nbsp; &nbsp; <a href="{{url_for('named_page.ns_delete', host_id=host_id, ns_id=i.id)}}">删除</a></li>
+                            {%endfor%}
+                        </ul>
+                        {%endif%}
+                    </td>
+                    <td valign="top" class="forum1" align="center">
+                        <a href="{{url_for('named_page.zone', host_id=host_id, zone_id=z.id)}}">编辑</a>
+                        &nbsp;&nbsp;
+                        <a href="{{url_for('named_page.zone_delete', host_id=host_id, zone_id=z.id)}}">删除</a>
+
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endif%}
+{%endblock%}

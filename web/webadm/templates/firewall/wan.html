@@ -1,0 +1,14 @@
+{%set act='wan' %}
+{% extends 'firewall/index.html' %}
+{%block title%}WAN设定{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{%if allow %}
+{{render_form2table(fm_wan, '公网信息', url_for('ff_wan_page.on_wan'))}}
+<ul>
+    <li>公网IP可以有多个，用“;”隔开，第一个为共享IP</li>
+</ul>
+<br>
+{{render_form2table(fm_ping, '公网Ping设置', url_for('ff_wan_page.on_ping'))}}
+{%endif%}
+{%endblock%}

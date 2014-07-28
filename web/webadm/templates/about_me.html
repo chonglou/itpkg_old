@@ -1,0 +1,68 @@
+{%set page='about_me'%}
+{% extends 'layout.html' %}
+{%block title%}关于我们{%endblock%}
+{%block main%}
+<a name="about_me"></a>
+<table align="center" width="98%">
+    <tr>
+        <td>
+            <fieldset>
+                <legend>关于我们</legend>
+                {{g.site.about_me | safe}}
+            </fieldset>
+        </td>
+    </tr>
+</table>
+<br>
+<a name="notes"></a>
+<table width="98%" border="0" cellspacing="1" cellpadding="0" bgcolor="#999999" align="center">
+    <tr>
+        <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="4">
+                <tr>
+                    <td width="100%" class="titlemedium"><span class="white">工作笔记［{{notes|count}}］</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class='mainbg'>
+            <table width="100%" border="0" cellspacing="1" cellpadding="4">
+                <tr>
+                    <td align="center" nowrap width="2%" class='maintitle'></td>
+                    <td width="5%" nowrap class='maintitle'>用户</td>
+                    <td width="12%" nowrap class='maintitle'>时间</td>
+                    <td nowrap class='maintitle'>内容</td>
+                </tr>
+                {% for n in notes: %}
+                <tr>
+                    <td class="forum2"></td>
+                    <td align="center" class="forum2">{{n.author.nick_name}}</td>
+                    <td align="center" class="forum2">{{n.created}}</td>
+                    <td class="forum1">{{n.content | safe}}</td>
+                </tr>
+                {%endfor%}
+            </table>
+        </td>
+    </tr>
+</table>
+{%endblock%}
+
+
+{% block left %}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                <img src="{{ url_for('static', filename='style/document.gif') }}" border='0'>
+                <a href="#about_me"> 关于我们 </a><br>
+                <img src="{{ url_for('static', filename='style/document.gif') }}" border='0'>
+                <a href="#notes"> 工作笔记 </a><br>
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{% endblock%}

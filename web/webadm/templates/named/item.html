@@ -1,0 +1,18 @@
+{%set act='item' %}
+{% extends 'named/index.html' %}
+{%block title%}DHCP服务器设定{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{% if fm_basic%}
+{{render_form2table(fm_basic, '基本信息设定', url_for('named_page.on_basic'))}}<br>
+{%endif%}
+{% if fm_setup%}
+{{render_form2table(fm_setup, '网络参数设定', url_for('named_page.on_setup'))}}
+<ul>
+    <li>监听地址可以为多个，用;号隔开</li>
+    <li>上级DNS地址可以为多个，用;号隔开</li>
+    <li>控制器监听地址只能为一个，这个一般为本地监听地址</li>
+</ul>
+<br>
+{%endif%}
+{%endblock%}

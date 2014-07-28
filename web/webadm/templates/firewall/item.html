@@ -1,0 +1,9 @@
+{%set act='item' %}
+{% extends 'firewall/index.html' %}
+{%block title%}基本信息{%endblock%}
+{%block main%}
+{% from "_form_helpers.html" import render_form2table %}
+{%if allow %}
+{{render_form2table(form, '基本信息', url_for('ff_item_page.index', host_id=host_id))}} <br>
+{%endif%}
+{%endblock%}

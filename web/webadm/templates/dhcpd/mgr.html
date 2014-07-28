@@ -1,0 +1,12 @@
+{%set act='mgr' %}
+{% extends 'dhcpd/index.html' %}
+{%block title%}DHCP服务管理{%endblock%}
+{%block main%}
+{% from "_ctl_helpers.html" import render_ctl_service_panel %}
+{%if allow%}
+{{ render_ctl_service_panel('DHCP服务管理', forms)}}<br>
+<ul>
+    <li>保存配置的同时会重启dhcpd服务</li>
+</ul>
+{%endif%}
+{%endblock%}

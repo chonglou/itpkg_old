@@ -1,0 +1,24 @@
+{%set page='vpn'%}
+{% extends 'layout.html' %}
+{%block title%}VPN管理{%endblock%}
+{%block main%}
+<h4>共有［{{g.hosts|count}}］台VPN主机</h4>
+<ul>
+    <li>正确设置数据库之后，才能进行账户管理</li>
+</ul>
+{%endblock%}
+{%block left%}
+{% from "_ctl_helpers.html" import render_ctl_goto_panel %}
+<td class="left">
+    <div class="box">
+        <h5>&nbsp;控制面板&nbsp;</h5>
+
+        <div class="body">
+            <div class="content odd">
+                {{ render_ctl_goto_panel(url_for('vpn_page.action'), host_id, g.hosts,  {'setup':'基本参数','user':'账户管理'}, act) }}
+                <br>
+            </div>
+        </div>
+    </div>
+</td>
+{%endblock%}
