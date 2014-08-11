@@ -24,9 +24,10 @@ class PersonalController < ApplicationController
   end
 
   def company
+    uid = current_user.id
     case request.method
       when 'GET'
-        c = Company.find_by user_id: current_user.fetch(:id)
+        c = Company.find_by user_id: uid
         fm = Brahma::Web::Form.new '公司信息', '/personal/company'
         fm.text 'name', '名称', c ? c.name : '', 480
         fm.html 'details', '详细信息', c ? c.details : ''
@@ -37,11 +38,11 @@ class PersonalController < ApplicationController
         vat.empty? 'name', '名称'
         dlg = Brahma::Web::Dialog.new
         if vat.ok?
-          c = Company.find_by user_id: current_user.fetch(:id)
+          c = Company.find_by user_id: uid
           if c
             c.update name: params[:name], details: params[:details]
           else
-            Company.create user_id: current_user.fetch(:id), name: params[:name], details: params[:details], created: Time.now
+            Company.create user_id: uid, name: params[:name], details: params[:details], created: Time.now
           end
           dlg.ok = true
         else

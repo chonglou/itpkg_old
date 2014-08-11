@@ -10,14 +10,14 @@ class EmailController < ApplicationController
 
   def index
     @ctl_links ={}
-    Brahma::ClientService.list(current_user.fetch(:id), :email).each { |c| @ctl_links["/email/show/#{c.id}"]=c.name }
+    Brahma::ClientService.list(current_user.id, :email).each { |c| @ctl_links["/email/show/#{c.id}"]=c.name }
     @ctl_links['/email/help']='帮助文档'
     @index='/email'
     goto_admin
   end
 
   def info
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:client_id], user_id, :email
     if c
       case request.method

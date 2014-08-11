@@ -11,7 +11,7 @@ require 'brahma/factory'
 class Dns::DomainsController < ApplicationController
   before_action :require_login
   def index
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c_id = params[:client_id]
     tab = Brahma::Web::Table.new "/dns/domains?client_id=#{c_id}", '域列表', %w(ID 名称 TTL(秒) 创建日期)
     client = Brahma::ClientService.get c_id, user_id, :dns
@@ -36,7 +36,7 @@ class Dns::DomainsController < ApplicationController
     domain = Dns::Domain.find_by params[:id]
     dlg = Brahma::Web::Dialog.new
     if can_edit?(domain) && domain.records.empty?
-      Brahma::LogService.add "删除DNS域#{domain.name}", current_user.fetch(:id)
+      Brahma::LogService.add "删除DNS域#{domain.name}", current_user.id
       domain.destroy
       dlg.ok = true
     else
@@ -92,7 +92,7 @@ class Dns::DomainsController < ApplicationController
   end
 
   def create
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     vat = Brahma::Web::Validator.new params
     vat.empty? :name, '名称'
 
@@ -131,7 +131,7 @@ class Dns::DomainsController < ApplicationController
 
   private
   def can_edit?(domain)
-    domain && domain.host.client.user_id == current_user.fetch(:id)
+    domain && domain.host.client.user_id == current_user.id
   end
 
   def ttl_options

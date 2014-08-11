@@ -12,7 +12,7 @@ class Dns::RecordsController < ApplicationController
   before_action :require_login
 
   def index
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c_id = params[:client_id]
     tab = Brahma::Web::Table.new "/dns/records?client_id=#{c_id}", '用户列表', %w(ID 名称 类型 值 优先级 创建日期)
     client = Brahma::ClientService.get c_id, user_id, :dns
@@ -39,7 +39,7 @@ class Dns::RecordsController < ApplicationController
     record = Dns::Record.find_by params[:id]
     dlg = Brahma::Web::Dialog.new
     if can_edit?(record)
-      Brahma::LogService.add "删除DNS记录#{record.name}@#{record.domain.name}", current_user.fetch(:id)
+      Brahma::LogService.add "删除DNS记录#{record.name}@#{record.domain.name}", current_user.id
       record.destroy
       dlg.ok = true
     else
@@ -137,7 +137,7 @@ class Dns::RecordsController < ApplicationController
 
   private
   def can_edit?(record)
-    record && record.domain.host.client.user_id == current_user.fetch(:id)
+    record && record.domain.host.client.user_id == current_user.id
   end
 
   def dns_record_priority_options

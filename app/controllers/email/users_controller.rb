@@ -13,7 +13,7 @@ class Email::UsersController < ApplicationController
 
 
   def index
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c_id = params[:client_id]
     tab = Brahma::Web::Table.new "/email/users?client_id=#{c_id}", '用户列表', %w(ID 名称 状态 创建日期)
     client = Brahma::ClientService.get c_id, user_id, :email
@@ -41,7 +41,7 @@ class Email::UsersController < ApplicationController
     user = Email::User.find_by params[:id]
     dlg = Brahma::Web::Dialog.new
     if can_edit?(user)
-      Brahma::LogService.add "删除Email用户#{user.username}", current_user.fetch(:id)
+      Brahma::LogService.add "删除Email用户#{user.username}", current_user.id
       user.destroy
       dlg.ok = true
     else
@@ -168,6 +168,6 @@ class Email::UsersController < ApplicationController
 
   private
   def can_edit?(email_user)
-    email_user && email_user.domain.host.client.user_id == current_user.fetch(:id)
+    email_user && email_user.domain.host.client.user_id == current_user.id
   end
 end

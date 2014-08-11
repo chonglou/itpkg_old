@@ -10,7 +10,7 @@ class FirewallController < ApplicationController
 
   def index
     @ctl_links = {}
-    Brahma::ClientService.list(current_user.fetch(:id), :firewall).each { |c| @ctl_links["/firewall/show/#{c.id}"]=c.name }
+    Brahma::ClientService.list(current_user.id, :firewall).each { |c| @ctl_links["/firewall/show/#{c.id}"]=c.name }
     @ctl_links['/firewall/help']='帮助文档'
     @index='/firewall'
     goto_admin
@@ -18,7 +18,7 @@ class FirewallController < ApplicationController
 
 
   def info
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:client_id], user_id, :firewall
     if c
       case request.method

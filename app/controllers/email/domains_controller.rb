@@ -12,7 +12,7 @@ class Email::DomainsController < ApplicationController
   before_action :require_login
 
   def index
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c_id = params[:client_id]
     tab = Brahma::Web::Table.new "/email/domains?client_id=#{c_id}", '域列表', %w(ID 名称 创建日期)
     client = Brahma::ClientService.get c_id, user_id, :email
@@ -37,7 +37,7 @@ class Email::DomainsController < ApplicationController
     domain = Email::Domain.find_by params[:id]
     dlg = Brahma::Web::Dialog.new
     if can_edit?(domain) && domain.users.empty?
-      Brahma::LogService.add "删除域#{domain.name}", current_user.fetch(:id)
+      Brahma::LogService.add "删除域#{domain.name}", current_user.id
       domain.destroy
       dlg.ok = true
     else
@@ -91,7 +91,7 @@ class Email::DomainsController < ApplicationController
   end
 
   def create
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     vat = Brahma::Web::Validator.new params
     vat.empty? :name, '名称'
 
@@ -129,6 +129,6 @@ class Email::DomainsController < ApplicationController
 
     private
   def can_edit?(domain)
-    domain && domain.host.client.user_id == current_user.fetch(:id)
+    domain && domain.host.client.user_id == current_user.id
   end
 end

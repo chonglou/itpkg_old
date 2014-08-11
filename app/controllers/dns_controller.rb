@@ -10,7 +10,7 @@ class DnsController < ApplicationController
 
   def index
     @ctl_links = {}
-    Brahma::ClientService.list(current_user.fetch(:id), :dns).each { |c| @ctl_links["/dns/show/#{c.id}"]=c.name }
+    Brahma::ClientService.list(current_user.id, :dns).each { |c| @ctl_links["/dns/show/#{c.id}"]=c.name }
     @ctl_links['/dns/help']='帮助文档'
     @index='/dns'
     goto_admin
@@ -19,7 +19,7 @@ class DnsController < ApplicationController
 
 
   def info
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:client_id], user_id, :dns
     if c
       case request.method

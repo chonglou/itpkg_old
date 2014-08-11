@@ -10,14 +10,14 @@ class VpnController < ApplicationController
 
   def index
     @ctl_links ={}
-    Brahma::ClientService.list(current_user.fetch(:id), :vpn).each { |c| @ctl_links["/vpn/show/#{c.id}"]=c.name }
+    Brahma::ClientService.list(current_user.id, :vpn).each { |c| @ctl_links["/vpn/show/#{c.id}"]=c.name }
     @ctl_links['/vpn/help']='帮助文档'
     @index='/vpn'
     goto_admin
   end
 
   def info
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:client_id], user_id, :vpn
     if c
       case request.method

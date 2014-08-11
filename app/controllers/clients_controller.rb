@@ -12,8 +12,8 @@ class ClientsController < ApplicationController
   before_action :require_login
 
   def index
-    user = current_user
-    clients = Client.select('id, name, flag, state, created').where(user_id: user.fetch(:id)).order(created: :desc)
+    uid = current_user.id
+    clients = Client.select('id, name, flag, state, created').where(user_id: uid).order(created: :desc)
     tab = Brahma::Web::Table.new '/clients', '终端列表', %w(ID 名称 类型 状态 创建日期)
     clients.each do |c|
       tab.insert [c.id, c.name, c.flag, c.state, c.created], [
@@ -36,7 +36,7 @@ class ClientsController < ApplicationController
   def show
     id = params[:id]
     if id
-      c = Brahma::ClientService.get id, current_user.fetch(:id)
+      c = Brahma::ClientService.get id, current_user.id
       if c
         list = Brahma::Web::List.new "终端[#{c.id}]"
         list.add "名称：#{c.name}"
@@ -54,7 +54,7 @@ class ClientsController < ApplicationController
   def update
     vat = Brahma::Web::Validator.new params
     vat.empty? :name, '名称'
-    c = Brahma::ClientService.get params[:id], current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], current_user.id
     unless c
       vat.add '没有权限'
     end
@@ -70,7 +70,7 @@ class ClientsController < ApplicationController
 
   def edit
 
-    c = Brahma::ClientService.get params[:id], current_user.fetch(:id)
+    c = Brahma::ClientService.get params[:id], current_user.id
     fm = Brahma::Web::Form.new '编辑终端', "/clients/#{params[:id]}"
     if c
       fm.text 'name', '名称', c.name
@@ -90,7 +90,7 @@ class ClientsController < ApplicationController
     dlg = Brahma::Web::Dialog.new
     if vat.ok?
       serial, secret=Brahma::ClientService.generate
-      Client.create user_id: current_user.fetch(:id), name: params[:name], details: params[:details],
+      Client.create user_id: current_user.id, name: params[:name], details: params[:details],
                     secret: secret, serial: serial,
                     flag: params[:flag], state: :submit, created: Time.now
       dlg.ok = true
@@ -121,7 +121,7 @@ class ClientsController < ApplicationController
   end
 
   def state
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:id], user_id
     if c
       case request.method
@@ -143,7 +143,7 @@ class ClientsController < ApplicationController
   end
 
   def reset
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:id], user_id
     if c
       case request.method
@@ -168,7 +168,7 @@ class ClientsController < ApplicationController
   end
 
   def demo
-    user_id = current_user.fetch(:id)
+    user_id = current_user.id
     c = Brahma::ClientService.get params[:id], user_id
     if c
       send_data(JSON.pretty_generate({
