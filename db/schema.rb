@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718182530) do
+ActiveRecord::Schema.define(version: 20140811220404) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -205,9 +205,44 @@ ActiveRecord::Schema.define(version: 20140718182530) do
     t.datetime "created",  null: false
   end
 
+  create_table "issues", force: true do |t|
+    t.integer  "project_id",                       null: false
+    t.string   "title",                            null: false
+    t.text     "body",                             null: false
+    t.integer  "user_id",                          null: false
+    t.integer  "flag",       limit: 1, default: 0, null: false
+    t.integer  "state",      limit: 2, default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "monitor_hosts", force: true do |t|
     t.integer  "client_id", null: false
     t.datetime "created",   null: false
+  end
+
+  create_table "project_users", force: true do |t|
+    t.integer  "project_id", default: 0, null: false
+    t.integer  "member_id",  default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "projects", force: true do |t|
+    t.string   "name",       null: false
+    t.string   "title",      null: false
+    t.text     "details",    null: false
+    t.integer  "owner_id",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "replies", force: true do |t|
+    t.integer  "issue_id",   null: false
+    t.integer  "user_id",    null: false
+    t.text     "content",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "vpn_hosts", force: true do |t|
