@@ -11,20 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526201544) do
+ActiveRecord::Schema.define(version: 20140718182530) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
-    t.integer  "user_id",                            null: false
-    t.integer  "size",                               null: false
-    t.string   "file_name",                          null: false
-    t.string   "content_type",                       null: false
-    t.string   "original_filename",                  null: false
-    t.binary   "content",           limit: 16777215, null: false
-    t.datetime "last_edit",                          null: false
-    t.datetime "created",                            null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file"
   end
-
-  add_index "brahma_bodhi_attachments", ["file_name"], name: "index_brahma_bodhi_attachments_on_file_name", unique: true, using: :btree
 
   create_table "brahma_bodhi_friend_links", force: true do |t|
     t.string   "logo"
@@ -71,17 +65,15 @@ ActiveRecord::Schema.define(version: 20140526201544) do
 
   create_table "brahma_bodhi_users", force: true do |t|
     t.string   "open_id",                          null: false
-    t.string   "token",                            null: false
+    t.string   "username",                         null: false
     t.integer  "flag",       limit: 1, default: 0, null: false
     t.integer  "state",      limit: 1, default: 0, null: false
-    t.string   "username",                         null: false
-    t.binary   "contact"
+    t.binary   "contact",                          null: false
     t.datetime "last_login"
     t.datetime "created",                          null: false
   end
 
   add_index "brahma_bodhi_users", ["open_id"], name: "index_brahma_bodhi_users_on_open_id", unique: true, using: :btree
-  add_index "brahma_bodhi_users", ["token"], name: "index_brahma_bodhi_users_on_token", unique: true, using: :btree
 
   create_table "cdn_hosts", force: true do |t|
     t.integer  "client_id", null: false
