@@ -7,7 +7,6 @@ class PersonalController < ApplicationController
 
   def index
     @ctl_links = {
-        '/clients' => '终端管理',
         '/personal/company' => '公司信息'
     }
     if admin?
@@ -19,7 +18,6 @@ class PersonalController < ApplicationController
     end
     @ctl_links['/core/attachments']='附件管理'
     @ctl_links['/core/user/logs']='日志列表'
-    @index='/personal'
     goto_admin
   end
 

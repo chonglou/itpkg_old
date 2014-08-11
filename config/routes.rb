@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  get 'ops'=>'ops#index'
+  get 'ops/services'
+
   #--------------个人中心------------------------
   get 'personal' => 'personal#index'
   get 'personal/company'

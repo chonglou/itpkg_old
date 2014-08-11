@@ -5,5 +5,12 @@ $(function(){
     if(uri == '/'){
         uri = '/main'
     }
+    var ops = ['/vpn/', '/firewall', '/email', '/monitor', '/dns', '/cdn'];
+    for(var i in ops){
+        if(uri.indexOf(ops[i]) ==0){
+            uri = '/ops';
+            break;
+        }
+    }
     Brahma.active_nav_link(uri);
 });
