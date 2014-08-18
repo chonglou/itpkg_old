@@ -1,4 +1,5 @@
 require 'brahma/web/response'
+require 'brahma/services/company'
 
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -7,6 +8,14 @@ class ApplicationController < ActionController::Base
   layout 'bodhi/main'
   include ShareHelper
 
+
+  def require_owner
+    user = current_user
+    unless user && Brahma::CompanyService.get(user.id).operation == 'manager'
+      r.add '权限不足'
+      goto_message r
+    end
+  end
 
   def require_login
     unless current_user

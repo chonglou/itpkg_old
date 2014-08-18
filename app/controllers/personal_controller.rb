@@ -9,8 +9,12 @@ class PersonalController < ApplicationController
   def index
     @ctl_links = {
         '/personal/company' => '公司信息',
-        '/projects' => '项目列表'
     }
+    cr = Brahma::CompanyService.get(current_user.id)
+    if cr && cr.operation == 'manager'
+      @ctl_links['/projects'] = '项目列表'
+      @ctl_links['/employees'] = '雇员列表'
+    end
     if admin?
       @ctl_links['/core/admin/users'] = '用户列表'
       @ctl_links['/core/admin/site'] = '站点参数'
@@ -24,13 +28,15 @@ class PersonalController < ApplicationController
   end
 
   def company
+    cs = Brahma::CompanyService
     uid = current_user.id
-    c = Brahma::CompanyService.by_user(uid)
+    r = cs.get(uid)
+    c = r ? cs.resource2company(r.resource) : nil
 
     case request.method
       when 'GET'
         if c
-          if Brahma::CompanyService.owner?(uid)
+          if r.operation == 'manager'
             rv = Brahma::Web::Form.new '公司信息', '/personal/company'
             rv.text 'name', '名称', c.name, 480
             rv.html 'details', '详细信息', c.details
@@ -53,7 +59,7 @@ class PersonalController < ApplicationController
         dlg = Brahma::Web::Dialog.new
         if vat.ok?
           if c
-            if Brahma::CompanyService.owner?(uid)
+            if r.operation == 'manager'
               c.update name: params[:name], details: params[:details]
               dlg.ok = true
             else
@@ -61,7 +67,7 @@ class PersonalController < ApplicationController
             end
           else
             c = Company.create name: params[:name], details: params[:details], created: Time.now
-            Brahma::CompanyService.add uid, 'manager', c.id
+            Brahma::RbacService.set! "user://#{uid}", 'manager', "company://#{c.id}"
 
             dlg.ok = true
           end

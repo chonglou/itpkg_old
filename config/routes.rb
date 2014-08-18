@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
+
   #--------项目管理-----------
   resources :projects
-
+  resources :employees, except:[:show, :edit, :update]
 
   #---------顶部导航
   get 'ops'=>'ops#index'
