@@ -1,13 +1,15 @@
 require 'brahma/web/dialog'
 require 'brahma/web/form'
 require 'brahma/web/validator'
+require 'brahma/services/company'
 
 class PersonalController < ApplicationController
   before_action :require_login
 
   def index
     @ctl_links = {
-        '/personal/company' => '公司信息'
+        '/personal/company' => '公司信息',
+        '/projects' => '项目列表'
     }
     if admin?
       @ctl_links['/core/admin/users'] = '用户列表'
@@ -23,26 +25,46 @@ class PersonalController < ApplicationController
 
   def company
     uid = current_user.id
+    c = Brahma::CompanyService.by_user(uid)
+
     case request.method
       when 'GET'
-        c = Company.find_by user_id: uid
-        fm = Brahma::Web::Form.new '公司信息', '/personal/company'
-        fm.text 'name', '名称', c ? c.name : '', 480
-        fm.html 'details', '详细信息', c ? c.details : ''
-        fm.ok = true
-        render json: fm.to_h
+        if c
+          if Brahma::CompanyService.owner?(uid)
+            rv = Brahma::Web::Form.new '公司信息', '/personal/company'
+            rv.text 'name', '名称', c.name, 480
+            rv.html 'details', '详细信息', c.details
+          else
+            rv = Brahma::Web::List.new '公司信息'
+            rv.add "名称：#{c.name}"
+            rv.add "详细信息：#{c.details}"
+          end
+        else
+          rv = Brahma::Web::Form.new '公司信息', '/personal/company'
+          rv.text 'name', '名称'
+          rv.html 'details', '详细信息'
+
+        end
+        rv.ok = true
+        render json: rv.to_h
       when 'POST'
         vat = Brahma::Web::Validator.new params
         vat.empty? 'name', '名称'
         dlg = Brahma::Web::Dialog.new
         if vat.ok?
-          c = Company.find_by user_id: uid
           if c
-            c.update name: params[:name], details: params[:details]
+            if Brahma::CompanyService.owner?(uid)
+              c.update name: params[:name], details: params[:details]
+              dlg.ok = true
+            else
+              dlg.add '没有权限'
+            end
           else
-            Company.create user_id: uid, name: params[:name], details: params[:details], created: Time.now
+            c = Company.create name: params[:name], details: params[:details], created: Time.now
+            Brahma::CompanyService.add uid, 'manager', c.id
+
+            dlg.ok = true
           end
-          dlg.ok = true
         else
           dlg.data += vat.messages
         end

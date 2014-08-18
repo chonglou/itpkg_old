@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140811220404) do
+ActiveRecord::Schema.define(version: 20140818194406) do
 
   create_table "brahma_bodhi_attachments", force: true do |t|
     t.integer  "user_id",    null: false
@@ -53,6 +53,20 @@ ActiveRecord::Schema.define(version: 20140811220404) do
   add_index "brahma_bodhi_permissions", ["operation"], name: "index_brahma_bodhi_permissions_on_operation", using: :btree
   add_index "brahma_bodhi_permissions", ["resource"], name: "index_brahma_bodhi_permissions_on_resource", using: :btree
   add_index "brahma_bodhi_permissions", ["role"], name: "index_brahma_bodhi_permissions_on_role", using: :btree
+
+  create_table "brahma_bodhi_rbacs", force: true do |t|
+    t.string   "resource",                                   null: false
+    t.string   "operation",                                  null: false
+    t.string   "role",                                       null: false
+    t.datetime "startup",    default: '9999-12-31 23:59:59', null: false
+    t.datetime "shutdown",   default: '1000-01-01 00:00:00', null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "brahma_bodhi_rbacs", ["operation"], name: "index_brahma_bodhi_rbacs_on_operation", using: :btree
+  add_index "brahma_bodhi_rbacs", ["resource"], name: "index_brahma_bodhi_rbacs_on_resource", using: :btree
+  add_index "brahma_bodhi_rbacs", ["role"], name: "index_brahma_bodhi_rbacs_on_role", using: :btree
 
   create_table "brahma_bodhi_settings", force: true do |t|
     t.string   "key",                 null: false
@@ -96,7 +110,6 @@ ActiveRecord::Schema.define(version: 20140811220404) do
   create_table "companies", force: true do |t|
     t.string   "name",    null: false
     t.text     "details"
-    t.integer  "user_id", null: false
     t.datetime "created", null: false
   end
 
@@ -221,18 +234,10 @@ ActiveRecord::Schema.define(version: 20140811220404) do
     t.datetime "created",   null: false
   end
 
-  create_table "project_users", force: true do |t|
-    t.integer  "project_id", default: 0, null: false
-    t.integer  "member_id",  default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "projects", force: true do |t|
     t.string   "name",       null: false
     t.string   "title",      null: false
     t.text     "details",    null: false
-    t.integer  "owner_id",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

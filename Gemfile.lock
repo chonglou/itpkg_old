@@ -1,6 +1,26 @@
 GIT
-  remote: git@github.com:chonglou/bodhi.git
-  revision: 55f610ba44bef226e44342a948f8ae197946c3c8
+  remote: git@github.com:chonglou/daemon.git
+  revision: c4cbcae744da5acb0710488c81260aca18b7f359
+  specs:
+    brahma_daemon (0.0.1)
+
+GIT
+  remote: git@github.com:chonglou/utils.git
+  revision: f6a515761a391e6157c03a966251be5fb0b411a3
+  specs:
+    brahma_utils (0.0.1)
+      bunny
+      connection_pool
+      highline
+      iconv
+      mysql2
+      nokogiri
+      redcarpet
+      redis
+      sequel
+
+PATH
+  remote: ../bodhi
   specs:
     brahma_bodhi (0.0.1)
       autoprefixer-rails
@@ -23,27 +43,6 @@ GIT
       sass-rails
       slim
       turbolinks
-
-GIT
-  remote: git@github.com:chonglou/daemon.git
-  revision: c4cbcae744da5acb0710488c81260aca18b7f359
-  specs:
-    brahma_daemon (0.0.1)
-
-GIT
-  remote: git@github.com:chonglou/utils.git
-  revision: f6a515761a391e6157c03a966251be5fb0b411a3
-  specs:
-    brahma_utils (0.0.1)
-      bunny
-      connection_pool
-      highline
-      iconv
-      mysql2
-      nokogiri
-      redcarpet
-      redis
-      sequel
 
 GEM
   remote: https://rubygems.org/
@@ -121,7 +120,7 @@ GEM
     diff-lcs (1.2.5)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    excon (0.39.4)
+    excon (0.39.5)
     execjs (2.2.1)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
@@ -141,7 +140,7 @@ GEM
       fog-softlayer
       ipaddress (~> 0.5)
       nokogiri (~> 1.5, >= 1.5.11)
-    fog-brightbox (0.2.0)
+    fog-brightbox (0.3.0)
       fog-core (~> 1.22)
       fog-json
       inflecto
@@ -154,7 +153,7 @@ GEM
       net-ssh (>= 2.1.3)
     fog-json (1.0.0)
       multi_json (~> 1.0)
-    fog-softlayer (0.3.13)
+    fog-softlayer (0.3.14)
       fog-core
       fog-json
     formatador (0.2.5)
@@ -205,7 +204,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (~> 1.2)
-    oj (2.10.0)
+    oj (2.10.1)
     polyglot (0.3.5)
     puma (2.9.0)
       rack (>= 1.1, < 2.0)
@@ -237,12 +236,12 @@ GEM
     redis (3.1.0)
     rerun (0.10.0)
       listen (~> 2.7, >= 2.7.3)
-    rspec-core (3.0.3)
+    rspec-core (3.0.4)
       rspec-support (~> 3.0.0)
-    rspec-expectations (3.0.3)
+    rspec-expectations (3.0.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.0.0)
-    rspec-mocks (3.0.3)
+    rspec-mocks (3.0.4)
       rspec-support (~> 3.0.0)
     rspec-rails (3.0.2)
       actionpack (>= 3.0)
@@ -252,7 +251,7 @@ GEM
       rspec-expectations (~> 3.0.0)
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
-    rspec-support (3.0.3)
+    rspec-support (3.0.4)
     sass (3.2.19)
     sass-rails (4.0.3)
       railties (>= 4.0.0, < 5.0)

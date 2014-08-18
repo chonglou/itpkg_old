@@ -7,7 +7,7 @@ module ApplicationHelper
     links = {'/main' => '本站首页'}
     if current_user
       links['/personal'] = '用户中心'
-      links['/projects'] = '项目管理'
+      links['/pm'] = '项目管理'
       links['/ops'] = '运维管理'
     end
     links['/about_me']='关于我们'

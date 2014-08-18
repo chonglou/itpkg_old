@@ -12,5 +12,12 @@ $(function(){
             break;
         }
     }
+    var pm = ['/projects'];
+    for(var i in ops){
+        if(uri.indexOf(ops[i]) ==0){
+            uri = '/pm';
+            break;
+        }
+    }
     Brahma.active_nav_link(uri);
 });

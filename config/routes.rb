@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
+  #--------项目管理-----------
+  resources :projects
 
+
+  #---------顶部导航
   get 'ops'=>'ops#index'
   get 'ops/services'
 
