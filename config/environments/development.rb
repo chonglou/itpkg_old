@@ -34,4 +34,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  Slim::Engine.set_default_options pretty: true, sort_attrs: false
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
 end

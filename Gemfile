@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.5'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+#gem 'sqlite3'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -38,3 +38,41 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+#My Add
+gem 'mysql2'
+gem 'puma'
+gem 'slim'
+gem 'bootstrap-sass'
+gem 'highline'
+gem 'sequel'
+gem 'redis'
+gem 'connection_pool'
+gem 'redcarpet'
+gem 'bunny'
+gem 'mongo'
+gem 'bson_ext'
+#gem 'coderay'
+gem 'eventmachine'
+gem 'faye-websocket'
+gem 'multi_json'
+gem 'oj'
+gem 'elasticsearch'
+
+
+gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'
+gem 'brahma_daemon', git:'git@github.com:chonglou/daemon.git'
+gem 'brahma_bodhi', git:'git@github.com:chonglou/bodhi.git'
+
+group :development, :test do
+  gem 'rerun'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+end
+
+
+group :development do
+  gem 'capistrano', '~> 3.1'
+  gem 'capistrano-rbenv', '~> 2.0'
+  gem 'capistrano-rails'
+  gem 'capistrano3-puma'
+end
