@@ -55,6 +55,7 @@ gem 'eventmachine'
 gem 'faye-websocket'
 gem 'multi_json'
 gem 'oj'
+gem 'elasticsearch'
 
 
 gem 'brahma_utils', git:'git@github.com:chonglou/utils.git'

@@ -4,7 +4,6 @@ class CreateBrahmaBodhiSettings < ActiveRecord::Migration
     create_table :brahma_bodhi_settings do |t|
       t.string :key, null: false
       t.binary :val, null: false
-      t.integer :version, null: false, default: 0
       t.datetime :created, null: false
       t.integer :version, null: false, default: 0
     end
