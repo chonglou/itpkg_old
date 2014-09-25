@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
+  #-------个人中心
+  get 'personal' => 'personal#index'
 
+  #-------其它
   root 'main#index'
+  get 'main' => 'main#index'
+  get 'notices' => 'main#notices'
   get 'about_me' => 'main#about_me'
   post 'search' => 'search#index'
   get 'archive/:year/:month/:day' => 'archive#show', as: :archive_by_day

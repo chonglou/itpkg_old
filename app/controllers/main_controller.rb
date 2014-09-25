@@ -1,6 +1,15 @@
+require 'brahma/services/site'
+
 class MainController < ApplicationController
   def index
+    main = Brahma::SettingService.get 'site.index'
+    if main && !['/main', '', '/'].include?(main)
+      redirect_to "#{main}?locale=#{I18n.locale}", status: 301
+    end
+  end
 
+  def notices
+    render 'brahma_bodhi/main/notices'
   end
 
   def about_me
