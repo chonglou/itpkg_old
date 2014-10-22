@@ -1,4 +1,3 @@
-itpkg
+IT-PACKAGE
 =====
 
-自动化运维系统
