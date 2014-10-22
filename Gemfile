@@ -41,3 +41,4 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cache', group: :production
 gem 'dalli', group: :production
 gem 'slim'
+gem 'devise'
