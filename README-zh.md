@@ -15,4 +15,10 @@ IT包
 
     rails new itpkg --database=mysql
 
+ * 清空mysql root密码
+    UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
+    FLUSH PRIVILEGES; 
+
+
+
 
