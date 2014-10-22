@@ -42,3 +42,5 @@ gem 'rack-cache', group: :production
 gem 'dalli', group: :production
 gem 'slim'
 gem 'devise'
+gem 'devise-i18n'
+gem 'highline'
