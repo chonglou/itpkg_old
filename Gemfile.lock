@@ -53,7 +53,7 @@ GEM
     devise-i18n (0.11.2)
     erubis (2.7.0)
     execjs (2.2.2)
-    highcharts-rails (3.0.10)
+    highcharts-rails (4.0.1)
       railties (>= 3.1)
     highline (1.6.21)
     hike (1.2.3)
@@ -140,12 +140,12 @@ DEPENDENCIES
   angularjs-rails
   autoprefixer-rails
   bcrypt (~> 3.1.7)
-  bootstrap-sass (~> 3.2.0)
+  bootstrap-sass
   coffee-rails (~> 4.0.0)
   dalli
   devise
   devise-i18n
-  highcharts-rails (~> 3.0.0)
+  highcharts-rails
   highline
   jbuilder (~> 2.0)
   jquery-rails

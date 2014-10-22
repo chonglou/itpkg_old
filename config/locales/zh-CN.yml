@@ -1,0 +1,11 @@
+zh-CN:
+  title: "IT解决方案包"
+  links:
+    projects: '项目列表'
+    repositories: '代码仓库'
+    docker: 'Docker'
+    logging: '日志系统'
+    monitor: '监控系统'
+    wiki: '知识库'
+    help: '帮助文档'
+    about_us: '关于我们'

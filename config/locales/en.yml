@@ -20,4 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  title: "IT-PACKAGE"
+  links:
+    projects: 'Projects'
+    repositories: 'Repositories'
+    docker: 'Docker'
+    logging: 'Logging'
+    monitor: 'Monitor'
+    wiki: 'Wiki'
+    help: 'Help'
+    about_us: 'About Us'
