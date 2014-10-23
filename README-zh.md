@@ -16,6 +16,8 @@ IT包
  * 知识库管理
  * 监控系统(snmp mysql nginx)
  * 日志分析(rsyslog)
+ * email系统管理
+ * vpn 系统管理
 
 ### 笔记
 
