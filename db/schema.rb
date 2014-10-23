@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023183853) do
+ActiveRecord::Schema.define(version: 20141023212923) do
 
   create_table "email_aliases", force: true do |t|
     t.integer  "domain_id",               null: false
@@ -39,6 +39,13 @@ ActiveRecord::Schema.define(version: 20141023183853) do
 
   add_index "email_users", ["email"], name: "index_email_users_on_email", unique: true, using: :btree
 
+  create_table "logs", force: true do |t|
+    t.integer  "user_id",    null: false
+    t.string   "message",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "permissions", force: true do |t|
     t.string   "resource",   null: false
     t.string   "role",       null: false
@@ -52,6 +59,124 @@ ActiveRecord::Schema.define(version: 20141023183853) do
   add_index "permissions", ["operation"], name: "index_permissions_on_operation", using: :btree
   add_index "permissions", ["resource"], name: "index_permissions_on_resource", using: :btree
   add_index "permissions", ["role"], name: "index_permissions_on_role", using: :btree
+
+  create_table "project_users", force: true do |t|
+    t.integer  "project_id", null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "projects", force: true do |t|
+    t.string   "name",       null: false
+    t.text     "details"
+    t.integer  "creator_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "projects", ["name"], name: "index_projects_on_name", using: :btree
+
+  create_table "repositories", force: true do |t|
+    t.integer  "creator_id",            null: false
+    t.string   "name",       limit: 16, null: false
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "repositories", ["name"], name: "index_repositories_on_name", unique: true, using: :btree
+
+  create_table "repository_logs", force: true do |t|
+    t.integer  "repository_id", null: false
+    t.integer  "user_id",       null: false
+    t.text     "message",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "repository_users", force: true do |t|
+    t.integer  "repository_id", null: false
+    t.integer  "user_id",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "s_tags", force: true do |t|
+    t.integer  "project_id", null: false
+    t.string   "name",       null: false
+    t.string   "icon",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "s_tags", ["name"], name: "index_s_tags_on_name", using: :btree
+
+  create_table "s_tasks", force: true do |t|
+    t.integer  "story_id",   null: false
+    t.string   "details",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "s_types", force: true do |t|
+    t.integer  "project_id", null: false
+    t.string   "name",       null: false
+    t.string   "icon",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "s_types", ["name"], name: "index_s_types_on_name", using: :btree
+
+  create_table "settings", force: true do |t|
+    t.string   "key",        null: false
+    t.text     "val",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "settings", ["key"], name: "index_settings_on_key", unique: true, using: :btree
+
+  create_table "stories", force: true do |t|
+    t.string   "title",                               null: false
+    t.integer  "project_id",                          null: false
+    t.integer  "story_type_id",                       null: false
+    t.integer  "point",                   default: 0, null: false
+    t.integer  "requester_id",                        null: false
+    t.integer  "status",        limit: 1, default: 0, null: false
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "story_followers", force: true do |t|
+    t.integer  "story_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "story_owners", force: true do |t|
+    t.integer  "story_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "story_tags", force: true do |t|
+    t.integer  "story_id",   null: false
+    t.integer  "s_tag_id",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "story_types", force: true do |t|
+    t.integer  "story_id",   null: false
+    t.integer  "s_type_id",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
