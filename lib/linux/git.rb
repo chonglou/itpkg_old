@@ -5,7 +5,7 @@ module Linux
     attr_reader :root
 
     def initialize(name)
-      @root = "#{Rails.root}/tmp/repos/#{name}.git"
+      @root = "#{Rails.root}/tmp/storage/repos/#{name}.git"
     end
 
     def exist?

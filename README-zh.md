@@ -33,6 +33,14 @@ IT包
 
    rails generate controller name act1 act2  --no-assets --no-helper
 
+ * 启动
+
+    rails server
+
+ * 控制台
+
+    rails console
+
 
  * 清空mysql root密码
     UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
