@@ -11,7 +11,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023174003) do
+ActiveRecord::Schema.define(version: 20141023183853) do
+
+  create_table "email_aliases", force: true do |t|
+    t.integer  "domain_id",               null: false
+    t.string   "source",      limit: 128, null: false
+    t.string   "destination", limit: 128, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "email_domains", force: true do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "email_domains", ["name"], name: "index_email_domains_on_name", unique: true, using: :btree
+
+  create_table "email_users", force: true do |t|
+    t.integer  "domain_id",  null: false
+    t.string   "passwd",     null: false
+    t.string   "email",      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "email_users", ["email"], name: "index_email_users_on_email", unique: true, using: :btree
+
+  create_table "permissions", force: true do |t|
+    t.string   "resource",   null: false
+    t.string   "role",       null: false
+    t.string   "operation",  null: false
+    t.date     "startup",    null: false
+    t.date     "shutdown",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "permissions", ["operation"], name: "index_permissions_on_operation", using: :btree
+  add_index "permissions", ["resource"], name: "index_permissions_on_resource", using: :btree
+  add_index "permissions", ["role"], name: "index_permissions_on_role", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
