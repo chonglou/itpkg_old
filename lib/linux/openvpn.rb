@@ -4,17 +4,26 @@ module Linux
   module OpenVpn
     module_function
 
-    def sql_connection(host)
-      db=Rails.configuration.database_configuration[Rails.env]['database']
-      <<-EOF
-CREATE USER 'vpn'@'#{host}' IDENTIFIED BY '#{SecureRandom.hex 8}';
-GRANT SELECT ON `#{db}`.'vpn_users' TO 'vpn'@'#{host}';
-GRANT INSERT ON `#{db}`.'vpn_logs' TO 'vpn'@'#{host}';
-FLUSH PRIVILEGES;
-      EOF
+    def password(password)
+      result = ActiveRecord::Base.connection.execute "SELECT PASSWORD('#{password}')"
+      result.first[0]
     end
 
-    def config_files
+    def grant(host)
+      db=Rails.configuration.database_configuration[Rails.env]['database']
+
+      password = SecureRandom.hex 8
+      sql = <<-EOF
+GRANT SELECT ON `#{db}`.`vpn_users` TO 'vpn'@'#{host}' IDENTIFIED BY '#{password}';
+GRANT INSERT ON `#{db}`.`vpn_logs` TO 'vpn'@'#{host}' IDENTIFIED BY '#{password}';
+FLUSH PRIVILEGES;
+      EOF
+      ActiveRecord::Base.connection.execute(sql)
+
+      password
+    end
+
+    def config_files(host, password)
       db=Rails.configuration.database_configuration[Rails.env]['database']
       cf = {}
 
@@ -24,13 +33,13 @@ FLUSH PRIVILEGES;
       #2 = Use MySQL PASSWORD() function
 
       cf['/etc/pam.d/openvpn'] = <<-EOF
-auth sufficient pam_mysql.so user=vpn passwd=CHANGE_ME host=CHANGE_ME db=#{db} [table=vpn_users] usercolumn=name passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
-account required pam_mysql.so user=vpn passwd=CHANGE_ME host=CHANGE_ME db=#{db} [table=vpn_users] usercolumn=name passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+auth sufficient pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=name passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+account required pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=name passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
       EOF
 
       cf['/etc/openvpn/scripts/config.sh'] = <<-EOF
 #!/bin/sh
-HOST='CHANGE_ME'
+HOST='#{host}'
 PORT='3306'
 USER='vpn'
 PASS='CHANGE_ME'
@@ -40,12 +49,12 @@ DB='#{db}'
       cf['/etc/openvpn/scripts/connect.sh'] = <<-EOF
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,username,message) values('C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,username,message,created) values('C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
       EOF
       cf['/etc/openvpn/scripts/disconnect.sh'] = <<-EOF
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,username,message) values('D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,username,message,created) values('D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
       EOF
 
       cf['/etc/openvpn/openvpn.conf']=<<-EOF

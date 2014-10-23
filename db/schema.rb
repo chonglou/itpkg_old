@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023154234) do
+ActiveRecord::Schema.define(version: 20141023174003) do
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -42,15 +42,17 @@ ActiveRecord::Schema.define(version: 20141023154234) do
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
   create_table "vpn_logs", force: true do |t|
-    t.string   "username",   limit: 32, null: false
-    t.string   "message",               null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "flag",     limit: 1,  default: "O", null: false
+    t.string   "username", limit: 32,               null: false
+    t.string   "message",                           null: false
+    t.datetime "created",                           null: false
   end
+
+  add_index "vpn_logs", ["username"], name: "index_vpn_logs_on_username", using: :btree
 
   create_table "vpn_users", force: true do |t|
     t.string   "name",       limit: 32,                 null: false
-    t.string   "password",                              null: false
+    t.string   "passwd",                                null: false
     t.string   "email",                                 null: false
     t.boolean  "enable",                default: false, null: false
     t.date     "start_date",                            null: false
