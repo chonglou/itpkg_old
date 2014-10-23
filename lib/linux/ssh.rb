@@ -1,12 +1,27 @@
+require 'fileutils'
 require 'net/ssh'
 
 module Linux
-  module Ssh
-    module_function
+  class Ssh
+    def initialize
+      @key = "#{Rails.root}/tmp/storage/keys/ssh"
+    end
 
-    def execute(host, user, key, commands)
+    def exist?
+      File.exist? @key
+    end
 
-      Net::SSH.start(host, user, {keys: [key], logger: Rails.logger}) do |ssh|
+    def init
+      d = "#{Rails.root}/tmp/storage/keys"
+      unless Dir.exist?(d)
+        FileUtils.mkpath d
+      end
+      `echo -e  'y\n'|ssh-keygen -q -t rsa -N "" -f #{@key}`
+    end
+
+    def execute(user, host, commands, port=22)
+
+      Net::SSH.start(host, user, {keys: [@key], port: port, logger: Rails.logger}) do |ssh|
         channel = ssh.open_channel do |ch|
           commands.each do |cmd|
             ch.exec cmd do |session, success|
