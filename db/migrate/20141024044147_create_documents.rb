@@ -9,5 +9,6 @@ class CreateDocuments < ActiveRecord::Migration
       t.integer :status, null:false, default:0, limit:2
       t.timestamps
     end
+    add_index :documents, :title
   end
 end

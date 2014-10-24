@@ -11,7 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024042330) do
+ActiveRecord::Schema.define(version: 20141024045714) do
+
+  create_table "documents", force: true do |t|
+    t.integer  "project_id",                        null: false
+    t.integer  "creator_id",                        null: false
+    t.string   "title",                             null: false
+    t.string   "name",       limit: 36,             null: false
+    t.string   "ext",        limit: 5,              null: false
+    t.integer  "status",     limit: 2,  default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "documents", ["title"], name: "index_documents_on_title", using: :btree
 
   create_table "email_aliases", force: true do |t|
     t.integer  "domain_id",               null: false
@@ -63,6 +76,30 @@ ActiveRecord::Schema.define(version: 20141024042330) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "mail_box_documents", force: true do |t|
+    t.integer  "document_id", null: false
+    t.integer  "mail_box_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "mail_boxes", force: true do |t|
+    t.string   "from",       limit: 64,               null: false
+    t.string   "to",         limit: 64,               null: false
+    t.string   "bcc",        limit: 1024
+    t.string   "cc",         limit: 1024
+    t.string   "subject"
+    t.text     "content"
+    t.integer  "owner_id",                            null: false
+    t.integer  "flag",       limit: 2,    default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "mail_boxes", ["from"], name: "index_mail_boxes_on_from", using: :btree
+  add_index "mail_boxes", ["subject"], name: "index_mail_boxes_on_subject", using: :btree
+  add_index "mail_boxes", ["to"], name: "index_mail_boxes_on_to", using: :btree
 
   create_table "monitor_node_users", force: true do |t|
     t.integer  "monitor_node_id", null: false
@@ -278,8 +315,10 @@ ActiveRecord::Schema.define(version: 20141024042330) do
     t.string   "title",                            null: false
     t.text     "body",                             null: false
     t.integer  "status",     limit: 2, default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "author_id",                        null: false
+    t.datetime "created",                          null: false
   end
+
+  add_index "wikis", ["title"], name: "index_wikis_on_title", using: :btree
 
 end

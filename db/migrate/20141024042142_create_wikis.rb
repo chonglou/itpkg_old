@@ -9,5 +9,6 @@ class CreateWikis < ActiveRecord::Migration
       t.integer :author_id, null:false
       t.datetime :created, null:false
     end
+    add_index :wikis, :title
   end
 end
