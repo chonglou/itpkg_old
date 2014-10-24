@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024164444) do
+ActiveRecord::Schema.define(version: 20141024165333) do
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false
@@ -233,6 +233,16 @@ ActiveRecord::Schema.define(version: 20141024164444) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "rss_sites", force: true do |t|
+    t.string   "title",      null: false
+    t.string   "url",        null: false
+    t.string   "logo"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "rss_sites", ["url"], name: "index_rss_sites_on_url", unique: true, using: :btree
 
   create_table "s_tags", force: true do |t|
     t.integer  "project_id", null: false
