@@ -2,7 +2,7 @@ IT-PACKAGE
 =====
 
 ## Env
- * mysql, redis, pwgen, openssl, ssh, net-snmp, openfire
+  mysql, redis, pwgen, openssl, ssh, net-snmp, openfire
 
 ## Usage
 
@@ -11,25 +11,25 @@ IT-PACKAGE
 
 ### Start
 
- * WebSite
+#### WebSite
 
     puma -C config/web.cfg
 
- * WebSocket
+#### WebSocket
 
     puma -C config/wss.cfg wss.ru
 
- * Background Worker
+#### Background Worker
 
     bundle exec sidekiq -d # start new worker
     ps -ef | grep sidekiq | grep -v grep | awk '{print $2}' | xargs kill -USR1 # stop all workers
 
- * Front Node
+#### Front Node
 
     cd tools; make
     ./logging -h example.com -p 9292 /var/log/syslog /var/log/snmpd.log # logging
 
 ### Restart
 
- * kill -SIGUSR2 `cat tmp/pids/wss.pid`
- * kill -SIGUSR2 `cat tmp/pids/web.pid`
+    kill -SIGUSR2 `cat tmp/pids/wss.pid`
+    kill -SIGUSR2 `cat tmp/pids/web.pid`

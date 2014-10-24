@@ -1,8 +1,9 @@
 BIN	= bin
 OBJS	= $(addprefix $(BIN)/, logging monitor)
+LDFLAGS = -ldflags "-s"
 
 $(BIN)/%: %.go
-	go build -ldflags "-s" -o $@ $<
+	go build $(LDFLAGS) -o $@ $<
 
 
 all: check $(OBJS)

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"code.google.com/p/go.net/websocket"
 	"encoding/csv"
 	"flag"
+	"fmt"
+	"github.com/ActiveState/tail"
 	"io"
 	"log"
 	"os"
@@ -16,10 +19,15 @@ type Status struct {
 }
 
 func main() {
-	host := flag.String("host", "data.itpkg.com", "server address")
-	port := flag.Int("port", 10001, "server port")
+	host := flag.String("host", "data.itpkg.com", "WebSocket address")
+	port := flag.Int("port", 9292, "WebSocket port")
+	uid := flag.String("uid", nil, "UID")
 	flag.Parse()
 	files := flag.Args()
+
+	if uid == nil {
+		log.Fatalln("Need a uid")
+	}
 
 	f, err := os.OpenFile(file("itpkg.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 	if err != nil {
@@ -42,7 +50,32 @@ func main() {
 	}
 	write_cfg(cfg)
 
+	send_line(*host, *port, "aaa")
+
 	log.Println("Shutdown!")
+}
+
+func send_line(host string, port int, line string) error {
+	ws, err := websocket.Dial(fmt.Sprintf("ws://%s:%d/ws", host, port), "", fmt.Sprintf("http://%s/", host))
+	if err != nil {
+		log.Println("error in get: %v", err)
+		return err
+	}
+	defer ws.Close()
+
+	if _, err = ws.Write([]byte(line)); err != nil {
+		log.Println("error in write: %v", err)
+		return err
+	}
+
+	msg := make([]byte, 1024)
+	var n int
+	if n, err = ws.Read(msg); err != nil {
+		log.Println("error in read: %v", err)
+		return err
+	}
+	log.Printf("Received: %s. \n", msg[:n])
+	return nil
 }
 
 func read_cfg() map[string]Status {
@@ -76,6 +109,7 @@ func read_cfg() map[string]Status {
 	return cfg
 
 }
+
 func write_cfg(cfg map[string]Status) {
 	f, err := os.OpenFile(file("itpkg.cfg"), os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {

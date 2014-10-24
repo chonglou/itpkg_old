@@ -1,3 +1,4 @@
+require 'json'
 require 'faye/websocket'
 
 app = lambda do |env|
@@ -16,7 +17,7 @@ app = lambda do |env|
     ws.rack_response
 
   else
-    [200, {'Content-Type' => 'text/plain'}, ['Hello']]
+    [200, {'Content-Type' => 'text/json'}, [{ok:true, created:Time.now.to_s}.to_json]]
   end
 end
 

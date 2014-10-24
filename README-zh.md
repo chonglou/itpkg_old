@@ -1,6 +1,11 @@
 IT包
 =====
 
+### 编译环境
+    go get code.google.com/p/go.net/websocket
+    go install code.google.com/p/go.net/websocket
+    go install github.com/ActiveState/tail
+
 ### 配置信息
  * ITPKG_DATABASE_PASSWORD mysql密码
  * ITPKG_SECRET_KEY_BASE 128位
@@ -26,32 +31,32 @@ IT包
 
 ### 笔记
 
- * 创建项目
+#### 创建项目
 
     rails new itpkg --database=mysql
 
- * 创建Model
+#### 创建Model
 
     rails generate model name
 
- * 创建controller
+#### 创建controller
 
    rails generate controller name act1 act2  --no-assets --no-helper
 
- * 启动
+#### 启动
 
     rails server
 
- * 控制台
+#### 控制台
 
     rails console
 
- * 数据库操作
+#### 数据库操作
 
     rails dbconsole
 
 
- * 清空mysql root密码
+#### 清空mysql root密码
     UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
     FLUSH PRIVILEGES; 
 
