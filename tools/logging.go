@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"io"
 	"log"
 	"os"
@@ -15,6 +16,11 @@ type Status struct {
 }
 
 func main() {
+	host := flag.String("host", "data.itpkg.com", "server address")
+	port := flag.Int("port", 10001, "server port")
+	flag.Parse()
+	files := flag.Args()
+
 	f, err := os.OpenFile(file("itpkg.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
@@ -24,7 +30,16 @@ func main() {
 
 	log.Println("Startup!")
 	cfg := read_cfg()
-	cfg["aaa"] = Status{111, time.Now()}
+
+	log.Printf("connect to %v:%v", *host, *port)
+	log.Printf("moniting files: %v", files)
+
+	for _, file := range files {
+		_, ok := cfg[file]
+		if !ok {
+			cfg[file] = Status{-1, time.Now()}
+		}
+	}
 	write_cfg(cfg)
 
 	log.Println("Shutdown!")
