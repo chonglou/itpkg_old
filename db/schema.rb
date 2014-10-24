@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024050942) do
+ActiveRecord::Schema.define(version: 20141024164444) do
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(version: 20141024050942) do
   create_table "logging_nodes", force: true do |t|
     t.integer  "creator",                           null: false
     t.string   "name",       limit: 32,             null: false
+    t.string   "uid",        limit: 36,             null: false
     t.string   "title"
     t.text     "config",                            null: false
     t.integer  "status",     limit: 2,  default: 0, null: false
@@ -99,12 +100,36 @@ ActiveRecord::Schema.define(version: 20141024050942) do
     t.datetime "updated_at"
   end
 
+  add_index "logging_nodes", ["name"], name: "index_logging_nodes_on_name", using: :btree
+  add_index "logging_nodes", ["uid"], name: "index_logging_nodes_on_uid", unique: true, using: :btree
+
   create_table "logs", force: true do |t|
     t.integer  "user_id",    null: false
     t.string   "message",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "machine_node_users", force: true do |t|
+    t.integer  "machine_node_id", null: false
+    t.integer  "user_id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "machine_nodes", force: true do |t|
+    t.integer  "creator",                           null: false
+    t.string   "name",       limit: 32,             null: false
+    t.string   "uid",        limit: 36,             null: false
+    t.string   "title"
+    t.text     "config",                            null: false
+    t.integer  "status",     limit: 2,  default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "machine_nodes", ["name"], name: "index_machine_nodes_on_name", using: :btree
+  add_index "machine_nodes", ["uid"], name: "index_machine_nodes_on_uid", unique: true, using: :btree
 
   create_table "mail_box_documents", force: true do |t|
     t.integer  "document_id", null: false
@@ -140,6 +165,7 @@ ActiveRecord::Schema.define(version: 20141024050942) do
   create_table "monitor_nodes", force: true do |t|
     t.integer  "creator",                           null: false
     t.string   "name",       limit: 32,             null: false
+    t.string   "uid",        limit: 36,             null: false
     t.string   "title"
     t.text     "config",                            null: false
     t.integer  "status",     limit: 2,  default: 0, null: false
@@ -147,6 +173,9 @@ ActiveRecord::Schema.define(version: 20141024050942) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "monitor_nodes", ["name"], name: "index_monitor_nodes_on_name", using: :btree
+  add_index "monitor_nodes", ["uid"], name: "index_monitor_nodes_on_uid", unique: true, using: :btree
 
   create_table "permissions", force: true do |t|
     t.string   "resource",                          null: false
