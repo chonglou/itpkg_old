@@ -12,11 +12,12 @@ module Linux
     end
 
     def init
+      return if exist?
       d = "#{Rails.root}/tmp/storage/keys"
       unless Dir.exist?(d)
         FileUtils.mkpath d
       end
-      `echo -e  'y\n'|ssh-keygen -q -t rsa -N "" -f #{@key}`
+      `ssh-keygen -q -t rsa -N "" -f #{@key}`
     end
 
     def execute(user, host, commands, port=22)

@@ -9,7 +9,7 @@ module Linux
       result.first[0]
     end
 
-    def grant(host)
+    def grant!(host)
       db=Rails.configuration.database_configuration[Rails.env]['database']
 
       password = SecureRandom.hex 8

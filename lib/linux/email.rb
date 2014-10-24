@@ -4,7 +4,7 @@ module Linux
   module Email
     module_function
 
-    def grant(host)
+    def grant!(host)
 
       db=Rails.configuration.database_configuration[Rails.env]['database']
 
