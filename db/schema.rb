@@ -47,11 +47,11 @@ ActiveRecord::Schema.define(version: 20141023212923) do
   end
 
   create_table "permissions", force: true do |t|
-    t.string   "resource",   null: false
-    t.string   "role",       null: false
-    t.string   "operation",  null: false
-    t.date     "startup",    null: false
-    t.date     "shutdown",   null: false
+    t.string   "resource",                          null: false
+    t.string   "role",                              null: false
+    t.string   "operation",                         null: false
+    t.date     "start_date", default: '9999-12-31', null: false
+    t.date     "end_date",   default: '1000-01-01', null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -89,10 +89,11 @@ ActiveRecord::Schema.define(version: 20141023212923) do
 
   create_table "repository_logs", force: true do |t|
     t.integer  "repository_id", null: false
-    t.integer  "user_id",       null: false
-    t.text     "message",       null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "branch",        null: false
+    t.string   "name",          null: false
+    t.string   "email",         null: false
+    t.string   "message",       null: false
+    t.datetime "created",       null: false
   end
 
   create_table "repository_users", force: true do |t|

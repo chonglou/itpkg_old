@@ -5,8 +5,8 @@ class CreatePermissions < ActiveRecord::Migration
       t.string :role, null: false
       t.string :operation, null: false
 
-      t.date :startup, null: false
-      t.date :shutdown, null: false
+      t.date :start_date, null: false, default: '9999-12-31'
+      t.date :end_date, null: false, default: '1000-01-01'
 
       t.timestamps
     end

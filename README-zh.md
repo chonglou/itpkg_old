@@ -41,6 +41,10 @@ IT包
 
     rails console
 
+ * 数据库操作
+
+    rails dbconsole
+
 
  * 清空mysql root密码
     UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
