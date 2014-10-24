@@ -1,6 +1,9 @@
 IT-PACKAGE
 =====
 
+### Env
+ * mysql, redis, pwgen, openssl, ssh, net-snmp
+
 ### Usage
 
 #### Setup
