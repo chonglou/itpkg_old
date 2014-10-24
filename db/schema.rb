@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024041319) do
+ActiveRecord::Schema.define(version: 20141024042330) do
 
   create_table "email_aliases", force: true do |t|
     t.integer  "domain_id",               null: false
@@ -264,5 +264,22 @@ ActiveRecord::Schema.define(version: 20141024041319) do
   end
 
   add_index "vpn_users", ["name"], name: "index_vpn_users_on_name", unique: true, using: :btree
+
+  create_table "wiki_users", force: true do |t|
+    t.integer  "wiki_id",    null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "wikis", force: true do |t|
+    t.integer  "project_id",                       null: false
+    t.integer  "creator_id",                       null: false
+    t.string   "title",                            null: false
+    t.text     "body",                             null: false
+    t.integer  "status",     limit: 2, default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end
