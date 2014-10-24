@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024050540) do
+ActiveRecord::Schema.define(version: 20141024050942) do
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false
@@ -62,6 +62,24 @@ ActiveRecord::Schema.define(version: 20141024050540) do
   end
 
   add_index "email_users", ["email"], name: "index_email_users_on_email", unique: true, using: :btree
+
+  create_table "finance_scores", force: true do |t|
+    t.integer  "project_id",                                      null: false
+    t.integer  "user_id",                                         null: false
+    t.decimal  "val",        precision: 10, scale: 0, default: 0, null: false
+    t.integer  "tag_id",                                          null: false
+    t.string   "title",                                           null: false
+    t.decimal  "balance",    precision: 10, scale: 0, default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "finance_tags", force: true do |t|
+    t.integer  "project_id",            null: false
+    t.string   "name",       limit: 32, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "logging_node_users", force: true do |t|
     t.integer  "logging_node_id", null: false

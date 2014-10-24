@@ -4,5 +4,5 @@ class Wiki < ActiveRecord::Base
   belongs_to :author, class_name: 'User'
   has_many :users
 
-  enum status: {project:0, personal:1, publish:2}
+  enum status: {project: 0, personal: 1, publish: 2}
 end
