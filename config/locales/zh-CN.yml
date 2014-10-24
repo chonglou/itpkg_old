@@ -1,12 +1,15 @@
 zh-CN:
+  titles:
+    home: 'IT解决方案包'
   labels:
-    title: 'IT解决方案包'
     click_to_search: '点击此处搜索'
     add_to_favorites: '收藏本页'
-    register_or_signin: '注册/登录'
+    register_or_login: '注册/登录'
+    copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014'
+  buttons:
+    login: '登录'
   links:
     home: '本站首页'
-    personal: '个人中心'
     projects: '项目列表'
     repositories: '代码仓库'
     docker: 'Docker'
@@ -15,5 +18,11 @@ zh-CN:
     wiki: '知识库'
     help: '帮助文档'
     about_us: '关于我们'
-    signout: '安全退出'
-    signin: '账户登录'
+    personal:
+      self: '个人中心'
+      logout: '安全退出'
+      login: '账户登录'
+      register: '账户注册'
+      reset_password: '重置密码'
+      active: '激活账户'
+      unlock: '解锁账户'

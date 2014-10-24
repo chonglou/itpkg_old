@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  get 'about_me' =>'home#about_me'
+  %w(help about_us).each {|l| get l => "home##{l}"}
   post 'search' => 'home#search'
 
   devise_for :users

@@ -20,14 +20,17 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  titles:
+    home: "IT-PACKAGE"
   labels:
-    title: "IT-PACKAGE"
     click_to_search: 'Click to search'
     add_to_favorites: 'Add to favorites'
-    register_or_signin: 'Register/Sign in'
+    register_or_login: 'Register/Sign in'
+    copyright: 'USING <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE</a> &copy;2014'
+  buttons:
+    login: 'Sign In'
   links:
     home: 'Home'
-    personal: 'Personal'
     projects: 'Projects'
     repositories: 'Repositories'
     docker: 'Docker'
@@ -36,5 +39,11 @@ en:
     wiki: 'Wiki'
     help: 'Help'
     about_us: 'About Us'
-    signout: 'Sign Out'
-    signin: 'Sign In'
+    personal:
+      self: 'Personal'
+      logout: 'Sign Out'
+      login: 'Sign In'
+      register: 'Register'
+      reset_password: 'Reset Password'
+      active: 'Active'
+      unlock: 'Unlock'

@@ -16,7 +16,31 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+html,
+body {
+    overflow-x: hidden;
+}
+
+body {
+    padding-top: 70px;
+}
+
+footer {
+    text-align: center;
+}
+
 .container {
     width: 98%;
 }
+
+.navbar-icon {
+    height: 18px;
+    width: 18px;
+}
+
+.warp {
+    word-break: break-all;
+}
+
+
 
