@@ -8,6 +8,7 @@ import (
 	"github.com/ActiveState/tail"
 	"log"
 	"os"
+	"os/signal"
 	"time"
 )
 
@@ -51,9 +52,8 @@ func main() {
 		go watch(channel, *uid, fn)
 	}
 
-	loop(channel, *host, *port)
-
-	log.Println("Shutdown!")
+	go loop(channel, *host, *port)
+	catch()
 }
 
 func watch(channel chan string, uid string, filename string) {
@@ -95,4 +95,12 @@ func file(name string) string {
 	dir := "tmp"
 	os.MkdirAll(dir, 0700)
 	return dir + "/" + name
+}
+
+func catch() {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	s := <-c
+	log.Printf("Got singal: %v, shutdown!", s)
+
 }
