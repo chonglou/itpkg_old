@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023212923) do
+ActiveRecord::Schema.define(version: 20141024041319) do
 
   create_table "email_aliases", force: true do |t|
     t.integer  "domain_id",               null: false
@@ -39,9 +39,45 @@ ActiveRecord::Schema.define(version: 20141023212923) do
 
   add_index "email_users", ["email"], name: "index_email_users_on_email", unique: true, using: :btree
 
+  create_table "logging_node_users", force: true do |t|
+    t.integer  "logging_node_id", null: false
+    t.integer  "user_id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "logging_nodes", force: true do |t|
+    t.integer  "creator",                           null: false
+    t.string   "name",       limit: 32,             null: false
+    t.string   "title"
+    t.text     "config",                            null: false
+    t.integer  "status",     limit: 2,  default: 0, null: false
+    t.integer  "flag",       limit: 2,  default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "logs", force: true do |t|
     t.integer  "user_id",    null: false
     t.string   "message",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "monitor_node_users", force: true do |t|
+    t.integer  "monitor_node_id", null: false
+    t.integer  "user_id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "monitor_nodes", force: true do |t|
+    t.integer  "creator",                           null: false
+    t.string   "name",       limit: 32,             null: false
+    t.string   "title"
+    t.text     "config",                            null: false
+    t.integer  "status",     limit: 2,  default: 0, null: false
+    t.integer  "flag",       limit: 2,  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
