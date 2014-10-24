@@ -2,7 +2,7 @@ IT-PACKAGE
 =====
 
 ## Env
- * mysql, redis, pwgen, openssl, ssh, net-snmp
+ * mysql, redis, pwgen, openssl, ssh, net-snmp, openfire
 
 ## Usage
 

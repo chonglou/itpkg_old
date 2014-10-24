@@ -235,9 +235,10 @@ ActiveRecord::Schema.define(version: 20141024165333) do
   end
 
   create_table "rss_sites", force: true do |t|
-    t.string   "title",      null: false
-    t.string   "url",        null: false
+    t.string   "title",                     null: false
+    t.string   "url",                       null: false
     t.string   "logo"
+    t.integer  "space",      default: 1440, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
