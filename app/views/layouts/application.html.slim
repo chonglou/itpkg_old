@@ -8,7 +8,7 @@ html
     meta name="description" content="TODO"
     meta name="author" content="jitang.zheng@gmail.com"
     link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#{image_path 'logo/32x32.ico'}"
-    title #{t('title')}
+    title #{t 'labels.title' }
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     /[if lt IE 9]
@@ -16,6 +16,8 @@ html
       script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"
     = csrf_meta_tags
   body
+    = render 'layouts/nav_bar'
+
     = render 'layouts/message', message:notice, style:'info'
     = render 'layouts/message', message:alert, style:'danger'
 

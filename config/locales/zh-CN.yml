@@ -1,6 +1,12 @@
 zh-CN:
-  title: "IT解决方案包"
+  labels:
+    title: 'IT解决方案包'
+    click_to_search: '点击此处搜索'
+    add_to_favorites: '收藏本页'
+    register_or_signin: '注册/登录'
   links:
+    home: '本站首页'
+    personal: '个人中心'
     projects: '项目列表'
     repositories: '代码仓库'
     docker: 'Docker'
@@ -9,3 +15,5 @@ zh-CN:
     wiki: '知识库'
     help: '帮助文档'
     about_us: '关于我们'
+    signout: '安全退出'
+    signin: '账户登录'
