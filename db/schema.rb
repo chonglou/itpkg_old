@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024165333) do
+ActiveRecord::Schema.define(version: 20141024235120) do
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false
@@ -177,6 +177,13 @@ ActiveRecord::Schema.define(version: 20141024165333) do
   add_index "monitor_nodes", ["name"], name: "index_monitor_nodes_on_name", using: :btree
   add_index "monitor_nodes", ["uid"], name: "index_monitor_nodes_on_uid", unique: true, using: :btree
 
+  create_table "notices", force: true do |t|
+    t.integer  "user_id",    null: false
+    t.text     "body",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "permissions", force: true do |t|
     t.string   "resource",                          null: false
     t.string   "role",                              null: false
@@ -320,6 +327,16 @@ ActiveRecord::Schema.define(version: 20141024165333) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "translations", force: true do |t|
+    t.integer  "zh-CN"
+    t.integer  "en"
+    t.string   "flag",       limit: 8, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "translations", ["flag"], name: "index_translations_on_flag", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
