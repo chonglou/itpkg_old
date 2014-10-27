@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-
-  %w(help about_us).each {|l| get l => "home##{l}"}
+  get 'document/*name'=>'home#document', as: :document_show
   get 'home'=>'home#index'
   post 'search' => 'home#search'
 

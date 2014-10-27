@@ -1,9 +1,12 @@
 require 'securerandom'
 require 'base64'
 require 'digest'
+require 'redcarpet'
 
 module Itpkg
   module StringHelper
+    MARKDOWN = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(link_attributes:{target:'_blank'}), tables: true)
+
     module_function
 
     def rand_s(n)

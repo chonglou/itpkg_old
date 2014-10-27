@@ -1,6 +1,7 @@
 zh-CN:
   titles:
     home: 'IT解决方案包'
+    about_us: '关于我们'
     personal:
       login: '登录'
       register: '注册新账户'
@@ -17,6 +18,7 @@ zh-CN:
     add_to_favorites: '收藏本页'
     register_or_login: '注册/登录'
     copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014'
+    about_us: 'CHANGE ME'
   buttons:
     personal:
       login: '登录'

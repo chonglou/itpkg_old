@@ -4,15 +4,15 @@ module ApplicationHelper
     if current_user
       links['111'] = t('links.personal.self')
     end
-    links[help_path]=t('links.help')
-    links[about_us_path]=t('links.about_us')
+    links[document_show_path(name: 'help')]=t('links.help')
+    links[document_show_path(name: 'about_us')]=t('links.about_us')
     links
 
   end
 
   def personal_bar
     if current_user
-      label = t('labels.welcome', username:current_user.email)
+      label = t('labels.welcome', username: current_user.email)
       links={
           edit_user_registration_path => t('links.personal.info'),
           destroy_user_session_path => t('links.personal.logout')

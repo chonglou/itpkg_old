@@ -22,6 +22,7 @@
 en:
   titles:
     home: "IT-PACKAGE"
+    about_us: 'About Us'
     personal:
       login: 'Sign In'
       register: 'Register'
@@ -39,6 +40,7 @@ en:
     add_to_favorites: 'Add to favorites'
     register_or_login: 'Register/Sign In'
     copyright: 'USING <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE</a> &copy;2014'
+    about_us: 'CHANGE ME'
   buttons:
     personal:
       login: 'Sign In'
@@ -71,3 +73,4 @@ en:
       active: 'Active'
       unlock: 'Unlock'
       change_password: 'Change Password'
+
