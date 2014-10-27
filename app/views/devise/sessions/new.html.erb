@@ -1,8 +1,10 @@
+<% @title=t('buttons.personal.login') %>
+
 <%= bootstrap_form(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
     <%= f.error_messages %>
 
     <%= f.fieldset do %>
-        <%= f.legend(t('links.personal.login')) %>
+        <%= f.legend(t('buttons.personal.login')) %>
 
         <%= f.group do %>
             <%= f.label :email %>
@@ -20,7 +22,7 @@
             <% end %>
         <% end -%>
     <% end %>
-    <%= f.submit t('buttons.login') %>
+    <%= f.submit t('buttons.personal.login') %> <%= render 'devise/shared/links' %>
 <% end %>
 
-<%= render 'devise/shared/links' %>
+

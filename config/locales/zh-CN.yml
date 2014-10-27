@@ -1,13 +1,34 @@
 zh-CN:
   titles:
     home: 'IT解决方案包'
+    personal:
+      login: '登录'
+      register: '注册新账户'
+      forgot_password: '忘记密码?'
+      active: "没有收到确认邮件?"
+      unlock: "没有收到解锁邮件?"
+      edit_profile: '编辑个人信息'
   labels:
+    unhappy: '不开心？ '
+    are_you_sure: '你确定？'
+    kill_self: '自杀ID'
+    welcome: "欢迎你, %{username}。"
     click_to_search: '点击此处搜索'
     add_to_favorites: '收藏本页'
     register_or_login: '注册/登录'
     copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014'
   buttons:
-    login: '登录'
+    personal:
+      login: '登录'
+      register: '注册'
+      active: '重新发送激活邮件'
+      unlock: '重新发送解锁邮件'
+      forgot_password: '发送重新设置密码邮件'
+      change_password: '修改你的密码'
+    reset: '重写'
+    submit: '提交'
+    update: '更新'
+    back: '返回'
   links:
     home: '本站首页'
     projects: '项目列表'
@@ -19,6 +40,7 @@ zh-CN:
     help: '帮助文档'
     about_us: '关于我们'
     personal:
+      info: '个人信息'
       self: '个人中心'
       logout: '安全退出'
       login: '账户登录'
@@ -26,3 +48,18 @@ zh-CN:
       reset_password: '重置密码'
       active: '激活账户'
       unlock: '解锁账户'
+      change_password: '修改密码'
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: '邮箱不能为空'
+            password_confirmation:
+              confirmation: '两次密码输入不一致'
+            password:
+              blank: '密码不能为空'
+              too_short: '密码太短'
+            confirmation_token:
+              invalid: '数据格式有误'

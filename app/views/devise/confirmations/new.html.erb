@@ -1,15 +1,20 @@
-<h2>Resend confirmation instructions</h2>
+<% @title=t('buttons.personal.active') %>
 
 <%= bootstrap_form(resource, as: resource_name, url: confirmation_path(resource_name), html: {method: :post}) do |f| %>
     <%= devise_error_messages! %>
+    <%= f.error_messages %>
 
-    <div>
-      <%= f.label :email %>
-      <br/>
-      <%= f.email_field :email, autofocus: true %>
-    </div>
+    <%= f.fieldset do %>
+        <%= f.legend(t('buttons.personal.active')) %>
 
-    <div><%= f.submit "Resend confirmation instructions" %></div>
+        <%= f.group do %>
+            <%= f.label :email %>
+            <%= f.email_field :email, autofocus: true %>
+        <% end %>
+    <% end %>
+
+
+    <%= f.submit t('buttons.personal.active') %><%= render 'devise/shared/links' %>
 <% end %>
 
-<%= render "devise/shared/links" %>
+

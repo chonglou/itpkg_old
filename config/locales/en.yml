@@ -22,13 +22,35 @@
 en:
   titles:
     home: "IT-PACKAGE"
+    personal:
+      login: 'Sign In'
+      register: 'Register'
+      forgot_password: 'Forgot your password?'
+      active: "Didn't receive confirmation instructions?"
+      unlock: "Didn't receive unlock instructions?"
+      edit_profile: 'Edit profile'
+
   labels:
+    unhappy: 'Unhappy? '
+    are_you_sure: 'Are you sure?'
+    kill_self: 'Cancel my account'
+    welcome: "Welcome, %{username}."
     click_to_search: 'Click to search'
     add_to_favorites: 'Add to favorites'
-    register_or_login: 'Register/Sign in'
+    register_or_login: 'Register/Sign In'
     copyright: 'USING <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE</a> &copy;2014'
   buttons:
-    login: 'Sign In'
+    personal:
+      login: 'Sign In'
+      register: 'Register'
+      active: 'Resend confirmation instructions'
+      unlock: 'Resend unlock instructions'
+      forgot_password: 'Send me reset password instructions'
+      change_password: 'Change your password'
+    reset: 'Reset'
+    submit: 'Submit'
+    update: 'Update'
+    back: 'Back'
   links:
     home: 'Home'
     projects: 'Projects'
@@ -40,6 +62,7 @@ en:
     help: 'Help'
     about_us: 'About Us'
     personal:
+      info: 'Profile'
       self: 'Personal'
       logout: 'Sign Out'
       login: 'Sign In'
@@ -47,3 +70,4 @@ en:
       reset_password: 'Reset Password'
       active: 'Active'
       unlock: 'Unlock'
+      change_password: 'Change Password'

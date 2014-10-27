@@ -8,7 +8,7 @@ html
     meta name="description" content="TODO"
     meta name="author" content="jitang.zheng@gmail.com"
     link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#{image_path 'logo/32x32.ico'}"
-    title #{t 'titles.home' }
+    title #{t 'titles.home' }-#{@title}
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     /[if lt IE 9]
@@ -21,3 +21,4 @@ html
     div class="container-fluid"
       = yield :root
       = render 'layouts/footer'
+    = javascript_include_tag 'init'

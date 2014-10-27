@@ -1,4 +1,5 @@
-div class='row'
-  = render 'layouts/message', message:notice, style:'info'
-  = render 'layouts/message', message:alert, style:'danger'
+- content_for :root
+  div class='row'
+    = render 'layouts/message', message:notice, style:'info'
+    = render 'layouts/message', message:alert, style:'danger'
 
