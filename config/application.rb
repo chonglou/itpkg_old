@@ -22,11 +22,11 @@ module Itpkg
 
     #defise layout
     config.to_prepare do
-      Devise::SessionsController.layout 'personal'
-      Devise::RegistrationsController.layout 'personal'
-      Devise::ConfirmationsController.layout 'personal'
-      Devise::UnlocksController.layout 'personal'
-      Devise::PasswordsController.layout 'personal'
+      Devise::SessionsController.layout 'non_login'
+      Devise::RegistrationsController.layout 'non_login'
+      Devise::ConfirmationsController.layout 'non_login'
+      Devise::UnlocksController.layout 'non_login'
+      Devise::PasswordsController.layout 'non_login'
     end
   end
 end

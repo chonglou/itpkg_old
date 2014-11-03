@@ -2,6 +2,11 @@ require 'itpkg/utils/string_helper'
 
 class HomeController < ApplicationController
   def index
+    u = current_user
+    if u
+    else
+
+    end
   end
 
   def document

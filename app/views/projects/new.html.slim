@@ -1,0 +1,22 @@
+- @title=t('links.project.create')
+- content_for :root
+  div class='row'
+    div class='col-md-offset-3 col-md-6'
+      = bootstrap_form(@project, url:{action:'create'}) do |f|
+        = f.fieldset do
+          = f.legend(t('links.project.create'))
+
+          = f.group do
+            = f.label :name
+            = f.text_field :name, autofocus: true
+
+          = f.group do
+            = f.label :details
+            = f.text_area :details, rows:12
+
+
+        = f.submit t('buttons.submit')
+        = link_to t('buttons.back'), :back,class: 'btn btn-info'
+
+
+

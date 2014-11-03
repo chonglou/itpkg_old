@@ -31,9 +31,14 @@ zh-CN:
     submit: '提交'
     update: '更新'
     back: '返回'
+    create: '新建'
+    edit: '编辑'
+    remove: '删除'
   links:
     home: '本站首页'
     projects: '项目列表'
+    project:
+      create: '新建项目'
     repositories: '代码仓库'
     docker: 'Docker'
     logging: '日志系统'
@@ -41,9 +46,11 @@ zh-CN:
     wiki: '知识库'
     help: '帮助文档'
     about_us: '关于我们'
+    finance: '财务管理'
+    contact: '通讯录'
     personal:
       info: '个人信息'
-      self: '个人中心'
+      self: '控制中心'
       logout: '安全退出'
       login: '账户登录'
       register: '账户注册'

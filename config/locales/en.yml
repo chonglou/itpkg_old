@@ -53,9 +53,14 @@ en:
     submit: 'Submit'
     update: 'Update'
     back: 'Back'
+    create: 'Create'
+    edit: 'Edit'
+    remove: 'Remove'
   links:
     home: 'Home'
     projects: 'Projects'
+    project:
+      create: 'Create Project'
     repositories: 'Repositories'
     docker: 'Docker'
     logging: 'Logging'
@@ -63,9 +68,11 @@ en:
     wiki: 'Wiki'
     help: 'Help'
     about_us: 'About Us'
+    finance: 'Finance'
+    contact: 'Contact'
     personal:
       info: 'Profile'
-      self: 'Personal'
+      self: 'Control Center'
       logout: 'Sign Out'
       login: 'Sign In'
       register: 'Register'

@@ -1,0 +1,8 @@
+div class='row'
+  - icons.each do |i|
+    div class='col-md-2'
+      a href='#{i.fetch :url}'
+        div class="thumbnail"
+          img src='#{image_path i.fetch(:logo)}'
+          div class="caption"
+            h3 #{i.fetch :label}
