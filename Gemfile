@@ -42,6 +42,7 @@ gem 'capistrano-rbenv' , group: :development
 
 gem 'rack-cache', group: :production
 gem 'dalli', group: :production
+gem 'puma', group: :production
 gem 'slim'
 gem 'devise'
 gem 'devise-i18n'
@@ -58,5 +59,4 @@ gem 'rugged'
 gem 'net-ssh'
 #gem 'net-snmp'
 gem 'faye-websocket'
-gem 'puma'
 gem 'redcarpet'
