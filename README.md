@@ -50,7 +50,7 @@ IT-PACKAGE
     cap production deploy
 
 ### Setup nginx(NEED SUDO)
-    cap production puma:nginx_config 
+    cap production nginx:setup
     cp YOUR_CERT_FILE /etc/nginx/ssl/itpkg-cert.pem
     chmod 444 itpkg-cert.pem
     cp YOUR_KEY_FILE /etc/nginx/ssl/itpkg-key.pem
