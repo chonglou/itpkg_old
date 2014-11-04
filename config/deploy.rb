@@ -39,9 +39,6 @@ set :rbenv_type, :user
 set :rbenv_ruby, '2.1.4'
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all
-#puma settings
-set :puma_state, "#{fetch :shared_path}/tmp/pids/puma.state"
-set :puma_bind, "unix://#{fetch :shared_path}/tmp/sockets/puma.sock"
 
 namespace :deploy do
 
