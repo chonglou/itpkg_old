@@ -28,8 +28,8 @@ IT-PACKAGE
     type rbenv
 
 ### Install ruby
-    rbenv install 2.1.4
-    rbenv global 2.1.4
+    rbenv install 2.1.3
+    rbenv global 2.1.3
     gem install bundler
     rbenv rehash
 
@@ -39,6 +39,7 @@ IT-PACKAGE
 
 ### Deolpying (RUN ON LOCAL)
     vi config/deploy/production.rb # setup user and server
+    cap production deploy:check # check config file
     cap production deploy
 
 ## Usage

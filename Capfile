@@ -17,9 +17,9 @@ require 'capistrano/deploy'
 # require 'capistrano/rvm'
 require 'capistrano/rbenv'
 # require 'capistrano/chruby'
-# require 'capistrano/bundler'
-# require 'capistrano/rails/assets'
-# require 'capistrano/rails/migrations'
+require 'capistrano/bundler'
+require 'capistrano/rails/assets'
+require 'capistrano/rails/migrations'
 
 require 'capistrano/puma'
 #require 'capistrano/puma/workers'
@@ -27,11 +27,7 @@ require 'capistrano/puma'
 require 'capistrano/puma/monit'
 require 'capistrano/puma/nginx'
 
-#rbenv settings
-set :rbenv_type, :user
-set :rbenv_ruby, '2.1.4'
-set :rbenv_map_bins, %w{rake gem bundle ruby rails}
-set :rbenv_roles, :all
+
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
