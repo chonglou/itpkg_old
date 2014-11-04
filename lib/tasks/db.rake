@@ -3,7 +3,7 @@ require 'fileutils'
 namespace :db do
   desc 'Backup database'
   task backup: :environment do
-    tmp = "#{Rails.root}/tmp/backups"
+    tmp = "#{Rails.root}/tmp/storage/backups"
     unless Dir.exist?(tmp)
       FileUtils.mkpath tmp
     end

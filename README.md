@@ -9,6 +9,9 @@ IT-PACKAGE
     useradd -s /bin/bash -m deploy
     passwd deploy
 
+### Setup sudo (OPTIONAL), run "visudo" and add line:
+    deploy ALL=(ALL) NOPASSWD: ALL
+
 ### Setup ssh login by key file.
     cat /tmp/id_rsa.pub >> .ssh/authorized_keys # /tmp/id_rsa.pub is your public key file
 
@@ -45,6 +48,14 @@ IT-PACKAGE
     vi config/deploy/production.rb # setup user and server
     cap production deploy:check # check config file
     cap production deploy
+
+### Setup nginx(NEED SUDO)
+    cap production puma:nginx_config 
+    cp YOUR_CERT_FILE /etc/nginx/ssl/itpkg-cert.pem
+    chmod 444 itpkg-cert.pem
+    cp YOUR_KEY_FILE /etc/nginx/ssl/itpkg-key.pem
+    chmod 400 itpkg-key.pem
+    cap production nginx:reload
 
 ## Usage
 

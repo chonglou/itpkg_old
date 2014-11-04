@@ -13,7 +13,15 @@ end
 }
 
 server {
-  listen 80;
+  listen 443;
+
+  ssl  on;
+  ssl_certificate  ssl/itpkg-cert.pem;
+  ssl_certificate_key  ssl/itpkg-key.pem;
+  ssl_session_timeout  5m;
+  ssl_protocols  SSLv2 SSLv3 TLSv1;
+  ssl_ciphers  RC4:HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers  on;
 
   client_max_body_size 4G;
   keepalive_timeout 10;

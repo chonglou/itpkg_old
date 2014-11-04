@@ -26,7 +26,7 @@ set :deploy_to, '/var/www/itpkg'
 set :linked_files, %w{.rbenv-vars}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets tmp/backups}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets tmp/storage}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -39,6 +39,9 @@ set :rbenv_type, :user
 set :rbenv_ruby, '2.1.4'
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all
+
+#puma setting
+set :nginx_config_name, 'itpkg.conf'
 
 namespace :deploy do
 
