@@ -2,7 +2,44 @@ IT-PACKAGE
 =====
 
 ## Env
-  mysql, redis, pwgen, openssl, ssh, net-snmp, openfire
+  mysql, redis, pwgen, openssl, ssh, net-snmp, openfire, git
+
+## Deploy
+### Add deploy user
+    useradd -s /bin/bash -m deploy
+    passwd deploy
+
+### Setup ssh login by key file.
+    cat /tmp/id_rsa.pub >> .ssh/authorized_keys # /tmp/id_rsa.pub is your public key file
+
+### Test ssh login
+    ssh deploy@YOUR_HOME # RUN ON LOCAL
+
+### Install rbenv
+    git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+    git clone https://github.com/sstephenson/rbenv-vars.git ~/.rbenv/plugins/ruby-vars
+
+### Add to ~/.bashrc
+    export PATH="$HOME/.rbenv/bin:$PATH"
+    eval "$(rbenv init -)"
+
+### Test rbenv (need relogin first)
+    type rbenv
+
+### Install ruby
+    rbenv install 2.1.4
+    rbenv global 2.1.4
+    gem install bundler
+    rbenv rehash
+
+### Shell Vars
+    rake itpkg:env # RUN ON LOCAL
+    # COPY OUTPUT LINES TO /var/www/shared/.rbenv-vars
+
+### Deolpying (RUN ON LOCAL)
+    vi config/deploy/production.rb # setup user and server
+    cap production deploy
 
 ## Usage
 
