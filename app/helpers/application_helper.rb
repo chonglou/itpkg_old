@@ -31,8 +31,5 @@ module ApplicationHelper
     {label: label, links: links}
   end
 
-  def holder_path(text)
-    "holder.js/200x200/auto/#{%w(sky vine).sample}"
-  end
 
 end

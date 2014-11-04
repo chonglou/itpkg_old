@@ -21,9 +21,23 @@ footer {
     width: 18px;
 }
 
-.warp {
+.wrap {
     word-break: break-all;
+    /*
+    word-wrap: break-word;
+    word-break: normal;
+    */
 }
+
+.wrap-fixed
+{
+    width:200px;
+    white-space:nowrap;
+    word-break:keep-all;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
 
 /*
  * Placeholder dashboard ideas
@@ -43,4 +57,3 @@ footer {
     display: inline-block;
     border-radius: 50%;
 }
-

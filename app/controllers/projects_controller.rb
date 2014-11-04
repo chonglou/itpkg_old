@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @projects = Project.select(:id, :name, :details).where(creator_id:current_user.id)
+    @projects = Project.select(:id, :name, :details).where(creator_id:current_user.id).map{|p| {url:project_path(p.id), name:p.name, details:p.details}}
   end
 
   def new

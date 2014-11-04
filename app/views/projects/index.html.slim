@@ -4,9 +4,4 @@
     = link_to t('buttons.create'), new_project_path, class:'btn btn-primary'
     = link_to t('buttons.back'), :back,class: 'btn btn-info'
   p &nbsp;
-  div class='row placeholders'
-    - @projects.each do |p|
-      div class='col-md-2 placeholder'
-        img class="img-responsive" data-src="#{holder_path 'aaa'}"
-        h4 #{p.name}
-        span class="text-muted" #{p.details}
+  = render 'layouts/place_holder', items:@projects

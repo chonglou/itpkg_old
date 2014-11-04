@@ -1,0 +1,7 @@
+div class='row placeholders'
+  - items.each do |i|
+    div class='col-xs-6 col-sm-3 placeholder'
+      a href='#{i.fetch :url}'
+        img class="img-responsive" data-src="holder.js/200x200/auto/random/text:#{i.fetch(:name).truncate(12)}"
+      h4 class="wrap" #{i.fetch :name}
+      span class="text-muted wrap" #{i.fetch :details}
