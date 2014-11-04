@@ -1,7 +1,7 @@
 <% @title=t('buttons.personal.active') %>
 
 <%= bootstrap_form(resource, as: resource_name, url: confirmation_path(resource_name), html: {method: :post}) do |f| %>
-    <%= devise_error_messages! %>
+    <%-# devise_error_messages! -%>
     <%= f.error_messages %>
 
     <%= f.fieldset do %>

@@ -19,6 +19,8 @@ html
     div class="navbar navbar-inverse navbar-fixed-top" role="navigation"
       = render 'layouts/nav_bar'
     div class="container-fluid"
+      = render 'layouts/message', message:notice, style:'info'
+      = render 'layouts/message', message:alert, style:'danger'
       = yield :root
       = render 'layouts/footer'
     = javascript_include_tag 'init'

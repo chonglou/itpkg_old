@@ -58,7 +58,7 @@ module FormsHelper
       @template.form_group(options, &block)
     end
 
-    # Shows the error messages for :base if any
+    # Shows the error messages
     def error_messages
       @template.error_messages_for(object)
     end
@@ -180,11 +180,18 @@ module FormsHelper
     content_tag(:div, capture(&block), class: "checkbox")
   end
 
-  # Show the error messages on :base for a record
+  # Show the error messages
   def error_messages_for(object)
-    if object.errors[:base].any?
-      message = object.errors[:base].first
-      %{<div class="text-danger">#{message}</div>}.html_safe
+    unless object.errors.empty?
+      content = <<HTML
+<div class='panel panel-danger'>
+  <div class='panel-heading'>#{t 'labels.fail'}</div>
+  <ul class='list-group'>
+    #{object.errors.map { |k, v| "<li class='list-group-item'>#{k.capitalize} #{v}</li>" }.join('')}
+  </ul>
+</div>
+HTML
+      content.html_safe
     end
   end
 

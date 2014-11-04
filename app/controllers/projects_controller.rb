@@ -41,6 +41,14 @@ class ProjectsController < ApplicationController
   end
 
   def create
+    @project = Project.new(project_params)
+    @project.creator_id = current_user.id
+    if @project.save
+      flash[:notice] = t('labels.success')
+      redirect_to projects_path
+    else
+      render :action=>'new'
+    end
 
   end
 
@@ -58,5 +66,10 @@ class ProjectsController < ApplicationController
 
   def destroy
 
+  end
+
+  private
+  def project_params
+    params.require(:project).permit(:name, :details)
   end
 end

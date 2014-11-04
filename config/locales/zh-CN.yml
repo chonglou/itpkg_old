@@ -18,7 +18,8 @@ zh-CN:
     add_to_favorites: '收藏本页'
     register_or_login: '注册/登录'
     copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014'
-    about_us: 'CHANGE ME'
+    success: '操作成功'
+    fail: '出错啦'
   buttons:
     personal:
       login: '登录'
@@ -58,17 +59,4 @@ zh-CN:
       active: '激活账户'
       unlock: '解锁账户'
       change_password: '修改密码'
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: '邮箱不能为空'
-            password_confirmation:
-              confirmation: '两次密码输入不一致'
-            password:
-              blank: '密码不能为空'
-              too_short: '密码太短'
-            confirmation_token:
-              invalid: '数据格式有误'
+
