@@ -28,8 +28,8 @@ IT-PACKAGE
     type rbenv
 
 ### Install ruby
-    rbenv install 2.1.3
-    rbenv global 2.1.3
+    rbenv install 2.1.4
+    rbenv global 2.1.4
     gem install bundler
     rbenv rehash
 

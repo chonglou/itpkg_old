@@ -32,7 +32,7 @@ namespace :itpkg do
 
     puts <<-EOF
 ################# BEGIN #################
-RAILS_ENV="production"
+RAILS_ENV=production
 ITPKG_DATABASE_PASSWORD="#{ask('Mysql Root Password? ') { |q| q.default='' }}"
 ITPKG_DOMAIN="#{ask('Domain? ') { |q| q.default='localhost' }}"
 ITPKG_MEMCACHED_HOSTS="#{ask('Memcached Hosts(split by \',\')? ') { |q| q.default='localhost' }}"
