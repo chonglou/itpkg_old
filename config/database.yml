@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: itpkg_production
+  database: itpkg
   username: itpkg
   password: <%= ENV['ITPKG_DATABASE_PASSWORD'] %>

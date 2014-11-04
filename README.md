@@ -33,6 +33,10 @@ IT-PACKAGE
     gem install bundler
     rbenv rehash
 
+### MySQL
+    CREATE DATABASE itpkg CHARACTER SET utf8;
+    GRANT ALL PRIVILEGES ON itpkg.* TO 'itpkg'@'localhost' IDENTIFIED BY 'YOUR PASSWORD';
+
 ### Shell Vars
     rake itpkg:env # RUN ON LOCAL
     # COPY OUTPUT LINES TO /var/www/shared/.rbenv-vars
