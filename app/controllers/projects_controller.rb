@@ -2,38 +2,7 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @icons = [
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/coins24.png',
-            label: t('links.finance')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/multiple25.png',
-            label: t('links.contact')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        }
-    ]
+    @projects = Project.select(:id, :name, :details).where(creator_id:current_user.id)
   end
 
   def new
