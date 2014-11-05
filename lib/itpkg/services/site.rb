@@ -1,5 +1,5 @@
 require_relative '../constants'
-require '../helpers/encryptor'
+require_relative '../utils/encryptor'
 
 module Itpkg
 
@@ -56,12 +56,10 @@ module Itpkg
     end
 
     def version
-      app_v = '未知'
       v = "#{Rails.root}/REVISION"
       if  File.exist?(v)
-        app_v = File.open(v, 'r') { |f| f.read.strip }
+        File.open(v, 'r') { |f| f.read.strip }
       end
-      app_v
     end
   end
 end

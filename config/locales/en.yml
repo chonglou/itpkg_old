@@ -32,6 +32,7 @@ en:
       edit_profile: 'Edit profile'
 
   labels:
+    unknown: 'UNKNOWN'
     user_logo: 'Logo'
     unhappy: 'Unhappy? '
     must_admin: 'You are not administrator!'
@@ -41,7 +42,7 @@ en:
     click_to_search: 'Click to search'
     add_to_favorites: 'Add to favorites'
     register_or_login: 'Register/Sign In'
-    copyright: 'USING <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE</a> &copy;2014'
+    copyright: 'USING <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE</a> &copy;2014 VERSION: %{version}'
     success: 'Success.'
     fail: 'Fail.'
   buttons:
@@ -60,6 +61,7 @@ en:
     edit: 'Edit'
     remove: 'Remove'
   tables:
+    manage: 'Manage'
     vpn_user:
       name: 'Username'
       email: 'Email'

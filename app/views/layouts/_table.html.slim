@@ -5,9 +5,24 @@ div class="row"
       thead
         tr
           - headers.each do |k|
-            th class="col-xs-auto" #{t "tables.vpn_user.#{k}"}
+            - if k == :id
+              th class="width:%2" ID
+            - else
+              th class="col-xs-auto" #{t("tables.vpn_user.#{k}")}
       tbody
         - items.each do |it|
-          tr
-            - 1.upto(headers.size) do |i|
-              td #{it[i-1]}
+          tr class='table-hit' href="#{it[:url] || '#'}"
+            - 0.upto(headers.size-1) do |i|
+              td #{it.fetch(:cols)[i]}
+
+javascript:
+  $(function(){
+    $(".table-hit").click(function(){
+      //alert($(this).children('td:first').text());
+      var url = $(this).attr('href');
+      if(url && url != '#'){
+        window.location.href = url;
+      }
+
+    });
+  });

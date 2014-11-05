@@ -15,6 +15,8 @@
 //= require turbolinks
 //= require holder
 //= require bootstrap-sprockets
+//= require bootstrap-datepicker/core
+//= require bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.js
 //= require angular
 //= require angular-animate
 //= require angular-resource

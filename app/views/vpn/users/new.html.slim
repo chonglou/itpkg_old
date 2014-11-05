@@ -9,15 +9,44 @@
 
           = f.group do
             = f.label :email
-            = f.email_field :name, autofocus: true
+            = f.email_field :email
 
           = f.group do
-            = f.label :details
-            = f.text_area :details, rows:12
+            = f.label :name
+            = f.text_field :name, autofocus: true
+
+          = f.group do
+            = f.label :password
+            = f.password_field :password, autocomplete: 'off'
+
+
+          = f.group do
+            = f.label :password_confirmation
+            = f.password_field :password_confirmation, autocomplete: 'off'
+
+          = f.group do
+            = f.label :start_date
+            div class="input-group date"
+              = f.text_field :start_date
+              span class="input-group-addon"
+                i class="glyphicon glyphicon-th"
+
+          = f.group do
+            = f.label :end_date
+            div class="input-group date"
+              = f.text_field :end_date
+              span class="input-group-addon"
+                i class="glyphicon glyphicon-th"
 
 
         = f.submit t('buttons.submit')
         = link_to t('buttons.back'), :back,class: 'btn btn-info'
 
-
+  javascript:
+    $(function(){
+      $('#new_vpn_user .input-group.date').datepicker({
+        format: "yyyy-mm-dd",
+        language: "#{I18n.locale}"
+      });
+    });
 

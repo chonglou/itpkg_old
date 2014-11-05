@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'itpkg/services/site'
 
 module ApplicationHelper
   def nav_links
@@ -38,4 +39,5 @@ module ApplicationHelper
   def email2logo(email, size=nil)
     "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest email.downcase}#{"?s=#{size}" if size}"
   end
+
 end

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   namespace :vpn do
     get 'logs' => 'logs#index'
-    resources :users
+    resources :users, expect:[:show]
   end
 
   resources :projects

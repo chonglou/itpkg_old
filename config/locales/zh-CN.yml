@@ -10,6 +10,7 @@ zh-CN:
       unlock: "没有收到解锁邮件?"
       edit_profile: '编辑个人信息'
   labels:
+    unknown: '未知'
     user_logo: '头像'
     unhappy: '不开心？ '
     must_admin: '你不是管理员!'
@@ -19,7 +20,7 @@ zh-CN:
     click_to_search: '点击此处搜索'
     add_to_favorites: '收藏本页'
     register_or_login: '注册/登录'
-    copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014'
+    copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014  版本号: %{version}'
     success: '操作成功'
     fail: '出错啦'
   buttons:
@@ -38,6 +39,7 @@ zh-CN:
     edit: '编辑'
     remove: '删除'
   tables:
+    manage: '管理'
     vpn_user:
       name: '名称'
       email: '邮箱'
