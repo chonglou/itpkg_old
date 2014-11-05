@@ -1,0 +1,2 @@
+class MonitorNodesController < ApplicationController
+end

@@ -1,11 +1,18 @@
 Rails.application.routes.draw do
 
+
+
+  #--------------- My Add -----------------
+  resources :monitor_nodes
+  resources :logging_nodes
   namespace :email do
     resources :domains
     resources :users
+    resources :aliases
   end
 
   namespace :vpn do
+    get 'logs' => 'logs#index'
     resources :users
   end
 

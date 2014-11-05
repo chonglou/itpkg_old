@@ -1,0 +1,2 @@
+class LoggingNodesController < ApplicationController
+end

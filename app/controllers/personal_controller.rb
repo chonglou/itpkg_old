@@ -9,12 +9,12 @@ class PersonalController < ApplicationController
             label: t('links.projects')
         },
         {
-            url: '#',
+            url: monitor_nodes_path,
             logo: 'flat/256/heart255.png',
             label: t('links.monitor')
         },
         {
-            url: '#',
+            url: logging_nodes_path,
             logo: 'flat/256/chopped.png',
             label: t('links.logging')
         }
