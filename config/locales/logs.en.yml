@@ -1,2 +1,5 @@
 en:
   log:
+    vpn_user:
+      created: 'Create account'
+      remove: 'Remove account'

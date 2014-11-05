@@ -21,6 +21,7 @@ class Vpn::UsersController < ApplicationController
     if @user.valid?
       @user.passwd = Linux::OpenVpn.password @user.passwd
       @user.save
+      Vpn::Log.create email:@user.email, message:t('log.vpn_user.created'), created:Time.now
       redirect_to vpn_users_path
     else
       @user.passwd = ''
@@ -54,7 +55,8 @@ class Vpn::UsersController < ApplicationController
   def destroy
     user = Vpn::User.find params[:id]
     if user
-      Vpn::Log.destroy_all email: user.email
+      #Vpn::Log.destroy_all email: user.email
+      Vpn::Log.create email:user.email, message:t('log.vpn_user.remove'), created:Time.now
       user.destroy
     end
     redirect_to vpn_users_path
