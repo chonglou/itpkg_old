@@ -12,12 +12,7 @@
 
     = f.group do
       = f.label :passwd
-      = f.password_field :passwd, autocomplete: 'off'
-
-
-    = f.group do
-      = f.label :passwd_confirmation
-      = f.password_field :passwd_confirmation, autocomplete: 'off'
+      = f.text_field :passwd, autocomplete: 'off', default:''
 
     = f.group do
       = f.label :start_date

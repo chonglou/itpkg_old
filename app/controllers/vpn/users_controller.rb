@@ -1,3 +1,5 @@
+require 'itpkg/linux/openvpn'
+
 class Vpn::UsersController < ApplicationController
   before_action :must_admin!
 
@@ -6,7 +8,7 @@ class Vpn::UsersController < ApplicationController
         {label: t('links.vpn_user.create'), url: new_vpn_user_path, style: 'primary'},
         {label: t('links.vpn_log.list'), url: vpn_logs_path, style: 'warning'}
     ]
-    @users = Vpn::User.select(:id, :email, :enable, :start_date, :end_date).map { |u| {cols:[u.email, u.enable, u.start_date, u.end_date], url:edit_vpn_user_path(u.id)} }
+    @users = Vpn::User.select(:id, :email, :enable, :start_date, :end_date).map { |u| {cols: [u.email, u.enable, u.start_date, u.end_date], url: edit_vpn_user_path(u.id)} }
   end
 
   def new
@@ -14,36 +16,34 @@ class Vpn::UsersController < ApplicationController
   end
 
   def create
-    @user = Vpn::User.new params.require(:vpn_user).permit( :email, :passwd,:passwd_confirmation, :start_date, :end_date)
+    @user = Vpn::User.new params.require(:vpn_user).permit(:email, :passwd, :start_date, :end_date)
     @user.enable = true
-    if @user.save
+    if @user.valid?
+      @user.passwd = Linux::OpenVpn.password @user.passwd
+      @user.save
       redirect_to vpn_users_path
     else
+      @user.passwd = ''
       render 'new'
     end
 
   end
 
   def edit
-    @user1 = Vpn::User.find params[:id]
-    @user2 = Vpn::User.find params[:id]
+    @user = Vpn::User.find params[:id]
   end
 
   def update
-    @user1 = Vpn::User.find params[:id]
-    @user2 = Vpn::User.find params[:id]
-
-
-    case params['mode']
-      when 'password'
-        result = @user1.update params.require(:vpn_user).permit(:passwd, :passwd_confirmation)
-      when 'enable'
-        result = @user2.update params.require(:vpn_user).permit(:enable)
-      else
-        return
+    if params['vpn_user']['password'] == ''
+      rv = params.require(:vpn_user).permit(:enable, :start_date, :end_date)
+    else
+      rv = params.require(:vpn_user).permit(:passwd, :enable, :start_date, :end_date)
+      rv['passwd'] = Linux::OpenVpn.password rv['passwd']
     end
 
-    if result
+    @user = Vpn::User.find params[:id]
+
+    if @user.update(rv)
       redirect_to vpn_users_path
     else
       render 'edit'
@@ -52,7 +52,12 @@ class Vpn::UsersController < ApplicationController
   end
 
   def destroy
-
+    user = Vpn::User.find params[:id]
+    if user
+      Vpn::Log.destroy_all email: user.email
+      user.destroy
+    end
+    redirect_to vpn_users_path
   end
 
 

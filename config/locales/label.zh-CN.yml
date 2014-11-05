@@ -11,9 +11,7 @@ zh-CN:
         details: '详细信息'
       vpn_user:
         email: '邮箱'
-        name: '登录名'
-        passwd: '登录密码'
-        passwd_confirmation: '再次输入'
+        passwd: '密码'
         start_date: '生效日期'
         end_date: '失效时期'
         status: '状态'

@@ -1,28 +1,22 @@
-- @title=t('links.vpn_user.edit', email:@user1.email)
+- @title=t('links.vpn_user.edit', email:@user.email)
 
-
-= bootstrap_form(@user1, url:{action:'update'}) do |f|
+= bootstrap_form(@user, url:{action:'update'}) do |f|
   = f.error_messages
   = f.fieldset do
-    = f.legend(t('links.vpn_user.set_password', email:@user1.email))
-    = hidden_field_tag :mode, 'password'
+    = f.legend(@title)
+
     = f.group do
       = f.label :passwd
-      = f.password_field :passwd, autocomplete: 'off'
+      = f.password_field :passwd, autocomplete: 'off', placeholder:t('placeholders.do_not_change_password')
 
     = f.group do
-      = f.label :passwd_confirmation
-      = f.password_field :passwd_confirmation, autocomplete: 'off'
+      = f.label :start_date
+      = f.date_picker :start_date
 
-    = f.button_group do
-      = f.submit t('buttons.submit')
-      = f.reset t('buttons.reset')
+    = f.group do
+      = f.label :end_date
+      = f.date_picker :end_date
 
-= bootstrap_form(@user2, url:{action:'update'}) do |f|
-  = f.error_messages
-  = f.fieldset do
-    = f.legend(t('links.vpn_user.change_status', email:@user2.email))
-    = hidden_field_tag :mode, 'enable'
     = f.group do
       = f.label :status
       = f.radio_option
@@ -35,3 +29,9 @@
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
+      = f.reset t('buttons.back')
+
+h3 #{t('links.vpn_user.remove', email:@user.email)}
+hr
+= button_to t('buttons.remove'), vpn_user_path(@user), data: {confirm: t('labels.are_you_sure')}, method: :delete, class: 'btn btn-danger'
+

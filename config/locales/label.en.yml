@@ -3,3 +3,5 @@ en:
     label:
       vpn_user:
         status: 'Status'
+        enable_true: 'Enable'
+        enable_false: 'False'
