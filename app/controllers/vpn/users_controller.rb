@@ -23,7 +23,7 @@ class Vpn::UsersController < ApplicationController
       @user.passwd = pwd
       @user.passwd_confirmation = pwd
       @user.save
-      
+
       flash[:notice] = t('labels.success')
       redirect_to vpn_users_path
     else
@@ -33,7 +33,7 @@ class Vpn::UsersController < ApplicationController
   end
 
   def edit
-
+    @user = Vpn::User.find params[:id]
   end
 
   def update
