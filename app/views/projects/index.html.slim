@@ -1,7 +1,7 @@
 - @title=t('links.projects')
 - content_for :root
-  div class='btn-group'
-    = link_to t('buttons.create'), new_project_path, class:'btn btn-primary'
-    = link_to t('buttons.back'), :back,class: 'btn btn-info'
-  p &nbsp;
-  = render 'layouts/place_holder', items:@projects
+  div class='row'
+    div class='btn-group pull-right'
+      = link_to t('buttons.create'), new_project_path, class:'btn btn-primary'
+      = link_to t('buttons.back'), :back,class: 'btn btn-info'
+  = render 'layouts/item_list', items:@projects

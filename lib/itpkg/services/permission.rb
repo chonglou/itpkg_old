@@ -3,15 +3,15 @@ module Itpkg
     module_function
 
     def root?(user_id)
-      auth? role:"user://#{user_id}", operation:'ROOT', resource:'SYSTEM'
+      auth? "user://#{user_id}", 'ROOT', 'SYSTEM'
     end
 
     def admin?(user_id)
-      auth? role:"user://#{user_id}", operation:'ADMIN', resource:'SYSTEM'
+      auth? "user://#{user_id}", 'ADMIN', 'SYSTEM'
     end
 
     def admin!(user_id, end_date)
-      auth! role:"user://#{user_id}", operation:'ADMIN', resource:'SYSTEM', start_date:Date.today.strftime, end_date:end_date
+      auth! "user://#{user_id}", 'ADMIN', 'SYSTEM', Date.today.strftime, end_date
     end
 
     def auth?(role, operation, resource)

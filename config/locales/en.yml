@@ -67,6 +67,8 @@ en:
     docker: 'Docker'
     logging: 'Logging'
     monitor: 'Monitor'
+    email: 'Email System'
+    vpn: 'Vpn System'
     wiki: 'Wiki'
     help: 'Help'
     about_us: 'About Us'
