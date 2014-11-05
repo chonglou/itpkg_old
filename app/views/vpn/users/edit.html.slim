@@ -1,36 +1,37 @@
-- @title=t('links.vpn_user.create')
+- @title=t('links.vpn_user.edit', email:@user1.email)
 
-= bootstrap_form(@user, url:{action:'create'}) do |f|
+
+= bootstrap_form(@user1, url:{action:'update'}) do |f|
   = f.error_messages
   = f.fieldset do
-    = f.legend(t('links.vpn_user.create'))
-
-    = f.group do
-      = f.label :email
-      = f.email_field :email
-
-    = f.group do
-      = f.label :name
-      = f.name_field :name, autofocus: true
-
+    = f.legend(t('links.vpn_user.set_password', email:@user1.email))
+    = hidden_field_tag :mode, 'password'
     = f.group do
       = f.label :passwd
       = f.password_field :passwd, autocomplete: 'off'
-
 
     = f.group do
       = f.label :passwd_confirmation
       = f.password_field :passwd_confirmation, autocomplete: 'off'
 
-    = f.group do
-      = f.label :start_date
-      = f.date_picker :start_date
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
 
+= bootstrap_form(@user2, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(t('links.vpn_user.change_status', email:@user2.email))
+    = hidden_field_tag :mode, 'enable'
     = f.group do
-      = f.label :end_date
-      = f.date_picker :end_date
+      = f.label :status
+      = f.radio_option
+        = f.radio_button :enable, true
+        = f.label :enable_true, mode:'radio'
+      = f.radio_option
+        = f.radio_button :enable, false
+        = f.label :enable_false, mode:'radio'
 
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
-      = f.back t('buttons.back')

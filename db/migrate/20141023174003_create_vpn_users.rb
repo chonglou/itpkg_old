@@ -1,7 +1,6 @@
 class CreateVpnUsers < ActiveRecord::Migration
   def change
     create_table :vpn_users do |t|
-      t.string :name, null: false, limit: 32
       t.string :passwd, null: false
       t.string :email, null: false
       t.boolean :enable, null: false, default: false
@@ -9,6 +8,6 @@ class CreateVpnUsers < ActiveRecord::Migration
       t.date :end_date, null: false
       t.timestamps
     end
-    add_index :vpn_users, :name, unique: true
+    add_index :vpn_users, :email, unique: true
   end
 end

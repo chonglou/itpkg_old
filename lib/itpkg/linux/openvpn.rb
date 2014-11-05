@@ -35,8 +35,8 @@ FLUSH PRIVILEGES;
       #2 = Use MySQL PASSWORD() function
 
       cf['/etc/pam.d/openvpn'] = <<-EOF
-auth sufficient pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=name passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
-account required pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=name passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+auth sufficient pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+account required pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
       EOF
 
       cf['/etc/openvpn/scripts/config.sh'] = <<-EOF
@@ -51,12 +51,12 @@ DB='#{db}'
       cf['/etc/openvpn/scripts/connect.sh'] = <<-EOF
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,username,message,created) values('C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,email,message,created) values('C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
       EOF
       cf['/etc/openvpn/scripts/disconnect.sh'] = <<-EOF
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,username,message,created) values('D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,email,message,created) values('D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
       EOF
 
       cf['/etc/openvpn/openvpn.conf']=<<-EOF

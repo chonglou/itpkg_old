@@ -62,14 +62,31 @@ HTML
 
     def label(name, options={})
 
-      if options[:no_style]
-        options.delete :no_style
-        update_options_with_style! options, ' padding-left:10px;'
-      else
-        update_options_with_class!(options, 'col-sm-2 control-label')
-
+      case options[:mode]
+        when 'checkbox'
+          update_options_with_style! options, ' padding-left:20px;'
+        when 'radio'
+          update_options_with_class! options, 'radio-inline'
+          update_options_with_style! options, 'padding-left:20px;padding-top:0px;'
+        else
+          update_options_with_class!(options, 'col-sm-2 control-label')
       end
+      options.delete :mode
       super name, options
+    end
+
+    def radio_option(&block)
+      input_div(@template.content_tag(:div, @template.capture(&block), class: 'radio-inline'), 1)
+    end
+
+    def radio_group(&block)
+      input_div(@template.capture(&block))
+    end
+
+    def radio_button(name, value, options={})
+      update_options_with_style! options, 'margin-left:0px;'
+
+      super name, value, options
     end
 
 
@@ -80,7 +97,7 @@ HTML
     end
 
     def check_box(name, options={})
-      update_options_with_style! options, 'margin-left:-10px;'
+      update_options_with_style! options, 'margin-left:0;'
       super name, options
     end
 
@@ -98,7 +115,7 @@ HTML
     def text_area(name, options={})
       update_options_with_class! options, 'form-control'
       options[:rows] ||=12
-      input_div(super( name, options))
+      input_div(super(name, options))
     end
 
     def email_field(name, options={})
@@ -117,6 +134,7 @@ HTML
       options['data-date-format'] = 'yyyy-mm-dd'
       options['data-date-language'] = I18n.locale
       options['data-date-autoclose'] = true
+      options['data-date-today-btn'] = true
 
       c1 = super_text_field(name, options)
       c2 = "<span class='input-group-addon'><i class='glyphicon glyphicon-th'></i></span>"

@@ -1,4 +1,4 @@
 - @title=t('links.vpn_user.list')
 
 = render 'layouts/button_group', items:@buttons, back:true
-= render 'layouts/table', title:t('links.vpn_user.list'), items:@users, headers:[:name,:email,:enable,:start_date,:end_date]
+= render 'layouts/table', title:t('links.vpn_user.list'), items:@users, headers:[:email,:enable,:start_date,:end_date]

@@ -1,4 +1,5 @@
 en:
   helpers:
     label:
-      user:
+      vpn_user:
+        status: 'Status'

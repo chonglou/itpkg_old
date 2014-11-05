@@ -48,6 +48,7 @@ IT-PACKAGE
     vi config/deploy/production.rb # setup user and server
     cap production deploy:check # check config file
     cap production deploy
+    cap production db:seed # ONLY NEED RUN ON FIRST TIME
 
 ### Setup nginx(NEED SUDO)
     cap production nginx:setup

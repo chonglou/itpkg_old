@@ -6,3 +6,16 @@ zh-CN:
         password: '密码'
         password_confirmation: '密码确认'
         current_password: '当前密码'
+      project:
+        name: '名称'
+        details: '详细信息'
+      vpn_user:
+        email: '邮箱'
+        name: '登录名'
+        passwd: '登录密码'
+        passwd_confirmation: '再次输入'
+        start_date: '生效日期'
+        end_date: '失效时期'
+        status: '状态'
+        enable_true: '启用'
+        enable_false: '禁用'

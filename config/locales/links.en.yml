@@ -13,6 +13,9 @@ en:
     vpn_user:
       create: 'Create vpn account'
       list: 'Vpn accounts'
+      edit: 'Edit vpn account [%{email}]'
+      set_password: 'Set password [%{email}]'
+      change_status: 'Change status [%{email}]'
     vpn_log:
       list: 'Vpn logs'
     wiki: 'Wiki'
