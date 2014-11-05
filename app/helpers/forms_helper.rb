@@ -11,6 +11,7 @@ module FormsHelper
 
   class BootstrapFormBuilder < ActionView::Helpers::FormBuilder
     alias :super_text_field :text_field
+
     def error_messages
       unless object.errors.empty?
         content = <<HTML
@@ -40,31 +41,49 @@ HTML
     end
 
     def button_group(&block)
-      @template.content_tag(:div, @template.content_tag(:div, @template.capture(&block), class:'col-sm-offset-2 col-sm-10', style:'margin-top: 20px;'), class:'form-group')
+      @template.content_tag(:div, @template.content_tag(:div, @template.capture(&block), class: 'col-sm-offset-2 col-sm-10', style: 'margin-top: 20px;'), class: 'form-group')
     end
 
     def submit(name, options ={})
       update_options_with_class!(options, 'btn btn-primary')
-      options[:style] ||= 'margin-right: 20px;'
       super(name, options)
     end
 
     def reset(name, options={})
       options[:type] = :reset
-      update_options_with_class!(options,'btn btn-default' )
-      options[:style] ||= 'margin-right: 20px;'
+      update_options_with_class!(options, 'btn btn-default')
       @template.button_tag(name, options)
     end
 
     def back(name, options={})
-      update_options_with_class!(options,'btn btn-info' )
+      update_options_with_class!(options, 'btn btn-info')
       @template.link_to name, :back, options
     end
 
     def label(name, options={})
-      update_options_with_class!(options, 'col-sm-2 control-label')
+
+      if options[:no_style]
+        options.delete :no_style
+        update_options_with_style! options, ' padding-left:10px;'
+      else
+        update_options_with_class!(options, 'col-sm-2 control-label')
+
+      end
       super name, options
     end
+
+
+    def check_box_group(&block)
+      @template.content_tag(:div, class: 'col-sm-offset-2 col-sm-10') do
+        @template.content_tag(:div, @template.capture(&block), class: 'checkbox')
+      end
+    end
+
+    def check_box(name, options={})
+      update_options_with_style! options, 'margin-left:-10px;'
+      super name, options
+    end
+
 
     def text_field(name, options={})
       update_options_with_class! options, 'form-control'
@@ -94,20 +113,24 @@ HTML
 
       c1 = super_text_field(name, options)
       c2 = "<span class='input-group-addon'><i class='glyphicon glyphicon-th'></i></span>"
-      @template.content_tag(:div, @template.content_tag(:div, c1+c2.html_safe, class:'input-group date'), class:'col-sm-4')
+      @template.content_tag(:div, @template.content_tag(:div, c1+c2.html_safe, class: 'input-group date'), class: 'col-sm-4')
     end
-
-
-
 
 
     private
     def input_div(content, size)
-      @template.content_tag :div, content, class:"col-sm-#{size}"
+      @template.content_tag :div, content, class: "col-sm-#{size}"
     end
+
     def update_options_with_class!(options, klass)
       options[:class] ||= ''
       options[:class] << " #{klass}"
+      options
+    end
+
+    def update_options_with_style!(options, style)
+      options[:style] ||= ''
+      options[:style] << " #{style}"
       options
     end
 

@@ -1,7 +1,7 @@
 <% @title=t('buttons.personal.unlock') %>
 
 <%= bootstrap_form(resource, as: resource_name, url: unlock_path(resource_name), html: {method: :post}) do |f| %>
-    <%-# devise_error_messages! -%>
+    <%- # devise_error_messages!  -%>
     <%= f.error_messages %>
 
     <%= f.fieldset do %>
@@ -10,9 +10,12 @@
             <%= f.label :email %>
             <%= f.email_field :email, autofocus: true %>
         <% end %>
+        <%= f.button_group do %>
+            <%= f.submit t('buttons.personal.unlock') %> <%= render 'devise/shared/links' %>
+        <% end %>
     <% end %>
 
-    <%= f.submit t('buttons.personal.unlock') %> <%= render "devise/shared/links" %>
+
 <% end %>
 
 
