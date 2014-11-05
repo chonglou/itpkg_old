@@ -1,0 +1,4 @@
+en:
+  placeholders:
+    do_not_change_password: "leave blank if you don't want to change it"
+    need_password_to_change: 'we need your current password to confirm your changes'

@@ -1,4 +1,3 @@
 - @title=t('links.vpn_log.list')
-- content_for :root
-  = render 'layouts/button_group', items:[], back:true
-  = render 'layouts/list', title:t('links.vpn_log.list'), items:@items, style:nil
+= render 'layouts/button_group', items:[], back:true
+= render 'layouts/list', title:t('links.vpn_log.list'), items:@items, style:nil

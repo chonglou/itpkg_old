@@ -1,4 +1,4 @@
 - @title=t('links.projects')
-- content_for :root
-  = render 'layouts/button_group', items:[{label:t('buttons.create'),url:new_project_path,style:'primary'}], back:true
-  = render 'layouts/item_list', items:@projects
+
+= render 'layouts/button_group', items:[{label:t('buttons.create'),url:new_project_path,style:'primary'}], back:true
+= render 'layouts/item_list', items:@projects

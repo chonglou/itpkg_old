@@ -1,0 +1,8 @@
+zh-CN:
+  helpers:
+    label:
+      user:
+        email: '邮箱'
+        password: '密码'
+        password_confirmation: '密码确认'
+        current_password: '当前密码'

@@ -46,18 +46,18 @@ HTML
 
     def submit(name, options ={})
       update_options_with_class!(options, 'btn btn-primary')
-      super(name, options)
+      super(name, options) << ' '
     end
 
     def reset(name, options={})
       options[:type] = :reset
       update_options_with_class!(options, 'btn btn-default')
-      @template.button_tag(name, options)
+      @template.button_tag(name, options) << ' '
     end
 
     def back(name, options={})
       update_options_with_class!(options, 'btn btn-info')
-      @template.link_to name, :back, options
+      @template.link_to(name, :back, options) << ' '
     end
 
     def label(name, options={})
@@ -95,6 +95,12 @@ HTML
       input_div(super_text_field(name, options), 4)
     end
 
+    def text_area(name, options={})
+      update_options_with_class! options, 'form-control'
+      options[:rows] ||=12
+      input_div(super( name, options))
+    end
+
     def email_field(name, options={})
       update_options_with_class! options, 'form-control'
       input_div(super(name, options), 6)
@@ -110,6 +116,7 @@ HTML
       options['data-provide']='datepicker'
       options['data-date-format'] = 'yyyy-mm-dd'
       options['data-date-language'] = I18n.locale
+      options['data-date-autoclose'] = true
 
       c1 = super_text_field(name, options)
       c2 = "<span class='input-group-addon'><i class='glyphicon glyphicon-th'></i></span>"
@@ -118,7 +125,7 @@ HTML
 
 
     private
-    def input_div(content, size)
+    def input_div(content, size=10)
       @template.content_tag :div, content, class: "col-sm-#{size}"
     end
 

@@ -1,26 +1,14 @@
-doctype html
-html
-  head
-    meta charset="utf-8"
-    meta http-equiv="X-UA-Compatible" content="IE=edge"
-    meta name="viewport" content="width=device-width, initial-scale=1"
-    meta name="keywords" content="TODO"
-    meta name="description" content="TODO"
-    meta name="author" content="jitang.zheng@gmail.com"
-    link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#{image_path 'logo/32x32.ico'}"
-    title #{@title}#{'-' if @title}#{t 'titles.home' }
-    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
-    = javascript_include_tag 'application', 'data-turbolinks-track' => true
-    /[if lt IE 9]
-      script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"
-      script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"
-    = csrf_meta_tags
-  body
-    div class="navbar navbar-inverse navbar-fixed-top" role="navigation"
-      = render 'layouts/nav_bar'
-    div class="container-fluid"
+- content_for :root
+  div class='row'
+    - if user_signed_in?
+      div class="col-sm-9 col-md-10"
+        = render 'layouts/message', message:notice, style:'info'
+        = render 'layouts/message', message:alert, style:'danger'
+        = yield
+      div class="col-sm-3 col-sm-offset-3 col-md-2 col-md-offset-2"
+        = render 'layouts/sidebar'
+    - else
       = render 'layouts/message', message:notice, style:'info'
       = render 'layouts/message', message:alert, style:'danger'
-      = yield :root
-      = render 'layouts/footer'
-    = javascript_include_tag 'init'
+      = yield
+= render template:'layouts/base'

@@ -14,21 +14,23 @@
             <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
         <% end %>
         <%= f.group do %>
-            <%= f.label :password %> <i>(leave blank if you don't want to change it)</i>
-            <%= f.password_field :password, autocomplete: 'off' %>
+            <%= f.label :password %>
+            <%= f.password_field :password, autocomplete: 'off' , placeholder:t('placeholders.do_not_change_password')%>
         <% end %>
         <%= f.group do %>
             <%= f.label :password_confirmation %>
             <%= f.password_field :password_confirmation, autocomplete: 'off' %>
         <% end %>
         <%= f.group do %>
-            <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i>
-            <%= f.password_field :current_password, autocomplete: 'off' %>
+            <%= f.label :current_password %>
+            <%= f.password_field :current_password, autocomplete: 'off' , placeholder:t('placeholders.need_password_to_change')%>
         <% end %>
-        <%= f.group do %>
+        <%= f.button_group do %>
+            <%= f.submit t('buttons.update') %>
         <% end %>
     <% end %>
-    <%= f.submit t('buttons.update') %>
+
+
 <% end %>
 <p>&nbsp;</p>
 <fieldset>

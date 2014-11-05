@@ -1,5 +1,7 @@
 - content_for :root
   div class='row'
     div class='col-sm-offset-1 col-sm-9'
+      = render 'layouts/message', message:notice, style:'info'
+      = render 'layouts/message', message:alert, style:'danger'
       = yield
-= render template:'layouts/application'
+= render template:'layouts/base'
