@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 module ApplicationHelper
   def nav_links
     links = {home_path => t('links.home')}
@@ -11,8 +13,9 @@ module ApplicationHelper
   end
 
   def personal_bar
-    if current_user
-      label = t('labels.welcome', username: current_user.email)
+    user = current_user
+    if user
+      label = t('labels.welcome', username: user.email, logo:email2logo(user.email, 18))
       links={
           personal_path => t('links.personal.self'),
           edit_user_registration_path => t('links.personal.info'),
@@ -32,4 +35,7 @@ module ApplicationHelper
   end
 
 
+  def email2logo(email, size=nil)
+    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest email.downcase}#{"?s=#{size}" if size}"
+  end
 end

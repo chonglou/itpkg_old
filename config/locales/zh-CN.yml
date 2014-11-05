@@ -10,10 +10,11 @@ zh-CN:
       unlock: "没有收到解锁邮件?"
       edit_profile: '编辑个人信息'
   labels:
+    user_logo: '头像'
     unhappy: '不开心？ '
     are_you_sure: '你确定？'
     kill_self: '自杀ID'
-    welcome: "欢迎你, %{username}。"
+    welcome: "欢迎你, <img src='%{logo}' alt='%{username}' title='%{username}'/>"
     click_to_search: '点击此处搜索'
     add_to_favorites: '收藏本页'
     register_or_login: '注册/登录'

@@ -1,4 +1,4 @@
-div class="container"
+div class="container-fluid"
   div class="navbar-header"
     button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse"
       span class="sr-only"
@@ -21,9 +21,9 @@ div class="container"
       li id="qqAuthBar"
       li id="googleAuthBar"
       li
-        = link_to image_tag('fam/flags/gif/cn.gif', alt:'简体中文', class:'navbar-icon'), controller:controller.controller_name, action:controller.action_name, locale:'zh-CN'
+        = link_to image_tag('fam/flags/gif/cn.gif', alt:'简体中文', class:'nav_bar-icon'), controller:controller.controller_name, action:controller.action_name, locale:'zh-CN'
       li
-        = link_to image_tag('fam/flags/gif/us.gif', alt:'English', class:'navbar-icon'), controller:controller.controller_name, action:controller.action_name, locale:'en'
+        = link_to image_tag('fam/flags/gif/us.gif', alt:'English', class:'nav_bar-icon'), controller:controller.controller_name, action:controller.action_name, locale:'en'
 
 
 javascript:

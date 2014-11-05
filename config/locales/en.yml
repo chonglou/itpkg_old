@@ -32,10 +32,11 @@ en:
       edit_profile: 'Edit profile'
 
   labels:
+    user_logo: 'Logo'
     unhappy: 'Unhappy? '
     are_you_sure: 'Are you sure?'
     kill_self: 'Cancel my account'
-    welcome: "Welcome, %{username}."
+    welcome: "Welcome, <img src='%{logo}' alt='%{username}' title='%{username}'/>"
     click_to_search: 'Click to search'
     add_to_favorites: 'Add to favorites'
     register_or_login: 'Register/Sign In'

@@ -12,11 +12,8 @@ footer {
     text-align: center;
 }
 
-.container {
-    width: 98%;
-}
 
-.navbar-icon {
+.nav_bar-icon {
     height: 18px;
     width: 18px;
 }
