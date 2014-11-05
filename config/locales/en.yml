@@ -34,6 +34,7 @@ en:
   labels:
     user_logo: 'Logo'
     unhappy: 'Unhappy? '
+    must_admin: 'You are not administrator!'
     are_you_sure: 'Are you sure?'
     kill_self: 'Cancel my account'
     welcome: "Welcome, <img src='%{logo}' alt='%{username}' title='%{username}'/>"

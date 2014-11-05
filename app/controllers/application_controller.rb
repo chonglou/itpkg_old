@@ -17,11 +17,20 @@ class ApplicationController < ActionController::Base
 
 
   def admin?
-    Itpkg::PermissionService.admin? current_user.id
+    u = current_user
+    u && Itpkg::PermissionService.admin?(u.id)
   end
 
   def root?
-    Itpkg::PermissionService.root? current_user.id
+    u = current_user
+    u && Itpkg::PermissionService.root?( u.id)
+  end
+
+  def must_admin!
+    unless admin?
+      flash[:alert] = t('labels.must_admin')
+      redirect_to root_path
+    end
   end
 
 end

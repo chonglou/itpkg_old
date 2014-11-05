@@ -21,12 +21,12 @@ class PersonalController < ApplicationController
     ]
     if admin?
       @items << {
-          url: '#',
+          url: email_domains_path,
           logo: 'flat/256/black218.png',
           label: t('links.email')
       }
       @items << {
-          url: '#',
+          url: vpn_users_path,
           logo: 'flat/256/cloud229.png',
           label: t('links.vpn')
       }
