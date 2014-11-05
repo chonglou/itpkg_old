@@ -1,0 +1,9 @@
+en:
+  tables:
+    manage: 'Manage'
+    vpn_user:
+      name: 'Username'
+      email: 'Email'
+      enable: 'Status'
+      start_date: 'Start date'
+      end_date: 'End date'

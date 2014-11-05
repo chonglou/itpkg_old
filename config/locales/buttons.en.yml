@@ -1,0 +1,16 @@
+en:
+  buttons:
+    personal:
+      login: 'Sign In'
+      register: 'Register'
+      active: 'Resend confirmation instructions'
+      unlock: 'Resend unlock instructions'
+      forgot_password: 'Send me reset password instructions'
+      change_password: 'Change your password'
+    reset: 'Reset'
+    submit: 'Submit'
+    update: 'Update'
+    back: 'Back'
+    create: 'Create'
+    edit: 'Edit'
+    remove: 'Remove'

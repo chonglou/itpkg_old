@@ -1,0 +1,9 @@
+zh-CN:
+  tables:
+    manage: '管理'
+    vpn_user:
+      name: '名称'
+      email: '邮箱'
+      enable: '状态'
+      start_date: '起始日期'
+      end_date: '截止日期'

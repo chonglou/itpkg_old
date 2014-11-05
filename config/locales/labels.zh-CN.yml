@@ -1,0 +1,15 @@
+zh-CN:
+  labels:
+    unknown: '未知'
+    user_logo: '头像'
+    unhappy: '不开心？ '
+    must_admin: '你不是管理员!'
+    are_you_sure: '你确定？'
+    kill_self: '自杀ID'
+    welcome: "欢迎你, <img src='%{logo}' alt='%{username}' title='%{username}'/>"
+    click_to_search: '点击此处搜索'
+    add_to_favorites: '收藏本页'
+    register_or_login: '注册/登录'
+    copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014  版本号: %{version}'
+    success: '操作成功'
+    fail: '出错啦'
