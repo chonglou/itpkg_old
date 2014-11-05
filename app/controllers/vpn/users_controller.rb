@@ -1,3 +1,5 @@
+require 'itpkg/linux/openvpn'
+
 class Vpn::UsersController < ApplicationController
   before_action :must_admin!
 
@@ -16,8 +18,12 @@ class Vpn::UsersController < ApplicationController
   def create
     @user = Vpn::User.new user_params
     @user.enable = true
-    @user.passwd='123456'
-    if @user.save
+    if @user.valid?
+      pwd = Linux::OpenVpn.password @user.passwd
+      @user.passwd = pwd
+      @user.passwd_confirmation = pwd
+      @user.save
+      
       flash[:notice] = t('labels.success')
       redirect_to vpn_users_path
     else
@@ -40,6 +46,6 @@ class Vpn::UsersController < ApplicationController
 
   private
   def user_params
-    params.require(:vpn_user).permit(:name, :email, :start_date, :end_date)
+    params.require(:vpn_user).permit(:name, :email, :passwd,:passwd_confirmation, :start_date, :end_date)
   end
 end

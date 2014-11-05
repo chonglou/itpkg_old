@@ -1,12 +1,14 @@
 require 'securerandom'
+require 'digest/sha1'
 
 module Linux
   module OpenVpn
     module_function
 
     def password(password)
-      result = ActiveRecord::Base.connection.execute "SELECT PASSWORD('#{password}')"
-      result.first[0]
+      #result = ActiveRecord::Base.connection.execute "SELECT PASSWORD('#{password}')"
+      #result.first[0]
+      "*#{Digest::SHA1.hexdigest(Digest::SHA1.digest(password)).upcase}"
     end
 
     def grant!(host)
