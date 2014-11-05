@@ -59,6 +59,13 @@ en:
     create: 'Create'
     edit: 'Edit'
     remove: 'Remove'
+  tables:
+    vpn_user:
+      name: 'Username'
+      email: 'Email'
+      enable: 'Status'
+      start_date: 'Start date'
+      end_date: 'End date'
   links:
     home: 'Home'
     projects: 'Projects'
@@ -70,6 +77,11 @@ en:
     monitor: 'Monitor'
     email: 'Email System'
     vpn: 'Vpn System'
+    vpn_user:
+      create: 'Create vpn account'
+      list: 'Vpn accounts'
+    vpn_log:
+      list: 'Vpn logs'
     wiki: 'Wiki'
     help: 'Help'
     about_us: 'About Us'
