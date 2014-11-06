@@ -11,7 +11,12 @@ module Linux
       "*#{Digest::SHA1.hexdigest(Digest::SHA1.digest(password)).upcase}"
     end
 
-    def grant!(host='*')
+    def drop!(host)
+      ["DROP USER 'vpn'@'#{host}'", 'FLUSH PRIVILEGES'].each {|sql| ActiveRecord::Base.connection.execute(sql)}
+
+    end
+
+    def grant!(host)
       db=Rails.configuration.database_configuration[Rails.env]['database']
 
       password = SecureRandom.hex 8

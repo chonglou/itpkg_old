@@ -15,7 +15,9 @@ Rails.application.routes.draw do
     get 'logs' => 'logs#index'
     resources :users, expect:[:show]
 
-    %w(files grant).each{|act| get "setup/#{act}"}
+    get 'setup/files'
+    post 'setup/grant'
+
   end
 
   resources :projects

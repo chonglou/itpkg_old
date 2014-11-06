@@ -13,3 +13,4 @@ en:
     copyright: 'USING <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE</a> &copy;2014 VERSION: %{version}'
     success: 'Success.'
     fail: 'Fail.'
+    input_error: 'Input data error'

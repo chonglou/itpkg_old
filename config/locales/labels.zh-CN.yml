@@ -13,3 +13,4 @@ zh-CN:
     copyright: '本站使用 <a href="https://github.com/chonglou/itpkg" target="_blank">IT-PACKAGE系统构建</a> &copy;2014  版本号: %{version}'
     success: '操作成功'
     fail: '出错啦'
+    input_error: '数据输入有误'

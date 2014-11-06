@@ -5,12 +5,29 @@ class Vpn::SetupController < ApplicationController
   before_action :must_admin!
 
   def files
-    @files = Linux::OpenVpn.config_files('MYSQL_HOST', Itpkg::SettingService.get('vpn.db', true) || 'MYSQL_PASSWORD')
+    cfg = Itpkg::SettingService.get('vpn.cfg', true) || {}
+    if cfg.empty?
+      @files = {}
+    else
+      @files = Linux::OpenVpn.config_files(cfg[:mysql][:host],  cfg[:mysql][:password])
+    end
+
   end
 
   def grant
-    passwd = Linux::OpenVpn.grant!
-    Itpkg::SettingService.set 'vpn.db', passwd, true
+    cfg = Itpkg::SettingService.get('vpn.cfg', true) || {}
+
+    mysql_host = params[:mysql_host]
+    vpn_host = params[:openvpn_host]
+    if mysql_host == '' || vpn_host == ''
+      flash[:alert] = t('labels.input_error')
+    else
+
+      unless cfg.empty?
+        Linux::OpenVpn.drop! cfg[:openvpn][:host]
+      end
+      Itpkg::SettingService.set 'vpn.cfg', {mysql:{host:mysql_host, password:Linux::OpenVpn.grant!(vpn_host)}, openvpn:{host:vpn_host}}, true
+    end
     redirect_to vpn_setup_files_path
   end
 
