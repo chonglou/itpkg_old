@@ -11,16 +11,15 @@ module Linux
       "*#{Digest::SHA1.hexdigest(Digest::SHA1.digest(password)).upcase}"
     end
 
-    def grant!(host)
+    def grant!(host='*')
       db=Rails.configuration.database_configuration[Rails.env]['database']
 
       password = SecureRandom.hex 8
-      sql = <<-EOF
-GRANT SELECT ON `#{db}`.`vpn_users` TO 'vpn'@'#{host}' IDENTIFIED BY '#{password}';
-GRANT INSERT ON `#{db}`.`vpn_logs` TO 'vpn'@'#{host}' IDENTIFIED BY '#{password}';
-FLUSH PRIVILEGES;
-      EOF
-      ActiveRecord::Base.connection.execute(sql)
+
+      ["GRANT SELECT ON `#{db}`.`vpn_users` TO 'vpn'@'#{host}' IDENTIFIED BY '#{password}'",
+       "GRANT INSERT ON `#{db}`.`vpn_logs` TO 'vpn'@'#{host}' IDENTIFIED BY '#{password}'",
+       'FLUSH PRIVILEGES'].each {|sql| ActiveRecord::Base.connection.execute(sql)}
+
 
       password
     end
@@ -44,7 +43,7 @@ account required pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} 
 HOST='#{host}'
 PORT='3306'
 USER='vpn'
-PASS='CHANGE_ME'
+PASS='#{password}'
 DB='#{db}'
       EOF
 
@@ -97,6 +96,7 @@ status status.log
 verb 3
       EOF
 
+      cf
     end
   end
 end

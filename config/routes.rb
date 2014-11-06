@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   namespace :vpn do
     get 'logs' => 'logs#index'
     resources :users, expect:[:show]
+
+    %w(files grant).each{|act| get "setup/#{act}"}
   end
 
   resources :projects

@@ -6,7 +6,8 @@ class Vpn::UsersController < ApplicationController
   def index
     @buttons = [
         {label: t('links.vpn_user.create'), url: new_vpn_user_path, style: 'primary'},
-        {label: t('links.vpn_log.list'), url: vpn_logs_path, style: 'warning'}
+        {label: t('links.vpn_log.list'), url: vpn_logs_path, style: 'warning'},
+        {label: t('links.vpn_setup.files'), url: vpn_setup_files_path, style: 'success'}
     ]
     @users = Vpn::User.select(:id, :email, :enable, :start_date, :end_date).map { |u| {cols: [u.email, u.enable, u.start_date, u.end_date], url: edit_vpn_user_path(u.id)} }
   end
@@ -21,7 +22,7 @@ class Vpn::UsersController < ApplicationController
     if @user.valid?
       @user.passwd = Linux::OpenVpn.password @user.passwd
       @user.save
-      Vpn::Log.create email:@user.email, message:t('log.vpn_user.created'), created:Time.now
+      Vpn::Log.create email: @user.email, message: t('log.vpn_user.created'), created: Time.now
       redirect_to vpn_users_path
     else
       @user.passwd = ''
@@ -56,7 +57,7 @@ class Vpn::UsersController < ApplicationController
     user = Vpn::User.find params[:id]
     if user
       #Vpn::Log.destroy_all email: user.email
-      Vpn::Log.create email:user.email, message:t('log.vpn_user.remove'), created:Time.now
+      Vpn::Log.create email: user.email, message: t('log.vpn_user.remove'), created: Time.now
       user.destroy
     end
     redirect_to vpn_users_path

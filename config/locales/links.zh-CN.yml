@@ -15,6 +15,9 @@ zh-CN:
       list: 'VPN账户列表'
       edit: "编辑 VPN 账户 [%{email}]"
       remove: '删除 VPN 账户 [%{email}]'
+    vpn_setup:
+      files: 'OpenVpn 配置文件列表'
+      grant: '数据库授权'
     vpn_log:
       list: 'VPN日志列表'
     wiki: '知识库'
