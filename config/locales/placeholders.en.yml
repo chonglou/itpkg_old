@@ -2,5 +2,7 @@ en:
   placeholders:
     do_not_change_password: "leave blank if you don't want to change it"
     need_password_to_change: 'we need your current password to confirm your changes'
-    openvpn_host_address: 'OpenVpn host address'
-    mysql_host_address: 'MySql host address'
+    ip_address: 'xxx.xxx.xxx.xxx'
+    network: 'xxx.xxx.xxx.0'
+    dns: "8.8.8.8"
+    routes: "xxx.xxx.xxx.xxx 255.255.255.0"

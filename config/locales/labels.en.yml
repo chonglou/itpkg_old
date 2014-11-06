@@ -14,3 +14,4 @@ en:
     success: 'Success.'
     fail: 'Fail.'
     input_error: 'Input data error'
+    need_setup: 'Need setup first!'

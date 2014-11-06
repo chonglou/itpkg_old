@@ -29,7 +29,7 @@ module Linux
       password
     end
 
-    def config_files(host, password)
+    def config_files(cfg)
       db=Rails.configuration.database_configuration[Rails.env]['database']
       cf = {}
 
@@ -39,16 +39,16 @@ module Linux
       #2 = Use MySQL PASSWORD() function
 
       cf['/etc/pam.d/openvpn'] = <<-EOF
-auth sufficient pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
-account required pam_mysql.so user=vpn passwd=#{password} host=#{host} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+auth sufficient pam_mysql.so user=vpn passwd=#{cfg.fetch(:mysql).fetch :password} host=#{cfg.fetch(:mysql).fetch :host} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+account required pam_mysql.so user=vpn passwd=#{cfg.fetch(:mysql).fetch :password} host=#{cfg.fetch(:mysql).fetch :host} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
       EOF
 
       cf['/etc/openvpn/scripts/config.sh'] = <<-EOF
 #!/bin/sh
-HOST='#{host}'
+HOST='#{cfg.fetch(:mysql).fetch :host}'
 PORT='3306'
 USER='vpn'
-PASS='#{password}'
+PASS='#{cfg.fetch(:mysql).fetch :password}'
 DB='#{db}'
       EOF
 
@@ -68,19 +68,17 @@ port 1194
 proto udp
 dev tun
 
-#KEYS
 ca /etc/openvpn/keys/ca.crt
 cert /etc/openvpn/keys/vpn.example.org.crt
 key /etc/openvpn/keys/vpn.example.org.key
 dh /etc/openvpn/keys/dh2048.pem
 
 ifconfig-pool-persist ipp.txt
-#CHANGEME: ip for the clients
-server 10.0.1.0 255.255.255.0
-#CHANGEME: routes pushed to the client
-push "route 172.16.1.0 255.255.255.0"
-push "route 10.0.0.0 255.0.0.0"
-push "dhcp-option DNS 8.8.8.8"
+
+server #{cfg.fetch(:openvpn).fetch :network} 255.255.255.0
+
+#{cfg.fetch(:openvpn).fetch(:routes).map{|r| "push \"route #{r}\" "}.join("\n") }
+#{cfg.fetch(:openvpn).fetch(:dns).map{|d| "push \"dhcp-option #{d}\" "}.join("\n") }
 
 
 comp-lzo

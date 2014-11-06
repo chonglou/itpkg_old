@@ -2,5 +2,7 @@ zh-CN:
   placeholders:
     do_not_change_password: "留空不会修改密码"
     need_password_to_change: '我们需要密码来确认更改'
-    openvpn_host_address: 'OpenVpn主机地址'
-    mysql_host_address: 'MySql主机地址'
+    ip_address: 'xxx.xxx.xxx.xxx'
+    network: 'xxx.xxx.xxx.0'
+    dns: "8.8.8.8"
+    routes: "xxx.xxx.xxx.xxx 255.255.255.0"

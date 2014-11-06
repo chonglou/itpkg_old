@@ -1,21 +1,35 @@
 - @title=t('links.vpn_setup.files')
 
-= render 'layouts/button_group', items:[], back:true
-h3 #{t('links.vpn_setup.grant')}
-hr
-= form_tag(vpn_setup_grant_path, class:'form-inline', role:'form') do
-  div class="form-group"
-    = text_field_tag :mysql_host, '', class:'form-control', placeholder:t('placeholders.mysql_host_address')
-    |&nbsp;
-    = text_field_tag :openvpn_host, '', class:'form-control', placeholder:t('placeholders.openvpn_host_address')
-  = submit_tag t('buttons.submit'), class:'btn btn-danger', data:{confirm: t('labels.are_you_sure')}
-  | &nbsp;
-  = button_tag t('buttons.reset'), type: :reset, class:'btn btn-default'
+= form_tag(vpn_setup_grant_path, class:'form-horizontal', role:'form') do
+  = field_set_tag 'MySql' do
+    = content_tag :div, class:'form-group' do
+      = label_tag :mysql_host, t('helpers.label.vpn_setup.host'), class:'col-sm-2 control-label'
+      = content_tag :div, class:'col-sm-6' do
+        = text_field_tag :mysql_host, @cfg[:mysql][:host], class:'form-control', placeholder:t('placeholders.ip_address')
 
-p &nbsp;
+  = field_set_tag 'OpenVpn' do
+    = content_tag :div, class:'form-group' do
+      = label_tag :vpn_host, t('helpers.label.vpn_setup.host'), class:'col-sm-2 control-label'
+      = content_tag :div, class:'col-sm-6' do
+        = text_field_tag :vpn_host, @cfg[:openvpn][:host], class:'form-control', placeholder:t('placeholders.ip_address')
+    = content_tag :div, class:'form-group' do
+      = label_tag :vpn_network, t('helpers.label.vpn_setup.network'), class:'col-sm-2 control-label'
+      = content_tag :div, class:'col-sm-6' do
+        = text_field_tag :vpn_network, @cfg[:openvpn][:network], class:'form-control', placeholder:t('placeholders.network')
+    = content_tag :div, class:'form-group' do
+      = label_tag :vpn_routes, t('helpers.label.vpn_setup.routes'), class:'col-sm-2 control-label'
+      = content_tag :div, class:'col-sm-6' do
+        = text_area_tag :vpn_routes, @cfg[:openvpn][:routes].join("\r\n"), rows:8, class:'form-control', placeholder:t('placeholders.routes')
+    = content_tag :div, class:'form-group' do
+      = label_tag :vpn_dns, t('helpers.label.vpn_setup.dns'), class:'col-sm-2 control-label'
+      = content_tag :div, class:'col-sm-6' do
+        = text_area_tag :vpn_dns, @cfg[:openvpn][:dns].join("\r\n"), rows:8, class:'form-control', placeholder:t('placeholders.dns')
 
-- @files.each do |k,v|
-  h3 #{k}
-  hr
-  pre
-    code #{v}
+  = content_tag :div, class:'from-group' do
+    =content_tag :div, class:'col-sm-offset-2 col-sm-10' do
+      = submit_tag t('buttons.submit'), class:'btn btn-danger', data:{confirm: t('labels.are_you_sure')}, style:'margin-right:20px;'
+      = button_tag t('buttons.reset'), type: :reset, class:'btn btn-default', style:'margin-right:20px;'
+      = link_to t('buttons.download'), vpn_setup_script_path, class:'btn btn-success', style:'margin-right:20px;'
+      = link_to t('buttons.back'), :back, class:'btn btn-info'
+
+

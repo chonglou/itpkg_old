@@ -16,8 +16,9 @@ en:
       edit: 'Edit vpn account [%{email}]'
       remove: 'Remove vpn account [%{email}]'
     vpn_setup:
-      files: 'OpenVpn config file list'
-      grant: 'Grant to database'
+      files: 'Config page'
+      grant: 'Grant'
+      script: 'Setup Script'
     vpn_log:
       list: 'Vpn logs'
     wiki: 'Wiki'
