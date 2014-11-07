@@ -39,13 +39,15 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   end
 
   create_table "cdn_nginxes", force: true do |t|
-    t.string   "name",                       null: false
-    t.string   "ip",                         null: false
-    t.boolean  "ssl",        default: false, null: false
+    t.string   "name",                               null: false
+    t.string   "ip",                                 null: false
+    t.boolean  "ssl",                default: false, null: false
     t.text     "cert"
-    t.text     "key"
-    t.text     "domains",                    null: false
-    t.text     "backs",                      null: false
+    t.text     "encrypted_key"
+    t.string   "encrypted_key_salt"
+    t.string   "encrypted_key_iv"
+    t.text     "domains",                            null: false
+    t.text     "backs",                              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -96,9 +98,12 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   add_index "dns_counts", ["zone"], name: "index_dns_counts_on_zone", using: :btree
 
   create_table "dns_hosts", force: true do |t|
-    t.string   "name",       null: false
-    t.string   "ip",         null: false
-    t.string   "password",   null: false
+    t.string   "name",                                null: false
+    t.string   "ip",                                  null: false
+    t.string   "encrypted_password",                  null: false
+    t.string   "encrypted_password_salt",             null: false
+    t.string   "encrypted_password_iv",               null: false
+    t.integer  "weight",                  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -171,10 +176,12 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   add_index "email_domains", ["name"], name: "index_email_domains_on_name", unique: true, using: :btree
 
   create_table "email_hosts", force: true do |t|
-    t.string   "name",                   null: false
-    t.string   "password",               null: false
-    t.string   "ip",                     null: false
-    t.integer  "weight",     default: 0, null: false
+    t.string   "name",                                null: false
+    t.string   "encrypted_password",                  null: false
+    t.string   "encrypted_password_salt",             null: false
+    t.string   "encrypted_password_iv",               null: false
+    t.string   "ip",                                  null: false
+    t.integer  "weight",                  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -495,12 +502,15 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 
   create_table "vpn_hosts", force: true do |t|
-    t.string   "name",       null: false
-    t.string   "ip",         null: false
-    t.string   "network",    null: false
-    t.string   "routes",     null: false
-    t.string   "dns",        null: false
-    t.string   "password",   null: false
+    t.string   "name",                                null: false
+    t.string   "ip",                                  null: false
+    t.string   "network",                             null: false
+    t.string   "routes",                              null: false
+    t.string   "dns",                                 null: false
+    t.string   "encrypted_password",                  null: false
+    t.string   "encrypted_password_salt",             null: false
+    t.string   "encrypted_password_iv",               null: false
+    t.integer  "weight",                  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

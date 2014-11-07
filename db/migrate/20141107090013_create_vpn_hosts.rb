@@ -6,7 +6,9 @@ class CreateVpnHosts < ActiveRecord::Migration
       t.string :network, null:false
       t.string :routes, null:false
       t.string :dns, null:false
-      t.string :password, null:false
+      t.string :encrypted_password, null:false
+      t.string :encrypted_password_salt, null:false
+      t.string :encrypted_password_iv, null:false
       t.integer :weight, null:false,default:0
       t.timestamps
     end

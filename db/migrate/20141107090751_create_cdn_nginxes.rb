@@ -5,7 +5,9 @@ class CreateCdnNginxes < ActiveRecord::Migration
       t.string :ip, null:false
       t.boolean :ssl, null:false, default:false
       t.text :cert
-      t.text :key
+      t.text :encrypted_key
+      t.string :encrypted_key_salt
+      t.string :encrypted_key_iv
       t.text :domains, null:false
       t.text :backs, null:false
       t.timestamps
