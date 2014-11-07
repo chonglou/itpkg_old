@@ -10,38 +10,16 @@ class Vpn::SetupController < ApplicationController
 
   def script
     cfg = Itpkg::SettingService.get('vpn.cfg', true) || {}
-    text=['#!/bin/sh']
+
     if cfg.empty?
-      text << "echo '#{t('labels.need_setup')}'"
-    else
-      text << <<-EOF
-mkdir -p /etc/openvpn/scripts
-
-if [ ! -d /etc/openvpn/easy-rsa/2.0/keys ]
-then
-  cp -R /usr/share/doc/openvpn/examples/easy-rsa/ /etc/openvpn
-  cd /etc/openvpn/easy-rsa/2.0/
-  ln -s openssl-1.0.0.cnf openssl.cnf
-  . /etc/openvpn/easy-rsa/2.0/vars
-  . /etc/openvpn/easy-rsa/2.0/clean-all
-  . /etc/openvpn/easy-rsa/2.0/build-ca
-  . /etc/openvpn/easy-rsa/2.0/build-key-server server
-  . /etc/openvpn/easy-rsa/2.0/build-key client
-
-  . /etc/openvpn/easy-rsa/2.0/build-dh
-fi
-cd /etc/openvpn/easy-rsa/2.0/keys
-cp ca.crt ca.key dh1024.pem server.crt server.key /etc/openvpn
+      text = <<-EOF
+#!/bin/sh
+echo '#{t('labels.need_setup')}'
       EOF
-
-      Linux::OpenVpn.config_files(cfg).each do |k,v|
-        text << "cat > #{k} << \"EOF\" "
-        text << v
-        text << 'EOF'
-      end
-      text << 'chmod +x /etc/openvpn/scripts/*.sh'
+    else
+      text = Linux::OpenVpn.install_sh(cfg)
     end
-    send_data text.join("\n"), filename:'openvpn.sh'
+    send_data text, filename:'install.sh'
   end
 
   def grant

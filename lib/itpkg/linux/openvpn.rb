@@ -29,6 +29,54 @@ module Linux
       password
     end
 
+    def install_sh(cfg)
+      lines=['#!/bin/sh']
+      lines << <<-CFG
+mkdir -p /etc/openvpn/scripts
+
+if [ ! -d /etc/openvpn/easy-rsa/keys ]
+then
+  apt-get -y install easy-rsa
+  make-cadir /etc/openvpn/easy-rsa
+
+  cat >> /etc/openvpn/easy-rsa/vars << "EOF"
+
+export KEY_COUNTRY="US"
+export KEY_PROVINCE="CA"
+export KEY_CITY="Goleta"
+export KEY_ORG="itpkg"
+export KEY_EMAIL="admin@itpkg.com"
+export KEY_OU="ops"
+
+EOF
+
+
+  cd /etc/openvpn/easy-rsa
+  . ./vars
+  ./clean-all
+  ./build-dh
+  ./pkitool --initca
+  ./pkitool --server server
+  cd keys
+  openvpn --genkey --secret ta.key
+  cp ca.crt ta.key dh2048.pem server.crt server.key /etc/openvpn
+
+  cd ..
+  ./pkitool client
+fi
+
+      CFG
+
+      config_files(cfg).each do |k,v|
+        lines << "cat > #{k} << \"EOF\" "
+        lines << v
+        lines << 'EOF'
+      end
+      lines << 'chmod +x /etc/openvpn/scripts/*.sh'
+
+      lines.join("\n")
+    end
+
     def config_files(cfg)
       db=Rails.configuration.database_configuration[Rails.env]['database']
       cf = {}
