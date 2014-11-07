@@ -8,6 +8,7 @@ en:
     docker: 'Docker'
     logging: 'Logging'
     monitor: 'Monitor'
+    settings: 'Settings'
     email: 'Email System'
     vpn: 'Vpn System'
     vpn_user:

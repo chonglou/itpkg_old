@@ -58,7 +58,7 @@ module Itpkg
     def version
       v = "#{Rails.root}/REVISION"
       if  File.exist?(v)
-        File.open(v, 'r') { |f| f.read.strip }
+        "#{File.open(v, 'r') { |f| f.read.strip }}-#{File.basename Rails.root}"
       end
     end
   end

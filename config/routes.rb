@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+
+
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
@@ -24,6 +26,8 @@ Rails.application.routes.draw do
   end
 
   resources :projects
+
+  get 'settings' => 'settings#index'
 
   get 'personal'=>'personal#index'
 

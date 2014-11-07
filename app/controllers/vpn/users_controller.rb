@@ -33,6 +33,7 @@ class Vpn::UsersController < ApplicationController
 
   def edit
     @user = Vpn::User.find params[:id]
+    @user.password=nil
   end
 
   def update

@@ -7,7 +7,7 @@
 
     = f.group do
       = f.label :password
-      = f.password_field :password, autocomplete: 'off', placeholder:t('placeholders.do_not_change_password')
+      = f.text_field :password, autocomplete: 'off', placeholder:t('placeholders.do_not_change_password')
 
     = f.group do
       = f.label :start_date

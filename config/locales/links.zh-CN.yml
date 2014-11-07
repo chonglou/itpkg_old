@@ -8,6 +8,7 @@ zh-CN:
     docker: 'Docker'
     logging: '日志系统'
     monitor: '监控系统'
+    settings: '站点参数'
     email: '邮件系统'
     vpn: 'VPN系统'
     vpn_user:

@@ -30,6 +30,11 @@ class PersonalController < ApplicationController
           logo: 'flat/256/cloud229.png',
           label: t('links.vpn')
       }
+      @items << {
+          url: settings_path,
+          logo: 'flat/256/settings48.png',
+          label: t('links.settings')
+      }
     end
     @items << {
         url: edit_user_registration_path,
