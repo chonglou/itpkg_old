@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024235120) do
+ActiveRecord::Schema.define(version: 20141107074651) do
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false
@@ -23,6 +23,56 @@ ActiveRecord::Schema.define(version: 20141024235120) do
   end
 
   add_index "contacts", ["username"], name: "index_contacts_on_username", using: :btree
+
+  create_table "dns_counts", force: true do |t|
+    t.string   "zone",                               null: false
+    t.integer  "count",                default: 0,   null: false
+    t.string   "code",       limit: 1, default: "*"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "dns_counts", ["code"], name: "index_dns_counts_on_code", using: :btree
+  add_index "dns_counts", ["zone", "code"], name: "index_dns_counts_on_zone_and_code", unique: true, using: :btree
+  add_index "dns_counts", ["zone"], name: "index_dns_counts_on_zone", using: :btree
+
+  create_table "dns_records", force: true do |t|
+    t.string   "zone",                                  null: false
+    t.string   "host",                  default: "@",   null: false
+    t.string   "type",        limit: 8,                 null: false
+    t.text     "data"
+    t.integer  "ttl",                   default: 86400, null: false
+    t.integer  "mx_priority"
+    t.integer  "refresh"
+    t.integer  "retry"
+    t.integer  "expire"
+    t.integer  "minimum"
+    t.integer  "serial",      limit: 8
+    t.string   "resp_person"
+    t.string   "primary_ns"
+    t.string   "code",        limit: 1, default: "*"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "dns_records", ["code"], name: "index_dns_records_on_code", using: :btree
+  add_index "dns_records", ["host", "zone", "code"], name: "index_dns_records_on_host_and_zone_and_code", using: :btree
+  add_index "dns_records", ["host"], name: "index_dns_records_on_host", using: :btree
+  add_index "dns_records", ["type"], name: "index_dns_records_on_type", using: :btree
+  add_index "dns_records", ["zone"], name: "index_dns_records_on_zone", using: :btree
+
+  create_table "dns_xfrs", force: true do |t|
+    t.string   "zone",                               null: false
+    t.string   "client",                             null: false
+    t.string   "code",       limit: 1, default: "*"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "dns_xfrs", ["client"], name: "index_dns_xfrs_on_client", using: :btree
+  add_index "dns_xfrs", ["code"], name: "index_dns_xfrs_on_code", using: :btree
+  add_index "dns_xfrs", ["zone", "client", "code"], name: "index_dns_xfrs_on_zone_and_client_and_code", unique: true, using: :btree
+  add_index "dns_xfrs", ["zone"], name: "index_dns_xfrs_on_zone", using: :btree
 
   create_table "documents", force: true do |t|
     t.integer  "project_id",                        null: false
