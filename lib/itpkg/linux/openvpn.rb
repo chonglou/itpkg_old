@@ -32,11 +32,12 @@ module Linux
     def install_sh(cfg)
       lines=['#!/bin/sh']
       lines << <<-CFG
+apt-get -y install easy-rsa libpam-mysql openvpn
+
 mkdir -p /etc/openvpn/scripts
 
 if [ ! -d /etc/openvpn/easy-rsa/keys ]
 then
-  apt-get -y install easy-rsa
   make-cadir /etc/openvpn/easy-rsa
 
   cat >> /etc/openvpn/easy-rsa/vars << "EOF"
@@ -116,10 +117,10 @@ port 1194
 proto udp
 dev tun
 
-ca /etc/openvpn/keys/ca.crt
-cert /etc/openvpn/keys/server.crt
-key /etc/openvpn/keys/server.key
-dh /etc/openvpn/keys/dh2048.pem
+ca /etc/openvpn/ca.crt
+cert /etc/openvpn/server.crt
+key /etc/openvpn/server.key
+dh /etc/openvpn/dh2048.pem
 
 ifconfig-pool-persist ipp.txt
 
@@ -134,7 +135,7 @@ user nobody
 client-to-client
 username-as-common-name
 
-plugin /usr/lib/openvpn/openvpn-auth-pam.so openvpn
+plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so openvpn
 
 script-security 3 system
 client-connect /etc/openvpn/scripts/connect.sh
