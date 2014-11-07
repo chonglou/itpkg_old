@@ -14,13 +14,12 @@ class CreateDnsRecords < ActiveRecord::Migration
       t.integer :serial, limit:8
       t.string :resp_person
       t.string :primary_ns
-      t.string :code, limit:1, default:'*'
+      t.integer :code, default:0
       t.timestamps
     end
     add_index :dns_records, :type
     add_index :dns_records, :host
     add_index :dns_records, :zone
-    add_index :dns_records, :code
-    add_index :dns_records, [:host, :zone, :code]
+    add_index :dns_records, [:host, :zone]
   end
 end

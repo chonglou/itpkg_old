@@ -52,7 +52,7 @@ upstream #{domain}.conf {
 
 server {
   listen #{ssl ? 443 : 80};
-  server_name #{domain};
+  server_name localhost;
   access_log /var/log/nginx/#{domain}.access;
   error_log /var/log/nginx/#{domain}.error;
 
@@ -118,25 +118,25 @@ cd #{CDN_BUILD}
       EOF
     end
 
-    def bind9_acl(code, country, region=nil)
-      id = "#{country}_#{region||'_'}"
+    def bind9_acl(code, country, region='*', city='*')
       <<-EOF
-acl "acl_#{id}" {
+acl "acl_#{code}" {
   geoip country #{country};
-  #{"geoip region #{region};" if region}
+  #{"geoip region #{region};" unless region=='*'};
+  #{"geoip city #{city};" unless city=='*'};
 };
 
-view "view_#{id}" {
-  match-clients { acl_#{id}; };
-  dlz "dlz_#{id}" {
+view "view_#{code}" {
+  match-clients { acl_#{code}; };
+  dlz "dlz_#{code}" {
     database "mysql
     {host=#{cfg.fetch(:mysql).fetch :host} dbname=#{Rails.configuration.database_configuration[Rails.env]['database']} user=dns pass=#{cfg.fetch(:mysql).fetch :password} ssl=false}
-    {SELECT zone FROM dns_records WHERE zone = '$zone$' AND code='#{code}'}
-    {SELECT ttl, type, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data FROM dns_records WHERE zone = '$zone$' AND host = '$record$' AND type <> 'SOA' AND type <> 'NS' AND code='#{code}'}
-    {SELECT ttl, type, data, primary_ns, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND (type = 'SOA' OR type='NS') AND code='#{code}'}
-    {SELECT ttl, type, host, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND type <> 'SOA' AND type <> 'NS' AND code='#{code}'}
-    {SELECT zone FROM dns_xfrs where zone='$zone$' AND client = '$client$' AND code='#{code}' limit 1}";
-    {UPDATE dns_counts SET count=count+1, update_at='NOW()' WHERE zone ='%zone%' AND AND code='#{code}'}";
+    {SELECT zone FROM dns_records WHERE zone = '$zone$' AND code=#{code}}
+    {SELECT ttl, type, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data FROM dns_records WHERE zone = '$zone$' AND host = '$record$' AND type <> 'SOA' AND type <> 'NS' AND code=#{code}}
+    {SELECT ttl, type, data, primary_ns, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND (type = 'SOA' OR type='NS') AND code=#{code}}
+    {SELECT ttl, type, host, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND type <> 'SOA' AND type <> 'NS' AND code=#{code}}
+    {SELECT zone FROM dns_xfrs where zone='$zone$' AND client = '$client$' AND code=#{code} limit 1}";
+    {UPDATE dns_counts SET count=count+1, update_at='NOW()' WHERE zone ='%zone%' AND AND code=#{code}}";
   };
 };
 
@@ -227,12 +227,12 @@ view "default" {
   dlz "mysql_zone_#{code}" {
     database "mysql
     {host=#{cfg.fetch(:mysql).fetch :host} dbname=#{Rails.configuration.database_configuration[Rails.env]['database']} user=dns pass=#{cfg.fetch(:mysql).fetch :password} ssl=false}
-    {SELECT zone FROM dns_records WHERE zone = '$zone$' AND code='*'}
-    {SELECT ttl, type, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data FROM dns_records WHERE zone = '$zone$' AND host = '$record$' AND type <> 'SOA' AND type <> 'NS' AND code='*'}
-    {SELECT ttl, type, data, primary_ns, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND (type = 'SOA' OR type='NS') AND code='*'}
-    {SELECT ttl, type, host, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND type <> 'SOA' AND type <> 'NS' AND code='*'}
-    {SELECT zone FROM dns_xfrs where zone='$zone$' AND client = '$client$'  AND code='*' LIMIT 1}";
-    {UPDATE dns_counts SET count=count+1, update_at='NOW()' WHERE zone ='%zone%' AND code='*'}";
+    {SELECT zone FROM dns_records WHERE zone = '$zone$' AND code=0}
+    {SELECT ttl, type, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data FROM dns_records WHERE zone = '$zone$' AND host = '$record$' AND type <> 'SOA' AND type <> 'NS' AND code=0}
+    {SELECT ttl, type, data, primary_ns, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND (type = 'SOA' OR type='NS') AND code=0}
+    {SELECT ttl, type, host, mx_priority, IF(type = 'TXT', CONCAT('\"',data,'\"'), data) AS data, resp_person, serial, refresh, retry, expire, minimum FROM dns_records WHERE zone = '$zone$' AND type <> 'SOA' AND type <> 'NS' AND code=0}
+    {SELECT zone FROM dns_xfrs where zone='$zone$' AND client = '$client$'  AND code=0 LIMIT 1}";
+    {UPDATE dns_counts SET count=count+1, update_at='NOW()' WHERE zone ='%zone%' AND code=0}";
   };
 };
 
