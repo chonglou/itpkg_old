@@ -7,6 +7,7 @@ class CreateEmailHosts < ActiveRecord::Migration
       t.string :encrypted_password_iv, null:false
       t.string :ip, null:false
       t.integer :weight, null:false,default:0
+      t.integer :certificate_id, null:false
       t.timestamps
     end
     add_index :email_hosts, :ip, unique:true

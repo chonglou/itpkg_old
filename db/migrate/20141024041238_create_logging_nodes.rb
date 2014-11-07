@@ -8,6 +8,7 @@ class CreateLoggingNodes < ActiveRecord::Migration
       t.text :config, null:false
       t.integer :status, null:false, default:0, limit:2
       t.integer :flag, null:false, default:0, limit:2
+      t.integer :certificate_id, null:false
       t.timestamps
     end
     add_index :logging_nodes, :name

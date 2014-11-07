@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141107092002) do
+ActiveRecord::Schema.define(version: 20141107174023) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -39,15 +39,12 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   end
 
   create_table "cdn_nginxes", force: true do |t|
-    t.string   "name",                               null: false
-    t.string   "ip",                                 null: false
-    t.boolean  "ssl",                default: false, null: false
-    t.text     "cert"
-    t.text     "encrypted_key"
-    t.string   "encrypted_key_salt"
-    t.string   "encrypted_key_iv"
-    t.text     "domains",                            null: false
-    t.text     "backs",                              null: false
+    t.string   "name",                           null: false
+    t.string   "ip",                             null: false
+    t.boolean  "ssl",            default: false, null: false
+    t.integer  "certificate_id", default: 0,     null: false
+    t.text     "domains",                        null: false
+    t.text     "backs",                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -62,6 +59,16 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   end
 
   add_index "cdn_servers", ["address"], name: "index_cdn_servers_on_address", using: :btree
+
+  create_table "certificates", force: true do |t|
+    t.text     "cert",               null: false
+    t.text     "csr"
+    t.text     "encrypted_key",      null: false
+    t.string   "encrypted_key_salt", null: false
+    t.string   "encrypted_key_iv",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false
@@ -182,6 +189,7 @@ ActiveRecord::Schema.define(version: 20141107092002) do
     t.string   "encrypted_password_iv",               null: false
     t.string   "ip",                                  null: false
     t.integer  "weight",                  default: 0, null: false
+    t.integer  "certificate_id",                      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -224,13 +232,14 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   end
 
   create_table "logging_nodes", force: true do |t|
-    t.integer  "creator",                           null: false
-    t.string   "name",       limit: 32,             null: false
-    t.string   "uid",        limit: 36,             null: false
+    t.integer  "creator",                               null: false
+    t.string   "name",           limit: 32,             null: false
+    t.string   "uid",            limit: 36,             null: false
     t.string   "title"
-    t.text     "config",                            null: false
-    t.integer  "status",     limit: 2,  default: 0, null: false
-    t.integer  "flag",       limit: 2,  default: 0, null: false
+    t.text     "config",                                null: false
+    t.integer  "status",         limit: 2,  default: 0, null: false
+    t.integer  "flag",           limit: 2,  default: 0, null: false
+    t.integer  "certificate_id",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -298,13 +307,14 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   end
 
   create_table "monitor_nodes", force: true do |t|
-    t.integer  "creator",                           null: false
-    t.string   "name",       limit: 32,             null: false
-    t.string   "uid",        limit: 36,             null: false
+    t.integer  "creator",                               null: false
+    t.string   "name",           limit: 32,             null: false
+    t.string   "uid",            limit: 36,             null: false
     t.string   "title"
-    t.text     "config",                            null: false
-    t.integer  "status",     limit: 2,  default: 0, null: false
-    t.integer  "flag",       limit: 2,  default: 0, null: false
+    t.text     "config",                                null: false
+    t.integer  "status",         limit: 2,  default: 0, null: false
+    t.integer  "flag",           limit: 2,  default: 0, null: false
+    t.integer  "certificate_id",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -370,8 +380,9 @@ ActiveRecord::Schema.define(version: 20141107092002) do
   end
 
   create_table "repository_users", force: true do |t|
-    t.integer  "repository_id", null: false
-    t.integer  "user_id",       null: false
+    t.integer  "repository_id",  null: false
+    t.integer  "user_id",        null: false
+    t.integer  "certificate_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -511,6 +522,7 @@ ActiveRecord::Schema.define(version: 20141107092002) do
     t.string   "encrypted_password_salt",             null: false
     t.string   "encrypted_password_iv",               null: false
     t.integer  "weight",                  default: 0, null: false
+    t.integer  "certificate_id",                      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -521,6 +533,7 @@ ActiveRecord::Schema.define(version: 20141107092002) do
     t.string   "flag",    limit: 1, default: "O", null: false
     t.string   "email",                           null: false
     t.string   "message",                         null: false
+    t.integer  "host_id",                         null: false
     t.datetime "created",                         null: false
   end
 

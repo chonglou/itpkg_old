@@ -17,15 +17,15 @@ class Vpn::UsersController < ApplicationController
   end
 
   def create
-    @user = Vpn::User.new params.require(:vpn_user).permit(:email, :passwd, :start_date, :end_date)
+    @user = Vpn::User.new params.require(:vpn_user).permit(:email, :password, :start_date, :end_date)
     @user.enable = true
     if @user.valid?
-      @user.passwd = Linux::OpenVpn.password @user.passwd
+      @user.password = Linux::OpenVpn.password @user.password
       @user.save
       Vpn::Log.create email: @user.email, message: t('log.vpn_user.created'), created: Time.now
       redirect_to vpn_users_path
     else
-      @user.passwd = ''
+      @user.password = ''
       render 'new'
     end
 
@@ -39,8 +39,8 @@ class Vpn::UsersController < ApplicationController
     if params['vpn_user']['password'] == ''
       rv = params.require(:vpn_user).permit(:enable, :start_date, :end_date)
     else
-      rv = params.require(:vpn_user).permit(:passwd, :enable, :start_date, :end_date)
-      rv['passwd'] = Linux::OpenVpn.password rv['passwd']
+      rv = params.require(:vpn_user).permit(:password, :enable, :start_date, :end_date)
+      rv['password'] = Linux::OpenVpn.password rv['password']
     end
 
     @user = Vpn::User.find params[:id]
