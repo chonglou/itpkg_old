@@ -40,7 +40,7 @@ ITPKG_MAILER_SENDER="#{ask('Mail Sender Name? ') { |q| q.default='admin' }}"
 ITPKG_SECRET_KEY_BASE="#{`pwgen -n 128`.strip}"
 ITPKG_DEVISE_SECRET_KEY="#{`pwgen -n 128`.strip}"
 ITPKG_CIPHER="#{Itpkg::Encryptor.generate}"
-ITPKG_REDIS_URL="#{ask('Redis Provider? '){|q|q.default='redis://localhost:6379/0'}}"
+ITPKG_REDIS_URL=#{ask('Redis Provider? '){|q|q.default='redis://localhost:6379/0'}}
 
 export RAILS_ENV ITPKG_DATABASE_PASSWORD ITPKG_DOMAIN ITPKG_MEMCACHED_HOSTS ITPKG_MAILER_SENDER ITPKG_SECRET_KEY_BASE ITPKG_DEVISE_SECRET_KEY ITPKG_CIPHER ITPKG_REDIS_URL
 ################# END ###################

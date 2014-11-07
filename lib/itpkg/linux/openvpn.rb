@@ -69,8 +69,8 @@ proto udp
 dev tun
 
 ca /etc/openvpn/keys/ca.crt
-cert /etc/openvpn/keys/vpn.example.org.crt
-key /etc/openvpn/keys/vpn.example.org.key
+cert /etc/openvpn/keys/server.crt
+key /etc/openvpn/keys/server.key
 dh /etc/openvpn/keys/dh2048.pem
 
 ifconfig-pool-persist ipp.txt

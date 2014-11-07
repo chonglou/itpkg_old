@@ -2,21 +2,36 @@ IT-PACKAGE
 =====
 
 ## Env
-  mysql, redis, pwgen, openssl, ssh, net-snmp, openfire, git
+  mysql, redis, pwgen, openssl, ssh, net-snmp, git
 
-## Deploy
-### Add deploy user
+## Deploy(TEST PASS ON UBUNTU)
+
+### Add deploy user(RUN AS ROOT or SUDO)
     useradd -s /bin/bash -m deploy
     passwd deploy
+    su - deploy
+    mkdir .ssh
+    chmod 700 .ssh
 
-### Setup sudo (OPTIONAL), run "visudo" and add line:
+### Setup sudo (OPTIONAL):
+
+ * Add to file /etc/sudoers/deploy
+
     deploy ALL=(ALL) NOPASSWD: ALL
 
+### Upload your ssh public key (RUN ON LOCAL)
+    scp ~/.ssh/id_rsa.pub deploy@YOUR_HOST:/tmp # id_rsa.pub is your public key file
+
 ### Setup ssh login by key file.
-    cat /tmp/id_rsa.pub >> .ssh/authorized_keys # /tmp/id_rsa.pub is your public key file
+    cat /tmp/id_rsa.pub >> .ssh/authorized_keys 
 
 ### Test ssh login
-    ssh deploy@YOUR_HOME # RUN ON LOCAL
+    ssh deploy@YOUR_HOST # RUN ON LOCAL
+
+### Install needed package
+    sudo apt-get update
+    sudo apt-get -y install git libgit2-dev build-essential cmake pkg-config openssl libssl-dev mysql-server libmysqlclient-dev nginx nodejs memcached redis-server 
+    sudo apt-get clean
 
 ### Install rbenv
     git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
@@ -36,9 +51,14 @@ IT-PACKAGE
     gem install bundler
     rbenv rehash
 
-### MySQL
+### MySQL(run 'mysql -u root -p')
     CREATE DATABASE itpkg CHARACTER SET utf8;
     GRANT ALL PRIVILEGES ON itpkg.* TO 'itpkg'@'localhost' IDENTIFIED BY 'YOUR PASSWORD';
+
+### Setup deploy directory
+    sudo mkdir -p /var/www/itpkg/shared
+    sudo chown -R deploy:deploy /var/www/itpkg
+   
 
 ### Shell Vars
     rake itpkg:env # RUN ON LOCAL
@@ -50,12 +70,28 @@ IT-PACKAGE
     cap production deploy
     cap production db:seed # ONLY NEED RUN ON FIRST TIME
 
-### Setup nginx(NEED SUDO)
+### Setup nginx
+
+ * Generate https certs (RUN ON LOCAL) or upload your's files
+    
+    rake nginx:ssl
+    scp tmp/storage/ssl/web/cert.pem deploy@YOUR_HOST:/tmp
+    scp tmp/storage/ssl/web/key.pem deploy@YOUR_HOST:/tmp
+
+ * Setup certs
+
+    sudo mkdir -p /etc/nginx/ssl
+    cd /etc/nginx/ssl
+    sudo cp /tmp/cert.pem itpkg-cert.pem
+    sudo chmod 444 itpkg-cert.pem
+    sudo cp /tmp/key.pem itpkg-key.pem
+    sudo chmod 400 itpkg-key.pem
+    rm /tmp/cert.pem /tmp/key.pem
+    
+
+ * Upload nginx files(RUN ON LOCAL)
+    
     cap production nginx:setup
-    cp YOUR_CERT_FILE /etc/nginx/ssl/itpkg-cert.pem
-    chmod 444 itpkg-cert.pem
-    cp YOUR_KEY_FILE /etc/nginx/ssl/itpkg-key.pem
-    chmod 400 itpkg-key.pem
     cap production nginx:reload
 
 ## Usage
