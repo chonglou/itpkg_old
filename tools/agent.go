@@ -1,106 +1,70 @@
 package main
 
 import (
-	"code.google.com/p/go.net/websocket"
-	"encoding/json"
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
-	"github.com/ActiveState/tail"
+	"io"
+	"io/ioutil"
 	"log"
 	"os"
-	"os/signal"
-	"time"
 )
 
-type Request struct {
-	Uid     string    `json:"uid"`
-	Type    string    `json:"type"`
-	Version int       `json:"version"`
-	Created time.Time `json:"created"`
-
-	Filename string `json:"filename"`
-	Line     string `json:"line"`
+func checkError(msg string, err error) {
+	if err != nil {
+		log.Fatalf(msg, err)
+	}
 }
 
 func main() {
-	host := flag.String("host", "data.itpkg.com", "WebSocket address")
-	port := flag.Int("port", 9292, "WebSocket port")
-	uid := flag.String("uid", "null", "UID")
-	flag.Parse()
-	files := flag.Args()
-
-	if *uid == "null" {
-		log.Fatalln("Need client uid.")
-	}
-	if len(files) == 0 {
-		log.Fatalln("Need file list.")
-	}
-
-	f, err := os.OpenFile(file("itpkg.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
+	f, err := os.OpenFile("agent.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+	checkError("error opening file: %v", err)
 	defer f.Close()
 	log.SetOutput(f)
 
-	log.Println("Startup!")
-	log.Printf("connect to %v:%v", *host, *port)
-	log.Printf("moniting files: %v", files)
+	host := flag.String("host", "data.itpkg.com", "WebSocket address")
+	port := flag.Int("port", 11111, "WebSocket port")
+	//uid := flag.String("uid", "null", "UID")
+	verify := flag.Bool("verify", false, "Verify Certificate file")
+	flag.Parse()
 
-	channel := make(chan string)
-	for _, fn := range files {
-		go watch(channel, *uid, fn)
-	}
-
-	go loop(channel, *host, *port)
-	catch()
-}
-
-func watch(channel chan string, uid string, filename string) {
-	t, err := tail.TailFile(filename, tail.Config{Follow: true, Location: &tail.SeekInfo{0, os.SEEK_END}})
-	if err != nil {
-		log.Fatalf("error in watch: %v", err)
-	}
-	for line := range t.Lines {
-		j, _ := json.Marshal(&Request{Uid: uid, Version: 0x01, Type: "logging", Created: time.Now(), Filename: filename, Line: line.Text})
-		channel <- string(j)
-	}
+	loop(*host, *port, *verify)
 
 }
+func loop(host string, port int, verify bool) {
+	cert_b, _ := ioutil.ReadFile("client.cert")
+	priv_b, _ := ioutil.ReadFile("client.key")
+	priv, _ := x509.ParsePKCS1PrivateKey(priv_b)
 
-func loop(channel chan string, host string, port int) {
-	ws, err := websocket.Dial(fmt.Sprintf("ws://%s:%d/ws", host, port), "", fmt.Sprintf("http://%s/", host))
-	if err != nil {
-		log.Fatalf("error in get: %v", err)
-	}
-	defer ws.Close()
-
-	for line := range channel {
-		if _, err = ws.Write([]byte(line)); err != nil {
-			log.Fatalf("error in write: %v", err)
-		}
-
-		msg := make([]byte, 512)
-		var n int
-		if n, err = ws.Read(msg); err == nil {
-			log.Printf("received: %s. \n", msg[:n])
-		} else {
-			log.Println("error in read: %v", err)
-		}
+	cert := tls.Certificate{
+		Certificate: [][]byte{cert_b},
+		PrivateKey:  priv,
 	}
 
-}
+	config := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: !verify}
+	conn, err := tls.Dial("tcp", fmt.Sprintf("%s:%d", host, port), &config)
+	checkError("dial: %v", err)
+	defer conn.Close()
 
-func file(name string) string {
-	dir := "tmp"
-	os.MkdirAll(dir, 0700)
-	return dir + "/" + name
-}
+	log.Println("connected to: ", conn.RemoteAddr())
 
-func catch() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
-	s := <-c
-	log.Printf("Got singal: %v, shutdown!", s)
+	state := conn.ConnectionState()
+	for _, v := range state.PeerCertificates {
+		fmt.Println(x509.MarshalPKIXPublicKey(v.PublicKey))
+		fmt.Println(v.Subject)
+	}
 
+	log.Println("handshake: ", state.HandshakeComplete)
+	log.Println("mutual: ", state.NegotiatedProtocolIsMutual)
+
+	message := "Hello Itpkg!"
+	n, err := io.WriteString(conn, message)
+	checkError("write: %v", err)
+	log.Printf("client: wrote %q (%d bytes)", message, n)
+
+	reply := make([]byte, 256)
+	n, err = conn.Read(reply)
+	log.Printf("client: read %q (%d bytes)", string(reply[:n]), n)
+	log.Print("client: exiting")
 }

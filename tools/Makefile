@@ -1,25 +1,21 @@
-BIN	= bin
-OBJS	= $(addprefix $(BIN)/, logging monitor)
+OBJS	= agent proxy
 LDFLAGS = -ldflags "-s"
 
-$(BIN)/%: %.go
+%: %.go
 	go build $(LDFLAGS) -o $@ $<
 
 
-all: check $(OBJS)
-
+all: $(OBJS)
 
 
 clean: 
-	if [ -d $(BIN) ]; then rm -rv $(BIN); fi
-
-
-check:
-	if [ ! -d $(BIN) ]; then mkdir -pv $(BIN); fi
+	-rm -f $(OBJS) *.key *.cert *.log
 
 
 format:
 	gofmt -w *.go
+
+
 
 
 

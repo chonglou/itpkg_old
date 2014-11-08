@@ -1,2 +1,6 @@
-bin
-tmp
+*.key
+*.cert
+*.log
+agent
+proxy
+
