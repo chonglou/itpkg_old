@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141107174023) do
+ActiveRecord::Schema.define(version: 20141107202156) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -66,6 +66,11 @@ ActiveRecord::Schema.define(version: 20141107174023) do
     t.text     "encrypted_key",      null: false
     t.string   "encrypted_key_salt", null: false
     t.string   "encrypted_key_iv",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "clients", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -533,7 +538,7 @@ ActiveRecord::Schema.define(version: 20141107174023) do
     t.string   "flag",    limit: 1, default: "O", null: false
     t.string   "email",                           null: false
     t.string   "message",                         null: false
-    t.integer  "host_id",                         null: false
+    t.integer  "host_id",           default: 0,   null: false
     t.datetime "created",                         null: false
   end
 

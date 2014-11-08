@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
 
-
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
@@ -9,20 +8,15 @@ Rails.application.routes.draw do
     resources :domains
     resources :users
     resources :aliases
-
-    get 'setup/files'
-    get 'setup/script'
-    post 'setup/grant'
   end
 
+  get 'vpn' => 'vpn#index'
   namespace :vpn do
     get 'logs' => 'logs#index'
     resources :users, expect:[:show]
-
-    get 'setup/files'
-    get 'setup/script'
-    post 'setup/grant'
-
+    resources :hosts do
+      get 'install_sh'
+    end
   end
 
   resources :projects

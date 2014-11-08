@@ -26,7 +26,7 @@ class PersonalController < ApplicationController
           label: t('links.email')
       }
       @items << {
-          url: vpn_users_path,
+          url: vpn_path,
           logo: 'flat/256/cloud229.png',
           label: t('links.vpn')
       }

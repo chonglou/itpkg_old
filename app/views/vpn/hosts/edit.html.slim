@@ -1,0 +1,29 @@
+- @title=t('links.vpn_host.edit', name:@host.name)
+
+= bootstrap_form(@host, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+    = f.group do
+      = f.label :name
+      = f.name_field :name, autofocus: true
+
+    = f.group do
+      = f.label :network
+      = f.text_field :network
+
+    = f.group do
+      = f.label :routes
+      = f.text_area :routes
+
+    = f.group do
+      = f.label :dns
+      = f.text_area :dns
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')
+
+
+

@@ -29,9 +29,8 @@
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
-      = f.back t('buttons.back')
 
 h3 #{t('links.vpn_user.remove', email:@user.email)}
 hr
-= button_to t('buttons.remove'), vpn_user_path(@user), data: {confirm: t('labels.are_you_sure')}, method: :delete, class: 'btn btn-danger'
+= render 'layouts/remove_button', name:'buttons.remove', url:vpn_user_path(@user)
 

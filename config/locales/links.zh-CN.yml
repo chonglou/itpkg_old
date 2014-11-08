@@ -11,15 +11,18 @@ zh-CN:
     settings: '站点参数'
     email: '邮件系统'
     vpn: 'VPN系统'
+    vpn_host:
+      list: 'VPN主机列表'
+      edit: '编辑主机 [%{name}]'
+      create: '创建VPN主机'
+      remove: '删除VPN主机 [%{name}]'
+      show: 'VPN主机 [%{name}%]'
+      install_sh: '安装脚本下载'
     vpn_user:
       create: '创建VPN账户'
       list: 'VPN账户列表'
       edit: "编辑 VPN 账户 [%{email}]"
       remove: '删除 VPN 账户 [%{email}]'
-    vpn_setup:
-      files: '配置页面'
-      grant: '数据库授权'
-      script: '设置脚本'
     vpn_log:
       list: 'VPN日志列表'
     wiki: '知识库'

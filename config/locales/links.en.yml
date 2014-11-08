@@ -16,10 +16,13 @@ en:
       list: 'Vpn accounts'
       edit: 'Edit vpn account [%{email}]'
       remove: 'Remove vpn account [%{email}]'
-    vpn_setup:
-      files: 'OpenVpn Settings'
-      grant: 'Grant'
-      script: 'Setup Script'
+    vpn_host:
+      list: 'Vpn hosts'
+      edit: 'Edit vpn host [%{name}]'
+      create: 'Create vpn host'
+      remove: 'Remove vpn host [%{name}]'
+      show: 'Show vpn host [%{name}]'
+      install_sh: 'Script download'
     vpn_log:
       list: 'Vpn logs'
     wiki: 'Wiki'
