@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
   def root?
     u = current_user
-    u && Itpkg::PermissionService.root?( u.id)
+    u && Itpkg::PermissionService.root?(u.id)
   end
 
   def must_admin!

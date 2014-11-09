@@ -1,5 +1,6 @@
 class VpnController < ApplicationController
   before_action :must_admin!
+
   def index
     @items=[
         {

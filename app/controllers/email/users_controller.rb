@@ -32,7 +32,7 @@ class Email::UsersController < ApplicationController
     @user = Email::User.new user_params
     if @user.valid?
       email = "#{@user.email}@#{Email::Domain.find(@user.domain_id).name}"
-      if Email::User.find_by(email:email)
+      if Email::User.find_by(email: email)
         @user.errors[:base] << t('labels.email_already_exist', email: email)
         render 'new'
       else

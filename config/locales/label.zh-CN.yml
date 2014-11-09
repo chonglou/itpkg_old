@@ -9,6 +9,12 @@ zh-CN:
       project:
         name: '名称'
         details: '详细信息'
+      template:
+        flag: '类型'
+        name: '名称'
+        mode: '权限'
+        owner: '所有者'
+        body: '内容'
       email_host:
         ip: 'IP地址'
         name: '名称'

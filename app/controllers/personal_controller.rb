@@ -31,6 +31,11 @@ class PersonalController < ApplicationController
           label: t('links.vpn')
       }
       @items << {
+          url: templates_path,
+          logo: 'flat/256/documents7.png',
+          label: t('links.template.list')
+      }
+      @items << {
           url: settings_path,
           logo: 'flat/256/settings48.png',
           label: t('links.settings')

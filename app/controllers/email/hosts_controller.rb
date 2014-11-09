@@ -39,6 +39,7 @@ class Email::HostsController < ApplicationController
   def edit
     @host = Email::Host.find params[:id]
   end
+
   def update
     @host = Email::Host.find params[:id]
     if @host.update(params.require(:email_host).permit(:name))
@@ -59,7 +60,7 @@ class Email::HostsController < ApplicationController
 
   def show
     @host = Email::Host.find params[:id]
-     @buttons = [
+    @buttons = [
         {label: t('buttons.edit'), url: edit_email_host_path(@host.id), style: 'primary'},
         {label: t('links.email_host.install_sh'), url: email_host_install_sh_path(@host.id), style: 'warning'},
 
@@ -69,7 +70,7 @@ class Email::HostsController < ApplicationController
 
   def install_sh
     host = Email::Host.find params[:host_id]
-    text = Linux::Email.install_sh({id:host.id, password:host.password})
+    text = Linux::Email.install_sh({id: host.id, password: host.password})
     send_data text, filename: 'install.sh'
   end
 end

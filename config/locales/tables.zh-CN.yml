@@ -1,6 +1,12 @@
 zh-CN:
   tables:
     manage: '管理'
+    template:
+      flag: '类型'
+      name: '名称'
+      mode: '权限'
+      owner: '所有者'
+      updated_at: '更新时间'
     email_user:
       email: '邮箱名'
       created_at: '创建时间'

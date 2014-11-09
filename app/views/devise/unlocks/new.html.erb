@@ -1,7 +1,7 @@
 <% @title=t('buttons.personal.unlock') %>
 
 <%= bootstrap_form(resource, as: resource_name, url: unlock_path(resource_name), html: {method: :post}) do |f| %>
-    <%- # devise_error_messages!  -%>
+    <%- # devise_error_messages!   -%>
     <%= f.error_messages %>
 
     <%= f.fieldset do %>

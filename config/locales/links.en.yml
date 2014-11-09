@@ -9,6 +9,12 @@ en:
     logging: 'Logging'
     monitor: 'Monitor'
     settings: 'Settings'
+    template:
+      list: 'Templates'
+      create: 'Create a new template'
+      edit: 'Edit template [%{name}]'
+      remove: 'Remove template [%{name}]'
+      show: 'Show template [%{name}]'
     email: 'Email System'
     email_host:
       list: 'Email Hosts'

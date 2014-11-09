@@ -1,0 +1,33 @@
+- @title=t('links.template.create')
+
+
+= bootstrap_form(@template, url:{action:'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :flag
+      = f.name_field :flag, autofocus: true
+
+    = f.group do
+      = f.label :name
+      = f.text_field :name
+
+    = f.group do
+      = f.label :owner
+      = f.select :owner, @owners
+
+    = f.group do
+      = f.label :mode
+      = f.select :mode, @modes
+
+    = f.group do
+      = f.label :body
+      = f.text_area :body
+
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')

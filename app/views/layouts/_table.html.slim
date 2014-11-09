@@ -16,11 +16,11 @@ div class="row"
               td #{{it.fetch(:cols)[i]}}
 
 javascript:
-  $(function(){
-    $(".table-hit").click(function(){
+  $(function () {
+    $(".table-hit").click(function () {
       //alert($(this).children('td:first').text());
       var url = $(this).attr('href');
-      if(url && url != '#'){
+      if (url && url != '#') {
         window.location.href = url;
       }
 

@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @projects = Project.select(:id, :name, :details).where(creator_id:current_user.id).map{|p| {url:project_path(p.id), name:p.name, details: Itpkg::StringHelper.md2html(p.details)}}
+    @projects = Project.select(:id, :name, :details).where(creator_id: current_user.id).map { |p| {url: project_path(p.id), name: p.name, details: Itpkg::StringHelper.md2html(p.details)} }
   end
 
   def new
@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
       flash[:notice] = t('labels.success')
       redirect_to projects_path
     else
-      render :action=>'new'
+      render :action => 'new'
     end
 
   end

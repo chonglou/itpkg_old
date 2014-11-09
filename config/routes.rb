@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
 
 
-  get 'email/index'
 
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
+  resources :templates
 
+  #---------email ------------------
   get 'email' => 'email#index'
   namespace :email do
     resources :domains, expect:[:show]
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
   end
   end
 
+  #----------vpn-----------
   get 'vpn' => 'vpn#index'
   namespace :vpn do
     get 'logs' => 'logs#index'
@@ -26,7 +28,10 @@ Rails.application.routes.draw do
     end
   end
 
+  #--------team work-----------
   resources :projects
+
+  #----------others---------
 
   get 'settings' => 'settings#index'
 

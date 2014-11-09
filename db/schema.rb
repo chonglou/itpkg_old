@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141107202156) do
+ActiveRecord::Schema.define(version: 20141109180607) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -478,6 +478,23 @@ ActiveRecord::Schema.define(version: 20141107202156) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "templates", force: true do |t|
+    t.string   "flag",       limit: 32,                       null: false
+    t.string   "name",                                        null: false
+    t.text     "body",                                        null: false
+    t.string   "mode",       limit: 3,  default: "400",       null: false
+    t.string   "owner",      limit: 16, default: "root:root", null: false
+    t.integer  "version",               default: 0,           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "templates", ["flag", "name"], name: "index_templates_on_flag_and_name", unique: true, using: :btree
+  add_index "templates", ["flag"], name: "index_templates_on_flag", using: :btree
+  add_index "templates", ["mode"], name: "index_templates_on_mode", using: :btree
+  add_index "templates", ["name"], name: "index_templates_on_name", using: :btree
+  add_index "templates", ["owner"], name: "index_templates_on_owner", using: :btree
 
   create_table "translations", force: true do |t|
     t.integer  "zh-CN"

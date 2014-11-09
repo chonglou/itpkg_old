@@ -9,6 +9,12 @@ zh-CN:
     logging: '日志系统'
     monitor: '监控系统'
     settings: '站点参数'
+    template:
+      list: '模板列表'
+      create: '新建模板'
+      edit: '编辑模板 [%{name}]'
+      remove: '删除模板 [%{name}]'
+      show: '显示模板 [%{name}]'
     email: '邮件系统'
     email_host:
       list: 'Email主机列表'

@@ -73,13 +73,13 @@ class Vpn::HostsController < ApplicationController
   def install_sh
     host = Vpn::Host.find params[:host_id]
     text = Linux::OpenVpn.install_sh({
-        id:host.id,
-                                  password: host.password,
-                                  host: host.ip,
-                                  network: host.network,
-                                  routes: host.routes.split("\r\n"),
-                                  dns: host.dns.split("\r\n")
-                              })
+                                         id: host.id,
+                                         password: host.password,
+                                         host: host.ip,
+                                         network: host.network,
+                                         routes: host.routes.split("\r\n"),
+                                         dns: host.dns.split("\r\n")
+                                     })
     send_data text, filename: 'install.sh'
   end
 
