@@ -24,6 +24,9 @@ en:
       remove: 'Remove email domain [%{name}]'
     email_user:
       list: 'Email Accounts'
+      create: 'Create email account'
+      edit: 'Edit email account [%{email}]'
+      remove: 'Remove email account [%{email}]'
     email_alias:
       list: 'Email Aliases'
     vpn: 'Vpn System'

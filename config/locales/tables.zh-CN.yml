@@ -1,6 +1,9 @@
 zh-CN:
   tables:
     manage: '管理'
+    email_user:
+      email: '邮箱名'
+      created_at: '创建时间'
     email_domain:
       name: '域名'
     email_host:

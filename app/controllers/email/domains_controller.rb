@@ -34,22 +34,32 @@ class Email::DomainsController < ApplicationController
   end
 
   def update
-    @domain = Email::Domain.find params[:id]
-    if @domain.update(params.require(:email_domain).permit(:name))
 
+    if in_use?(params[:id])
+      flash[:alert] = t('labels.in_using')
       redirect_to email_domains_path
     else
-      render 'edit'
+      @domain = Email::Domain.find params[:id]
+      if @domain.update(params.require(:email_domain).permit(:name))
+        redirect_to email_domains_path
+      else
+        render 'edit'
+      end
     end
 
   end
 
   def destroy
-    if Email::User.where(domain_id: params[:id]).count >0
-      flash[:alert] = t('not_empty_to_remove')
+    if in_use?(params[:id])
+      flash[:alert] = t('labels.in_using')
     else
       Email::Domain.destroy params[:id]
     end
     redirect_to email_domains_path
+  end
+
+  private
+  def in_use?(domain)
+    Email::User.where(domain_id: domain).count >0
   end
 end

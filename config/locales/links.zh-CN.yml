@@ -23,7 +23,10 @@ zh-CN:
       edit: '编辑Email域 [%{name}]'
       remove: '删除Email域 [%{name}]'
     email_user:
-      list: 'Email用户列表'
+      list: 'Email账户列表'
+      create: '创建新的Email账户'
+      edit: '编辑Email账户 [%{email}]'
+      remove: '删除Email账户 [%{email}]'
     email_alias:
       list: 'Email别名列表'
     vpn: 'VPN系统'

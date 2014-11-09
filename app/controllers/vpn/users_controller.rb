@@ -49,6 +49,7 @@ class Vpn::UsersController < ApplicationController
     if @user.update(rv)
       redirect_to vpn_users_path
     else
+      @user.password = ''
       render 'edit'
     end
 

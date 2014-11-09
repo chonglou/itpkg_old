@@ -79,7 +79,7 @@ fi
     end
 
     def config_files(cfg)
-      db=Rails.configuration.database_configuration[Rails.env]
+      db=Rails.configuration.database_configuration[Rails.env].fetch 'database'
       cf = {}
 
       #crypt(0) -- Used to decide to use MySQL's PASSWORD() function or crypt()
@@ -88,17 +88,17 @@ fi
       #2 = Use MySQL PASSWORD() function
 
       cf['/etc/pam.d/openvpn'] = <<-EOF
-auth sufficient pam_mysql.so user=vpn passwd=#{cfg.fetch :password} host=#{db.fetch 'host'} db=#{db.fetch 'database'} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
-account required pam_mysql.so user=vpn passwd=#{cfg.fetch :password} host=#{db.fetch 'host'} db=#{db.fetch 'database'} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+auth sufficient pam_mysql.so user=vpn passwd=#{cfg.fetch :password} host=db.#{ENV['ITPKG_DOMAIN']} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+account required pam_mysql.so user=vpn passwd=#{cfg.fetch :password} host=db.#{ENV['ITPKG_DOMAIN']} db=#{db} [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
       EOF
 
       cf['/etc/openvpn/scripts/config.sh'] = <<-EOF
 #!/bin/sh
-HOST='#{db.fetch 'host'}'
+HOST='db.#{ENV['ITPKG_DOMAIN']}'
 PORT='3306'
 USER='vpn'
 PASS='#{cfg.fetch :password}'
-DB='#{db.fetch 'database'}'
+DB='#{db}}'
       EOF
 
       cf['/etc/openvpn/scripts/connect.sh'] = <<-EOF

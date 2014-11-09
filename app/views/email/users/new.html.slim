@@ -1,0 +1,25 @@
+- @title=t('links.email_user.create')
+
+
+= bootstrap_form(@user, url:{action:'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :email
+      = f.name_field :email, autofocus: true
+
+    = f.group do
+      = f.label :domain_id
+      = f.select :domain_id, @domains
+
+    = f.group do
+      = f.label :password
+      = f.text_field :password, autocomplete: 'off', default:''
+
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')

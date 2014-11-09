@@ -15,5 +15,5 @@ zh-CN:
     fail: '出错啦'
     input_error: '数据输入有误'
     need_setup: '需要配置'
-    email_username_per_domain: '每个域上的用户名不能重复'
-    not_empty_to_remove: '非空, 不能删除'
+    in_using: '正在使用'
+    email_already_exist: '邮箱%{email}已存在!'
