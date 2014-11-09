@@ -1,0 +1,21 @@
+- @title=t('links.email_domain.edit', name:@domain.name)
+
+
+= bootstrap_form(@domain, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :name
+      = f.name_field :name, autofocus: true
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')
+
+
+h3 #{t('links.email_domain.remove', name:@domain.name)}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:email_domain_path(@domain)

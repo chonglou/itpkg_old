@@ -19,6 +19,9 @@ zh-CN:
       install_sh: '安装脚本'
     email_domain:
       list: 'Email域列表'
+      create: '创建新Email域'
+      edit: '编辑Email域 [%{name}]'
+      remove: '删除Email域 [%{name}]'
     email_user:
       list: 'Email用户列表'
     email_alias:

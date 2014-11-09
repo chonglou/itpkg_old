@@ -202,14 +202,14 @@ ActiveRecord::Schema.define(version: 20141107202156) do
   add_index "email_hosts", ["ip"], name: "index_email_hosts_on_ip", unique: true, using: :btree
 
   create_table "email_users", force: true do |t|
-    t.integer  "domain_id",  null: false
-    t.string   "passwd",     null: false
-    t.string   "email",      null: false
+    t.integer  "domain_id",             null: false
+    t.string   "passwd",                null: false
+    t.string   "name",       limit: 32, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "email_users", ["email"], name: "index_email_users_on_email", unique: true, using: :btree
+  add_index "email_users", ["name"], name: "index_email_users_on_name", using: :btree
 
   create_table "finance_scores", force: true do |t|
     t.integer  "project_id",                                      null: false

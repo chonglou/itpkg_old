@@ -9,9 +9,9 @@ Rails.application.routes.draw do
 
   get 'email' => 'email#index'
   namespace :email do
-    resources :domains
-    resources :users
-    resources :aliases
+    resources :domains, expect:[:show]
+    resources :users, expect:[:show]
+    resources :aliases, only:[:destroy, :new, :create, :index]
     resources :hosts do
     get 'install_sh'
   end

@@ -1,0 +1,16 @@
+- @title=t('links.email_domain.create')
+
+
+= bootstrap_form(@domain, url:{action:'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :name
+      = f.name_field :name, autofocus: true
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')

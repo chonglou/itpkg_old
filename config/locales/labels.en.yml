@@ -15,3 +15,5 @@ en:
     fail: 'Fail.'
     input_error: 'Input data error'
     need_setup: 'Need setup first!'
+    email_username_per_domain: 'Should happen once per domain'
+    not_empty_to_remove: 'Not empty to remove.'

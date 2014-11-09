@@ -9,6 +9,11 @@ zh-CN:
       project:
         name: '名称'
         details: '详细信息'
+      email_host:
+        ip: 'IP地址'
+        name: '名称'
+      email_domain:
+        name: '名称'
       vpn_host:
         host: '主机地址'
         routes: '路由列表'
