@@ -10,6 +10,19 @@ en:
     monitor: 'Monitor'
     settings: 'Settings'
     email: 'Email System'
+    email_host:
+      list: 'Email Hosts'
+      create: 'Create new email host'
+      edit: 'Edit email host [%{name}]'
+      remove: 'Remove email host [%{name}]'
+      show: 'Show email host [%{name}]'
+      install_sh: 'install.sh'
+    email_domain:
+      list: 'Email Domains'
+    email_user:
+      list: 'Email Accounts'
+    email_alias:
+      list: 'Email Aliases'
     vpn: 'Vpn System'
     vpn_user:
       create: 'Create vpn account'
@@ -22,7 +35,7 @@ en:
       create: 'Create vpn host'
       remove: 'Remove vpn host [%{name}]'
       show: 'Show vpn host [%{name}]'
-      install_sh: 'Script download'
+      install_sh: 'install.sh'
     vpn_log:
       list: 'Vpn logs'
     wiki: 'Wiki'

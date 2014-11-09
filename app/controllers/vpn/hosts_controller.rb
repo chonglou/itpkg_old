@@ -30,7 +30,7 @@ class Vpn::HostsController < ApplicationController
       @host.password = Linux::OpenVpn.grant!(@host.ip)
       # todo
       @host.certificate_id = 0
-      @host.certificate_id = 0
+      @host.weight = 0
       @host.save
       redirect_to vpn_hosts_path
     else
@@ -45,7 +45,7 @@ class Vpn::HostsController < ApplicationController
   def update
     @host = Vpn::Host.find params[:id]
     if @host.update(params.require(:vpn_host).permit(:name, :network, :routes, :dns))
-      redirect_to vpn_hosts_path
+      redirect_to vpn_host_path(@host.id)
     else
       render 'edit'
     end
@@ -65,6 +65,7 @@ class Vpn::HostsController < ApplicationController
     @buttons = [
         {label: t('buttons.edit'), url: edit_vpn_host_path(@host.id), style: 'primary'},
         {label: t('links.vpn_host.install_sh'), url: vpn_host_install_sh_path(@host.id), style: 'warning'},
+        {label: t('links.vpn_host.list'), url: vpn_hosts_path, style: 'info'},
 
     ]
   end
@@ -72,6 +73,7 @@ class Vpn::HostsController < ApplicationController
   def install_sh
     host = Vpn::Host.find params[:host_id]
     text = Linux::OpenVpn.install_sh({
+        id:host.id,
                                   password: host.password,
                                   host: host.ip,
                                   network: host.network,

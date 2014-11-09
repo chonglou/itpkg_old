@@ -21,7 +21,7 @@ class PersonalController < ApplicationController
     ]
     if admin?
       @items << {
-          url: email_domains_path,
+          url: email_path,
           logo: 'flat/256/black218.png',
           label: t('links.email')
       }

@@ -10,6 +10,19 @@ zh-CN:
     monitor: '监控系统'
     settings: '站点参数'
     email: '邮件系统'
+    email_host:
+      list: 'Email主机列表'
+      create: '创建Email主机'
+      edit: '编辑Email主机 [%{name}]'
+      remove: '删除Email主机 [%{name}]'
+      show: 'Email主机信息 [%{name}]'
+      install_sh: '安装脚本'
+    email_domain:
+      list: 'Email域列表'
+    email_user:
+      list: 'Email用户列表'
+    email_alias:
+      list: 'Email别名列表'
     vpn: 'VPN系统'
     vpn_host:
       list: 'VPN主机列表'

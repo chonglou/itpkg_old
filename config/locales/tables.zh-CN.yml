@@ -1,6 +1,9 @@
 zh-CN:
   tables:
     manage: '管理'
+    email_host:
+      name: '名称'
+      ip: 'IP地址'
     vpn_user:
       name: '名称'
       email: '邮箱'
@@ -9,7 +12,7 @@ zh-CN:
       end_date: '截止日期'
     vpn_host:
       name: '名称'
-      ip: '地址'
+      ip: 'IP地址'
       network: '网段'
       routes: '路由表'
       dns: 'DNS列表'

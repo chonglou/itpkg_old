@@ -23,6 +23,11 @@ module Linux
       password
     end
 
+    def install_sh(cfg)
+      #todo
+      'TODO'
+    end
+
     def password(password)
       result = ActiveRecord::Base.connection.execute "SELECT ENCRYPT('#{password}', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16)))"
       result.first[0]

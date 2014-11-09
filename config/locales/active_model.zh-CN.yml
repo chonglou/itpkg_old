@@ -2,6 +2,7 @@ zh-CN:
   activerecord:
     errors:
       messages:
+        taken: "%{attribute}已存在"
         inclusion: "is not included in the list"
         exclusion: "is reserved"
         invalid: "is invalid"

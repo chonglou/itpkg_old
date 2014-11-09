@@ -104,12 +104,12 @@ DB='#{db.fetch 'database'}'
       cf['/etc/openvpn/scripts/connect.sh'] = <<-EOF
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,email,message,created) values('C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('#{cfg.fetch :id}', C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
       EOF
       cf['/etc/openvpn/scripts/disconnect.sh'] = <<-EOF
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(flag,email,message,created) values('D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('#{cfg.fetch :id}', 'D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
       EOF
 
       cf['/etc/openvpn/openvpn.conf']=<<-EOF

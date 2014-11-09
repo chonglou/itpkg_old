@@ -1,13 +1,20 @@
 Rails.application.routes.draw do
 
 
+  get 'email/index'
+
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
+
+  get 'email' => 'email#index'
   namespace :email do
     resources :domains
     resources :users
     resources :aliases
+    resources :hosts do
+    get 'install_sh'
+  end
   end
 
   get 'vpn' => 'vpn#index'
