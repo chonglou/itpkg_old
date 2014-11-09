@@ -11,6 +11,10 @@
       = f.name_field :name, autofocus: true
 
     = f.group do
+      = f.label :domain
+      = f.name_field :domain
+
+    = f.group do
       = f.label :ip
       = f.text_field :ip, placeholder:t('placeholders.ip_address')
 

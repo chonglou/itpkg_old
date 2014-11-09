@@ -2,6 +2,7 @@ class CreateVpnHosts < ActiveRecord::Migration
   def change
     create_table :vpn_hosts do |t|
       t.string :name, null:false
+      t.string :domain, null:false
       t.string :ip, null:false
       t.string :network, null:false
       t.string :routes, null:false
@@ -14,5 +15,6 @@ class CreateVpnHosts < ActiveRecord::Migration
       t.timestamps
     end
     add_index :vpn_hosts, :ip, unique:true
+    add_index :vpn_hosts, :domain, unique:true
   end
 end

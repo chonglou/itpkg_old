@@ -9,11 +9,12 @@ zh-CN:
       project:
         name: '名称'
         details: '详细信息'
-      vpn_setup:
+      vpn_host:
         host: '主机地址'
         routes: '路由列表'
         net: '网段'
         dns: 'DNS列表'
+        domain: '域名'
       vpn_user:
         email: '邮箱'
         passwd: '密码'

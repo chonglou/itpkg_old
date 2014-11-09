@@ -519,6 +519,7 @@ ActiveRecord::Schema.define(version: 20141107202156) do
 
   create_table "vpn_hosts", force: true do |t|
     t.string   "name",                                null: false
+    t.string   "domain",                              null: false
     t.string   "ip",                                  null: false
     t.string   "network",                             null: false
     t.string   "routes",                              null: false
@@ -532,6 +533,7 @@ ActiveRecord::Schema.define(version: 20141107202156) do
     t.datetime "updated_at"
   end
 
+  add_index "vpn_hosts", ["domain"], name: "index_vpn_hosts_on_domain", unique: true, using: :btree
   add_index "vpn_hosts", ["ip"], name: "index_vpn_hosts_on_ip", unique: true, using: :btree
 
   create_table "vpn_logs", force: true do |t|

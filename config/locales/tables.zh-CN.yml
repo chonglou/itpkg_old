@@ -12,6 +12,7 @@ zh-CN:
       end_date: '截止日期'
     vpn_host:
       name: '名称'
+      domain: '域名'
       ip: 'IP地址'
       network: '网段'
       routes: '路由表'

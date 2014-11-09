@@ -10,9 +10,9 @@ class Vpn::HostsController < ApplicationController
         {label: t('links.vpn'), url: vpn_path, style: 'warning'},
 
     ]
-    @hosts = Vpn::Host.select(:id, :name, :ip, :network, :routes, :dns).map do |h|
+    @hosts = Vpn::Host.select(:id, :name, :domain, :ip, :network, :routes, :dns).map do |h|
       {
-          cols: [h.name, h.ip, h.network, h.routes.gsub(/\n/, '<br/>'), h.dns.gsub(/\n/, '<br/>')],
+          cols: [h.name, h.domain, h.ip, h.network, h.routes.gsub(/\n/, '<br/>'), h.dns.gsub(/\n/, '<br/>')],
           url: vpn_host_path(h.id)
       }
 
@@ -25,7 +25,7 @@ class Vpn::HostsController < ApplicationController
   end
 
   def create
-    @host = Vpn::Host.new params.require(:vpn_host).permit(:name, :ip, :network, :routes, :dns)
+    @host = Vpn::Host.new params.require(:vpn_host).permit(:name, :ip, :domain, :network, :routes, :dns)
     if @host.valid?
       @host.password = Linux::OpenVpn.grant!(@host.ip)
       # todo
@@ -44,7 +44,7 @@ class Vpn::HostsController < ApplicationController
 
   def update
     @host = Vpn::Host.find params[:id]
-    if @host.update(params.require(:vpn_host).permit(:name, :network, :routes, :dns))
+    if @host.update(params.require(:vpn_host).permit(:name, :domain, :network, :routes, :dns))
       redirect_to vpn_host_path(@host.id)
     else
       render 'edit'
