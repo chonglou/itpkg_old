@@ -21,9 +21,10 @@ zh-CN:
       email_domain:
         name: '名称'
       vpn_host:
-        host: '主机地址'
+        name: '名称'
+        ip: '主机地址'
         routes: '路由列表'
-        net: '网段'
+        network: '网段'
         dns: 'DNS列表'
         domain: '域名'
       vpn_user:

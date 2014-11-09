@@ -72,15 +72,18 @@ class Vpn::HostsController < ApplicationController
 
   def install_sh
     host = Vpn::Host.find params[:host_id]
-    text = Linux::OpenVpn.install_sh({
-                                         id: host.id,
-                                         password: host.password,
-                                         host: host.ip,
-                                         network: host.network,
-                                         routes: host.routes.split("\r\n"),
-                                         dns: host.dns.split("\r\n")
-                                     })
-    send_data text, filename: 'install.sh'
+    cfg = {
+        id: host.id,
+        password: host.password,
+        host: host.ip,
+        network: host.network,
+        routes: host.routes.split("\r\n"),
+        dns: host.dns.split("\r\n")
+    }
+
+    tmp = Template.find_by flag:'ops.vpn', name:'install.sh'
+
+    send_data ERB.new(tmp.to_sh).result(binding), filename: 'install.sh'
   end
 
 end

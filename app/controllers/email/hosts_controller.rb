@@ -70,7 +70,9 @@ class Email::HostsController < ApplicationController
 
   def install_sh
     host = Email::Host.find params[:host_id]
-    text = Linux::Email.install_sh({id: host.id, password: host.password})
-    send_data text, filename: 'install.sh'
+    cfg = {id: host.id, password: host.password}
+
+    tmp = Template.find_by flag:'ops.email', name:'install.sh'
+    send_data ERB.new(tmp.to_sh).result(binding), filename: 'install.sh'
   end
 end
