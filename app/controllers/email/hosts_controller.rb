@@ -1,4 +1,4 @@
-require 'itpkg/linux/email'
+require 'itpkg/utils/mysql_helper'
 
 class Email::HostsController < ApplicationController
   before_action :must_admin!
@@ -24,7 +24,15 @@ class Email::HostsController < ApplicationController
   def create
     @host = Email::Host.new params.require(:email_host).permit(:name, :ip)
     if @host.valid?
-      @host.password = Linux::Email.grant! @host.ip
+      @host.password = Itpkg::MysqlHelper.grant!(
+          'email',
+          @host.ip,
+          {
+              'email_domains' => 'SELECT',
+              'email_users' => 'SELECT',
+              'email_aliases' => 'SELECT'
+          }
+      )
       #todo
       @host.certificate_id = 0
       @host.weight = 0
@@ -52,7 +60,7 @@ class Email::HostsController < ApplicationController
   def destroy
     host = Email::Host.find params[:id]
     if host
-      Linux::Email.drop! host.ip
+      Itpkg::MysqlHelper.drop! 'email', host.ip
       host.destroy
     end
     redirect_to email_hosts_path
@@ -72,7 +80,7 @@ class Email::HostsController < ApplicationController
     host = Email::Host.find params[:host_id]
     cfg = {id: host.id, password: host.password}
 
-    tmp = Template.find_by flag:'ops.email', name:'install.sh'
+    tmp = Template.find_by flag: 'ops.email', name: 'install.sh'
     send_data ERB.new(tmp.to_sh).result(binding), filename: 'install.sh'
   end
 end

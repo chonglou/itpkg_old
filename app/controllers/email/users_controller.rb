@@ -1,4 +1,3 @@
-require 'itpkg/linux/email'
 
 class Email::UsersController < ApplicationController
   before_action :must_admin!
@@ -37,7 +36,7 @@ class Email::UsersController < ApplicationController
         render 'new'
       else
         @user.email = email
-        @user.password = Linux::Email.password @user.password
+        @user.password = _password @user.password
         @user.save
         redirect_to email_users_path
       end
@@ -56,7 +55,7 @@ class Email::UsersController < ApplicationController
   def update
 
     rv = params.require(:email_user).permit(:password)
-    rv['password'] = Linux::Email.password rv['password']
+    rv['password'] = _password rv['password']
     @user = Email::User.find params[:id]
     if @user.update(rv)
       redirect_to email_users_path
@@ -78,5 +77,10 @@ class Email::UsersController < ApplicationController
   private
   def user_params
     params.require(:email_user).permit(:email, :password, :domain_id)
+  end
+
+  def _password(password)
+    result = ActiveRecord::Base.connection.execute "SELECT ENCRYPT('#{password}', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16)))"
+    result.first[0]
   end
 end

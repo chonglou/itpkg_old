@@ -21,4 +21,7 @@ else
 
   require 'itpkg/linux/certificate'
   Certificate.create Linux::Certificate.root(10)
+
+  require 'itpkg/constants'
+  Itpkg::TEMPLATES_TO_LOAD.each{|t| Template.create t}
 end

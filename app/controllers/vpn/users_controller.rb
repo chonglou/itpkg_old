@@ -1,5 +1,3 @@
-require 'itpkg/linux/openvpn'
-
 class Vpn::UsersController < ApplicationController
   before_action :must_admin!
 
@@ -20,7 +18,7 @@ class Vpn::UsersController < ApplicationController
     @user = Vpn::User.new params.require(:vpn_user).permit(:email, :password, :start_date, :end_date)
     @user.enable = true
     if @user.valid?
-      @user.password = Linux::OpenVpn.password @user.password
+      @user.password = _password @user.password
       @user.save
       Vpn::Log.create email: @user.email, message: t('log.vpn_user.created'), created: Time.now
       redirect_to vpn_users_path
@@ -41,7 +39,7 @@ class Vpn::UsersController < ApplicationController
       rv = params.require(:vpn_user).permit(:enable, :start_date, :end_date)
     else
       rv = params.require(:vpn_user).permit(:password, :enable, :start_date, :end_date)
-      rv['password'] = Linux::OpenVpn.password rv['password']
+      rv['password'] = _password rv['password']
     end
 
     @user = Vpn::User.find params[:id]
@@ -65,5 +63,11 @@ class Vpn::UsersController < ApplicationController
     redirect_to vpn_users_path
   end
 
+  private
+  def _password(password)
+    result = ActiveRecord::Base.connection.execute "SELECT PASSWORD('#{password}')"
+    result.first[0]
+    #"*#{Digest::SHA1.hexdigest(Digest::SHA1.digest(password)).upcase}"
+  end
 
 end

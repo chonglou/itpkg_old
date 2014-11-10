@@ -1,6 +1,4 @@
-require 'itpkg/linux/openvpn'
-require 'itpkg/services/site'
-
+require 'itpkg/utils/mysql_helper'
 class Vpn::HostsController < ApplicationController
   before_action :must_admin!
 
@@ -27,7 +25,14 @@ class Vpn::HostsController < ApplicationController
   def create
     @host = Vpn::Host.new params.require(:vpn_host).permit(:name, :ip, :domain, :network, :routes, :dns)
     if @host.valid?
-      @host.password = Linux::OpenVpn.grant!(@host.ip)
+      @host.password = Itpkg::MysqlHelper.grant!(
+          'vpn',
+          @host.ip,
+          {
+              'vpn_users'=>'SELECT',
+              'vpn_logs'=>'INSERT'
+          }
+      )
       # todo
       @host.certificate_id = 0
       @host.weight = 0
@@ -54,7 +59,7 @@ class Vpn::HostsController < ApplicationController
   def destroy
     host = Vpn::Host.find params[:id]
     if host
-      Linux::OpenVpn.drop!(host.ip)
+      Itpkg::MysqlHelper.drop!('vpn', host.ip)
       host.destroy
     end
     redirect_to vpn_hosts_path
