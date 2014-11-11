@@ -7,8 +7,15 @@ common: &common
   cache:
     host: localhost
     port: 6379
+    db: 6
 
-local: &local
+  cache_lru:
+    host: localhost
+    port: 6379
+    db: 7
+
+
+prod: &local
   <<: *common
   storage: file
-  storate_path: tmp/storage/registry
+  storate_path: /tmp/storage/registry

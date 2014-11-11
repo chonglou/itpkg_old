@@ -99,10 +99,9 @@ IT-PACKAGE
 ### Setup
 
 #### Docker 
-    sudo apt-get install docker.io
-    sudo pip install docker-registry-driver-file
+    sudo apt-get install docker.io libpython2.7-dev liblzma-dev python-pip
+    sudo pip2 install docker-registry
     rake docker:start
-    sudo docker run -p 5000:5000 registry
 
 ### Start
 
