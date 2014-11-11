@@ -1,0 +1,14 @@
+common: &common
+  standalone: true
+  loglevel: info
+  search_backend: sqlalchemy
+  sqlalchemy_index_database: sqlite:////tmp/docker-registry.db
+
+  cache:
+    host: localhost
+    port: 6379
+
+local: &local
+  <<: *common
+  storage: file
+  storate_path: tmp/storage/registry

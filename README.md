@@ -97,7 +97,12 @@ IT-PACKAGE
 ## Usage
 
 ### Setup
-    rake itpkg:env # then add output lines to ~/.bashrc
+
+#### Docker 
+    sudo apt-get install docker.io
+    sudo pip install docker-registry-driver-file
+    rake docker:start
+    sudo docker run -p 5000:5000 registry
 
 ### Start
 
