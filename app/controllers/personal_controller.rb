@@ -21,14 +21,29 @@ class PersonalController < ApplicationController
     ]
     if admin?
       @items << {
+          url: clients_path,
+          logo: 'flat/256/hosting.png',
+          label: t('links.client.list')
+      }
+      @items << {
           url: email_path,
           logo: 'flat/256/black218.png',
           label: t('links.email')
       }
       @items << {
           url: vpn_path,
-          logo: 'flat/256/cloud229.png',
+          logo: 'logo/openvpn.png',
           label: t('links.vpn')
+      }
+      @items << {
+          url: dns_path,
+          logo: 'flat/256/internet5.png',
+          label: t('links.dns')
+      }
+      @items << {
+          url: nginx_hosts_path,
+          logo: 'logo/nginx.png',
+          label: t('links.nginx.list')
       }
       @items << {
           url: templates_path,

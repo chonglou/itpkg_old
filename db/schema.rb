@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141109180607) do
+ActiveRecord::Schema.define(version: 20141111192836) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -326,6 +326,11 @@ ActiveRecord::Schema.define(version: 20141109180607) do
 
   add_index "monitor_nodes", ["name"], name: "index_monitor_nodes_on_name", using: :btree
   add_index "monitor_nodes", ["uid"], name: "index_monitor_nodes_on_uid", unique: true, using: :btree
+
+  create_table "nginx_hosts", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "notices", force: true do |t|
     t.integer  "user_id",    null: false

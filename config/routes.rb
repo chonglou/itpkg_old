@@ -1,11 +1,25 @@
 Rails.application.routes.draw do
 
 
-
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
   resources :templates
+
+  #------------Client---------------
+  resources :clients
+  #------------Nginx-------------
+  namespace :nginx do
+    resources :hosts
+  end
+
+  #-------------DNS-------------
+  get 'dns' => 'dns#index'
+  namespace :dns do
+    resources :hosts, expect:[:show]
+    resources :records, expect:[:show]
+  end
+
 
   #---------email ------------------
   get 'email' => 'email#index'

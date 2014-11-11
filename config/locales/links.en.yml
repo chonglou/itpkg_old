@@ -15,6 +15,11 @@ en:
       edit: 'Edit template [%{name}]'
       remove: 'Remove template [%{name}]'
       show: 'Show template [%{name}]'
+    dns: 'Name Server'
+    nginx:
+      list: 'Nginx Server'
+    client:
+      list: 'Clients'
     email: 'Email System'
     email_host:
       list: 'Email Hosts'

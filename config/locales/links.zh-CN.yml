@@ -15,6 +15,11 @@ zh-CN:
       edit: '编辑模板 [%{name}]'
       remove: '删除模板 [%{name}]'
       show: '显示模板 [%{name}]'
+    dns: 'DNS系统'
+    nginx:
+      list: 'NGINX服务器'
+    client:
+      list: '终端列表'
     email: '邮件系统'
     email_host:
       list: 'Email主机列表'
