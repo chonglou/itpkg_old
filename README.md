@@ -96,12 +96,13 @@ IT-PACKAGE
 
 ## Usage
 
-### Setup
+### Others
 
-#### Docker 
-    sudo apt-get install docker.io libpython2.7-dev liblzma-dev python-pip
-    sudo pip2 install docker-registry
-    rake docker:start
+#### Docker
+    cap production docker:install # install docker
+    cap production docker:start # start docker service
+    cap production docker:stop # stop docker service
+    cap production docker:status # docker service status
 
 ### Start
 
