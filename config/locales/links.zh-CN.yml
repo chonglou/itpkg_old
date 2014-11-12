@@ -1,9 +1,10 @@
 zh-CN:
   links:
     home: '本站首页'
-    projects: '项目列表'
     project:
+      list: '项目列表'
       create: '新建项目'
+      edit: '编辑项目 [%{name}]'
     repositories: '代码仓库'
     docker: 'Docker'
     logging: '日志系统'

@@ -1,5 +1,8 @@
 - @title=@project.name
 
-h3 #{@project.name}
+= render 'layouts/button_group', items:@buttons, back:true
+h3 #{@title}
 hr
 = render 'layouts/thumbnail', items:@items
+br
+div #{{@project.to_html}}

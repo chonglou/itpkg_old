@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141111192836) do
+ActiveRecord::Schema.define(version: 20141112000846) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20141111192836) do
     t.integer  "status",     limit: 2,  default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "avatar",                            null: false
   end
 
   add_index "documents", ["title"], name: "index_documents_on_title", using: :btree
@@ -531,7 +532,6 @@ ActiveRecord::Schema.define(version: 20141111192836) do
     t.datetime "locked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "avatar"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

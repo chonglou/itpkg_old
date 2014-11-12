@@ -5,5 +5,4 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable
 
-  mount_uploader :avatar, AvatarUploader
 end

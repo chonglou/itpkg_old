@@ -6,7 +6,7 @@ class PersonalController < ApplicationController
         {
             url: projects_path,
             logo: 'flat/256/businessman3.png',
-            label: t('links.projects')
+            label: t('links.project.list')
         },
         {
             url: monitor_nodes_path,

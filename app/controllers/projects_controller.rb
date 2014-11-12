@@ -15,8 +15,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
     @project.creator_id = current_user.id
     if @project.save
-      flash[:notice] = t('labels.success')
-      redirect_to projects_path
+      redirect_to project_path(@project.id)
     else
       render :action => 'new'
     end
@@ -24,7 +23,13 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find_by params[:id]
+    @project = Project.find params[:id]
+    @buttons =  [
+        {label: t('links.project.edit', name:@project.name), url: edit_project_path(params[:id]), style: 'primary'},
+        {label: t('links.project.list'), url: projects_path, style: 'warning'},
+
+    ]
+
     @items = [
         {
             url: document_show_path(name: 'help'),
@@ -60,18 +65,31 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-
+    @project = Project.find params[:id]
   end
 
   def update
-
+    @project = Project.find params[:id]
+    if @project.update(project_params)
+      redirect_to project_path(@project.id)
+    else
+      render :action => 'edit'
+    end
   end
 
   def destroy
-
+    p = Project.find params[:id]
+    if p.creator_id == current_user.id
+      #todo 更多检查
+      p.destroy
+    end
+    redirect_to projects_path
   end
 
   private
+  def _check
+    @project.creator
+  end
   def project_params
     params.require(:project).permit(:name, :details)
   end

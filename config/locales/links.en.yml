@@ -1,9 +1,10 @@
 en:
   links:
     home: 'Home'
-    projects: 'Projects'
     project:
+      list: 'Projects'
       create: 'Create Project'
+      edit: 'Edit Profile [%{name}]'
     repositories: 'Repositories'
     docker: 'Docker'
     logging: 'Logging'

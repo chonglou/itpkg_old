@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
@@ -43,7 +42,9 @@ Rails.application.routes.draw do
   end
 
   #--------team work-----------
-  resources :projects
+  resources :projects do
+    resources :documents
+  end
 
   #----------others---------
 

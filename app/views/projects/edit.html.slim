@@ -1,0 +1,21 @@
+- @title=t('links.project.edit', name:@project.name)
+
+= bootstrap_form(@project, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :name
+      = f.text_field :name, autofocus: true
+
+    = f.group do
+      = f.label :details
+      = f.text_area :details
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')
+
+
+
