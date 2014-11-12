@@ -1,10 +1,11 @@
-require 'json'
-require 'highline/import'
-require_relative '../itpkg/utils/encryptor'
+namespace :setup do
 
-namespace :itpkg do
   desc 'Shell env'
   task :env do
+    require 'json'
+    require 'highline/import'
+    require_relative '../itpkg/utils/encryptor'
+
     # types = %w(local s3)
     # type = ask("Attachment storage type? (#{types.join '/'})") { |q| q.default=types[0] }.to_s
     # case type
@@ -41,7 +42,7 @@ ITPKG_SECRET_KEY_BASE="#{`pwgen -n 128`.strip}"
 ITPKG_DEVISE_SECRET_KEY="#{`pwgen -n 128`.strip}"
 ITPKG_PASSWORD="#{`pwgen -n 128`.strip}"
 ITPKG_CIPHER="#{Itpkg::Encryptor.generate}"
-ITPKG_REDIS_URL=#{ask('Redis Provider? '){|q|q.default='redis://localhost:6379/0'}}
+ITPKG_REDIS_URL=#{ask('Redis Provider? ') { |q| q.default='redis://localhost:6379/0' }}
 
 export RAILS_ENV ITPKG_DATABASE_PASSWORD ITPKG_DOMAIN ITPKG_MEMCACHED_HOSTS ITPKG_MAILER_SENDER ITPKG_SECRET_KEY_BASE ITPKG_DEVISE_SECRET_KEY ITPKG_PASSWORD ITPKG_CIPHER ITPKG_REDIS_URL
 ################# END ###################

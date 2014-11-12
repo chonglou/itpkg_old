@@ -1,7 +1,7 @@
 namespace :nginx do
   desc 'Reload nginx config files.'
   task :reload do
-    on roles(:web) do
+    on roles(:front) do
       execute 'sudo nginx -s reload'
     end
   end

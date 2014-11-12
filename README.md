@@ -1,36 +1,44 @@
 IT-PACKAGE
 =====
 
-## Env
-  mysql, redis, pwgen, openssl, ssh, net-snmp, git
+## Clone source(RUN ON LOCAL)
+    git clone https://github.com/chonglou/itpkg.git
+    cd itpkg
+    
+## Setting up deploy user(NEEDS TO BE DONE ON EVERY SERVER IN YOUR ENVIRONMENT)
 
-## Deploy(TEST PASS ON UBUNTU)
-
-### Add deploy user(RUN AS ROOT or SUDO)
+### Create deploy user (RUN AS ROOT)
     useradd -s /bin/bash -m deploy
-    passwd deploy
-    su - deploy
-    mkdir .ssh
-    chmod 700 .ssh
-
-### Setup sudo (OPTIONAL):
-
- * Add to file /etc/sudoers/deploy
-
+    passwd -l deploy # locks user
+    mkdir -p ~deploy/.ssh
+    chown deploy:deploy ~deploy/.ssh
+    chmod 700 ~deploy/.ssh
+    
+#### Setup sudo (OPTIONAL):
+Add to file /etc/sudoers.d/deploy
+     
     deploy ALL=(ALL) NOPASSWD: ALL
 
-### Upload your ssh public key (RUN ON LOCAL)
-    scp ~/.ssh/id_rsa.pub deploy@YOUR_HOST:/tmp # id_rsa.pub is your public key file
+### Upload your public key(RUN ON LOCAL)
+    ssh-keygen -t rsa # ONLY RUN IF YOU DIDN'T HAVE SSH KEYS
+    scp ~/.ssh/id_rsa.pub deploy@YOUR_HOST:/tmp # id_rsa.pub is your public key file 
 
 ### Setup ssh login by key file.
     cat /tmp/id_rsa.pub >> .ssh/authorized_keys 
 
-### Test ssh login
-    ssh deploy@YOUR_HOST # RUN ON LOCAL
+### Test ssh login(RUN ON LOCAL)
+    ssh deploy@YOUR_HOST 
+    
+### Setup ruby env
+    ssh deploy@YOUR_HOST 'bash -s' < tools/init.sh
+
+## Deploy
+
+### Storage
 
 ### Install needed package
     sudo apt-get update
-    sudo apt-get -y install git libgit2-dev build-essential cmake pkg-config openssl libssl-dev mysql-server libmysqlclient-dev nginx nodejs memcached redis-server 
+    sudo apt-get -y install git libgit2-dev build-essential cmake pkg-config openssl libssl-dev mysql-server libmysqlclient-dev nginx nodejs  
     sudo apt-get clean
 
 ### Install rbenv
