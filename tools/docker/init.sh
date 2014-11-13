@@ -1,5 +1,10 @@
 #!/bin/sh
 export CONFIGURE_OPTS=" --disable-install-doc"
+RUN useradd -s /bin/bash -m deploy
+RUN passwd -l deploy
+RUN mkdir -p $ITPKG_HOME
+RUN chown deploy:deploy $ITPKG_HOME
+USER deploy
 
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
 git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build

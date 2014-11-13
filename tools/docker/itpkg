@@ -1,34 +1,36 @@
 #!/bin/sh
 
-NAME=itpkg
+NAME=itpkg_running
 MNT=$(pwd)/mnt
 
 if [ "$(id -u)" != "0" ]; then sudo='sudo' ; fi
-
-[ -d $MNT ] || mkdir -pv $MNT
 
 if $sudo docker ps -a | grep --quiet $NAME
 then
 	ARGS="start $NAME"
 else
-	ARGS="run -p 443:443 --name itpkg -v $MNT:/mnt -t itpkg bash"
+	ARGS="run -p 2222:22 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v $MNT:/mnt -d itpkg:latest"
 fi
 
 case $1 in
+	setup)
+		;;
 	remove)
 		$sudo docker rm $NAME
 		;;
-	shell)
-		$sudo docker $ARGS
-		;;
 	start)
-		$sudo docker $ARGS -d
+		if [ -d $MNT ] 
+		then
+			$sudo docker $ARGS
+		else
+			echo "Directory $MNT not exists!"
+		fi
 		;;
 	stop)
 		$sudo docker stop $NAME
 		;;
 	build)
-		$sudo docker build -t $NAME .
+		$sudo docker build -t itpkg .
 		;;
 	status)
 		$sudo docker version
@@ -38,11 +40,7 @@ case $1 in
 	logs)
 		$sudo docker logs -f $NAME
 		;;
-	test)
-		$sudo docker run --rm -P $NAME 
-		;;
 	*)
-		echo 'Usage: ./itpkg.sh start|stop|status|logs|shell|remove|build'
+		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|setup'
 esac
 
-	#{NAME}; then ; else ; fi
