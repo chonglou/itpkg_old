@@ -14,5 +14,6 @@ IT-PACKAGE
     vi mnt/nginx/itpkg.conf # NGINX SETTING
     cp YOUR_SSL.pem mnt/nginx/ssl
     vi mnt/shared/vars # SITE SETTING
+    chmod +x itpkg
     ./itpkg start
 
