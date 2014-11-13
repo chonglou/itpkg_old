@@ -1,0 +1,48 @@
+#!/bin/sh
+
+NAME=itpkg
+MNT=$(pwd)/mnt
+
+if [ "$(id -u)" != "0" ]; then sudo='sudo' ; fi
+
+[ -d $MNT ] || mkdir -pv $MNT
+
+if $sudo docker ps -a | grep --quiet $NAME
+then
+	ARGS="start $NAME"
+else
+	ARGS="run -p 443:443 --name itpkg -v $MNT:/mnt -t itpkg bash"
+fi
+
+case $1 in
+	remove)
+		$sudo docker rm $NAME
+		;;
+	shell)
+		$sudo docker $ARGS
+		;;
+	start)
+		$sudo docker $ARGS -d
+		;;
+	stop)
+		$sudo docker stop $NAME
+		;;
+	build)
+		$sudo docker build -t $NAME .
+		;;
+	status)
+		$sudo docker version
+		$sudo docker info
+		$sudo docker ps
+		;;
+	logs)
+		$sudo docker logs -f $NAME
+		;;
+	test)
+		$sudo docker run --rm -P $NAME 
+		;;
+	*)
+		echo 'Usage: ./itpkg.sh start|stop|status|logs|shell|remove|build'
+esac
+
+	#{NAME}; then ; else ; fi
