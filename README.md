@@ -17,3 +17,7 @@ IT-PACKAGE
     chmod +x itpkg
     ./itpkg start
 
+## That's ALL
+
+ * You can open "https::YOUR_HOST" in browser or run "ssh -p 2222 root@localhost" in terminal console(default password is toor).
+
