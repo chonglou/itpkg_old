@@ -22,6 +22,9 @@ RUN echo 'root:toor' | sudo chpasswd
 RUN sudo sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
 RUN sudo sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config
 RUN sudo systemctl enable sshd
+RUN ssh-keygen -b 2048 -t rsa  -f $HOME/.ssh/id_rsa -q -N ""
+RUN echo 'export PATH="$HOME/local/bin:$PATH"' >> ~/.bashrc
+ENV PATH $HOME/local/bin:$PATH
 
 # rbenv install
 RUN sudo pacman -S --noconfirm --needed base-devel git 
@@ -47,9 +50,9 @@ RUN rm -r /tmp/ruby-build*
 
 # itpkg install
 RUN git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current
-RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake
-RUN cd $ITPKG_HOME/current && rm -r .git && bundle install --without test development
-RUN cd $ITPKG_HOME/current && rm -r log && ln -s /mnt/shared/log log && ln -s /mnt/shared/tmp tmp && ln -s /mnt/shared/vars .rbenv-vars
+RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2
+RUN cd $ITPKG_HOME/current && rm -r .git .rbenv-vars log && bundle install --without test development
+RUN cd $ITPKG_HOME/current && rm -r log && ln -s ../shared/log log && ln -s ../shared/tmp tmp && ln -s ../shared/.rbenv-vars .rbenv-vars
 
 # nginx for itpkg
 RUN sudo pacman -S --noconfirm nginx
@@ -58,6 +61,16 @@ RUN sudo ln -s /mnt/nginx/itpkg.conf /etc/nginx
 RUN sudo ln -s /mnt/nginx/ssl /etc/nginx
 RUN sudo systemctl enable nginx
 
+# gitolite
+mkdir -p $HOME/local/gitolite
+git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite
+/tmp/gitolite/install -to $HOME/local/gitolite
+RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc
+ENV PATH $HOME/gitolite:$PATH
+gitolite setup -pk $HOME/.ssh/id_rsa.pub
+git clone localhost:gitolite-admin $ITPKG_HOME/current/shared/gitolite-admin
+
+
 # other packages
 RUN sudo pacman -S --noconfirm net-tools
 
@@ -65,7 +78,7 @@ RUN sudo pacman -S --noconfirm net-tools
 RUN sudo pacman -Scc --noconfirm
 
 
-VOLUME [ "/sys/fs/cgroup" "/mnt"]
+VOLUME [ "/sys/fs/cgroup" "/etc/nginx/itpkg" "$ITPKG_HOME/shared"]
 EXPOSE 22 443
 USER root
 

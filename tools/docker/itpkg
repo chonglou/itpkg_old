@@ -30,7 +30,7 @@ case $1 in
 		$sudo docker stop $NAME
 		;;
 	build)
-		$sudo docker build -t itpkg .
+		$sudo docker build $2 -t itpkg .
 		;;
 	status)
 		$sudo docker version
