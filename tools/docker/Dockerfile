@@ -49,20 +49,22 @@ RUN gem install bundler
 RUN rm -r /tmp/ruby-build*
 
 # itpkg install
-RUN mkdir -p $ITPKG_HOME/shared
+RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2 pwgen
 RUN git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current
-RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2
-RUN cd $ITPKG_HOME/current && rm -r .git .rbenv-vars log && bundle install --without test development
-RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/*; do ln -s $i $(basename $i); done
+RUN cd $ITPKG_HOME/current && git rev-parse --short HEAD > $ITPKG_HOME/current/REVISION
+#RUN date "+%Y%m%d%H%M%S" > $ITPKG_HOME/current/REVISION
+RUN cd $ITPKG_HOME/current && rm -r .git && bundle install --without test development
+RUN mkdir -p $ITPKG_HOME/shared/log $ITPKG_HOME/shared/tmp
+RUN mv $ITPKG_HOME/current/.rbenv-vars $ITPKG_HOME/shared/.rbenv-vars && sed -i 's/development/production/' $ITPKG_HOME/shared/.rbenv-vars
+RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/* $ITPKG_HOME/shared/.[!.]*; do ln -sv $i $(basename $i); done
 
 # gitolite
 RUN mkdir -p $HOME/local/gitolite
 RUN git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite
 RUN /tmp/gitolite/install -to $HOME/local/gitolite
 RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc
-ENV PATH $HOME/gitolite:$PATH
+ENV PATH $HOME/local/gitolite:$PATH
 RUN gitolite setup -pk $HOME/.ssh/id_rsa.pub
-RUN git clone localhost:gitolite-admin $ITPKG_HOME/shared/gitolite-admin
 RUN rm -r /tmp/gitolite
 
 # nginx for itpkg
@@ -71,17 +73,33 @@ RUN sudo systemctl enable nginx
 RUN sudo sed -i '$i\    include itpkg/www.conf;'  /etc/nginx/nginx.conf
 RUN sudo mkdir -p /etc/nginx/itpkg
 RUN sudo chown -R deploy:deploy /etc/nginx/itpkg
-# todo generate ssl and www.conf
-
+RUN cd /etc/nginx/itpkg && openssl genrsa -out key.pem 2048 && openssl req -new -key key.pem  -subj "/C=US/ST=California/L=Goleta/O=itpkg/CN=itpkg.com" -out www.csr -text && openssl x509 -req -in www.csr -sha512 -days 3650  -signkey key.pem -out cert.pem -text
+ADD nginx.conf /etc/nginx/itpkg/www.conf
+RUN sudo chown deploy:deploy /etc/nginx/itpkg/www.conf
+RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf www.csr
 
 # other packages
-RUN sudo pacman -S --noconfirm net-tools
+RUN sudo pacman -S --noconfirm net-tools percona-server percona-server-clients redis memcached
+RUN sudo systemctl enable mysqld 
+RUN sudo systemctl enable memcached
+RUN sudo systemctl enable redis
+
+# init data
+RUN sudo mysqld_safe --user=mysql & \
+sleep 10s && \
+password=$(pwgen 16) && \
+echo "ITPKG_DATABASE_PASSWORD=$password" >> $ITPKG_HOME/shared/.rbenv-vars && \
+mysql -u root -h localhost -e "CREATE DATABASE itpkg CHARACTER SET utf8;GRANT ALL PRIVILEGES ON itpkg.* TO 'itpkg'@'localhost' IDENTIFIED BY '$password';FLUSH PRIVILEGES;" && \
+cd $ITPKG_HOME/current && \
+rake db:migrate && \
+rake db:seed
+RUN cd $ITPKG_HOME/current && rake assets:precompile
 
 # clean
 RUN sudo pacman -Scc --noconfirm
 
 
-VOLUME [ "/sys/fs/cgroup" "/etc/nginx/itpkg" "$ITPKG_HOME/shared"]
+VOLUME [ "/sys/fs/cgroup" "/etc/nginx/itpkg" "$ITPKG_HOME/shared" "/var/lib/mysql" "/var/log/mysql"]
 EXPOSE 22 443
 USER root
 

@@ -62,6 +62,7 @@ Add to file /etc/sudoers.d/deploy
 ### MySQL(run 'mysql -u root -p')
     CREATE DATABASE itpkg CHARACTER SET utf8;
     GRANT ALL PRIVILEGES ON itpkg.* TO 'itpkg'@'localhost' IDENTIFIED BY 'YOUR PASSWORD';
+    FLUSH PRIVILEGES;
 
 ### Setup deploy directory
     sudo mkdir -p /var/www/itpkg/shared
