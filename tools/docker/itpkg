@@ -5,26 +5,21 @@ MNT=$(pwd)/mnt
 
 if [ "$(id -u)" != "0" ]; then sudo='sudo' ; fi
 
+#[ -d $MNT ] || mkdir -
+
 if $sudo docker ps -a | grep --quiet $NAME
 then
 	ARGS="start $NAME"
 else
-	ARGS="run -p 2222:22 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v $MNT:/mnt -d itpkg:latest"
+	ARGS="run -p 2222:22 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d itpkg:latest"
 fi
 
 case $1 in
-	setup)
-		;;
 	remove)
 		$sudo docker rm $NAME
 		;;
 	start)
-		if [ -d $MNT ] 
-		then
-			$sudo docker $ARGS
-		else
-			echo "Directory $MNT not exists!"
-		fi
+		$sudo docker $ARGS
 		;;
 	stop)
 		$sudo docker stop $NAME
@@ -41,6 +36,6 @@ case $1 in
 		$sudo docker logs -f $NAME
 		;;
 	*)
-		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|setup'
+		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs'
 esac
 

@@ -49,26 +49,29 @@ RUN gem install bundler
 RUN rm -r /tmp/ruby-build*
 
 # itpkg install
+RUN mkdir -p $ITPKG_HOME/shared
 RUN git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current
 RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2
 RUN cd $ITPKG_HOME/current && rm -r .git .rbenv-vars log && bundle install --without test development
-RUN cd $ITPKG_HOME/current && rm -r log && ln -s ../shared/log log && ln -s ../shared/tmp tmp && ln -s ../shared/.rbenv-vars .rbenv-vars
+RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/*; do ln -s $i $(basename $i); done
+
+# gitolite
+RUN mkdir -p $HOME/local/gitolite
+RUN git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite
+RUN /tmp/gitolite/install -to $HOME/local/gitolite
+RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc
+ENV PATH $HOME/gitolite:$PATH
+RUN gitolite setup -pk $HOME/.ssh/id_rsa.pub
+RUN git clone localhost:gitolite-admin $ITPKG_HOME/shared/gitolite-admin
+RUN rm -r /tmp/gitolite
 
 # nginx for itpkg
 RUN sudo pacman -S --noconfirm nginx
-RUN sudo sed -i '$i\    include itpkg.conf;'  /etc/nginx/nginx.conf
-RUN sudo ln -s /mnt/nginx/itpkg.conf /etc/nginx
-RUN sudo ln -s /mnt/nginx/ssl /etc/nginx
 RUN sudo systemctl enable nginx
-
-# gitolite
-mkdir -p $HOME/local/gitolite
-git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite
-/tmp/gitolite/install -to $HOME/local/gitolite
-RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc
-ENV PATH $HOME/gitolite:$PATH
-gitolite setup -pk $HOME/.ssh/id_rsa.pub
-git clone localhost:gitolite-admin $ITPKG_HOME/current/shared/gitolite-admin
+RUN sudo sed -i '$i\    include itpkg/www.conf;'  /etc/nginx/nginx.conf
+RUN sudo mkdir -p /etc/nginx/itpkg
+RUN sudo chown -R deploy:deploy /etc/nginx/itpkg
+# todo generate ssl and www.conf
 
 
 # other packages
