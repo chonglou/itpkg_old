@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141112000846) do
+ActiveRecord::Schema.define(version: 20141120052120) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -352,6 +352,7 @@ ActiveRecord::Schema.define(version: 20141112000846) do
 
   add_index "permissions", ["operation"], name: "index_permissions_on_operation", using: :btree
   add_index "permissions", ["resource"], name: "index_permissions_on_resource", using: :btree
+  add_index "permissions", ["role", "resource", "operation"], name: "index_permissions_on_role_and_resource_and_operation", unique: true, using: :btree
   add_index "permissions", ["role"], name: "index_permissions_on_role", using: :btree
 
   create_table "project_users", force: true do |t|
@@ -437,13 +438,15 @@ ActiveRecord::Schema.define(version: 20141112000846) do
   add_index "s_types", ["name"], name: "index_s_types_on_name", using: :btree
 
   create_table "settings", force: true do |t|
-    t.string   "key",        null: false
-    t.text     "val",        null: false
+    t.string   "var",                   null: false
+    t.text     "value"
+    t.integer  "thing_id"
+    t.string   "thing_type", limit: 30
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "settings", ["key"], name: "index_settings_on_key", unique: true, using: :btree
+  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
   create_table "stories", force: true do |t|
     t.string   "title",                               null: false

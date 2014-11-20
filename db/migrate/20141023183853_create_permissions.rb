@@ -15,5 +15,7 @@ class CreatePermissions < ActiveRecord::Migration
     add_index :permissions, :resource
     add_index :permissions, :operation
 
+    add_index :permissions, [:role, :resource, :operation], unique:true
+
   end
 end
