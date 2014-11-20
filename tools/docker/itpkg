@@ -11,7 +11,7 @@ if docker ps -a | grep --quiet $NAME
 then
 	ARGS="start $NAME"
 else
-	ARGS="run -p 2222:22 -p 443:443 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d itpkg:latest"
+	ARGS="run -p 2222:22 -p 443:443 -p 25:25 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d itpkg:latest"
 fi
 
 case $1 in

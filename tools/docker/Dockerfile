@@ -79,10 +79,11 @@ RUN sudo chown deploy:deploy /etc/nginx/itpkg/www.conf
 RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf www.csr
 
 # other packages
-RUN sudo pacman -S --noconfirm net-tools percona-server percona-server-clients redis memcached
+RUN sudo pacman -S --noconfirm net-tools percona-server percona-server-clients redis memcached exim
 RUN sudo systemctl enable mysqld 
 RUN sudo systemctl enable memcached
 RUN sudo systemctl enable redis
+RUN sudo systemctl enable exim
 
 # init data
 RUN sudo mysqld_safe --user=mysql & \
