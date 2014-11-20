@@ -17,14 +17,14 @@ class PersonalController < ApplicationController
             url: logging_nodes_path,
             logo: 'flat/256/chopped.png',
             label: t('links.logging')
+        },
+        {
+            url: repositories_path,
+            logo: 'flat/256/three128.png',
+            label: t('links.repository.list')
         }
     ]
     if admin?
-      @items << {
-          url: repositories_path,
-          logo: 'flat/256/three128.png',
-          label: t('links.repository.list')
-      }
       @items << {
           url: clients_path,
           logo: 'flat/256/hosting.png',

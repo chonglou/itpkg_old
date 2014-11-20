@@ -11,7 +11,7 @@ en:
     settings: 'Settings'
     repository:
       list: 'Repositories'
-      crete: 'Create a new repository'
+      create: 'Create a new repository'
       edit: 'Edit repository [%{name}]'
       remove: 'Remove repository [%{name}]'
       show: 'Show repository [%{name}]'

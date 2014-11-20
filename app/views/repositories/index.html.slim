@@ -1,0 +1,4 @@
+- @title=t('links.repository.list')
+
+= render 'layouts/button_group', items:[{label:t('buttons.create'),url:new_repository_path,style:'primary'}], back:true
+= render 'layouts/item_list', items:@repositories

@@ -1,0 +1,18 @@
+- @title=t('links.repository.edit', name:@repository.name)
+
+= bootstrap_form(@repository, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :title
+      = f.text_field :title, autofocus: true
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')
+
+h3 #{t('links.repository.remove', name:@repository.name)}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:repository_path(@repository)

@@ -1,0 +1,18 @@
+- @title=t('links.repository.create')
+
+= bootstrap_form(@repository, url:{action:'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(t('links.repository.create'))
+
+    = f.group do
+      = f.label :name
+      = f.text_field :name, autofocus: true
+
+    = f.group do
+      = f.label :title
+      = f.text_area :title
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')

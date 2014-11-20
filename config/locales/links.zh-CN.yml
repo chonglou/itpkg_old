@@ -11,7 +11,7 @@ zh-CN:
     settings: '站点参数'
     repository:
       list: 'GIT仓库列表'
-      crete: '新建GIT仓库'
+      create: '新建GIT仓库'
       edit: '编辑GIT仓库 [%{name}]'
       remove: '删除GIT仓库 [%{name}]'
       show: '显示GIT仓库 [%{name}]'

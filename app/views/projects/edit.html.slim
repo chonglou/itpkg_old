@@ -17,5 +17,7 @@
       = f.submit t('buttons.submit')
       = f.back t('buttons.back')
 
-
+h3 #{t('links.project.remove', name:@project.name)}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:project_path(@project)
 

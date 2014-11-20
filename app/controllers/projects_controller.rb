@@ -80,8 +80,11 @@ class ProjectsController < ApplicationController
   def destroy
     p = Project.find params[:id]
     if p.creator_id == current_user.id
-      #todo 更多检查
-      p.destroy
+      if ProjectUser.where(project_id:p.id).count ==0
+        p.destroy
+      else
+        flash[:alert] = t('labels.in_using')
+      end
     end
     redirect_to projects_path
   end
