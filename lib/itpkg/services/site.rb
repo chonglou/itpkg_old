@@ -38,14 +38,12 @@ module Itpkg
 
   end
 
-
   module SiteService
     module_function
-
-    def version
-      v = "#{Rails.root}/REVISION"
-      if  File.exist?(v)
-        "#{File.open(v, 'r') { |f| f.read.strip }}-#{File.basename Rails.root}"
+    def version!
+      version_file = "#{Rails.root}/REVISION"
+      if  File.exist?(version_file)
+        Setting.version = "#{File.open(version_file, 'r') { |f| f.read.strip }}-#{File.basename Rails.root}"
       end
     end
   end

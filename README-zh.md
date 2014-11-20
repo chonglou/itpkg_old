@@ -41,7 +41,11 @@ IT包
 
 #### 创建controller
 
-   rails generate controller name act1 act2  --no-assets --no-helper
+    rails generate controller name act1 act2  --no-assets --no-helper
+
+#### 创建集成测试
+
+    rails generate integration_test act
 
 #### 启动
 

@@ -21,6 +21,11 @@ class PersonalController < ApplicationController
     ]
     if admin?
       @items << {
+          url: repositories_path,
+          logo: 'flat/256/three128.png',
+          label: t('links.repository.list')
+      }
+      @items << {
           url: clients_path,
           logo: 'flat/256/hosting.png',
           label: t('links.client.list')

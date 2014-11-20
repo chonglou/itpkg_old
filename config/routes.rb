@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   resources :logging_nodes
   resources :templates
 
+  #-------------Repositories-----------
+  resources :repositories
+
   #------------Client---------------
   resources :clients
   #------------Nginx-------------

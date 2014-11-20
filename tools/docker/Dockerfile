@@ -121,7 +121,8 @@ RUN echo "set nobackup" >> ~/.vimrc
 RUN sudo pacman -Scc --noconfirm
 
 
-VOLUME [ "/sys/fs/cgroup" "/etc/nginx/itpkg" "$ITPKG_HOME/shared" "/var/lib/mysql" "/var/log/mysql"]
+#VOLUME [ "/sys/fs/cgroup" "/etc/nginx/itpkg" "$ITPKG_HOME/shared" "/var/lib/mysql" "/var/log/mysql"]
+VOLUME ["/etc/nginx/itpkg" "$ITPKG_HOME/shared"]
 EXPOSE 22 25 443
 USER root
 

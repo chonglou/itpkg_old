@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RepositoryLogTest < ActiveSupport::TestCase
+class GitoliteTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

@@ -5,11 +5,16 @@ en:
       list: 'Projects'
       create: 'Create Project'
       edit: 'Edit Profile [%{name}]'
-    repositories: 'Repositories'
     docker: 'Docker'
     logging: 'Logging'
     monitor: 'Monitor'
     settings: 'Settings'
+    repository:
+      list: 'Repositories'
+      crete: 'Create a new repository'
+      edit: 'Edit repository [%{name}]'
+      remove: 'Remove repository [%{name}]'
+      show: 'Show repository [%{name}]'
     template:
       list: 'Templates'
       create: 'Create a new template'

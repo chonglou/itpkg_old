@@ -5,11 +5,16 @@ zh-CN:
       list: '项目列表'
       create: '新建项目'
       edit: '编辑项目 [%{name}]'
-    repositories: '代码仓库'
     docker: 'Docker'
     logging: '日志系统'
     monitor: '监控系统'
     settings: '站点参数'
+    repository:
+      list: 'GIT仓库列表'
+      crete: '新建GIT仓库'
+      edit: '编辑GIT仓库 [%{name}]'
+      remove: '删除GIT仓库 [%{name}]'
+      show: '显示GIT仓库 [%{name}]'
     template:
       list: '模板列表'
       create: '新建模板'
