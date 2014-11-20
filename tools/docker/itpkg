@@ -1,5 +1,6 @@
 #!/bin/sh
 
+REPO=chonglou/itpkg
 NAME=itpkg_instance
 MNT=$(pwd)/mnt
 
@@ -11,7 +12,7 @@ if docker ps -a | grep --quiet $NAME
 then
 	ARGS="start $NAME"
 else
-	ARGS="run -p 2222:22 -p 443:443 -p 25:25 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d itpkg:latest"
+	ARGS="run -p 2222:22 -p 443:443 -p 25:25 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d $REPO:latest"
 fi
 
 case $1 in
@@ -25,7 +26,7 @@ case $1 in
 		docker stop $NAME
 		;;
 	build)
-		docker build $2 -t chonglou/itpkg .
+		docker build $2 -t $REPO .
 		;;
 	status)
 		docker version
@@ -36,7 +37,7 @@ case $1 in
 		docker logs -f $NAME
 		;;
 	push)
-		docker push chonglou/itpkg
+		docker push $REPO
 		;;
 	ssh)
 		ssh -p 2222 root@localhost

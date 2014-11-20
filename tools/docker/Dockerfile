@@ -55,7 +55,9 @@ RUN cd $ITPKG_HOME/current && git rev-parse --short HEAD > $ITPKG_HOME/current/R
 #RUN date "+%Y%m%d%H%M%S" > $ITPKG_HOME/current/REVISION
 RUN cd $ITPKG_HOME/current && rm -r .git && bundle install --without test development
 RUN mkdir -p $ITPKG_HOME/shared/log $ITPKG_HOME/shared/tmp
-RUN mv $ITPKG_HOME/current/.rbenv-vars $ITPKG_HOME/shared/.rbenv-vars && sed -i 's/development/production/' $ITPKG_HOME/shared/.rbenv-vars
+RUN mv $ITPKG_HOME/current/.rbenv-vars $ITPKG_HOME/shared/.rbenv-vars 
+RUN sed -i 's/development/production/' $ITPKG_HOME/shared/.rbenv-vars 
+RUN sed -i '/^ITPKG_DATABASE_PASSWORD/d' $ITPKG_HOME/shared/.rbenv-vars 
 RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/* $ITPKG_HOME/shared/.[!.]*; do ln -sv $i $(basename $i); done
 
 # gitolite
@@ -78,8 +80,8 @@ ADD nginx.conf /etc/nginx/itpkg/www.conf
 RUN sudo chown deploy:deploy /etc/nginx/itpkg/www.conf
 RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf www.csr
 
-# other packages
-RUN sudo pacman -S --noconfirm net-tools percona-server percona-server-clients redis memcached exim
+# runtime needed packages
+RUN sudo pacman -S --noconfirm percona-server percona-server-clients redis memcached exim
 RUN sudo systemctl enable mysqld 
 RUN sudo systemctl enable memcached
 RUN sudo systemctl enable redis
@@ -101,12 +103,19 @@ ADD run.sh $ITPKG_HOME/shared/start.sh
 RUN sudo chmod +x $ITPKG_HOME/shared/start.sh
 RUN sudo systemctl enable itpkg
 
+# other package
+RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal
+RUN sudo pacman -R --noconfirm vi
+RUN cd /usr/bin && sudo ln -sv vim vi
+RUN cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc
+RUN echo "set nobackup" >> ~/.vimrc
+
 # clean
 RUN sudo pacman -Scc --noconfirm
 
 
 VOLUME [ "/sys/fs/cgroup" "/etc/nginx/itpkg" "$ITPKG_HOME/shared" "/var/lib/mysql" "/var/log/mysql"]
-EXPOSE 22 443
+EXPOSE 22 25 443
 USER root
 
 CMD ["/sbin/init"]
