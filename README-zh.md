@@ -55,6 +55,12 @@ IT包
 
     rails dbconsole
 
+#### ubuntu 无提示安装mysql
+
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password YOUR_PASSWORD'
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password YOUR_PASSWORD'
+    sudo apt-get -y install mysql-server
+
 
 #### 清空mysql root密码
     UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
