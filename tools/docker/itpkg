@@ -3,11 +3,11 @@
 NAME=itpkg_instance
 MNT=$(pwd)/mnt
 
-if [ "$(id -u)" != "0" ]; then sudo='sudo' ; fi
+#if [ "$(id -u)" != "0" ]; then sudo='sudo' ; fi
 
 #[ -d $MNT ] || mkdir -
 
-if $sudo docker ps -a | grep --quiet $NAME
+if docker ps -a | grep --quiet $NAME
 then
 	ARGS="start $NAME"
 else
@@ -16,24 +16,30 @@ fi
 
 case $1 in
 	remove)
-		$sudo docker rm $NAME
+		docker rm $NAME
 		;;
 	start)
-		$sudo docker $ARGS
+		docker $ARGS
 		;;
 	stop)
-		$sudo docker stop $NAME
+		docker stop $NAME
 		;;
 	build)
-		$sudo docker build $2 -t itpkg .
+		docker build $2 -t chonglou/itpkg .
 		;;
 	status)
-		$sudo docker version
-		$sudo docker info
-		$sudo docker ps
+		docker version
+		docker info
+		docker ps
 		;;
 	logs)
-		$sudo docker logs -f $NAME
+		docker logs -f $NAME
+		;;
+	push)
+		docker push chonglou/itpkg
+		;;
+	ssh)
+		ssh -p 2222 root@localhost
 		;;
 	*)
 		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs'
