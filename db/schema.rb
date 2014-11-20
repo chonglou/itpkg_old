@@ -79,11 +79,13 @@ ActiveRecord::Schema.define(version: 20141120052120) do
     t.integer  "user_id",    null: false
     t.string   "logo",       null: false
     t.string   "username",   null: false
+    t.string   "label",      null: false
     t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "contacts", ["label"], name: "index_contacts_on_label", unique: true, using: :btree
   add_index "contacts", ["username"], name: "index_contacts_on_username", using: :btree
 
   create_table "dns_acls", force: true do |t|
@@ -375,29 +377,23 @@ ActiveRecord::Schema.define(version: 20141120052120) do
   create_table "repositories", force: true do |t|
     t.integer  "creator_id",            null: false
     t.string   "name",       limit: 16, null: false
-    t.string   "title"
+    t.string   "title",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "repositories", ["name"], name: "index_repositories_on_name", unique: true, using: :btree
 
-  create_table "repository_logs", force: true do |t|
-    t.integer  "repository_id", null: false
-    t.string   "branch",        null: false
-    t.string   "name",          null: false
-    t.string   "email",         null: false
-    t.string   "message",       null: false
-    t.datetime "created",       null: false
-  end
-
   create_table "repository_users", force: true do |t|
-    t.integer  "repository_id",  null: false
-    t.integer  "user_id",        null: false
-    t.integer  "certificate_id", null: false
+    t.integer  "repository_id",                  null: false
+    t.integer  "user_id",                        null: false
+    t.integer  "certificate_id", default: 0,     null: false
+    t.boolean  "writable",       default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "repository_users", ["user_id", "repository_id"], name: "index_repository_users_on_user_id_and_repository_id", unique: true, using: :btree
 
   create_table "rss_sites", force: true do |t|
     t.string   "title",                     null: false

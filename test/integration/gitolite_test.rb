@@ -6,12 +6,14 @@ require 'fileutils'
 class GitoliteTest < ActionDispatch::IntegrationTest
   ADMIN_PATH = "#{Rails.root}/tmp/storage/gitolite-admin"
 
-  test 'clone admin' do
-    assert @ig.admin!
+  test '0 clone' do
+    @ig.pull
+    @ig.export
+    @ig.commit
+    @ig.push
   end
 
   def setup
-    @ig = Itpkg::Gitolite
     if Dir.exist?(ADMIN_PATH)
       FileUtils.mv ADMIN_PATH, "#{ADMIN_PATH}-bak"
     end
@@ -19,14 +21,19 @@ class GitoliteTest < ActionDispatch::IntegrationTest
     Setting.git_admin_username = ENV['USER']
     Setting.git_admin_pub_key = "#{ENV['HOME']}/.ssh/id_rsa.pub"
     Setting.git_admin_key = "#{ENV['HOME']}/.ssh/id_rsa"
+    Setting.git_admin_email = 'git@test.com'
 
+    @ig = Itpkg::Gitolite.new
+    @ig.open
   end
 
+
   def teardown
+    FileUtils.rm_r ADMIN_PATH
     if Dir.exist?("#{ADMIN_PATH}-bak")
       FileUtils.mv "#{ADMIN_PATH}-bak", ADMIN_PATH
     end
-    FileUtils.rm_r ADMIN_PATH
+    @ig.close
   end
 
 end
