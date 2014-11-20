@@ -72,13 +72,14 @@ RUN rm -r /tmp/gitolite
 # nginx for itpkg
 RUN sudo pacman -S --noconfirm nginx
 RUN sudo systemctl enable nginx
-RUN sudo sed -i '$i\    include itpkg/www.conf;'  /etc/nginx/nginx.conf
+RUN sudo sed -i '$i\    include itpkg/*.conf;'  /etc/nginx/nginx.conf
 RUN sudo mkdir -p /etc/nginx/itpkg
 RUN sudo chown -R deploy:deploy /etc/nginx/itpkg
-RUN cd /etc/nginx/itpkg && openssl genrsa -out key.pem 2048 && openssl req -new -key key.pem  -subj "/C=US/ST=California/L=Goleta/O=itpkg/CN=itpkg.com" -out www.csr -text && openssl x509 -req -in www.csr -sha512 -days 3650  -signkey key.pem -out cert.pem -text
-ADD nginx.conf /etc/nginx/itpkg/www.conf
-RUN sudo chown deploy:deploy /etc/nginx/itpkg/www.conf
-RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf www.csr
+RUN cd /etc/nginx/itpkg && openssl genrsa -out key.pem 2048 && openssl req -new -key key.pem  -subj "/C=US/ST=California/L=Goleta/O=itpkg/CN=itpkg.com" -out cert.csr -text && openssl x509 -req -in cert.csr -sha512 -days 3650  -signkey key.pem -out cert.pem -text
+ADD nginx/www.conf /etc/nginx/itpkg/www.conf
+ADD nginx/wss.conf /etc/nginx/itpkg/wss.conf
+RUN sudo chown deploy:deploy /etc/nginx/itpkg/{www,wss}.conf
+RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf cert.csr
 
 # runtime needed packages
 RUN sudo pacman -S --noconfirm percona-server percona-server-clients redis memcached exim
@@ -97,11 +98,17 @@ cd $ITPKG_HOME/current && \
 rake db:migrate && \
 rake db:seed
 RUN cd $ITPKG_HOME/current && rake assets:precompile
-RUN mkdir -p $ITPKG_HOME/shared/tmp/{pids,sockets}
-ADD systemd.conf /etc/systemd/system/itpkg.service
-ADD run.sh $ITPKG_HOME/shared/start.sh
-RUN sudo chmod +x $ITPKG_HOME/shared/start.sh
-RUN sudo systemctl enable itpkg
+RUN mkdir -p $ITPKG_HOME/shared/tmp/{pids,sockets,storage}
+ADD systemd/www.conf /etc/systemd/system/itpkg-www.service
+ADD systemd/www.sh $ITPKG_HOME/shared/www.sh
+ADD systemd/wss.conf /etc/systemd/system/itpkg-wss.service
+ADD systemd/wss.sh $ITPKG_HOME/shared/wss.sh
+ADD systemd/bg.conf /etc/systemd/system/itpkg-bg.service
+ADD systemd/bg.sh $ITPKG_HOME/shared/bg.sh
+RUN sudo chmod +x $ITPKG_HOME/shared/*.sh
+RUN sudo systemctl enable itpkg-www
+RUN sudo systemctl enable itpkg-wss
+RUN sudo systemctl enable itpkg-bg
 
 # other package
 RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal
