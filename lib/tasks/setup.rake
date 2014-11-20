@@ -30,23 +30,20 @@ namespace :setup do
     # ITPKG_ATTACHMENT_BUCKET="#{ask('Bucket ?') { |q| q.default='uploads' }}"
     # ITPKG_ATTACHMENT_CREDENTIALS ITPKG_ATTACHMENT_BUCKET
 
-
-    puts <<-EOF
-################# BEGIN #################
+    File.open("#{Rails.root}/.rbenv-vars", 'w') do |f|
+      f.write <<-EOF
 RAILS_ENV=production
-ITPKG_DATABASE_PASSWORD="#{ask('Mysql Root Password? ') { |q| q.default='' }}"
-ITPKG_DOMAIN="#{ask('Domain? ') { |q| q.default='localhost' }}"
-ITPKG_MEMCACHED_HOSTS="#{ask('Memcached Hosts(split by \',\')? ') { |q| q.default='localhost' }}"
-ITPKG_MAILER_SENDER="#{ask('Mail Sender Name? ') { |q| q.default='admin' }}"
-ITPKG_SECRET_KEY_BASE="#{`pwgen -n 128`.strip}"
-ITPKG_DEVISE_SECRET_KEY="#{`pwgen -n 128`.strip}"
-ITPKG_PASSWORD="#{`pwgen -n 128`.strip}"
-ITPKG_CIPHER="#{Itpkg::Encryptor.generate}"
+ITPKG_DATABASE_PASSWORD=#{ask('Mysql Root Password? ') { |q| q.default='' }}
+ITPKG_DOMAIN=#{ask('Domain? ') { |q| q.default='localhost' }}
+# split by ';'
+ITPKG_MEMCACHED_HOSTS=#{ask('Memcached Hosts(split by \',\')? ') { |q| q.default='localhost' }}
+ITPKG_MAILER_SENDER=#{ask('Mail Sender Name? ') { |q| q.default='no-reply' }}
 ITPKG_REDIS_URL=#{ask('Redis Provider? ') { |q| q.default='redis://localhost:6379/0' }}
-
-export RAILS_ENV ITPKG_DATABASE_PASSWORD ITPKG_DOMAIN ITPKG_MEMCACHED_HOSTS ITPKG_MAILER_SENDER ITPKG_SECRET_KEY_BASE ITPKG_DEVISE_SECRET_KEY ITPKG_PASSWORD ITPKG_CIPHER ITPKG_REDIS_URL
-################# END ###################
-Please parse to your shell config file.
-    EOF
+# can be generate by 'pwgen -n 128'
+ITPKG_SECRET_KEY_BASE=#{`pwgen -n 128`.strip}
+ITPKG_DEVISE_SECRET_KEY=#{`pwgen -n 128`.strip}
+ITPKG_PASSWORD=#{`pwgen -n 128`.strip}
+      EOF
+    end
   end
 end

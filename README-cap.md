@@ -69,25 +69,28 @@ Add to file /etc/sudoers.d/deploy
     sudo chown -R deploy:deploy /var/www/itpkg
    
 
-### Shell Vars
-    rake itpkg:env # RUN ON LOCAL
-    # COPY OUTPUT LINES TO /var/www/shared/.rbenv-vars
+### Settings
+    rake setup:env # RUN ON LOCAL
+    # COPY .rbenv-vars TO /var/www/itpkg/shared/.rbenv-vars
 
 ### Deolpying (RUN ON LOCAL)
     vi config/deploy/production.rb # setup user and server
     cap production deploy:check # check config file
     cap production deploy
-    cap production db:seed # ONLY NEED RUN ON FIRST TIME
+
+### Init data (ONLY NEED RUN ON FIRST TIME)
+    cd /var/www/itpkg/current
+    rake db:seed 
 
 ### Setup nginx
 
- * Generate https certs (RUN ON LOCAL) or upload your's files
+#### Generate https certs (RUN ON LOCAL) or upload your files
     
     rake nginx:ssl
     scp tmp/storage/ssl/web/cert.pem deploy@YOUR_HOST:/tmp
     scp tmp/storage/ssl/web/key.pem deploy@YOUR_HOST:/tmp
 
- * Setup certs
+#### Setup certs
 
     sudo mkdir -p /etc/nginx/ssl
     cd /etc/nginx/ssl
@@ -98,20 +101,14 @@ Add to file /etc/sudoers.d/deploy
     rm /tmp/cert.pem /tmp/key.pem
     
 
- * Upload nginx files(RUN ON LOCAL)
+#### Upload nginx files(RUN ON LOCAL)
     
     cap production nginx:setup
-    cap production nginx:reload
 
 ## Usage
 
 ### Others
 
-#### Docker
-    cap production docker:install # install docker
-    cap production docker:start # start docker service
-    cap production docker:stop # stop docker service
-    cap production docker:status # docker service status
 
 ### Start
 
