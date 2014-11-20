@@ -11,6 +11,7 @@ MNT=$(pwd)/mnt
 if docker ps -a | grep --quiet $NAME
 then
 	ARGS="start $NAME"
+	#ARGS="run -d --volumes-from $NAME mnt"
 else
 	ARGS="run -p 2222:22 -p 443:443 -p 25:25 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d $REPO:latest"
 fi
@@ -26,7 +27,15 @@ case $1 in
 		docker stop $NAME
 		;;
 	build)
-		docker build $2 -t $REPO .
+		read -p "Do you wish to rebuild all steps?(y/n)" yn
+		case $yn in
+			y)
+				docker build --no-cache -t $REPO .
+				;;
+			*)
+				docker build $REPO .
+				;;
+		esac
 		;;
 	status)
 		docker version
