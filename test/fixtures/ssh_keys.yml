@@ -1,0 +1,16 @@
+#one:
+#  id: 1
+#  user_id: 1
+#  public_key: 'public'
+#  encrypted_private_key: 'private key'
+#  encrypted_private_key_salt: 'private salt'
+#  encrypted_private_key_iv: 'private iv'
+#
+#two:
+#  id: 2
+#  user_id: 2
+#  public_key: 'public'
+#  encrypted_private_key: 'private key'
+#  encrypted_private_key_salt: 'private salt'
+#  encrypted_private_key_iv: 'private iv'
+

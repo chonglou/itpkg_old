@@ -9,9 +9,9 @@ class GitoliteTest < ActionDispatch::IntegrationTest
   test '0 clone' do
     @ig.pull
     @ig.export
-    @ig.commit
     @ig.push
   end
+
 
   def setup
     if Dir.exist?(ADMIN_PATH)
@@ -22,6 +22,9 @@ class GitoliteTest < ActionDispatch::IntegrationTest
     Setting.git_admin_pub_key = "#{ENV['HOME']}/.ssh/id_rsa.pub"
     Setting.git_admin_key = "#{ENV['HOME']}/.ssh/id_rsa"
     Setting.git_admin_email = 'git@test.com'
+
+    SshKey.create(Itpkg::Gitolite.key_pairs('u1').merge(user_id:1))
+    SshKey.create(Itpkg::Gitolite.key_pairs('u2').merge(user_id:2))
 
     @ig = Itpkg::Gitolite.new
     @ig.open

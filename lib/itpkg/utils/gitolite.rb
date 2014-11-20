@@ -1,7 +1,12 @@
 require 'rugged'
+require 'net/ssh'
 
 module Itpkg
   class Gitolite
+    def self.key_pairs(label)
+      key = OpenSSL::PKey::RSA.new 2048
+      {private_key:key.to_pem, public_key:"#{key.ssh_type} #{[key.public_key.to_blob ].pack('m0')} #{label}@#{ENV['ITPKG_DOMAIN']}"}
+    end
     attr_reader :root
 
     def initialize
@@ -12,9 +17,54 @@ module Itpkg
       @repo = Dir.exist?(@root) ? Rugged::Repository.new(@root) : clone
     end
 
+    def write(index, filename, mode=0100644)
+      File.open("#{@root}/#{filename}", 'w') { |f| yield f }
+      index.add path: filename, oid: (Rugged::Blob.from_workdir @repo, filename), mode: mode
+    end
+
+    def remove(index, filename)
+      File.unlink "#{@root}/#{filename}"
+      index.remove filename
+    end
+
+
     def export
-      File.open("#{@root}/1.log", 'w') do |f|
-        f.write Time.now
+      commit('Export users from database') do |index|
+        Dir["#{@root}/keydir/*"].each do |f|
+          f = File.basename f
+          unless f == 'id_rsa.pub'
+            remove index, "keydir/#{f}"
+          end
+        end
+        write(index, 'conf/gitolite.conf') do |f|
+          f.puts 'repo gitolite-admin'
+          f.puts "\tRW+\t= id_rsa"
+          f.puts 'repo testing'
+          f.puts "\tRW+\t= @all"
+
+          Repository.all.each do |r|
+            f.puts "repo #{r.name}"
+            u = r.creator
+            l = u.contact.label
+            f.puts "\tRW+\t= #{l}"
+            write_key index, u.id, l
+
+            RepositoryUser.where(repository_id: r.id).each do |ru|
+              u = User.find(ru.user_id)
+              l = u.contact.label
+              f.puts "\t#{ru.writable ? 'RW+' : 'R'}\t = #{l}"
+
+              write_key index, u.id, l
+            end
+
+
+          end
+
+        end
+
+        write(index, 'version') { |f| f.write Time.now }
+
+
       end
     end
 
@@ -23,18 +73,16 @@ module Itpkg
       @repo.remotes['origin'].push(@repo.references.map { |r| r.name }, {credentials: ssh_key_credential})
     end
 
-    def commit
+    def commit(message)
       index = @repo.index
       index.read_tree @repo.head.target.tree
-      index.add_all '.'
+      yield index
 
+      index.write
       Rugged::Commit.create(@repo, {
-          parents: [
-              @repo.branches['master'].target_id,
-              @repo.branches['origin/master'].target_id
-          ],
+          parents: [@repo.head.target],
           tree: index.write_tree(@repo),
-          message: 'Commit',
+          message: message,
           author: {name: Setting.git_admin_username, email: Setting.git_admin_email},
           committer: {name: Setting.git_admin_username, email: Setting.git_admin_email},
           update_ref: 'HEAD'
@@ -86,6 +134,13 @@ module Itpkg
                                           publickey: Setting.git_admin_pub_key,
                                           privatekey: Setting.git_admin_key
                                       })
+    end
+
+    def write_key(index, uid, label)
+      pk = "keydir/#{label}.pub"
+      unless File.exist?("#{@root}/#{pk}")
+        write(index, pk) { |f| f.write SshKey.select(:public_key).find_by(user_id: uid).public_key }
+      end
     end
 
 

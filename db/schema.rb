@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120052120) do
+ActiveRecord::Schema.define(version: 20141120125725) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -385,10 +385,9 @@ ActiveRecord::Schema.define(version: 20141120052120) do
   add_index "repositories", ["name"], name: "index_repositories_on_name", unique: true, using: :btree
 
   create_table "repository_users", force: true do |t|
-    t.integer  "repository_id",                  null: false
-    t.integer  "user_id",                        null: false
-    t.integer  "certificate_id", default: 0,     null: false
-    t.boolean  "writable",       default: false, null: false
+    t.integer  "repository_id",                 null: false
+    t.integer  "user_id",                       null: false
+    t.boolean  "writable",      default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -443,6 +442,18 @@ ActiveRecord::Schema.define(version: 20141120052120) do
   end
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
+
+  create_table "ssh_keys", force: true do |t|
+    t.integer  "user_id",                    null: false
+    t.text     "public_key",                 null: false
+    t.text     "encrypted_private_key",      null: false
+    t.string   "encrypted_private_key_salt", null: false
+    t.string   "encrypted_private_key_iv",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ssh_keys", ["user_id"], name: "index_ssh_keys_on_user_id", unique: true, using: :btree
 
   create_table "stories", force: true do |t|
     t.string   "title",                               null: false
