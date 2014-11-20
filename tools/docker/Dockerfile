@@ -94,6 +94,11 @@ cd $ITPKG_HOME/current && \
 rake db:migrate && \
 rake db:seed
 RUN cd $ITPKG_HOME/current && rake assets:precompile
+RUN mkdir -p $ITPKG_HOME/{pids,sockets}
+ADD systemd.conf /etc/systemd/system/itpkg.service
+ADD run.sh $ITPKG_HOME/shared/start.sh
+RUN sudo chmod +x $ITPKG_HOME/shared/start.sh
+RUN sudo systemctl enable itpkg
 
 # clean
 RUN sudo pacman -Scc --noconfirm
