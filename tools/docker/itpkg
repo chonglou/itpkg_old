@@ -33,7 +33,7 @@ case $1 in
 				docker build --no-cache -t $REPO .
 				;;
 			*)
-				docker build $REPO .
+				docker build -t $REPO .
 				;;
 		esac
 		;;

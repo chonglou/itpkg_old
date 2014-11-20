@@ -61,19 +61,21 @@ RUN sed -i '/^ITPKG_DATABASE_PASSWORD/d' $ITPKG_HOME/shared/.rbenv-vars
 RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/* $ITPKG_HOME/shared/.[!.]*; do ln -sv $i $(basename $i); done
 
 # gitolite
+RUN cp ~/.ssh/id_rsa.pub /tmp
 RUN sudo useradd -s /bin/bash -m tig
 RUN sudo passwd -l tig
 USER tig
 ENV HOME /home/tig
-RUN ssh-keygen -b 2048 -t rsa  -f ~tig/.ssh/id_rsa -q -N ""
+#RUN ssh-keygen -b 2048 -t rsa  -f ~tig/.ssh/id_rsa -q -N ""
 RUN mkdir -p ~tig/local/gitolite
 RUN git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite
 RUN /tmp/gitolite/install -to ~tig/local/gitolite
 RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~tig/.bashrc
-RUN USER=tig ~tig/local/gitolite/gitolite setup -pk ~tig/.ssh/id_rsa.pub
+RUN USER=deploy ~tig/local/gitolite/gitolite setup -pk /tmp/id_rsa.pub
 RUN rm -r /tmp/gitolite
 USER deploy
 ENV HOME /home/deploy
+RUN rm /tmp/id_rsa.pub
 
 # nginx for itpkg
 RUN sudo pacman -S --noconfirm nginx

@@ -18,6 +18,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.new(params.require(:repository).permit(:name, :title))
     @repository.creator_id = current_user.id
     if @repository.save
+      Setting.git_modify_flag = true
       redirect_to repository_path(@repository.id)
     else
       render :action => 'new'
@@ -50,6 +51,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.find params[:id]
     if _can_edit?(@repository)
       if @repository.update(params.require(:repository).permit(:title))
+        Setting.git_modify_flag = true
         redirect_to repository_path(@repository.id)
       else
         render action: 'edit'
@@ -64,6 +66,7 @@ class RepositoriesController < ApplicationController
 
     r = Repository.find params[:id]
     if _can_edit?(r) && RepositoryUser.where(repository_id: params[:id]).count == 0
+      Setting.git_modify_flag = true
       r.destroy
     else
       flash[:alert] = t('labels.in_using')

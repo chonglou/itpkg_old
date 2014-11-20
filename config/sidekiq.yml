@@ -1,5 +1,12 @@
 ---
 :verbose: false
-#:pidfile: ./tmp/pids/sidekiq.pid
+:pidfile: ./tmp/pids/sidekiq.pid
 :logfile: ./log/sidekiq.log
-:concurrency:  25
+:concurrency:  32
+
+:queues:
+  - default
+  - [git, 2]
+
+:limits:
+  git: 1
