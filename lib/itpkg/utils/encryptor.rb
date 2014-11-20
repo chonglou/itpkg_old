@@ -2,56 +2,34 @@ require 'json'
 require 'digest'
 require 'openssl'
 require 'securerandom'
-require_relative 'string_helper'
 
 module Itpkg
   module Encryptor
     module_function
 
-    def _cipher
-      OpenSSL::Cipher::AES256.new(:CBC)
-    end
-    def _config
-      StringHelper.hex2obj ENV['ITPKG_CIPHER']
-    end
-
-
-    def generate
-      c = _cipher
-      StringHelper.obj2hex({key: c.random_key, iv: c.random_iv})
-    end
-
     def encode(obj)
-      c = _cipher
-      c.encrypt
-      h = _config
-      c.key = h.fetch :key
-      c.iv = h.fetch :iv
-
-      str = c.update(Marshal.dump({salt: StringHelper.rand_s(8), payload: obj}))+c.final
-      str.unpack('H*')[0]
+      salt = SecureRandom.random_bytes 64
+      key = ActiveSupport::KeyGenerator.new(ENV['ITPKG_PASSWORD']).generate_key(salt)
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      "#{salt.unpack('H*').first}#{crypt.encrypt_and_sign(Marshal.dump(obj))}"
     end
 
     def decode(str)
-      str = [str].pack('H*')
-      c = _cipher
-      c.decrypt
-      h = StringHelper.hex2obj ENV['ITPKG_CIPHER']
-      c.key = h.fetch :key
-      c.iv = h.fetch :iv
-
-      Marshal.load(c.update(str) + c.final).fetch :payload
+      salt = str[0..127]
+      key = ActiveSupport::KeyGenerator.new(ENV['ITPKG_PASSWORD']).generate_key([salt].pack('H*'))
+      crypt = ActiveSupport::MessageEncryptor.new(key)
+      Marshal.load(crypt.decrypt_and_verify(str[128..-1]))
     end
 
     def password(obj)
-      salt = StringHelper.rand_s 8
-      str=StringHelper.sha512(Marshal.dump({salt: salt, payload: obj}))
+      salt = SecureRandom.hex 32
+      str=Digest::SHA512.hexdigest(Marshal.dump({salt: salt, payload: obj}))
       "#{salt}#{str}"
     end
 
     def password?(obj, str)
-      salt = str[0..15]
-      str[16..-1] == StringHelper.sha512(Marshal.dump({salt: salt, data: obj}))
+      salt = str[0..63]
+      str[64..-1] == Digest::SHA512.hexdigest(Marshal.dump({salt: salt, payload: obj}))
     end
   end
 end

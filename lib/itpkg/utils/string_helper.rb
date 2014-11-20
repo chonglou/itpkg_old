@@ -18,11 +18,11 @@ module Itpkg
     end
 
     def obj2hex(obj)
-      Marshal.dump(obj).unpack('H*')[0]
+      Marshal.dump(obj).unpack('H*').first
     end
 
     def hex2obj(hex)
-      Marshal.load [hex].pack('H*')
+      Marshal.load([hex].pack('H*'))
     end
 
     def md5(str)

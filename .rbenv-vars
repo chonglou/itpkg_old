@@ -1,4 +1,4 @@
-RAILS_ENV=production
+RAILS_ENV=development
 ITPKG_DATABASE_PASSWORD=
 ITPKG_DOMAIN=localhost
 # split by ';'
