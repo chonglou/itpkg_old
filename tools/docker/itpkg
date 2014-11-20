@@ -42,6 +42,22 @@ case $1 in
 	ssh)
 		ssh -p 2222 root@localhost
 		;;
+	clean)
+		echo "Do you wish to remove all untagged images and stoped container?(y/n)"
+		select yn in "y" "n"; do
+			case $yn in
+				y )
+					docker rm $(docker ps -a -q) 
+					docker rmi $(docker images -a | grep "^<none>" | awk '{print $3}')
+					break
+					;;
+				*)
+					exit
+					;;
+			esac
+		done
+
+		;;
 	*)
 		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs'
 esac

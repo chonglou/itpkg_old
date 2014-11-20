@@ -26,8 +26,6 @@ IT-PACKAGE
 
     ./itpkg start
 
-## That's ALL
-
 #### visit by your web brower
 
     https::YOUR_HOST
@@ -35,4 +33,11 @@ IT-PACKAGE
 #### visit by ssh
 
     ./itpkg ssh # password is toor.
+
+#### visit data
+
+    ls -al mnt
+
+
+## That's ALL
 
