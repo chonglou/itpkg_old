@@ -19,7 +19,7 @@ USER deploy
 RUN sudo pacman -S --noconfirm openssh
 RUN sudo /usr/bin/ssh-keygen -A
 RUN echo 'root:toor' | sudo chpasswd
-RUN sudo sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+#RUN sudo sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
 RUN sudo sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config
 RUN sudo systemctl enable sshd
 RUN ssh-keygen -b 2048 -t rsa  -f $HOME/.ssh/id_rsa -q -N ""
@@ -124,6 +124,8 @@ RUN sudo pacman -R --noconfirm vi
 RUN cd /usr/bin && sudo ln -sv vim vi
 RUN cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc
 RUN echo "set nobackup" >> ~/.vimrc
+RUN sudo cp ~/.vimrc /root/
+RUN echo "alias ls='ls --color'" | sudo tee /root/.profile
 
 # clean
 RUN sudo pacman -Scc --noconfirm

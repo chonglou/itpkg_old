@@ -1,7 +1,8 @@
 Setting.init = Time.now
 Setting.git_admin = {
     host: 'localhost',
-    user: "#{ENV['USER']}",
+    user: 'tig',
+    port: 22,
     pub: "#{ENV['HOME']}/.ssh/id_rsa.pub",
     key: "#{ENV['HOME']}/.ssh/id_rsa",
     email: "git@#{ENV['ITPKG_DOMAIN']}"

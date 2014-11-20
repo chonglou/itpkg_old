@@ -104,7 +104,8 @@ class GitWorker
   end
 
   def clone
-    Rugged::Repository.clone_at "#{Setting.git_admin.fetch(:host)}:gitolite-admin", @root, {credentials: ssh_key_credential}
+    Rugged::Repository.clone_at "ssh://#{Setting.git_admin.fetch(:user)}@#{Setting.git_admin.fetch(:host)}:#{Setting.git_admin.fetch(:port)}/gitolite-admin.git",
+                                @root, {credentials: ssh_key_credential}
   end
 
   def pull
