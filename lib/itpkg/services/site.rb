@@ -39,21 +39,8 @@ module Itpkg
   end
 
 
-  module SettingService
+  module SiteService
     module_function
-
-    def get(key, encrypt=false)
-      s = Setting.find_by key: key
-      unless s.nil?
-        encrypt ? Encryptor.decode(s.val) : Marshal.load(s.val)
-      end
-    end
-
-    def set(key, val, encrypt=false)
-      val = encrypt ? Encryptor.encode(val) : Marshal.dump(val)
-      s = Setting.find_by key: key
-      s.nil? ? Setting.create(key: key, val: val) : s.update(val: val)
-    end
 
     def version
       v = "#{Rails.root}/REVISION"
