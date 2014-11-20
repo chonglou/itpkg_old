@@ -83,8 +83,8 @@ module Itpkg
           parents: [@repo.head.target],
           tree: index.write_tree(@repo),
           message: message,
-          author: {name: Setting.git_admin_username, email: Setting.git_admin_email},
-          committer: {name: Setting.git_admin_username, email: Setting.git_admin_email},
+          author: {name: Setting.git_admin.fetch(:user), email: Setting.git_admin.fetch(:email)},
+          committer: {name: Setting.git_admin.fetch(:user), email: Setting.git_admin.fetch(:email)},
           update_ref: 'HEAD'
       })
 
@@ -95,7 +95,7 @@ module Itpkg
     end
 
     def clone
-      Rugged::Repository.clone_at "#{Setting.git_admin_host}:gitolite-admin", @root, {credentials: ssh_key_credential}
+      Rugged::Repository.clone_at "#{Setting.git_admin.fetch(:host)}:gitolite-admin", @root, {credentials: ssh_key_credential}
     end
 
     def pull
@@ -130,9 +130,9 @@ module Itpkg
     private
     def ssh_key_credential
       Rugged::Credentials::SshKey.new({
-                                          username: Setting.git_admin_username,
-                                          publickey: Setting.git_admin_pub_key,
-                                          privatekey: Setting.git_admin_key
+                                          username: Setting.git_admin.fetch(:user),
+                                          publickey: Setting.git_admin.fetch(:pub),
+                                          privatekey: Setting.git_admin.fetch(:key)
                                       })
     end
 

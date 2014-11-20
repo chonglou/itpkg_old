@@ -17,11 +17,13 @@ class GitoliteTest < ActionDispatch::IntegrationTest
     if Dir.exist?(ADMIN_PATH)
       FileUtils.mv ADMIN_PATH, "#{ADMIN_PATH}-bak"
     end
-    Setting.git_admin_host = 'localhost'
-    Setting.git_admin_username = ENV['USER']
-    Setting.git_admin_pub_key = "#{ENV['HOME']}/.ssh/id_rsa.pub"
-    Setting.git_admin_key = "#{ENV['HOME']}/.ssh/id_rsa"
-    Setting.git_admin_email = 'git@test.com'
+    Setting.git_admin = {
+        host:'localhost',
+        user:ENV['USER'],
+        pub:"#{ENV['HOME']}/.ssh/id_rsa.pub",
+        key:"#{ENV['HOME']}/.ssh/id_rsa",
+        email:'git@test.com'
+    }
 
     SshKey.create(Itpkg::Gitolite.key_pairs('u1').merge(user_id:1))
     SshKey.create(Itpkg::Gitolite.key_pairs('u2').merge(user_id:2))

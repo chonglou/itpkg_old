@@ -1,12 +1,11 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-
 Setting.init = Time.now
+Setting.git_admin = {
+    host: 'localhost',
+    user: 'tig',
+    pub: "#{ENV['HOME']}/.ssh/id_rsa.pub",
+    key: "#{ENV['HOME']}/.ssh/id_rsa",
+    email: "git@#{ENV['ITPKG_DOMAIN']}"
+}
 
 ROOT=1
 Permission.create role: "user://#{ROOT}", resource: 'SYSTEM', operation: 'ROOT', start_date: Date.today.strftime, end_date: '9999-12-31'
