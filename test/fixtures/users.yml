@@ -1,8 +1,10 @@
 one:
   id: 1
   email: 'aaa@aaa.com'
+  label: 'u1'
 
 two:
   id: 2
   email: 'bbb@bbb.com'
+  label: 'u2'
 

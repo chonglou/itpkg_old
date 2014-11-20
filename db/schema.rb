@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120125725) do
+ActiveRecord::Schema.define(version: 20141120180212) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -79,13 +79,11 @@ ActiveRecord::Schema.define(version: 20141120125725) do
     t.integer  "user_id",    null: false
     t.string   "logo",       null: false
     t.string   "username",   null: false
-    t.string   "label",      null: false
     t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "contacts", ["label"], name: "index_contacts_on_label", unique: true, using: :btree
   add_index "contacts", ["username"], name: "index_contacts_on_username", using: :btree
 
   create_table "dns_acls", force: true do |t|
@@ -542,10 +540,12 @@ ActiveRecord::Schema.define(version: 20141120125725) do
     t.datetime "locked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "label",                               null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["label"], name: "index_users_on_label", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
 

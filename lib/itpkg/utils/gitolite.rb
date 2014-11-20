@@ -5,8 +5,9 @@ module Itpkg
   class Gitolite
     def self.key_pairs(label)
       key = OpenSSL::PKey::RSA.new 2048
-      {private_key:key.to_pem, public_key:"#{key.ssh_type} #{[key.public_key.to_blob ].pack('m0')} #{label}@#{ENV['ITPKG_DOMAIN']}"}
+      {private_key: key.to_pem, public_key: "#{key.ssh_type} #{[key.public_key.to_blob].pack('m0')} #{label}@#{ENV['ITPKG_DOMAIN']}"}
     end
+
     attr_reader :root
 
     def initialize
@@ -45,16 +46,13 @@ module Itpkg
           Repository.all.each do |r|
             f.puts "repo #{r.name}"
             u = r.creator
-            l = u.contact.label
-            f.puts "\tRW+\t= #{l}"
-            write_key index, u.id, l
+            f.puts "\tRW+\t= #{u.label}"
+            write_key index, u.id, u.label
 
             RepositoryUser.where(repository_id: r.id).each do |ru|
               u = User.find(ru.user_id)
-              l = u.contact.label
-              f.puts "\t#{ru.writable ? 'RW+' : 'R'}\t = #{l}"
-
-              write_key index, u.id, l
+              f.puts "\t#{ru.writable ? 'RW+' : 'R'}\t = #{u.label}"
+              write_key index, u.id, u.label
             end
 
 

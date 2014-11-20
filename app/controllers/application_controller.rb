@@ -7,6 +7,9 @@ class ApplicationController < ActionController::Base
 
   before_action :set_locale
 
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   end
@@ -31,6 +34,13 @@ class ApplicationController < ActionController::Base
       flash[:alert] = t('labels.must_admin')
       redirect_to root_path
     end
+  end
+
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) << :label
   end
 
 end

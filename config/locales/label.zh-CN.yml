@@ -2,6 +2,7 @@ zh-CN:
   helpers:
     label:
       user:
+        label: '标识'
         email: '邮箱'
         password: '密码'
         password_confirmation: '密码确认'
