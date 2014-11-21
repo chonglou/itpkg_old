@@ -1,3 +1,5 @@
+require 'itpkg/services/site'
+Itpkg::SiteService.version!
 Setting.init = Time.now
 Setting.git_admin = {
     host: 'localhost',
