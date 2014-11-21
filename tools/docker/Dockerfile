@@ -49,7 +49,7 @@ RUN gem install bundler
 RUN rm -r /tmp/ruby-build*
 
 # itpkg install
-RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2 pwgen
+RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2
 RUN git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current
 RUN cd $ITPKG_HOME/current && git rev-parse --short HEAD > $ITPKG_HOME/current/REVISION
 #RUN date "+%Y%m%d%H%M%S" > $ITPKG_HOME/current/REVISION
@@ -62,16 +62,17 @@ RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/* $ITPKG_HOME/shared/.
 
 # gitolite
 RUN cp ~/.ssh/id_rsa.pub /tmp
-RUN sudo useradd -s /bin/bash -m tig
-RUN sudo passwd -l tig
-USER tig
-ENV HOME /home/tig
-#RUN ssh-keygen -b 2048 -t rsa  -f ~tig/.ssh/id_rsa -q -N ""
-RUN mkdir -p ~tig/local/gitolite
+RUN sudo usermod -d /home/git git
+RUN sudo mkdir /home/git
+RUN sudo chown git:git /home/git
+RUN sudo chmod 700 /home/git
+USER git
+ENV HOME /home/git
+RUN mkdir -p ~/local/gitolite
 RUN git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite
-RUN /tmp/gitolite/install -to ~tig/local/gitolite
-RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~tig/.bashrc
-RUN USER=deploy ~tig/local/gitolite/gitolite setup -pk /tmp/id_rsa.pub
+RUN /tmp/gitolite/install -to ~/local/gitolite
+RUN echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc
+RUN USER=git ~/local/gitolite/gitolite setup -pk /tmp/id_rsa.pub
 RUN rm -r /tmp/gitolite
 USER deploy
 ENV HOME /home/deploy
@@ -95,6 +96,7 @@ RUN sudo systemctl enable mysqld
 RUN sudo systemctl enable memcached
 RUN sudo systemctl enable redis
 RUN sudo systemctl enable exim
+RUN sudo pacman -S --noconfirm pwgen
 
 # init data
 RUN sudo mysqld_safe --user=mysql & \
@@ -119,7 +121,7 @@ RUN sudo systemctl enable itpkg-wss
 RUN sudo systemctl enable itpkg-bg
 
 # other package
-RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal
+RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal lsof
 RUN sudo pacman -R --noconfirm vi
 RUN cd /usr/bin && sudo ln -sv vim vi
 RUN cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc
@@ -131,7 +133,7 @@ RUN echo "alias ls='ls --color'" | sudo tee /root/.bash_profile
 RUN sudo pacman -Scc --noconfirm
 
 
-VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "~tig/repositories"]
+VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "~git/repositories"]
 EXPOSE 22 25 443
 USER root
 

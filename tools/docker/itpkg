@@ -13,7 +13,7 @@ then
 	ARGS="start $NAME"
 	#ARGS="run -d --volumes-from $NAME mnt"
 else
-	ARGS="run -p 2222:22 -p 443:443 -p 25:25 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d $REPO:latest"
+	ARGS="run -p 2222:22 -p 443:443 -p 25:25 -p 9418:9418 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d $REPO:latest"
 fi
 
 case $1 in
