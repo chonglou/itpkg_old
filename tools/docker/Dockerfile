@@ -134,12 +134,13 @@ RUN sudo systemctl enable openvpn@server
 
 
 # bind9
-RUN sudo pacman -S --noconfirm geoip
+RUN sudo pacman -S --noconfirm geoip abs
+RUN sudo abs extra/bind
+RUN cp -r /var/abs/extra/bind /tmp
 ADD bind9 /tmp/bind9
-RUN sudo chown -R deploy:deploy /tmp/bind9
-RUN cd /tmp/bind9/bind && makepkg && sudo pacman -U --noconfirm bind-*.pkg.tar.xz
+RUN cd /tmp/bind && patch -p0 < /tmp/bind9/bind-mysql.patch && makepkg && sudo pacman -U --noconfirm bind-*.pkg.tar.xz
 RUN sudo sh /tmp/bind9/setup.sh
-RUN sudo rm -r /tmp/bind9
+RUN sudo rm -r /tmp/bind9 /tmp/bind
 RUN sudo systemctl enable named
 
 

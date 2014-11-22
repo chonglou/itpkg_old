@@ -55,6 +55,10 @@ IT包
 
     rails console
 
+#### 制作补丁
+    diff -uN /var/abs/extra/bind/PKGBUILD PKGBUILD > bind-mysql.patch
+    patch -p0 < bind-mysql.patch
+
 #### 数据库操作
 
     rails dbconsole
