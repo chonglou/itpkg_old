@@ -1,44 +1,35 @@
 require 'test_helper'
-require 'itpkg/utils/gitolite'
+require 'itpkg/linux/git'
 require 'fileutils'
 
 
 class GitoliteTest < ActionDispatch::IntegrationTest
-  # ADMIN_PATH = "#{Rails.root}/tmp/storage/gitolite-admin"
-  #
-  # test '0 clone' do
-  #   @ig.pull
-  #   @ig.export
-  #   @ig.push
-  # end
-  #
-  #
-  # def setup
-  #   if Dir.exist?(ADMIN_PATH)
-  #     FileUtils.mv ADMIN_PATH, "#{ADMIN_PATH}-bak"
-  #   end
-  #   Setting.git_admin = {
-  #       host:'localhost',
-  #       user:ENV['USER'],
-  #       pub:"#{ENV['HOME']}/.ssh/id_rsa.pub",
-  #       key:"#{ENV['HOME']}/.ssh/id_rsa",
-  #       email:'git@test.com'
-  #   }
-  #
-  #   SshKey.create(Itpkg::Gitolite.key_pairs('u1').merge(user_id:1))
-  #   SshKey.create(Itpkg::Gitolite.key_pairs('u2').merge(user_id:2))
-  #
-  #   @ig = Itpkg::Gitolite.new
-  #   @ig.open
-  # end
-  #
-  #
-  # def teardown
-  #   FileUtils.rm_r ADMIN_PATH
-  #   if Dir.exist?("#{ADMIN_PATH}-bak")
-  #     FileUtils.mv "#{ADMIN_PATH}-bak", ADMIN_PATH
-  #   end
-  #   @ig.close
-  # end
+  test '0 git clone and pull' do
+    @git.pull
+  end
+
+  test '1 write commit and push' do
+    @git.commit('test') do |index|
+      @git.write(index, '1.txt') do |f|
+        f.puts Time.now
+      end
+    end
+    @git.push
+  end
+
+  def teardown
+    @git.close
+  end
+
+  def setup
+    @git = Linux::Git.new 'testing', {
+        host: 'localhost',
+        username: ENV['USER'],
+        public_key: "#{ENV['HOME']}/.ssh/id_rsa.pub",
+        private_key: "#{ENV['HOME']}/.ssh/id_rsa",
+        email: 'git@test.com'
+    }
+    @git.open
+  end
 
 end

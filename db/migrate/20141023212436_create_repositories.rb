@@ -4,6 +4,7 @@ class CreateRepositories < ActiveRecord::Migration
       t.integer :creator_id, null: false
       t.string :name, null: false, limit: 16
       t.string :title, null:false
+      t.boolean :enable, null:false, default:true
       t.timestamps
     end
     add_index :repositories, :name, unique: true
