@@ -9,7 +9,7 @@ class CallbackController < ApplicationController
     ok = false
     reason = nil
     if ip == Setting.git.fetch(:host)
-      if name && name !=GitAdminWorker::NAME && Repository.find_by(name: name, enable: true)
+      if Repository.find_by(name: name, enable: true)
         GitHookWorker.perform_async name
         ok = true
       else

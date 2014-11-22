@@ -16,4 +16,5 @@ zh-CN:
     input_error: '数据输入有误'
     need_setup: '需要配置'
     in_using: '正在使用'
+    not_valid: '不合法'
     email_already_exist: '邮箱%{email}已存在!'

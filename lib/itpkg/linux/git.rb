@@ -28,7 +28,7 @@ module Linux
     end
 
     def open
-      Dir.exist?(@root) ? Rugged::Repository.new(@root) : Rugged::Repository.clone_at @url, @root, {credentials: @credential}
+      Dir.exist?(@root) ? Rugged::Repository.new(@root) : Rugged::Repository.clone_at(@url, @root, {credentials: @credential})
     end
 
     def real_path(name)

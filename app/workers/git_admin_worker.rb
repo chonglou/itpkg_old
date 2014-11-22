@@ -5,10 +5,11 @@ class GitAdminWorker
   include Sidekiq::Worker
   sidekiq_options queue: :git
 
-  NAME = 'gitolite-admin'
+  ADMIN_NAME = 'gitolite-admin'
+  TESTING_NAME = 'testing'
 
   def perform
-    @git = Linux::Git.new NAME, Setting.git
+    @git = Linux::Git.new ADMIN_NAME, Setting.git
     logger.info "open from #{@git.url}"
     @git.open
     logger.info "pull from #{@git.url}"
@@ -28,6 +29,8 @@ class GitAdminWorker
         f.puts "\tRW+\t= id_rsa"
         f.puts 'repo testing'
         f.puts "\tRW+\t= @all"
+        f.puts 'repo @all'
+        f.puts "\t-   VREF/itpkg	= @all"
 
         Repository.where(enable:true).each do |r|
           f.puts "repo #{r.name}"

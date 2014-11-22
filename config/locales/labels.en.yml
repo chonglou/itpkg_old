@@ -16,4 +16,5 @@ en:
     input_error: 'Input data error'
     need_setup: 'Need setup first!'
     in_using: 'In using'
+    not_valid: 'Not valid'
     email_already_exist: 'Email %{email} already exist!'

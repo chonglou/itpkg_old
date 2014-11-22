@@ -1,10 +1,9 @@
-
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
 
   def index
     uid = current_user.id
-    rs = Repository.where(creator_id: uid, enable:true)+current_user.repositories
+    rs = Repository.where(creator_id: uid, enable: true)+current_user.repositories
     @repositories = rs.map { |p| {url: repository_path(p.id), name: p.name, details: p.title} }
   end
 
@@ -15,12 +14,13 @@ class RepositoriesController < ApplicationController
   def create
     @repository = Repository.new(params.require(:repository).permit(:name, :title))
     @repository.creator_id = current_user.id
+
     if @repository.save
       GitAdminWorker.perform_async
-      redirect_to repository_path(@repository.id)
-    else
-      render :action => 'new'
+      redirect_to(repository_path(@repository.id)) and return
     end
+
+    render :action => 'new'
 
   end
 
@@ -63,7 +63,7 @@ class RepositoriesController < ApplicationController
 
     r = Repository.find params[:id]
     if _can_edit?(r) && RepositoryUser.where(repository_id: params[:id]).count == 0
-      r.update enable:false
+      r.update enable: false
       GitAdminWorker.perform_async
     else
       flash[:alert] = t('labels.in_using')
@@ -76,7 +76,7 @@ class RepositoriesController < ApplicationController
   private
   def _can_view?(repo)
     uid = current_user.id
-    repo && repo.enable && (RepositoryUser.find_by(repository_id:repo.id, user_id:uid) || repo.creator_id == uid)
+    repo && repo.enable && (RepositoryUser.find_by(repository_id: repo.id, user_id: uid) || repo.creator_id == uid)
   end
 
   def _can_edit?(repo)
