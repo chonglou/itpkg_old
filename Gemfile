@@ -49,6 +49,7 @@ group :production do
   gem 'puma'
 end
 
+gem 'rails-i18n'
 gem 'slim'
 gem 'devise'
 gem 'devise-i18n'

@@ -55,7 +55,9 @@ class RepositoriesController < ApplicationController
         @branch = params[:branch]
         @branch = 'origin/master' unless @branches.include?(@branch)
         @logs = []
-        git.logs(@branch) do |oid, email, user, time, message|
+        @page = params[:page] ? params[:page].to_i : 1
+        @size = 50
+        git.logs(page:@page, size:@size, branch:@branch) do |oid, email, user, time, message|
           @logs << [oid, time, "#{user}<#{email}>", message]
         end
         git.close

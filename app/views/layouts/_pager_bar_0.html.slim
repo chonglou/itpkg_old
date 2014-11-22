@@ -1,0 +1,8 @@
+nav
+  ul class="pager"
+    li class="previous #{'disabled' if first}"
+      a href="#{previous_url unless first}"
+        span aria-hidden="true" &larr;
+    li class="next #{'disabled' if last}"
+      a href="#{next_url unless last}"
+        span aria-hidden="true" &rarr;

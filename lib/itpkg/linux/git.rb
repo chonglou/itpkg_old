@@ -35,27 +35,33 @@ module Linux
       @repo.branches.each_name(:remote).sort
     end
 
-    def logs(branch='origin/master')
+    def logs(page:1, size:120, branch:'origin/master')
+      begin_i = (page-1)*size
+      end_i = page*size-1
+
       target = @repo.branches[branch].target_id
       walker = Rugged::Walker.new @repo
       walker.sorting Rugged::SORT_DATE
       #walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
       walker.push(target)
-      walker.each do |c|
+      walker.each_with_index do |c, i|
+        next if i<begin_i
+
         a = c.author
         yield c.oid, a.fetch(:email), a.fetch(:name), a.fetch(:time), c.message
+
+        break if i==end_i
       end
+      walker.reset
     end
 
     def patch(oid)
       c = @repo.lookup oid
-      if c.parents.empty?
-        diff = c.tree.diff(c)
-      else
+      unless c.parents.empty?
         diff = c.parents.first.diff(c)
-
+        diff.patch
       end
-      diff.patch
+
     end
 
     def real_path(name)
@@ -127,37 +133,5 @@ module Linux
     end
 
   end
-  class Git1
-    attr_reader :root
 
-    def initialize(name)
-
-    end
-
-    def exist?
-      Dir.exist? @root
-    end
-
-    def init
-      Rugged::Repository.init_at @root, :bare
-    end
-
-    def open
-      @repo = Rugged::Repository.new @root
-    end
-
-    def branches
-      @repo.branches.each_name().sort
-    end
-
-
-    #{name, email, time} message
-    def log(branch)
-      walker = Rugged::Walker.new(@repo)
-      walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
-      walker.push @repo.branches[branch].target_id
-      walker.each { |c| yield c.author, c.message }
-      walker.reset
-    end
-  end
 end
