@@ -150,7 +150,7 @@ ADD email/setup.sh /tmp/email.sh
 RUN sudo sh /tmp/email.sh
 RUN sudo rm /tmp/email.sh
 RUN sudo systemctl enable dovecot
-RUN sudo systemctl enable postifx
+RUN sudo systemctl enable postfix
 
 
 # other package
