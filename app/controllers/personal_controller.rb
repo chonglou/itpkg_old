@@ -1,5 +1,32 @@
+require 'itpkg/linux/git'
+
 class PersonalController < ApplicationController
   before_action :authenticate_user!
+
+  def generate_keys
+    key = current_user.ssh_key
+    keys = Linux::Git.key_pairs current_user.label
+    if key
+      key.update keys
+    else
+      keys[:user_id] = current_user.id
+      SshKey.create keys
+    end
+    GitAdminWorker.perform_async
+    flash[:notice] = t('labels.success')
+    redirect_to edit_user_registration_path
+  end
+  def update_public_key
+    key = current_user.ssh_key
+    if key
+      key.update public_key:params[:public_key]
+    else
+      SshKey.create user_id:current_user.id, public_key:params[:public_key], private_key:'NULL'
+    end
+    GitAdminWorker.perform_async
+    flash[:notice] = t('labels.success')
+    redirect_to edit_user_registration_path
+  end
 
   def index
     @items=[

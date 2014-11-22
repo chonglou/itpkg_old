@@ -1,3 +1,11 @@
+class UserValidator < ActiveModel::Validator
+  def validate(record)
+    if %w(deploy root git nobody mail mysql).include?(record.label)
+      record.errors[:label] << I18n.t('labels.not_valid')
+    end
+  end
+end
+
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -12,4 +20,7 @@ class User < ActiveRecord::Base
 
   has_many :repository_users
   has_many :repositories,through: :repository_users
+  has_one :ssh_key
+
+  validates_with UserValidator
 end

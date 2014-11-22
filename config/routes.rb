@@ -59,6 +59,11 @@ Rails.application.routes.draw do
   get 'settings' => 'settings#index'
 
   get 'personal'=>'personal#index'
+  namespace :personal do
+    post 'update_public_key'
+    post 'generate_keys'
+  end
+
 
   get 'document/*name'=>'home#document', as: :document_show
   get 'home'=>'home#index'

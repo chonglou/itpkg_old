@@ -1,11 +1,12 @@
 <% @title=t('titles.personal.edit_profile') %>
+<%= render 'layouts/button_group', items:[{label:@title, url:edit_user_registration_path, style:'primary'}, {url:personal_generate_keys_path, label:t('links.user.generate_keys'), data: {confirm: t('labels.are_you_sure')}, method: :post, style:'danger'}], back:true%>
 
 <%= bootstrap_form(resource, as: resource_name, url: registration_path(resource_name), html: {method: :put}) do |f| %>
     <%- # devise_error_messages!    -%>
     <%= f.error_messages %>
 
     <%= f.fieldset do %>
-        <%= f.legend(t('titles.personal.edit_profile')) %>
+        <%= f.legend(@title) %>
         <%= f.group do %>
             <%= f.label :email %>
             <%= f.email_field :email, autofocus: true, readonly: true %>
@@ -30,8 +31,16 @@
         <% end %>
     <% end %>
 
-
 <% end %>
+<p>&nbsp;</p>
+<fieldset>
+  <legend><%= t('links.user.update_public_key') %></legend>
+  <%= form_tag(personal_update_public_key_path) do %>
+      <%= text_area_tag :public_key,current_user.ssh_key ? current_user.ssh_key.public_key : '', class:'form-control', rows:12%>
+      <br>
+      <%= submit_tag t('buttons.submit'), class: 'btn btn-primary'%>
+  <% end %>
+</fieldset>
 <p>&nbsp;</p>
 <fieldset>
   <legend><%= t('labels.user_logo') %></legend>

@@ -8,7 +8,7 @@ module Linux
       {private_key: key.to_pem, public_key: "#{key.ssh_type} #{[key.public_key.to_blob].pack('m0')} #{username}@#{ENV['ITPKG_DOMAIN']}"}
     end
 
-    attr_reader :root, :name
+    attr_reader :root, :name, :url
 
     def initialize(repo_name, host:'localhost',
                    port:22,
@@ -28,7 +28,7 @@ module Linux
     end
 
     def open
-      Dir.exist?(@root) ? Rugged::Repository.new(@root) : Rugged::Repository.clone_at(@url, @root, {credentials: @credential})
+      @repo = Dir.exist?(@root) ? Rugged::Repository.new(@root) : Rugged::Repository.clone_at(@url, @root, {credentials: @credential})
     end
 
     def real_path(name)

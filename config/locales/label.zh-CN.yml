@@ -1,6 +1,8 @@
 zh-CN:
   helpers:
     label:
+      ssh_key:
+        public_key: '公钥'
       user:
         label: '标识'
         email: '邮箱'

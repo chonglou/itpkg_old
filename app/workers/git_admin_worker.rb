@@ -20,7 +20,7 @@ class GitAdminWorker
       Dir[@git.real_path('keydir/*')].each do |f|
         f = File.basename f
         unless f == 'id_rsa.pub'
-          remove index, "keydir/#{f}"
+          @git.remove index, "keydir/#{f}"
         end
       end
 

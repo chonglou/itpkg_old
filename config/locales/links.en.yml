@@ -1,6 +1,9 @@
 en:
   links:
     home: 'Home'
+    user:
+      update_public_key: 'Update public key'
+      generate_keys: 'Generate key pairs'
     project:
       list: 'Projects'
       create: 'Create Project'

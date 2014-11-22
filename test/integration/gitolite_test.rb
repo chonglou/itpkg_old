@@ -19,10 +19,11 @@ class GitoliteTest < ActionDispatch::IntegrationTest
 
   def teardown
     @git.close
+    FileUtils.rm_r @git.root
   end
 
   def setup
-    @git = Linux::Git.new 'testing', {
+    @git = Linux::Git.new 'testing',  {
         host: 'localhost',
         username: ENV['USER'],
         public_key: "#{ENV['HOME']}/.ssh/id_rsa.pub",

@@ -56,8 +56,8 @@ RUN cd $ITPKG_HOME/current && git rev-parse --short HEAD > $ITPKG_HOME/current/R
 RUN cd $ITPKG_HOME/current && rm -r .git && bundle install --without test development
 RUN mkdir -p $ITPKG_HOME/shared/log $ITPKG_HOME/shared/tmp
 RUN mv $ITPKG_HOME/current/.rbenv-vars $ITPKG_HOME/shared/.rbenv-vars 
-RUN sed -i 's/development/production/' $ITPKG_HOME/shared/.rbenv-vars 
 RUN sed -i '/^ITPKG_DATABASE_PASSWORD/d' $ITPKG_HOME/shared/.rbenv-vars 
+RUN echo 'RAILS_ENV=production' >> $ITPKG_HOME/shared/.rbenv-vars 
 RUN cd $ITPKG_HOME/current && for i in $ITPKG_HOME/shared/* $ITPKG_HOME/shared/.[!.]*; do ln -sv $i $(basename $i); done
 
 # gitolite

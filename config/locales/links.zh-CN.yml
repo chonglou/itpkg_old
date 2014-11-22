@@ -1,6 +1,9 @@
 zh-CN:
   links:
     home: '本站首页'
+    user:
+      update_public_key: '更新公钥'
+      generate_keys: '重新生成密钥对'
     project:
       list: '项目列表'
       create: '新建项目'
@@ -67,7 +70,7 @@ zh-CN:
     finance: '财务管理'
     contact: '通讯录'
     personal:
-      info: '个人信息'
+      info: '个人参数'
       self: '控制中心'
       logout: '安全退出'
       login: '账户登录'
