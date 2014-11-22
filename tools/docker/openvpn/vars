@@ -1,0 +1,6 @@
+export KEY_COUNTRY="US"
+export KEY_PROVINCE="CA"
+export KEY_CITY="Goleta"
+export KEY_ORG="itpkg"
+export KEY_EMAIL="ops@itpkg.com"
+export KEY_OU="ops"

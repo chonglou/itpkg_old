@@ -94,11 +94,10 @@ RUN sudo chown deploy:deploy /etc/nginx/itpkg/{www,wss}.conf
 RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf cert.csr
 
 # runtime needed packages
-RUN sudo pacman -S --noconfirm percona-server percona-server-clients redis memcached exim
+RUN sudo pacman -S --noconfirm percona-server percona-server-clients redis memcached
 RUN sudo systemctl enable mysqld 
 RUN sudo systemctl enable memcached
 RUN sudo systemctl enable redis
-RUN sudo systemctl enable exim
 RUN sudo pacman -S --noconfirm pwgen
 
 # init data
@@ -123,8 +122,27 @@ RUN sudo systemctl enable itpkg-www
 RUN sudo systemctl enable itpkg-wss
 RUN sudo systemctl enable itpkg-bg
 
+
+# openvpn
+RUN sudo pacman -S --noconfirm easy-rsa openvpn wget
+RUN cd /tmp && wget https://aur.archlinux.org/packages/pa/pam_mysql/pam_mysql.tar.gz && tar xf pam_mysql.tar.gz && cd pam_mysql && makepkg
+RUN cd /tmp/pam_mysql && sudo pacman -U --noconfirm pam_mysql-*.pkg.tar.xz
+ADD openvpn/setup.sh /tmp/openvpn_setup.sh
+RUN sudo sh /tmp/openvpn.sh
+RUN sudo rm /tmp/openvpn.sh
+RUN sudo systemctl enable openvpn@server
+
+
+# bind9
+ADD bind9.sh
+RUN 
+
+# postfix dovecot
+RUN sudo pacman -S postfix dovecot
+
+
 # other package
-RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal lsof
+RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal lsof curl
 RUN sudo pacman -R --noconfirm vi
 RUN cd /usr/bin && sudo ln -sv vim vi
 RUN cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc
@@ -137,7 +155,7 @@ RUN sudo pacman -Scc --noconfirm
 
 
 VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "~git/repositories"]
-EXPOSE 22 25 443
+EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp
 USER root
 
 CMD ["/sbin/init"]
