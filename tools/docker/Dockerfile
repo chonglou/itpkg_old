@@ -127,18 +127,19 @@ RUN sudo systemctl enable itpkg-bg
 RUN sudo pacman -S --noconfirm easy-rsa openvpn wget
 RUN cd /tmp && wget https://aur.archlinux.org/packages/pa/pam_mysql/pam_mysql.tar.gz && tar xf pam_mysql.tar.gz && cd pam_mysql && makepkg
 RUN cd /tmp/pam_mysql && sudo pacman -U --noconfirm pam_mysql-*.pkg.tar.xz
-ADD openvpn/setup.sh /tmp/openvpn_setup.sh
+ADD openvpn/setup.sh /tmp/openvpn.sh
 RUN sudo sh /tmp/openvpn.sh
 RUN sudo rm /tmp/openvpn.sh
 RUN sudo systemctl enable openvpn@server
 
 
 # bind9
-ADD bind9.sh
-RUN 
+RUN sudo pacman -S --noconfirm geoip
+ADD bind9.sh /tmp/bind9.sh
+
 
 # postfix dovecot
-RUN sudo pacman -S postfix dovecot
+RUN sudo pacman -S --noconfirm postfix dovecot
 
 
 # other package
