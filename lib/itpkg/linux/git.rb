@@ -10,12 +10,12 @@ module Linux
 
     attr_reader :root, :name, :url
 
-    def initialize(repo_name, host:'localhost',
-                   port:22,
-                   username:'git',
+    def initialize(repo_name, host: 'localhost',
+                   port: 22,
+                   username: 'git',
                    email: "git@#{ENV['ITPKG_DOMAIN']}",
-                   public_key:"#{ENV['HOME']}/.ssh/id_rsa.pub",
-                   private_key:"#{ENV['HOME']}/.ssh/id_rsa")
+                   public_key: "#{ENV['HOME']}/.ssh/id_rsa.pub",
+                   private_key: "#{ENV['HOME']}/.ssh/id_rsa")
       @root = "#{Rails.root}/tmp/repos/#{repo_name}"
       @name = repo_name
       @credential = Rugged::Credentials::SshKey.new({
@@ -49,7 +49,12 @@ module Linux
 
     def patch(oid)
       c = @repo.lookup oid
-      diff = c.parents.first.diff(c)
+      if c.parents.empty?
+        diff = c.tree.diff(c)
+      else
+        diff = c.parents.first.diff(c)
+
+      end
       diff.patch
     end
 
