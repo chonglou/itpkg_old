@@ -3,6 +3,19 @@ require 'itpkg/linux/git'
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
 
+  def log
+    repo = Repository.find params[:repository_id]
+    oid = params[:oid]
+    if oid && _can_view?(repo)
+
+      git = Linux::Git.new repo.name
+      git.open
+      @patch = git.patch(oid)
+      git.close
+      render 'log', layout:false
+      #render plain:@patch
+    end
+  end
   def index
     uid = current_user.id
     rs = Repository.where(creator_id: uid, enable: true)+current_user.repositories
@@ -38,13 +51,15 @@ class RepositoriesController < ApplicationController
       git.open
 
       @branches = git.branches
-      @branch = params[:branch]
-      @branch = 'origin/master' unless @branches.include?(@branch)
-      @logs = []
-      git.logs(@branch) do |oid, email, user, time, message |
-        @logs << [time, "#{user}<#{email}>", message]
+      unless @branches.empty?
+        @branch = params[:branch]
+        @branch = 'origin/master' unless @branches.include?(@branch)
+        @logs = []
+        git.logs(@branch) do |oid, email, user, time, message|
+          @logs << [oid, time, "#{user}<#{email}>", message]
+        end
+        git.close
       end
-      git.close
     else
       redirect_to repositories_path
     end

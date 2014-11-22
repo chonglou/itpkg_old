@@ -47,6 +47,12 @@ module Linux
       end
     end
 
+    def patch(oid)
+      c = @repo.lookup oid
+      diff = c.parents.first.diff(c)
+      diff.patch
+    end
+
     def real_path(name)
       "#{@root}/#{name}"
     end

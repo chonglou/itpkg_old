@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   post 'callback/git'
 
   #-------------Repositories-----------
-  resources :repositories
+  resources :repositories do
+    resources :users, expect:[:edit, :update, :show]
+    get 'log'
+  end
 
   #------------Client---------------
   resources :clients
