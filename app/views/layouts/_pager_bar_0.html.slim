@@ -3,6 +3,9 @@ nav
     li class="previous #{'disabled' if first}"
       a href="#{previous_url unless first}"
         span aria-hidden="true" &larr;
+        |&nbsp;#{t('buttons.previous')}
     li class="next #{'disabled' if last}"
       a href="#{next_url unless last}"
+        |#{t('buttons.next')}&nbsp;
         span aria-hidden="true" &rarr;
+
