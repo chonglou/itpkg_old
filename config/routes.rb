@@ -1,9 +1,14 @@
 Rails.application.routes.draw do
 
+
+
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
   resources :templates
+
+  #------------callback---------
+  post 'callback/git'
 
   #-------------Repositories-----------
   resources :repositories

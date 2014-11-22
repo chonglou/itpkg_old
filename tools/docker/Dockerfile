@@ -77,6 +77,9 @@ RUN rm -r /tmp/gitolite
 USER deploy
 ENV HOME /home/deploy
 RUN rm /tmp/id_rsa.pub
+ADD git/hook /tmp/git_hook
+RUN sudo mv /tmp/git_hook ~git/local/gitolite/VREF/itpkg
+RUN sudo chmod +x ~git/local/gitolite/VREF/itpkg
 
 # nginx for itpkg
 RUN sudo pacman -S --noconfirm nginx

@@ -1,16 +1,18 @@
 require 'sidekiq'
 require 'itpkg/linux/git'
 
-class GitWorker
+class GitAdminWorker
   include Sidekiq::Worker
   sidekiq_options queue: :git
 
   NAME = 'gitolite-admin'
 
   def perform
-    @git = Linux::Git.new NAME, Setting.git_admin
+    @git = Linux::Git.new NAME, Setting.git
     logger.info "open from #{@git.url}"
     @git.open
+    logger.info "pull from #{@git.url}"
+    @git.pull
 
     logger.info "commit to #{@git.url}"
     @git.commit('Export users from database') do |index|

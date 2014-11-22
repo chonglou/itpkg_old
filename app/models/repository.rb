@@ -1,6 +1,8 @@
 class Repository < ActiveRecord::Base
   has_many :logs
-  has_many :users, through: 'RepositoryUser'
+  has_many :repository_users
+  has_many :users, through: :repository_users
+
   belongs_to :creator, class_name: 'User'
 
   validates :creator_id, :name, :title, presence: true

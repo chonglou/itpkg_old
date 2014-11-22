@@ -1,8 +1,8 @@
 require 'itpkg/services/site'
 Itpkg::SiteService.version!
 Setting.init = Time.now
-Setting.git_admin = {
-    host: 'localhost',
+Setting.git = {
+    host: '127.0.0.1',
     user: 'git',
     port: 22,
     pub: "#{ENV['HOME']}/.ssh/id_rsa.pub",

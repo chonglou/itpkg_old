@@ -1,0 +1,2 @@
+#!/bin/sh
+curl --data "name=$GL_REPO"  https://localhost/callback/git

@@ -1,12 +1,10 @@
-require 'itpkg/services/permission'
 
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
 
   def index
     uid = current_user.id
-    rs = Repository.where(creator_id: uid, enable:true)
-    Itpkg::PermissionService.resources(uid, 'MEMBER', 'repository').each {|id| rs << Repository.find(id)}
+    rs = Repository.where(creator_id: uid, enable:true)+current_user.repositories
     @repositories = rs.map { |p| {url: repository_path(p.id), name: p.name, details: p.title} }
   end
 
@@ -18,7 +16,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.new(params.require(:repository).permit(:name, :title))
     @repository.creator_id = current_user.id
     if @repository.save
-      GitWorker.perform_async
+      GitAdminWorker.perform_async
       redirect_to repository_path(@repository.id)
     else
       render :action => 'new'
@@ -66,8 +64,7 @@ class RepositoriesController < ApplicationController
     r = Repository.find params[:id]
     if _can_edit?(r) && RepositoryUser.where(repository_id: params[:id]).count == 0
       r.update enable:false
-      Permission.destroy resource:"repository://#{r.id}"
-      GitWorker.perform_async
+      GitAdminWorker.perform_async
     else
       flash[:alert] = t('labels.in_using')
 
@@ -78,10 +75,11 @@ class RepositoriesController < ApplicationController
 
   private
   def _can_view?(repo)
-    repo.enable && (Itpkg::PermissionService.auth?("user://#{current_user.id}", 'MEMBER', "repository://#{repo.id}") || _can_edit?(repo))
+    uid = current_user.id
+    repo && repo.enable && (RepositoryUser.find_by(repository_id:repo.id, user_id:uid) || repo.creator_id == uid)
   end
 
   def _can_edit?(repo)
-    repo.enable && repo.creator_id == current_user.id
+    repo && repo.enable && repo.creator_id == current_user.id
   end
 end

@@ -373,9 +373,10 @@ ActiveRecord::Schema.define(version: 20141120180212) do
   add_index "projects", ["name"], name: "index_projects_on_name", using: :btree
 
   create_table "repositories", force: true do |t|
-    t.integer  "creator_id",            null: false
-    t.string   "name",       limit: 16, null: false
-    t.string   "title",                 null: false
+    t.integer  "creator_id",                           null: false
+    t.string   "name",       limit: 16,                null: false
+    t.string   "title",                                null: false
+    t.boolean  "enable",                default: true, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
