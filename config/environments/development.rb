@@ -38,7 +38,7 @@ Rails.application.configure do
   # My add
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = false
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:'devel'}
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:'no-reply'}
 
   Slim::Engine.set_default_options pretty: true, sort_attrs: false
 

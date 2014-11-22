@@ -13,6 +13,7 @@ class PersonalController < ApplicationController
       SshKey.create keys
     end
     GitAdminWorker.perform_async
+    MailWorker.perform_async current_user.email, :key_pairs, {user_id:current_user.id}
     flash[:notice] = t('labels.success')
     redirect_to edit_user_registration_path
   end

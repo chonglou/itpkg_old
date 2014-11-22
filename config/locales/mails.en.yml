@@ -1,0 +1,4 @@
+en:
+  mails:
+    key_pairs:
+      subject: 'Your private key'
