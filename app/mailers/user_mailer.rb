@@ -5,4 +5,7 @@ class UserMailer < ActionMailer::Base
     attachments['id_rsa.pub'] = u.ssh_key.public_key
     mail( to:u.email, subject: t('mails.key_pairs.subject')) if u
   end
+  def git_commit(to, logs)
+
+  end
 end

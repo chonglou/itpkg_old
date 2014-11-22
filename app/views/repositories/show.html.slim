@@ -1,5 +1,20 @@
 - @title=t('links.repository.show', name:@repository.title)
 
 = render 'layouts/button_group', items:@buttons, back:true
-h3 #{@title}
-hr
+
+- unless @branches.empty?
+  ul class='nav nav-tabs'
+    - @branches.each do |b|
+      li role='presentation' class='#{'active' if b == @branch}'
+        a href='#{repository_path(@repository.id, branch:b)}' #{b}
+
+  table class='table table-hover'
+    tr
+      th #{t 'tables.git.time'}
+      th #{t 'tables.git.author'}
+      th #{t 'tables.git.message'}
+    -@logs.each do |l|
+      tr
+        td #{l[0]}
+        td #{l[1]}
+        td #{l[2]}

@@ -1,6 +1,11 @@
 en:
   tables:
     manage: 'Manage'
+    git:
+      oid: 'Id'
+      author: 'Author'
+      time: 'Time'
+      message: 'Message'
     vpn_user:
       name: 'Username'
       email: 'Email'

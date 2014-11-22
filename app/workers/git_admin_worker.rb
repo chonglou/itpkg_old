@@ -36,6 +36,7 @@ class GitAdminWorker
           f.puts "repo #{r.name}"
 
           u = r.creator
+          f.puts "\tRW+\t= id_rsa"
           f.puts "\tRW+\t= #{u.label}"
           write_key index, u.id, u.label
 

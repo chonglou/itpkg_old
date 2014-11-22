@@ -1,6 +1,11 @@
 zh-CN:
   tables:
     manage: '管理'
+    git:
+      oid: 'ID'
+      author: '用户'
+      time: '时间'
+      message: '信息'
     template:
       flag: '类型'
       name: '名称'

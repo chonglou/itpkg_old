@@ -74,6 +74,12 @@ IT包
     UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
     FLUSH PRIVILEGES; 
 
+### redis常用命令
+    FLUSHDB # 清除当前数据库
+    FLUSHALL # 清除所有数据
+    SELECT 1 # 使用数据库1
+    QUIT # 退出
+
 
 
 

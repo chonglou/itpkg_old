@@ -1,3 +1,5 @@
+require 'itpkg/linux/git'
+
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
 
@@ -26,12 +28,23 @@ class RepositoriesController < ApplicationController
 
   def show
     @repository = Repository.find params[:id]
-
     if _can_view?(@repository)
       @buttons = [{label: t('links.repository.list'), url: repositories_path, style: 'warning'}]
       if _can_edit?(@repository)
         @buttons.insert 0, {label: t('links.repository.edit', name: @repository.name), url: edit_repository_path(params[:id]), style: 'primary'}
       end
+
+      git = Linux::Git.new @repository.name
+      git.open
+
+      @branches = git.branches
+      @branch = params[:branch]
+      @branch = 'origin/master' unless @branches.include?(@branch)
+      @logs = []
+      git.logs(@branch) do |oid, email, user, time, message |
+        @logs << [time, "#{user}<#{email}>", message]
+      end
+      git.close
     else
       redirect_to repositories_path
     end

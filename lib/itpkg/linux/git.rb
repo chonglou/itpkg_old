@@ -31,6 +31,22 @@ module Linux
       @repo = Dir.exist?(@root) ? Rugged::Repository.new(@root) : Rugged::Repository.clone_at(@url, @root, {credentials: @credential})
     end
 
+    def branches
+      @repo.branches.each_name(:remote).sort
+    end
+
+    def logs(branch='origin/master')
+      target = @repo.branches[branch].target_id
+      walker = Rugged::Walker.new @repo
+      walker.sorting Rugged::SORT_DATE
+      #walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
+      walker.push(target)
+      walker.each do |c|
+        a = c.author
+        yield c.oid, a.fetch(:email), a.fetch(:name), a.fetch(:time), c.message
+      end
+    end
+
     def real_path(name)
       "#{@root}/#{name}"
     end

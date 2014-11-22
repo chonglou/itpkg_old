@@ -17,6 +17,14 @@ class GitoliteTest < ActionDispatch::IntegrationTest
     @git.push
   end
 
+  test '2 logs' do
+    @git.pull
+    @git.logs do |oid, email, user, time, message |
+      puts "#{oid}\t#{email}\t#{message}"
+    end
+  end
+
+
   def teardown
     @git.close
     FileUtils.rm_r @git.root
