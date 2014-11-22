@@ -135,7 +135,12 @@ RUN sudo systemctl enable openvpn@server
 
 # bind9
 RUN sudo pacman -S --noconfirm geoip
-ADD bind9.sh /tmp/bind9.sh
+ADD bind /tmp/bind
+RUN sudo chown -R deploy:deploy /tmp/bind
+RUN cd /tmp/bind && makepkg && sudo pacman -U --noconfirm bind-*.pkg.tar.xz
+RUN sudo sh /tmp/bind/setup.sh
+RUN sudo rm -r /tmp/bind
+RUN sudo systemctl enable named
 
 
 # postfix dovecot

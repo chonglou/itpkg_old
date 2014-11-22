@@ -8,8 +8,8 @@ password=$(pwgen 16)
 mysql -u root -h localhost -e "GRANT SELECT ON itpkg.vpn_users TO 'vpn'@'localhost' IDENTIFIED BY '$password';GRANT INSERT ON itpkg.vpn_logs TO 'vpn'@'localhost' IDENTIFIED BY '$password';FLUSH PRIVILEGES;"
 
 cat >/etc/pam.d/openvpn << "EOF"
-auth sufficient pam_mysql.so user=vpn passwd=$password host=localhost db=itpkg [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
-account required pam_mysql.so user=vpn passwd=$password host=localhost db=itpkg [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+auth sufficient pam_mysql.so user=vpn passwd=PASSWORD host=localhost db=itpkg [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+account required pam_mysql.so user=vpn passwd=PASSWORD host=localhost db=itpkg [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
 EOF
 
 
@@ -20,18 +20,18 @@ cat > config.sh << "EOF"
 HOST='localhost'
 PORT='3306'
 USER='vpn'
-PASS='$password'
+PASS='PASSWORD'
 DB='itpkg'
 EOF
 cat > connect.sh << "EOF"
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h\$HOST -P\$PORT -u\$USER -p\$PASS \$DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('1', 'C','\$common_name', '\$trusted_ip;\\$trusted_port;\$ifconfig_pool_remote_ip;\$remote_port_1;\$bytes_received;\$bytes_sent', 'NOW()')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('1', 'C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
 EOF
 cat > diconnect.sh << "EOF"
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h\$HOST -P\$PORT -u\$USER -p\$PASS \$DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('1', 'D','\$common_name', '\$trusted_ip;\$trusted_port;\$ifconfig_pool_remote_ip;\$remote_port_1;\$bytes_received;\$bytes_sent', 'NOW()')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('1', 'D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
 EOF
 chmod +x *.sh
 
@@ -96,3 +96,6 @@ cp ca.crt ta.key dh2048.pem server.crt server.key /etc/openvpn
 
 cd ..
 ./pkitool client
+
+
+sed -i -e "s/PASSWORD/$password/g" /etc/pam.d/openvpn /etc/openvpn/scripts/config.sh
