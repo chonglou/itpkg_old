@@ -29,8 +29,8 @@ class Vpn::HostsController < ApplicationController
           'vpn',
           @host.ip,
           {
-              'vpn_users'=>'SELECT',
-              'vpn_logs'=>'INSERT'
+              'vpn_users' => 'SELECT',
+              'vpn_logs' => 'INSERT'
           }
       )
       # todo
@@ -86,7 +86,7 @@ class Vpn::HostsController < ApplicationController
         dns: host.dns.split("\r\n")
     }
 
-    tmp = Template.find_by flag:'ops.vpn', name:'install.sh'
+    tmp = Template.find_by flag: 'ops.vpn', name: 'install.sh'
 
     send_data ERB.new(tmp.to_sh).result(binding), filename: 'install.sh'
   end

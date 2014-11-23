@@ -80,6 +80,11 @@ IT包
     SELECT 1 # 使用数据库1
     QUIT # 退出
 
+### sendmail设置
+
+    sudo pacman -Syu msmtp msmtp-mta
+    vi ~/.msmtprc
+    chmod 600 ~/.msmtprc
 
 
 

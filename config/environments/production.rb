@@ -80,10 +80,10 @@ Rails.application.configure do
 
   # My add
   config.action_mailer.delivery_method = :sendmail
-  config.action_mailer.sendmail_settings = {
-    location: '/usr/sbin/sendmail',
-    arguments: '-i'
-  }
+  # config.action_mailer.sendmail_settings = {
+  #   location: '/usr/sbin/sendmail',
+  #   arguments: '-i'
+  # }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: "www.#{ENV['ITPKG_DOMAIN']}", from:"no-reply@#{ENV['ITPKG_DOMAIN']}"}

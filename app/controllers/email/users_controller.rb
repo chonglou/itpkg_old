@@ -1,4 +1,3 @@
-
 class Email::UsersController < ApplicationController
   before_action :must_admin!
 

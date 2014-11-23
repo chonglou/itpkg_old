@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120180212) do
+ActiveRecord::Schema.define(version: 20141123030554) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -74,6 +74,19 @@ ActiveRecord::Schema.define(version: 20141120180212) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "confirmations", force: true do |t|
+    t.string   "token",                limit: 36,             null: false
+    t.text     "encrypted_extra",                             null: false
+    t.string   "encrypted_extra_salt",                        null: false
+    t.string   "encrypted_extra_iv",                          null: false
+    t.integer  "user_id",                         default: 0, null: false
+    t.datetime "deadline",                                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "confirmations", ["token"], name: "index_confirmations_on_token", unique: true, using: :btree
 
   create_table "contacts", force: true do |t|
     t.integer  "user_id",    null: false

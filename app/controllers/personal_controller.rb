@@ -13,16 +13,17 @@ class PersonalController < ApplicationController
       SshKey.create keys
     end
     GitAdminWorker.perform_async
-    MailWorker.perform_async current_user.email, :key_pairs, {user_id:current_user.id}
+    UserMailer.delay.key_pairs current_user.id
     flash[:notice] = t('labels.success')
     redirect_to edit_user_registration_path
   end
+
   def update_public_key
     key = current_user.ssh_key
     if key
-      key.update public_key:params[:public_key]
+      key.update public_key: params[:public_key]
     else
-      SshKey.create user_id:current_user.id, public_key:params[:public_key], private_key:'NULL'
+      SshKey.create user_id: current_user.id, public_key: params[:public_key], private_key: 'NULL'
     end
     GitAdminWorker.perform_async
     flash[:notice] = t('labels.success')

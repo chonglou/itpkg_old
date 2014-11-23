@@ -2,6 +2,12 @@ class CallbackController < ApplicationController
   #protect_from_forgery except: :git
   skip_before_action :verify_authenticity_token
 
+  def confirm
+    code = params[:code]
+
+    redirect_to(params[:goto] || root_path)
+  end
+
   def git
     ip = request.ip
     name = params[:name]

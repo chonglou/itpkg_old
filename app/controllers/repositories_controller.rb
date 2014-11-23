@@ -12,10 +12,10 @@ class RepositoriesController < ApplicationController
       git.open
       @patch = git.patch(oid)
       git.close
-      render 'log', layout:false
-      #render plain:@patch
+      render 'log', layout: false
     end
   end
+
   def index
     uid = current_user.id
     rs = Repository.where(creator_id: uid, enable: true)+current_user.repositories
@@ -44,7 +44,7 @@ class RepositoriesController < ApplicationController
     if _can_view?(@repository)
       @buttons = [{label: t('links.repository.list'), url: repositories_path, style: 'warning'}]
       if _can_edit?(@repository)
-        @buttons.insert 0, {label: t('links.repository.user.list', name: @repository.name), url: repository_users_path(repository_id:params[:id]), style: 'success'}
+        @buttons.insert 0, {label: t('links.repository.user.list', name: @repository.name), url: repository_users_path(repository_id: params[:id]), style: 'success'}
         @buttons.insert 0, {label: t('links.repository.edit', name: @repository.name), url: edit_repository_path(params[:id]), style: 'primary'}
       end
 
@@ -58,7 +58,7 @@ class RepositoriesController < ApplicationController
         @logs = []
         @page = params[:page] ? params[:page].to_i : 1
         @size = 50
-        git.logs(page:@page, size:@size, branch:@branch) do |oid, email, user, time, message|
+        git.logs(page: @page, size: @size, branch: @branch) do |oid, email, user, time, message|
           @logs << [oid, time, "#{user}<#{email}>", message]
         end
         git.close

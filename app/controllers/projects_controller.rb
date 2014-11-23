@@ -24,8 +24,8 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find params[:id]
-    @buttons =  [
-        {label: t('links.project.edit', name:@project.name), url: edit_project_path(params[:id]), style: 'primary'},
+    @buttons = [
+        {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'},
         {label: t('links.project.list'), url: projects_path, style: 'warning'},
 
     ]
@@ -80,7 +80,7 @@ class ProjectsController < ApplicationController
   def destroy
     p = Project.find params[:id]
     if p.creator_id == current_user.id
-      if ProjectUser.where(project_id:p.id).count ==0
+      if ProjectUser.where(project_id: p.id).count ==0
         p.destroy
       else
         flash[:alert] = t('labels.in_using')
@@ -93,6 +93,7 @@ class ProjectsController < ApplicationController
   def _check
     @project.creator
   end
+
   def project_params
     params.require(:project).permit(:name, :details)
   end
