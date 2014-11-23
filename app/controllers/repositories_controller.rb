@@ -7,14 +7,18 @@ class RepositoriesController < ApplicationController
 
 
   def changes
-    oid = params[:oid]
-    if oid && _can_view?
+    @oid = params[:oid]
+    @repository = Repository.find params[:repository_id]
+    if @oid && _can_view?
       git = Linux::Git.new @repository.name
       git.open
-      @patch = git.patch(oid)
+      patch = git.patch(@oid)
+      @patch = patch.force_encoding('UTF-8') if patch
       git.close
-      render 'log', layout: false
+      render( 'changes', layout: 'repositories/view') and return
     end
+    flash[:alert] = t('labels.not_valid')
+    redirect_to repositories_path
   end
 
   def commits
@@ -25,7 +29,7 @@ class RepositoriesController < ApplicationController
       git = Linux::Git.new @repository.name
       git.open
       if git.branches.include?(@branch)
-        size = 5
+        size = 120
         @logs = git.walk(cur, size) { |oid, email, user, time, message| [oid, time, "#{user}<#{email}>", message] }
 
         prev_oid = git.back(@branch, cur, size)
