@@ -1,0 +1,14 @@
+defaults
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+account provider
+host smtp.qq.com
+port 587
+from CHANGE_ME@qq.com
+auth on
+user CHANGE_ME@qq.com
+password CHANGE_ME
+#passwordeval gpg -d ~/.msmtp.password.gpg
+
+account default : provider

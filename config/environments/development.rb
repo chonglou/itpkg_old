@@ -41,7 +41,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :sendmail
    config.action_mailer.sendmail_settings = {
      location: '/usr/bin/msmtp',
-     arguments: '-C /tmp/msmtprc --logfile /tmp/msmtp.log -a default -t'
+     arguments: "-C #{Rails.root}/config/msmtprc --logfile #{Rails.root}/log/msmtp.log -a default -t"
    }
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:ENV['ITPKG_MAILER_SENDER']}
 
