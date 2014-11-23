@@ -2,7 +2,7 @@ ITPKG_DATABASE_PASSWORD=
 ITPKG_DOMAIN=localhost
 # split by ';'
 ITPKG_MEMCACHED_HOSTS=localhost
-ITPKG_MAILER_SENDER=no-reply
+#ITPKG_MAILER_SENDER=no-reply@$ITPKG_DOMAIN
 ITPKG_REDIS_URL=redis://localhost:6379/0
 # can be generate by 'pwgen -n 128'
 ITPKG_SECRET_KEY_BASE=nooviuboo4ish6bai4aebiezei4eibohd3eisu7keishoo7vingooch4vierahp9uph2ceiceliechahmahxaer8eehoo5ru8ahwae5te8ohghititeh8eik5ufeiz6o

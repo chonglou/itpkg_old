@@ -29,7 +29,7 @@ class Repositories::UsersController < ApplicationController
           }.to_json,
                                   subject:t('mails.add_to_repository.subject', name:@repository.name),
                                   user_id: user.id, token: SecureRandom.uuid, deadline: 1.days.since
-          UserMailer.delay.confirm c.id
+          UserMailer.confirm(c.id).deliver
           success = true
         end
       end

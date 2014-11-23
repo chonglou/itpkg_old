@@ -1,6 +1,7 @@
 require 'json'
 
 class UserMailer < ActionMailer::Base
+  default from:ENV['ITPKG_MAILER_SENDER']
   def key_pairs(user_id)
     u = User.find user_id
     attachments['id_rsa'] = u.ssh_key.private_key
@@ -20,7 +21,7 @@ class UserMailer < ActionMailer::Base
     @token = c.token
     @extra = JSON.parse c.extra
     @deadline = c.deadline
-    mail to: c.user.email, subject: c.subject
+    mail(to: c.user.email, subject: c.subject)
   end
 
   def git_commit(to, logs)

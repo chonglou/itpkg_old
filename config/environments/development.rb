@@ -38,7 +38,12 @@ Rails.application.configure do
   # My add
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = false
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:'no-reply'}
+  config.action_mailer.delivery_method = :sendmail
+   config.action_mailer.sendmail_settings = {
+     location: '/usr/bin/msmtp',
+     arguments: '-C /tmp/msmtprc --logfile /tmp/msmtp.log -a default -t'
+   }
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:ENV['ITPKG_MAILER_SENDER']}
 
   Slim::Engine.set_default_options pretty: true, sort_attrs: false
 
