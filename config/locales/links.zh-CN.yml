@@ -15,7 +15,7 @@ zh-CN:
     repository:
       user:
         list: 'GIT仓库用户列表'
-        create: '添加用户到GIT仓库 [%{name}]'
+        create: '邀请用户到GIT仓库 [%{name}]'
         remove: '删除用户 [%{label}@%{name}]'
       list: 'GIT仓库列表'
       create: '新建GIT仓库'

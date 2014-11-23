@@ -1,11 +1,27 @@
+require 'json'
 class CallbackController < ApplicationController
   #protect_from_forgery except: :git
   skip_before_action :verify_authenticity_token
 
   def confirm
-    code = params[:code]
-
-    redirect_to(params[:from] || root_path)
+    token = params[:token]
+    user = current_user
+    c = Confirmation.find_by token: token
+    if user && c && c.submit? && c.user_id == user.id
+      if Time.now <= c.deadline
+        extra = JSON.parse c.extra
+        RepositoryUser.create repository_id: extra.fetch('repository_id'), user_id: user.id
+        GitAdminWorker.perform_async
+        c.update status: :done
+        flash[:notice] = t('labels.success')
+        redirect_to(params[:from] || root_path) and return
+      else
+        c.update status: :done
+        flash[:alert] = t('labels.not_valid')
+      end
+      flash[:alert] = t('labels.not_valid')
+    end
+    redirect_to(root_path)
   end
 
   def git

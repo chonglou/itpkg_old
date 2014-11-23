@@ -15,7 +15,7 @@ en:
     repository:
       user:
         list: 'Repository Users '
-        create: 'Add user to Repository [%{name}]'
+        create: 'Invite user to Repository [%{name}]'
         remove: 'Remove user [%{label}@%{name}]'
       list: 'Repositories'
       create: 'Create a new repository'
