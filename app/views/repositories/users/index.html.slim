@@ -1,0 +1,4 @@
+- @title=t('links.repository.user.list', name:@repository.name)
+
+= render 'layouts/button_group', items:@buttons, back:true
+= render 'layouts/table', title:'repository.user', items:@users, headers:[:label, :email, :contact]

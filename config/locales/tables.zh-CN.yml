@@ -6,6 +6,11 @@ zh-CN:
       author: '用户'
       time: '时间'
       message: '信息'
+    repository:
+      user:
+        label: '标识'
+        email: '邮箱'
+        contact: '联系信息'
     template:
       flag: '类型'
       name: '名称'

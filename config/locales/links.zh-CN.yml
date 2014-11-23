@@ -13,6 +13,10 @@ zh-CN:
     monitor: '监控系统'
     settings: '站点参数'
     repository:
+      user:
+        list: 'GIT仓库用户列表'
+        create: '添加用户到GIT仓库 [%{name}]'
+        remove: '删除用户 [%{label}@%{name}]'
       list: 'GIT仓库列表'
       create: '新建GIT仓库'
       edit: '编辑GIT仓库 [%{name}]'

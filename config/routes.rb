@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-
-
   #--------------- My Add -----------------
   resources :monitor_nodes
   resources :logging_nodes
@@ -12,7 +10,7 @@ Rails.application.routes.draw do
 
   #-------------Repositories-----------
   resources :repositories do
-    resources :users, expect:[:edit, :update, :show]
+    resources :users, expect:[:edit, :update], controller:'repositories/users'
     get 'log'
   end
 

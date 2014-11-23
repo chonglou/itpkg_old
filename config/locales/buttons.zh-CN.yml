@@ -10,6 +10,7 @@ zh-CN:
     reset: '重写'
     submit: '提交'
     update: '更新'
+    view: '查看'
     back: '返回'
     create: '新建'
     edit: '编辑'

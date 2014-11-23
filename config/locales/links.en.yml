@@ -13,6 +13,10 @@ en:
     monitor: 'Monitor'
     settings: 'Settings'
     repository:
+      user:
+        list: 'Repository Users '
+        create: 'Add user to Repository [%{name}]'
+        remove: 'Remove user [%{label}@%{name}]'
       list: 'Repositories'
       create: 'Create a new repository'
       edit: 'Edit repository [%{name}]'
