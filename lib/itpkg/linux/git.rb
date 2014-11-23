@@ -39,21 +39,36 @@ module Linux
       @repo.branches[branch].target_id
     end
 
+    def back(branch, oid, size)
+      target = target_id branch
 
-    def logs(oid, size)
+      walker = Rugged::Walker.new @repo
+      walker.sorting( Rugged::SORT_DATE)
+      walker.push(target)
+      oids = []
+      walker.each_with_index do |c|
+        oids << c.oid
+        break if oid == c.oid
+      end
+
+      rs = oids[-size-1..-1]
+      rs.first if rs and rs.first != target
+    end
+
+    def walk(oid, size)
 
       walker = Rugged::Walker.new @repo
       walker.sorting( Rugged::SORT_DATE)
       #walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
       walker.push(oid)
-      logs = []
+      items = []
       walker.each_with_index do |c, i|
         a = c.author
-        logs << yield(c.oid, a.fetch(:email), a.fetch(:name), a.fetch(:time), c.message)
+        items << yield(c.oid, a.fetch(:email), a.fetch(:name), a.fetch(:time), c.message)
         break if i==size
       end
       walker.reset
-      logs
+      items
     end
 
     def patch(oid)

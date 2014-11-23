@@ -3,18 +3,57 @@ require 'itpkg/linux/git'
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
 
-  def log
-    repo = Repository.find params[:repository_id]
-    oid = params[:oid]
-    if oid && _can_view?(repo)
+  include RepositoriesHelper
 
-      git = Linux::Git.new repo.name
+
+  def changes
+    oid = params[:oid]
+    if oid && _can_view?
+      git = Linux::Git.new @repository.name
       git.open
       @patch = git.patch(oid)
       git.close
       render 'log', layout: false
     end
   end
+
+  def commits
+    cur = params[:oid]
+    @branch = params[:branch]
+    @repository = Repository.find params[:repository_id]
+    if cur && @branch && _can_view?
+      git = Linux::Git.new @repository.name
+      git.open
+      if git.branches.include?(@branch)
+        size = 5
+        @logs = git.walk(cur, size) { |oid, email, user, time, message| [oid, time, "#{user}<#{email}>", message] }
+
+        prev_oid = git.back(@branch, cur, size)
+        @previous_url = prev_oid ? repository_commits_path(@repository.id, oid: prev_oid, branch:@branch) : nil
+        @next_url = @logs.empty? || @logs.size < size ? nil : repository_commits_path(@repository.id, oid: @logs.last.first, branch:@branch)
+        render('commits', layout: 'repositories/view') and return
+      end
+    end
+
+    flash[:alert] = t('labels.not_valid')
+    redirect_to repositories_path
+  end
+
+
+  def show
+    if _can_view?
+      git = Linux::Git.new @repository.name
+      git.open
+      @branches = git.branches.map do |b|
+        {url: repository_commits_path(@repository.id, branch: b, oid: git.target_id(b)), name: b}
+      end
+      git.close
+      render 'show', layout: 'repositories/view'
+    else
+      redirect_to repositories_path
+    end
+  end
+
 
   def index
     uid = current_user.id
@@ -40,68 +79,15 @@ class RepositoriesController < ApplicationController
 
   end
 
-  def show
-    @repository = Repository.find params[:id]
-    if _can_view?(@repository)
-      @buttons = [{label: t('links.repository.list'), url: repositories_path, style: 'warning'}]
-      if _can_edit?(@repository)
-        @buttons.insert 0, {label: t('links.repository.user.list', name: @repository.name), url: repository_users_path(repository_id: params[:id]), style: 'success'}
-        @buttons.insert 0, {label: t('links.repository.edit', name: @repository.name), url: edit_repository_path(params[:id]), style: 'primary'}
-      end
-
-      git = Linux::Git.new @repository.name
-      git.open
-
-
-      @branches = git.branches
-      unless @branches.empty?
-        @branch = params[:branch]
-        @branch = 'origin/master' unless @branches.include?(@branch)
-
-
-        oids = params[:oids] || [git.target_id(@branch)]
-        size = 50
-        @logs = git.logs(oids.last, size) do |oid, email, user, time, message|
-          [oid, time, "#{user}<#{email}>", message]
-        end
-
-        if @logs.empty?
-          @previous_url = nil
-          @next_url = nil
-        elsif @logs.size < size
-          prev = oids.clone
-          prev.pop
-          @previous_url = prev.empty? ? nil : repository_path(@repository, oids:prev, branch:@branch)
-
-          @next_url = nil
-        else
-          prev = oids.clone
-          prev.pop
-          @previous_url = prev.empty? ? nil : repository_path(@repository, oids:prev, branch:@branch)
-
-          nex = oids.clone
-          nex << @logs.last.first
-          @next_url = repository_path(@repository, oids:nex, branch:@branch)
-        end
-      end
-
-      git.close
-    else
-      redirect_to repositories_path
-    end
-  end
 
   def edit
-    @repository = Repository.find params[:id]
-    unless _can_edit?(@repository)
+    unless _can_edit?
       redirect_to repositories_path
     end
   end
 
   def update
-
-    @repository = Repository.find params[:id]
-    if _can_edit?(@repository)
+    if _can_edit?
       if @repository.update(params.require(:repository).permit(:title))
         redirect_to repository_path(@repository.id)
       else
@@ -114,10 +100,8 @@ class RepositoriesController < ApplicationController
   end
 
   def destroy
-
-    r = Repository.find params[:id]
-    if _can_edit?(r) && RepositoryUser.where(repository_id: params[:id]).count == 0
-      r.update enable: false
+    if _can_edit? && RepositoryUser.where(repository_id: params[:id]).count == 0
+      @repository.update enable: false
       GitAdminWorker.perform_async
     else
       flash[:alert] = t('labels.in_using')
@@ -127,13 +111,4 @@ class RepositoriesController < ApplicationController
   end
 
 
-  private
-  def _can_view?(repo)
-    uid = current_user.id
-    repo && repo.enable && (RepositoryUser.find_by(repository_id: repo.id, user_id: uid) || repo.creator_id == uid)
-  end
-
-  def _can_edit?(repo)
-    repo && repo.enable && repo.creator_id == current_user.id
-  end
 end

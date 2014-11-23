@@ -1,0 +1,13 @@
+= render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url
+
+table id='git_logs' class='table table-hover'
+  tr
+    th #{t 'tables.git.time'}
+    th #{t 'tables.git.author'}
+    th #{t 'tables.git.message'}
+  -@logs.each do |l|
+    a href="#{repository_changes_path(repository_id:@repository.id, oid:l[0])}"
+      tr
+        td #{time_ago_in_words l[1]}
+        td #{l[2]}
+        td #{l[3]}

@@ -17,6 +17,10 @@ en:
         list: 'Repository Users '
         create: 'Invite user to Repository [%{name}]'
         remove: 'Remove user [%{label}@%{name}]'
+      branch:
+        list: 'Branches'
+      tag:
+        list: 'Tags'
       list: 'Repositories'
       create: 'Create a new repository'
       edit: 'Edit repository [%{name}]'

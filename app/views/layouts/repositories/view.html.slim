@@ -1,0 +1,5 @@
+- @title=t('links.repository.show', name:@repository.title)
+
+- content_for :root
+  = render 'layouts/button_group', items:nav_buttons, back:true
+= render template:'layouts/application'

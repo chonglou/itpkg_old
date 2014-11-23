@@ -2,6 +2,6 @@ div class='row'
   - items.each do |i|
     div class='col-md-3'
       h2 class='wrap' #{i.fetch :name}
-      p #{{i.fetch :details}}
+      p #{{i[:details]}}
       p
         a class='btn btn-default' role='button' href='#{i.fetch :url}' #{t 'buttons.view'}

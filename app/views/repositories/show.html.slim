@@ -1,36 +1,3 @@
-- @title=t('links.repository.show', name:@repository.title)
-
-= render 'layouts/button_group', items:@buttons, back:true
-
-- unless @branches.empty?
-  ul class='nav nav-tabs'
-    - @branches.each do |b|
-      li role='presentation' class='#{'active' if b == @branch}'
-        a href='#{repository_path(@repository.id, branch:b)}' #{b}
-
-  = render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url
-
-  table id='git_logs' class='table table-hover'
-    tr
-      th #{t 'tables.git.time'}
-      th #{t 'tables.git.author'}
-      th #{t 'tables.git.message'}
-    -@logs.each do |l|
-      tr
-        td #{l[1]}
-        td #{l[2]}
-        td #{l[3]}
-      tr style='display: none'
-        td colspan=3 link="#{repository_log_path(repository_id:@repository.id, oid:l[0])}"
-  javascript:
-    $(function () {
-      $('table#git_logs > tbody > tr').click(function () {
-        //console.log();
-        var row = $(this).next();
-        var cell = row.find('td');
-        if (!row.is(":visible")) {
-          cell.load(cell.attr('link'));
-        }
-        row.toggle();
-      });
-    });
+h3 #{t 'links.repository.branch.list'}
+hr
+= render 'layouts/item_list', items:@branches
