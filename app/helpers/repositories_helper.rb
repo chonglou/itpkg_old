@@ -1,9 +1,12 @@
 module RepositoriesHelper
   def nav_buttons
-    buttons = [{label: t('links.repository.list'), url: repositories_path, style: 'warning'}]
+    buttons = [
+        {label: t('links.repository.show', name: @repository.name), url: repository_path(@repository), style: 'default'},
+        {label: t('links.repository.list'), url: repositories_path, style: 'warning'}
+    ]
     if _can_edit?
-      buttons.insert 0, {label: t('links.repository.user.list', name: @repository.name), url: repository_users_path(repository_id: params[:repository_id]||params[:id]), style: 'success'}
-      buttons.insert 0, {label: t('links.repository.edit', name: @repository.name), url: edit_repository_path(params[:repository_id]||params[:id]), style: 'primary'}
+      buttons.insert 1, {label: t('links.repository.user.list', name: @repository.name), url: repository_users_path(repository_id: params[:repository_id]||params[:id]), style: 'success'}
+      buttons.insert 1, {label: t('links.repository.edit', name: @repository.name), url: edit_repository_path(params[:repository_id]||params[:id]), style: 'primary'}
     end
     buttons
   end

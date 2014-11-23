@@ -25,6 +25,8 @@ class RepositoriesController < ApplicationController
         #puts '#'*80,next_oids,'#'*80,@oid
         @next_url = next_oids.last == @oid ? nil : repository_changes_path(@repository.id, oid: next_oids.last, branch: @branch)
 
+        @commit = git.info(@oid)
+
         git.close
         render('changes', layout: 'repositories/view') and return
       end
@@ -42,7 +44,7 @@ class RepositoriesController < ApplicationController
       git.open
 
       if git.branches.include?(@branch)
-        size = 5
+        size = 120
         @logs = git.walk(cur, size) { |oid, email, user, time, message| [oid, time, "#{user}<#{email}>", message] }
 
         target=git.target_id @branch

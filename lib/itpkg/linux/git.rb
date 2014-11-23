@@ -39,6 +39,11 @@ module Linux
       @repo.branches[branch].target_id
     end
 
+    def info(oid)
+      c = @repo.lookup oid
+      {email:c.author.fetch(:email), name:c.author.fetch(:name), time:c.time, message:c.message} if c
+    end
+
     def prev_oids(branch, oid, size=1)
       walker = Rugged::Walker.new @repo
       walker.sorting( Rugged::SORT_DATE)
