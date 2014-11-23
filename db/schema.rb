@@ -76,6 +76,8 @@ ActiveRecord::Schema.define(version: 20141123030554) do
   end
 
   create_table "confirmations", force: true do |t|
+    t.string   "subject",                                     null: false
+    t.integer  "status",                          default: 0, null: false
     t.string   "token",                limit: 36,             null: false
     t.text     "encrypted_extra",                             null: false
     t.string   "encrypted_extra_salt",                        null: false

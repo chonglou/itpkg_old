@@ -32,7 +32,8 @@ class RepositoriesController < ApplicationController
 
     if @repository.save
       GitAdminWorker.perform_async
-      redirect_to(repository_path(@repository.id)) and return
+      #注意 直接到show会有EOF错误
+      redirect_to(repositories_path) and return
     end
 
     render :action => 'new'

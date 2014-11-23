@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   resources :templates
 
   #------------callback---------
-  post 'callback/git'
+  namespace :callback do
+    post 'git'
+    get 'confirm'
+  end
 
   #-------------Repositories-----------
   resources :repositories do

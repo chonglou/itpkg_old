@@ -5,7 +5,7 @@ class CallbackController < ApplicationController
   def confirm
     code = params[:code]
 
-    redirect_to(params[:goto] || root_path)
+    redirect_to(params[:from] || root_path)
   end
 
   def git

@@ -2,3 +2,7 @@ en:
   mails:
     key_pairs:
       subject: 'Your private key'
+    remove_from_repository:
+      subject: 'Remove From Git Repository %{name}'
+    add_to_repository:
+      subject: 'Add to repository %{name}'

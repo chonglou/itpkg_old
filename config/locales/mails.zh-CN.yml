@@ -2,3 +2,7 @@ zh-CN:
   mails:
     key_pairs:
       subject: '您的密钥'
+    remove_from_repository:
+      subject: '您被从GIT仓库 %{name} 中移除'
+    add_to_repository:
+      subject: '添加到GIT仓库 %{name}'
