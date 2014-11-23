@@ -21,6 +21,7 @@ en:
         list: 'Branches'
       tag:
         list: 'Tags'
+      clone: 'Clone Command'
       list: 'Repositories'
       create: 'Create a new repository'
       edit: 'Edit repository [%{name}]'

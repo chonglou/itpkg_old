@@ -21,6 +21,7 @@ zh-CN:
         list: '分支列表'
       tag:
         list: '标签列表'
+      clone: 'CLONE 地址'
       list: 'GIT仓库列表'
       create: '新建GIT仓库'
       edit: '编辑GIT仓库 [%{name}]'

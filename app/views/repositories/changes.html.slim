@@ -5,3 +5,7 @@ ul
 = render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url
 =render 'layouts/code_block', style:'diff', code:@patch
 
+nav
+  ul class='pager'
+    li
+      a href='#{repository_commits_path(repository_id:@repository.id, branch:params[:branch], oid:@target)}' #{t 'buttons.index'}

@@ -17,15 +17,16 @@ class RepositoriesController < ApplicationController
         patch = git.patch(@oid)
         @patch = patch.force_encoding('UTF-8') if patch
 
-        target = git.target_id @branch
+        @target = git.target_id @branch
         prev_oids = git.prev_oids(@branch, @oid)
         #puts '#'*80,prev_oids,'#'*80,@oid
-        @previous_url = prev_oids.first == target ? nil : repository_changes_path(@repository.id, oid: prev_oids.first, branch: @branch)
+        @previous_url = prev_oids.first == @target ? nil : repository_changes_path(@repository.id, oid: prev_oids.first, branch: @branch)
         next_oids = git.next_oids @oid
         #puts '#'*80,next_oids,'#'*80,@oid
         @next_url = next_oids.last == @oid ? nil : repository_changes_path(@repository.id, oid: next_oids.last, branch: @branch)
 
         @commit = git.info(@oid)
+
 
         git.close
         render('changes', layout: 'repositories/view') and return
@@ -64,6 +65,7 @@ class RepositoriesController < ApplicationController
   def show
     if _can_view?
       git = Linux::Git.new @repository.name
+      @clone_url = git.url
       git.open
       @branches = git.branches.map do |b|
         {url: repository_commits_path(@repository.id, branch: b, oid: git.target_id(b)), name: b}
