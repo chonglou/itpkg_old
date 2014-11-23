@@ -35,24 +35,25 @@ module Linux
       @repo.branches.each_name(:remote).sort
     end
 
-    def logs(page:1, size:120, branch:'origin/master')
-      begin_i = (page-1)*size
-      end_i = page*size-1
+    def target_id(branch)
+      @repo.branches[branch].target_id
+    end
 
-      target = @repo.branches[branch].target_id
+
+    def logs(oid, size)
+
       walker = Rugged::Walker.new @repo
-      walker.sorting Rugged::SORT_DATE
+      walker.sorting( Rugged::SORT_DATE)
       #walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
-      walker.push(target)
+      walker.push(oid)
+      logs = []
       walker.each_with_index do |c, i|
-        next if i<begin_i
-
         a = c.author
-        yield c.oid, a.fetch(:email), a.fetch(:name), a.fetch(:time), c.message
-
-        break if i==end_i
+        logs << yield(c.oid, a.fetch(:email), a.fetch(:name), a.fetch(:time), c.message)
+        break if i==size
       end
       walker.reset
+      logs
     end
 
     def patch(oid)

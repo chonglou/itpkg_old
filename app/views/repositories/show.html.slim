@@ -8,7 +8,7 @@
       li role='presentation' class='#{'active' if b == @branch}'
         a href='#{repository_path(@repository.id, branch:b)}' #{b}
 
-  = render 'layouts/pager_bar_0', last:@logs.size<@size, first:@page==1, previous_url:repository_path(@repository, page:@page-1, branch:@branch), next_url:repository_path(@repository, page:@page+1, branch:@branch)
+  = render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url
 
   table id='git_logs' class='table table-hover'
     tr
@@ -17,12 +17,11 @@
       th #{t 'tables.git.message'}
     -@logs.each do |l|
       tr
-        td #{time_ago_in_words l[1]}
+        td #{l[1]}
         td #{l[2]}
         td #{l[3]}
-      - unless l.equal? @logs.last
-        tr style='display: none'
-          td colspan=3 link="#{repository_log_path(repository_id:@repository.id, oid:l[0])}"
+      tr style='display: none'
+        td colspan=3 link="#{repository_log_path(repository_id:@repository.id, oid:l[0])}"
   javascript:
     $(function () {
       $('table#git_logs > tbody > tr').click(function () {

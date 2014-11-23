@@ -1,11 +1,11 @@
 nav
   ul class="pager"
-    li class="previous #{'disabled' if first}"
-      a href="#{previous_url unless first}"
+    li class="previous #{'disabled' unless previous_url}"
+      a href="#{previous_url}"
         span aria-hidden="true" &larr;
         |&nbsp;#{t('buttons.previous')}
-    li class="next #{'disabled' if last}"
-      a href="#{next_url unless last}"
+    li class="next #{'disabled' unless next_url}"
+      a href="#{next_url}"
         |#{t('buttons.next')}&nbsp;
         span aria-hidden="true" &rarr;
 

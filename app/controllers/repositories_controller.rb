@@ -52,18 +52,40 @@ class RepositoriesController < ApplicationController
       git = Linux::Git.new @repository.name
       git.open
 
+
       @branches = git.branches
       unless @branches.empty?
         @branch = params[:branch]
         @branch = 'origin/master' unless @branches.include?(@branch)
-        @logs = []
-        @page = params[:page] ? params[:page].to_i : 1
-        @size = 50
-        git.logs(page: @page, size: @size, branch: @branch) do |oid, email, user, time, message|
-          @logs << [oid, time, "#{user}<#{email}>", message]
+
+
+        oids = params[:oids] || [git.target_id(@branch)]
+        size = 50
+        @logs = git.logs(oids.last, size) do |oid, email, user, time, message|
+          [oid, time, "#{user}<#{email}>", message]
         end
-        git.close
+
+        if @logs.empty?
+          @previous_url = nil
+          @next_url = nil
+        elsif @logs.size < size
+          prev = oids.clone
+          prev.pop
+          @previous_url = prev.empty? ? nil : repository_path(@repository, oids:prev, branch:@branch)
+
+          @next_url = nil
+        else
+          prev = oids.clone
+          prev.pop
+          @previous_url = prev.empty? ? nil : repository_path(@repository, oids:prev, branch:@branch)
+
+          nex = oids.clone
+          nex << @logs.last.first
+          @next_url = repository_path(@repository, oids:nex, branch:@branch)
+        end
       end
+
+      git.close
     else
       redirect_to repositories_path
     end
