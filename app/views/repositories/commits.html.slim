@@ -7,7 +7,7 @@ table id='git_logs' class='table table-hover'
     th #{t 'tables.git.author'}
     th #{t 'tables.git.message'}
   -@logs.each do |l|
-    tr link="#{repository_changes_path(repository_id:@repository.id, oid:l[0], message:l[3])}"
+    tr link="#{repository_changes_path(repository_id:@repository.id, oid:l[0], branch:@branch)}"
       td #{time_ago_in_words l[1]}
       td #{l[2]}
       td #{l[3]}

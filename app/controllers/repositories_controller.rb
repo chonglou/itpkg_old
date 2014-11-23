@@ -8,14 +8,26 @@ class RepositoriesController < ApplicationController
 
   def changes
     @oid = params[:oid]
+    @branch = params[:branch]
     @repository = Repository.find params[:repository_id]
-    if @oid && _can_view?
+    if @oid && @branch && _can_view?
       git = Linux::Git.new @repository.name
       git.open
-      patch = git.patch(@oid)
-      @patch = patch.force_encoding('UTF-8') if patch
-      git.close
-      render( 'changes', layout: 'repositories/view') and return
+      if git.branches.include?(@branch)
+        patch = git.patch(@oid)
+        @patch = patch.force_encoding('UTF-8') if patch
+
+        target = git.target_id @branch
+        prev_oids = git.prev_oids(@branch, @oid)
+        #puts '#'*80,prev_oids,'#'*80,@oid
+        @previous_url = prev_oids.first == target ? nil : repository_changes_path(@repository.id, oid: prev_oids.first, branch: @branch)
+        next_oids = git.next_oids @oid
+        #puts '#'*80,next_oids,'#'*80,@oid
+        @next_url = next_oids.last == @oid ? nil : repository_changes_path(@repository.id, oid: next_oids.last, branch: @branch)
+
+        git.close
+        render('changes', layout: 'repositories/view') and return
+      end
     end
     flash[:alert] = t('labels.not_valid')
     redirect_to repositories_path
@@ -28,13 +40,16 @@ class RepositoriesController < ApplicationController
     if cur && @branch && _can_view?
       git = Linux::Git.new @repository.name
       git.open
+
       if git.branches.include?(@branch)
-        size = 120
+        size = 5
         @logs = git.walk(cur, size) { |oid, email, user, time, message| [oid, time, "#{user}<#{email}>", message] }
 
-        prev_oid = git.back(@branch, cur, size)
-        @previous_url = prev_oid ? repository_commits_path(@repository.id, oid: prev_oid, branch:@branch) : nil
-        @next_url = @logs.empty? || @logs.size < size ? nil : repository_commits_path(@repository.id, oid: @logs.last.first, branch:@branch)
+        target=git.target_id @branch
+        prev_oids = git.prev_oids(@branch, cur, size)
+        @previous_url = prev_oids.first == target ? nil : repository_commits_path(@repository.id, oid: prev_oids.first, branch: @branch)
+
+        @next_url = @logs.empty? || @logs.size < size ? nil : repository_commits_path(@repository.id, oid: @logs.last.first, branch: @branch)
         render('commits', layout: 'repositories/view') and return
       end
     end

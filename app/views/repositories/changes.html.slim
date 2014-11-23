@@ -1,6 +1,6 @@
 h3 #{params[:message]}
 hr
-p
+= render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url
 =render 'layouts/code_block', style:'diff', code:@patch
 
 javascript:
