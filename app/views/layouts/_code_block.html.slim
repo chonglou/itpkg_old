@@ -1,4 +1,4 @@
 -if code
   pre
-    code class='#{style}' #{{code}}
+    code class='#{style}' #{{code.force_encoding('UTF-8') if code}}
 

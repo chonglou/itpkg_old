@@ -59,7 +59,7 @@ class RepositoriesController < ApplicationController
       git.open
       if git.branches.include?(@branch)
         patch = git.patch(@oid)
-        @patch = patch.force_encoding('UTF-8') if patch
+        @patch = patch
 
         @target = git.target_id @branch
         prev_oids = git.prev_oids(@branch, @oid)

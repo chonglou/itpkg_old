@@ -1,3 +1,3 @@
 h3 #{@name}
 hr
-= render 'layouts/code_block', style:'diff', code:@content
+= render 'layouts/code_block', style:filename2type(@name), code:@content

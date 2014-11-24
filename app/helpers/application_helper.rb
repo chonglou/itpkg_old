@@ -40,4 +40,8 @@ module ApplicationHelper
     "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest email.downcase}#{"?s=#{size}" if size}"
   end
 
+  def filename2type(name)
+    File.extname(name)[1..-1].downcase
+  end
+
 end
