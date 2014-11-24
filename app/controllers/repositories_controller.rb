@@ -9,8 +9,12 @@ class RepositoriesController < ApplicationController
     id = params[:oid]
     @repository = Repository.find params[:repository_id]
     if id && _can_view?
-      @name = 'aaa'
-      @content = 'bbb'
+      git = Linux::Git.new @repository.name
+      git.open
+      node = git.node(id)
+      @content = node.read_raw.data
+      @name =params[:name]
+      git.close
       render 'file', layout:'repositories/view'
     end
   end
@@ -25,7 +29,7 @@ class RepositoriesController < ApplicationController
     end
 
     tree.each_blob { |entry| parent.fetch(:children) << {
-        a_attr:{href:"#{repository_file_path(repository_id:@repository.id, oid:entry.fetch(:oid))}"},
+        a_attr:{href:"#{repository_file_path(repository_id:@repository.id, oid:entry.fetch(:oid), name:entry.fetch(:name))}"},
         text:entry.fetch(:name),
         icon:'glyphicon glyphicon-leaf'}
     }
