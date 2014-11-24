@@ -36,7 +36,7 @@ set :keep_releases, 7
 
 #rbenv settings
 set :rbenv_type, :user
-set :rbenv_ruby, '2.1.4'
+set :rbenv_ruby, '2.1.5'
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all
 

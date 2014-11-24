@@ -40,7 +40,7 @@ RUN echo 'gem: --no-rdoc --no-ri' >> ~/.gemrc
 ENV PATH $HOME/.rbenv/bin:$PATH
 RUN eval "$(rbenv init -)"
 RUN type rbenv
-ENV RUBY_VERSION 2.1.4
+ENV RUBY_VERSION 2.1.5
 ENV CONFIGURE_OPTS --disable-install-doc
 RUN rbenv install $RUBY_VERSION
 RUN rbenv global $RUBY_VERSION
