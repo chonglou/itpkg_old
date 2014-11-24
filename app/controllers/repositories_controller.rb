@@ -5,6 +5,18 @@ class RepositoriesController < ApplicationController
 
   include RepositoriesHelper
 
+  def tree
+    id = params[:oid]
+    @repository = Repository.find params[:repository_id]
+    nodes = []
+    if id && _can_view?
+      git = Linux::Git.new @repository.name
+      git.open
+      git.tree('#', id, nodes)
+      git.close
+    end
+    render json: {core: {data: nodes.map{|parent, oid, name| {id: oid, parent: parent, text: name}} }}.to_json
+  end
 
   def changes
     @oid = params[:oid]

@@ -39,14 +39,24 @@ module Linux
       @repo.branches[branch].target_id
     end
 
+    def tree(parent, oid, nodes=[])
+      t = @repo.lookup(oid)
+      t = t.tree unless t.type == :tree
+      t.each_tree do |e|
+        nodes << [parent, e.fetch(:oid), e.fetch(:name)]
+        tree(oid, e.fetch(:oid),  nodes)
+      end
+      t.each_blob { |e| nodes << [parent, e.fetch(:oid), e.fetch(:name)] }
+    end
+
     def info(oid)
       c = @repo.lookup oid
-      {email:c.author.fetch(:email), name:c.author.fetch(:name), time:c.time, message:c.message} if c
+      {email: c.author.fetch(:email), name: c.author.fetch(:name), time: c.time, message: c.message} if c
     end
 
     def prev_oids(branch, oid, size=1)
       walker = Rugged::Walker.new @repo
-      walker.sorting( Rugged::SORT_DATE)
+      walker.sorting(Rugged::SORT_DATE)
       walker.push(target_id(branch))
       oids = []
       walker.each do |c|
@@ -60,7 +70,7 @@ module Linux
 
     def next_oids(oid, size=1)
       walker = Rugged::Walker.new @repo
-      walker.sorting( Rugged::SORT_DATE)
+      walker.sorting(Rugged::SORT_DATE)
       walker.push(oid)
       oids = []
       walker.each do |c|
@@ -74,7 +84,7 @@ module Linux
     def walk(oid, size)
 
       walker = Rugged::Walker.new @repo
-      walker.sorting( Rugged::SORT_DATE)
+      walker.sorting(Rugged::SORT_DATE)
       #walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
       walker.push(oid)
       items = []

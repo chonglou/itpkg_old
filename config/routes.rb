@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     resources :users, expect:[:edit, :update], controller:'repositories/users'
     get 'commits'
     get 'changes'
+    get 'tree'
   end
 
   #------------Client---------------
