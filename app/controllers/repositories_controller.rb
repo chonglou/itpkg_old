@@ -5,17 +5,31 @@ class RepositoriesController < ApplicationController
 
   include RepositoriesHelper
 
+  def _tree_walk(git, oid, parent)
+    tree = git.tree(oid)
+
+    tree.each_tree do |entry|
+      node = {children:[], state:{opened:true}, text:entry.fetch(:name), icon:'glyphicon glyphicon-list'}
+      _tree_walk(git, entry.fetch(:oid), node)
+      parent.fetch(:children) << node
+    end
+
+    tree.each_blob { |entry| parent.fetch(:children) << {text:entry.fetch(:name), icon:'glyphicon glyphicon-leaf'} }
+  end
+
   def tree
     id = params[:oid]
     @repository = Repository.find params[:repository_id]
-    nodes = []
+    nodes = {children:[],state:{opened:true}, text:"#{@repository.name}.git"}
     if id && _can_view?
       git = Linux::Git.new @repository.name
       git.open
-      git.tree('#', id, nodes)
+
+      _tree_walk(git, id, nodes)
+
       git.close
     end
-    render json: {core: {data: nodes.map{|parent, oid, name| {id: oid, parent: parent, text: name}} }}.to_json
+    render json: nodes.to_json
   end
 
   def changes

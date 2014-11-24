@@ -39,14 +39,14 @@ module Linux
       @repo.branches[branch].target_id
     end
 
-    def tree(parent, oid, nodes=[])
-      t = @repo.lookup(oid)
-      t = t.tree unless t.type == :tree
-      t.each_tree do |e|
-        nodes << [parent, e.fetch(:oid), e.fetch(:name)]
-        tree(oid, e.fetch(:oid),  nodes)
-      end
-      t.each_blob { |e| nodes << [parent, e.fetch(:oid), e.fetch(:name)] }
+    def tree(oid)
+      o = @repo.lookup(oid)
+      o.type == :tree ? o : o.tree
+
+      # t.each_tree do |e|
+      #   yield parent, e.fetch(:oid), e.fetch(:name), true
+      # end
+      # t.each_blob { |e| yield parent, e.fetch(:oid), e.fetch(:name), false }
     end
 
     def info(oid)

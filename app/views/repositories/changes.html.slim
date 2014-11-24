@@ -15,7 +15,21 @@ nav
 
 javascript:
   $(function(){
-    $.get("#{repository_tree_path(repository_id:@repository.id, oid:@oid)}", function(data){
-      $('div#fs_tree').jstree(data);
+    $('div#fs_tree').jstree({
+      core:{
+        data: function(node, cb){
+          var url = "#{repository_tree_path(repository_id:@repository.id)}";
+          if(node.id === '#'){
+            url += "&oid=#{@oid}";
+          }
+          else{
+            url += "&oid=" + node.id;
+          }
+          $.get(url, function (data) {
+            cb(data);
+            console.log(url);
+          });
+        }
+      }
     });
   });
