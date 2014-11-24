@@ -42,11 +42,11 @@ module Linux
     def tree(oid)
       o = @repo.lookup(oid)
       o.type == :tree ? o : o.tree
+    end
 
-      # t.each_tree do |e|
-      #   yield parent, e.fetch(:oid), e.fetch(:name), true
-      # end
-      # t.each_blob { |e| yield parent, e.fetch(:oid), e.fetch(:name), false }
+    def node(oid)
+      o = @repo.lookup oid
+      o if o.type == :blob
     end
 
     def info(oid)

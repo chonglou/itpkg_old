@@ -5,6 +5,16 @@ class RepositoriesController < ApplicationController
 
   include RepositoriesHelper
 
+  def file
+    id = params[:oid]
+    @repository = Repository.find params[:repository_id]
+    if id && _can_view?
+      @name = 'aaa'
+      @content = 'bbb'
+      render 'file', layout:'repositories/view'
+    end
+  end
+
   def _tree_walk(git, oid, parent)
     tree = git.tree(oid)
 
@@ -14,7 +24,11 @@ class RepositoriesController < ApplicationController
       parent.fetch(:children) << node
     end
 
-    tree.each_blob { |entry| parent.fetch(:children) << {text:entry.fetch(:name), icon:'glyphicon glyphicon-leaf'} }
+    tree.each_blob { |entry| parent.fetch(:children) << {
+        a_attr:{href:"#{repository_file_path(repository_id:@repository.id, oid:entry.fetch(:oid))}"},
+        text:entry.fetch(:name),
+        icon:'glyphicon glyphicon-leaf'}
+    }
   end
 
   def tree
@@ -29,7 +43,7 @@ class RepositoriesController < ApplicationController
 
       git.close
     end
-    render json: nodes.to_json
+    render json: {core:{data:nodes}}.to_json
   end
 
   def changes
