@@ -1,0 +1,70 @@
+#!/bin/sh
+
+REPO=chonglou/itpkg
+NAME=itpkg_instance
+MNT=$(pwd)/mnt
+
+#if [ "$(id -u)" != "0" ]; then sudo='sudo' ; fi
+
+#[ -d $MNT ] || mkdir -
+
+if docker ps -a | grep --quiet $NAME
+then
+	ARGS="start $NAME"
+	#ARGS="run -d --volumes-from $NAME mnt"
+else
+	ARGS="run -p 2222:22 -p 443:443 -p 25:25 -p 9418:9418 --name $NAME -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d $REPO:latest"
+fi
+
+case $1 in
+	remove)
+		docker rm $NAME
+		;;
+	start)
+		docker $ARGS
+		;;
+	stop)
+		docker stop $NAME
+		;;
+	build)
+		read -p "Do you wish to rebuild all steps?(y/n)" yn
+		case $yn in
+			y)
+				docker build --no-cache -t $REPO .
+				;;
+			*)
+				docker build -t $REPO .
+				;;
+		esac
+		;;
+	status)
+		docker version
+		docker info
+		docker ps
+		;;
+	logs)
+		docker logs -f $NAME
+		;;
+	push)
+		docker push $REPO
+		;;
+	ssh)
+		ssh -p 2222 root@localhost
+		;;
+	clean)
+		read -p "Do you wish to remove all untagged images and stoped container?(y/n)" yn
+		case $yn in
+			y)
+				docker rm $(docker ps -a -q) 
+				docker rmi $(docker images -a | grep "^<none>" | awk '{print $3}')
+				break
+				;;
+			*)
+				exit
+				;;
+		esac
+		;;
+	*)
+		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs'
+esac
+

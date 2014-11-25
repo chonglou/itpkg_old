@@ -1,0 +1,6 @@
+*.key
+*.cert
+*.log
+*.cfg
+agent
+
