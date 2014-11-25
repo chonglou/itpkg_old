@@ -4,7 +4,7 @@ Description=IT-PACKAGE:WSS
 [Service]
 Type=forking
 User=deploy
-ExecStart=/var/www/itpkg/shared/wss.sh
+ExecStart=/var/www/itpkg/shared/itpkg-wss.sh
 ExecReload=/usr/bin/kill -SIGUSR2 $(cat /var/www/itpkg/shared/tmp/pids/wss.pid)
 ExecStop=/usr/bin/kill -9 $(cat /var/www/itpkg/shared/tmp/pids/wss.pid)
 PIDFile=/var/www/itpkg/shared/tmp/pids/wss.pid

@@ -4,7 +4,7 @@ Description=IT-PACKAGE:BG
 [Service]
 Type=forking
 User=deploy
-ExecStart=/var/www/itpkg/shared/bg.sh
+ExecStart=/var/www/itpkg/shared/itpkg-bg.sh
 ExecStop=/usr/bin/kill -USR1 $(cat /var/www/itpkg/shared/tmp/pids/bg.pid)
 PIDFile=/var/www/itpkg/shared/tmp/pids/bg.pid
 

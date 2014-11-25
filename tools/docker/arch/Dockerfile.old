@@ -1,12 +1,24 @@
 FROM base/archlinux:latest
+MAINTAINER Jitang Zheng <jitang.zheng@gmail.com>
 
 #RUN echo 'ipv6.disable_ipv6=1' | sudo tee /etc/sysctl.d/40-ipv6.conf
 
 # deploy user
-RUN pacman -Syu --noconfirm
+RUN pacman -Syu --noconfirm && \
+pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh \
+# itpkg
+nodejs libmariadbclient imagemagick cmake libgit2 \
+# services
+percona-server percona-server-clients redis memcached nginx \
+# openvpn
+easy-rsa openvpn \
+# mail
+postfix dovecot \
+# docker registry
+python2 python2-pip python2-virtualenv
+
 RUN useradd -s /bin/bash -m deploy
 RUN passwd -l deploy
-RUN pacman -S --noconfirm sudo
 RUN echo 'deploy ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/deploy 
 
 ENV HOME /home/deploy
@@ -15,26 +27,30 @@ RUN mkdir -p $ITPKG_HOME
 RUN chown deploy:deploy $ITPKG_HOME
 USER deploy
 
+# vim
+RUN sudo pacman -R --noconfirm vi \
+&& cd /usr/bin && sudo ln -sv vim vi \
+&& cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc \
+&& echo "set nobackup" >> ~/.vimrc \
+&& sudo cp ~/.vimrc /root/ \
+echo "alias ls='ls --color'" | sudo tee /root/.bash_profile
+
 # ssh
-RUN sudo pacman -S --noconfirm openssh
 RUN sudo /usr/bin/ssh-keygen -A
 RUN echo 'root:toor' | sudo chpasswd
 #RUN sudo sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
 RUN sudo sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config
-RUN sudo systemctl enable sshd
 RUN ssh-keygen -b 2048 -t rsa  -f $HOME/.ssh/id_rsa -q -N ""
 RUN echo 'export PATH="$HOME/local/bin:$PATH"' >> ~/.bashrc
 ENV PATH $HOME/local/bin:$PATH
 
-# rbenv install
-RUN sudo pacman -S --noconfirm --needed base-devel git 
+ADD mnt /
 
+# rbenv install
 RUN git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
 RUN git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
 RUN git clone https://github.com/sstephenson/rbenv-vars.git ~/.rbenv/plugins/ruby-vars
-RUN echo "export ITPKG_HOME=$ITPKG_HOME" >> ~/.bashrc
-RUN echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-RUN echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+RUN echo "ITPKG_HOME=$ITPKG_HOME\nPATH=\$HOME/.rbenv/bin:\$PATH\nexport ITPKG_NAME PATH\neval \"\$(rbenv init -)\"" >> ~/.bashrc
 RUN echo 'gem: --no-rdoc --no-ri' >> ~/.gemrc
 
 ENV PATH $HOME/.rbenv/bin:$PATH
@@ -49,7 +65,6 @@ RUN gem install bundler
 RUN rm -r /tmp/ruby-build*
 
 # itpkg install
-RUN sudo pacman -S --noconfirm nodejs libmariadbclient imagemagick cmake libgit2
 RUN git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current
 RUN cd $ITPKG_HOME/current && git rev-parse --short HEAD > $ITPKG_HOME/current/REVISION
 #RUN date "+%Y%m%d%H%M%S" > $ITPKG_HOME/current/REVISION
@@ -83,8 +98,6 @@ RUN sudo mv /tmp/git_hook ~git/local/gitolite/VREF/itpkg
 RUN sudo chmod +x ~git/local/gitolite/VREF/itpkg
 
 # nginx for itpkg
-RUN sudo pacman -S --noconfirm nginx
-RUN sudo systemctl enable nginx
 RUN sudo sed -i '$i\    include itpkg/*.conf;'  /etc/nginx/nginx.conf
 RUN sudo mkdir -p /etc/nginx/itpkg
 RUN sudo chown -R deploy:deploy /etc/nginx/itpkg
@@ -95,11 +108,6 @@ RUN sudo chown deploy:deploy /etc/nginx/itpkg/{www,wss}.conf
 RUN cd /etc/nginx/itpkg && chmod 400 key.pem && chmod 444 cert.pem www.conf cert.csr
 
 # runtime needed packages
-RUN sudo pacman -S --noconfirm percona-server percona-server-clients redis memcached
-RUN sudo systemctl enable mysqld 
-RUN sudo systemctl enable memcached
-RUN sudo systemctl enable redis
-RUN sudo pacman -S --noconfirm pwgen
 
 # init data
 RUN sudo mysqld_safe --user=mysql & \
@@ -119,42 +127,35 @@ ADD systemd/wss.sh $ITPKG_HOME/shared/wss.sh
 ADD systemd/bg.conf /etc/systemd/system/itpkg-bg.service
 ADD systemd/bg.sh $ITPKG_HOME/shared/bg.sh
 RUN sudo chmod +x $ITPKG_HOME/shared/*.sh
-RUN sudo systemctl enable itpkg-www
-RUN sudo systemctl enable itpkg-wss
-RUN sudo systemctl enable itpkg-bg
 
 
 # openvpn
-RUN sudo pacman -S --noconfirm easy-rsa openvpn wget
-RUN cd /tmp && wget https://aur.archlinux.org/packages/pa/pam_mysql/pam_mysql.tar.gz && tar xf pam_mysql.tar.gz && cd pam_mysql && makepkg
-RUN cd /tmp/pam_mysql && sudo pacman -U --noconfirm pam_mysql-*.pkg.tar.xz
-ADD openvpn/setup.sh /tmp/openvpn.sh
+RUN cd /tmp \
+&& wget https://aur.archlinux.org/packages/pa/pam_mysql/pam_mysql.tar.gz \
+&& tar xf pam_mysql.tar.gz \
+&& cd pam_mysql \
+&& makepkg \
+&& sudo pacman -U --noconfirm pam_mysql-*.pkg.tar.xz
 RUN sudo sh /tmp/openvpn.sh
-RUN sudo rm -r /tmp/openvpn.sh /tmp/pam_mysql*
-RUN sudo systemctl enable openvpn@server
+ADD openvpn/setup.sh /tmp/openvpn.sh
 
 
 # bind9
-RUN sudo pacman -S --noconfirm geoip abs
 RUN sudo abs extra/bind
 RUN cp -r /var/abs/extra/bind /tmp
 ADD bind9 /tmp/bind9
 RUN cd /tmp/bind && patch -p0 < /tmp/bind9/bind-mysql.patch && makepkg && sudo pacman -U --noconfirm bind-*.pkg.tar.xz
 RUN sudo sh /tmp/bind9/setup.sh
 RUN sudo rm -r /tmp/bind9 /tmp/bind
-RUN sudo systemctl enable named
 
 
 # postfix dovecot
-RUN sudo pacman -S --noconfirm postfix dovecot
 ADD email/setup.sh /tmp/email.sh
 RUN sudo sh /tmp/email.sh
 RUN sudo rm /tmp/email.sh
-RUN sudo systemctl enable dovecot
-RUN sudo systemctl enable postfix
 
 # docker registry
-RUN sudo pacman -S --noconfirm python2 python2-pip python2-virtualenv
+
 RUN virtualenv2 $HOME/local/python2
 RUN echo '. $HOME/local/python2/bin/activate' >> ~/.bash_profile
 ADD docker-registry /tmp/docker-registry
@@ -166,20 +167,15 @@ RUN sudo cp /tmp/docker-registry/config.yml /etc/docker-registry.yml
 RUN sudo rm -r /tmp/docker-registry
 ADD systemd/docker-registry.conf /etc/systemd/system/docker-registry.service
 ADD systemd/docker-registry.sh $ITPKG_HOME/shared/docker-registry.sh
-RUN systemctl enable docker-registry
-
-# other package
-RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal lsof curl
-RUN sudo pacman -R --noconfirm vi
-RUN cd /usr/bin && sudo ln -sv vim vi
-RUN cp /usr/share/vim/vim74/vimrc_example.vim ~/.vimrc
-RUN echo "set nobackup" >> ~/.vimrc
-RUN sudo cp ~/.vimrc /root/
-RUN echo "alias ls='ls --color'" | sudo tee /root/.bash_profile
 
 # clean
 RUN sudo pacman -Scc --noconfirm
+RUN sudo rm -r /tmp/*
 
+# systemd
+RUN for s in mysqld memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www nginx; \
+do systemctl enable $s; \
+done
 
 VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "/home/git/repositories"]
 EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp

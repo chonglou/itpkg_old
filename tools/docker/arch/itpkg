@@ -30,12 +30,12 @@ case $1 in
 		read -p "Do you wish to rebuild all steps?(y/n)" yn
 		case $yn in
 			y)
-				docker build --no-cache -t $REPO .
+				ARGS=--no-cache
 				;;
 			*)
-				docker build -t $REPO .
 				;;
 		esac
+		docker build $ARGS -t $REPO .
 		;;
 	status)
 		docker version
