@@ -130,7 +130,7 @@ RUN cd /tmp && wget https://aur.archlinux.org/packages/pa/pam_mysql/pam_mysql.ta
 RUN cd /tmp/pam_mysql && sudo pacman -U --noconfirm pam_mysql-*.pkg.tar.xz
 ADD openvpn/setup.sh /tmp/openvpn.sh
 RUN sudo sh /tmp/openvpn.sh
-RUN sudo rm /tmp/openvpn.sh
+RUN sudo rm -r /tmp/openvpn.sh /tmp/pam_mysql*
 RUN sudo systemctl enable openvpn@server
 
 
@@ -153,6 +153,20 @@ RUN sudo rm /tmp/email.sh
 RUN sudo systemctl enable dovecot
 RUN sudo systemctl enable postfix
 
+# docker registry
+RUN sudo pacman -S --noconfirm python2 python2-pip python2-virtualenv
+RUN virtualenv2 $HOME/local/python2
+RUN echo '. $HOME/local/python2/bin/activate' >> ~/.bash_profile
+ADD docker-registry /tmp/docker-registry
+RUN source $HOME/local/python2/bin/activate \
+&& which python \
+&& pip install docker-registry \
+&& patch $(python -c 'import boto; import os; print os.path.dirname(boto.__file__)')/connection.py < /tmp/docker-registry/boto_header_patch.diff
+RUN sudo cp /tmp/docker-registry/config.yml /etc/docker-registry.yml
+RUN sudo rm -r /tmp/docker-registry
+ADD systemd/docker-registry.conf /etc/systemd/system/docker-registry.service
+ADD systemd/docker-registry.sh $ITPKG_HOME/shared/docker-registry.sh
+RUN systemctl enable docker-registry
 
 # other package
 RUN sudo pacman -S --noconfirm s-nail net-tools dnsutils vim-minimal lsof curl
@@ -167,7 +181,7 @@ RUN echo "alias ls='ls --color'" | sudo tee /root/.bash_profile
 RUN sudo pacman -Scc --noconfirm
 
 
-VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "~git/repositories"]
+VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "/home/git/repositories"]
 EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp
 USER root
 
