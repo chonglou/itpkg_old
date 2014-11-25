@@ -27,15 +27,15 @@ case $1 in
 		docker stop $NAME
 		;;
 	build)
-		read -p "Do you wish to rebuild all steps?(y/n)" yn
-		case $yn in
-			y)
-				docker build --no-cache -t $REPO .
-				;;
-			*)
+#		read -p "Do you wish to rebuild all steps?(y/n)" yn
+#		case $yn in
+#			y)
+#				docker build --no-cache -t $REPO .
+#				;;
+#			*)
 				docker build -t $REPO .
-				;;
-		esac
+#				;;
+#		esac
 		;;
 	status)
 		docker version
@@ -51,6 +51,9 @@ case $1 in
 	ssh)
 		ssh -p 2222 root@localhost
 		;;
+	shell)
+		docker run --rm -P --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro $REPO:latest /bin/sh --help
+		;;
 	clean)
 		read -p "Do you wish to remove all untagged images and stoped container?(y/n)" yn
 		case $yn in
@@ -65,6 +68,6 @@ case $1 in
 		esac
 		;;
 	*)
-		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs'
+		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|shell'
 esac
 
