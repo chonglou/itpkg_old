@@ -1,34 +1,43 @@
 #!/bin/sh
+
+BUSYBOX_VERSION=1.22.1
+WORKDIR=tmp/build
 CURDIR=`pwd`
-BUILDROOT_VERSION=2014.08
-WORKDIR=$HOME/build
-IMAGE_NAME=itpkg
+busybox=$WORKDIR/busybox/busybox
+ROOTFS=tmp/rootfs
 
-if [ ! -d $WORKDIR ]
-then
+if [ -z "$busybox" ]; then
 	mkdir -pv $WORKDIR
-fi
-
-# build tools
-if [ ! -L $WORKDIR/buildroot ]
-then
 	cd $WORKDIR
-	[ -f buildroot-$BUILDROOT_VERSION.tar.bz2 ] || wget http://buildroot.uclibc.org/downloads/buildroot-$BUILDROOT_VERSION.tar.bz2
-	tar xvf buildroot-$BUILDROOT_VERSION.tar.bz2
-	ln -sv buildroot-$BUILDROOT_VERSION buildroot
-	
-	#cd $WORKDIR/buildroot
-	#git pull
-	#git clone git://git.buildroot.net/buildroot --single-branch --branch master --depth 1 $WORKDIR/buildroot
 
+	if [ ! -L busybox ]
+	then
+		wget http://busybox.net/downloads/busybox-$BUSYBOX_VERSION.tar.bz2
+		tar xf busybox-$BUSYBOX_VERSION.tar.bz2
+		ln -sv busybox-$BUSYBOX_VERSION busybox
+	fi
+	cd busybox
+	[ -f .config ] || make menuconfig
+	cp -v .config $CURDIR/config
+	make clean
+	make -j 4
 fi
 
-cd $WORKDIR/buildroot
-[ -f .config ] || cp -v $CURDIR/config .config
-make -j 4
-ls -lh output/images/rootfs.tar
+[ ! -f "$busybox" ] && exit 1
+ldd "$busybox" && echo 'error: '$busybox' appears to be a dynamic executable' && exit 1
 
-[ -f $WORKDIR/buildroot/output/images/rootfs.tar ] && cp -v $WORKDIR/buildroot/output/images/rootfs.tar  $CURDIR/rootfs.tar
+[ -d $ROOTFS ] && rm -r $ROOTFS
+mkdir -pv $ROOTFS/bin
+cp -v $busybox $ROOTFS/bin/busybox
 
-echo 'Done'
+(
+	cd $ROOTFS
+	IFS=$'\n'
+	modules=( $(bin/busybox --list-modules) )
+	unset IFS
+	for module in "${modules[@]}"; do
+		mkdir -p "$(dirname "$module")"
+		ln -sf /bin/busybox "$module"
+	done
+)
 
