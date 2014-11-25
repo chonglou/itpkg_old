@@ -64,7 +64,10 @@ case $1 in
 				;;
 		esac
 		;;
+	test)
+		docker run --rm -i $REPO /bin/echo Success.
+		;;
 	*)
-		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs'
+		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|test'
 esac
 
