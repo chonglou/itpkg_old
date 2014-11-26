@@ -33,6 +33,7 @@ case $1 in
 				ARGS=--no-cache
 				;;
 			*)
+				ARGS=
 				;;
 		esac
 		docker build $ARGS -t $REPO .
@@ -65,7 +66,7 @@ case $1 in
 		esac
 		;;
 	test)
-		docker run --rm -i $REPO /bin/echo Success.
+		docker run --rm -i $REPO $2
 		;;
 	*)
 		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|test'
