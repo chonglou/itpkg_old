@@ -68,7 +68,7 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && git rev-parse --short HEAD > $ITPKG_HOME/current/REVISION \
 # date "+%Y%m%d%H%M%S" > $ITPKG_HOME/current/REVISION \
 && rm -r .git \
-&& mv $ITPKG_HOME/current/.rbenv-vars $ITPKG_HOME/shared/.rbenv-vars \
+&& mv .rbenv-vars $ITPKG_HOME/shared/.rbenv-vars \
 && sed -i '/^ITPKG_DATABASE_PASSWORD/d' $ITPKG_HOME/shared/.rbenv-vars \
 && sed -i 's/#ITPKG_MAILER_SENDER/ITPKG_MAILER_SENDER/g' $ITPKG_HOME/shared/.rbenv-vars \
 && echo 'RAILS_ENV=production' >> $ITPKG_HOME/shared/.rbenv-vars \
@@ -135,7 +135,7 @@ RUN virtualenv2 $HOME/local/python2 \
 && echo '. $HOME/local/python2/bin/activate' >> ~/.bash_profile \
 && source $HOME/local/python2/bin/activate \
 && pip install docker-registry \
-&& patch $(python -c 'import boto; import os; print os.path.dirname(boto.__file__)')/connection.py < /tmp/mnt/tmp/boto_header_patch.diff &&
+&& patch $(python -c 'import boto; import os; print os.path.dirname(boto.__file__)')/connection.py < /tmp/mnt/tmp/boto_header_patch.diff \
 && sudo cp /tmp/mnt/etc/{boto.cfg,docker-registry.yml} /etc
 
 

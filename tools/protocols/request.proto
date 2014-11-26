@@ -1,0 +1,6 @@
+package itpkg;
+
+message Request {
+  required string version = 1; 
+}
+
