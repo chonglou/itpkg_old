@@ -1,0 +1,40 @@
+package itpkg.protocols;
+
+
+message Request {
+  enum Type {
+    docker = 0;
+    monitor = 1;
+    logging = 2;
+  }
+  required string version = 1 [ default = "v20141126" ]; 
+  required string nid = 2;
+  required Type type = 3;
+  repeated MonitorItem monitor_items = 4;
+  repeated LoggingItem logging_items = 5;
+  required int64 created = 6;
+}
+
+message LoggingItem {
+  required string name = 1;
+  repeated string lines = 2;
+}
+
+message MonitorItem {
+  enum MonitorType {
+    cpu = 0;
+    memory = 1;
+  }
+  required MonitorType type = 1;
+  required int64 created = 2;
+  required float value = 3;
+}
+
+
+message Response {
+  required string version = 1 [ default="v20141126" ]; 
+  required bool ok = 2;
+  repeated string lines = 3;
+  required int64 created = 4;
+}
+

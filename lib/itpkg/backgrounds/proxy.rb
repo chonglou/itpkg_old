@@ -1,4 +1,6 @@
 require 'ffi-rzmq'
+require 'itpkg/protocols'
+
 module Itpkg
   module Background
     class ProxyServer
@@ -16,8 +18,12 @@ module Itpkg
         while true do
           request = ''
           socket.recv_string(request)
+          req = Itpkg::Protocols.Request.decode request.bytes
           @logger.debug "Received Data: #{request.inspect}"
-          socket.send_string(request)
+          resp = Itpkg::Protocols::Response.new created:Time.now.to_i, type:req.type
+          #todo
+          resp.ok = true
+          socket.send_string(resp.encode.pack('c*'))
         end
       end
 

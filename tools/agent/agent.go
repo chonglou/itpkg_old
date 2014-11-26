@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/hex"
 	"encoding/json"
-	//	"github.com/gorilla/websocket"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"net/url"
-	"fmt"
+	zmq "github.com/alecthomas/gozmq"
+	"github.com/golang/protobuf/proto"
+	"itpkg"
 )
 
 const version = "v20141124"
@@ -17,19 +18,16 @@ type State struct {
 }
 
 type Configuration struct {
-	Origin  string   `json:"origin"`
-	Host     string   `json:"host"`
-	Port int `json:"port"`
-	Ssl     bool     `json:"ssl"`
+	Host    string   `json:"host"`
+	Port    int      `json:"port"`
 	Nid     string   `json:"nid"`
 	Token   string   `json:"token"`
 	Flags   []string `json:"flags"`
 	Version string   `json:"version"`
 }
 
-func (cfg Configuration) Url string {
-	var s string
-	return fmt.Sprintf("%s:%s:%d", c.Ssl ? "wss":"ws", c.Host, c.Port)
+func (cfg Configuration) Url() string {
+	return fmt.Sprintf("tcp://%s:%d", cfg.Host, cfg.Port)
 }
 
 func check_err(err error, msg string) {
@@ -62,10 +60,8 @@ func load_config(filename string) *Configuration {
 		f2, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
 		defer f2.Close()
 		cfg = &Configuration{
-			Origin:  "http://localhost/",
-			Host:     "localhost:9292",
-			Port: 9292,
-			Ssl:     false,
+			Host:    "localhost:9292",
+			Port:    9292,
 			Nid:     random_str(32),
 			Token:   random_str(128),
 			Flags:   []string{"monitor", "logging", "agent"},
@@ -103,10 +99,40 @@ func set_signal() {
 	}()
 }
 
+func loop(cfg *Configuration) {
+	context, err := zmq.NewContext()
+	check_err(err, "ZMQ Context error: %v")
+	socket, err := context.NewSocket(zmq.REQ)
+	check_err(err, "ZMQ Socket error: %v")
+	defer context.Close()
+	defer socket.Close()
+	log.Printf("Connect to %s", cfg.Url())
+	socket.Connect(cfg.Url())
+
+	for {
+		request := &itpkg_protocols.Request{
+			Nid: proto.String(cfg.Nid),
+			Type: &itpkg_protocols.Request_docker,
+			Created: proto.Int64(time.Now().Unix())}
+		msg, err := proto.Marshal(request)
+		check_err(err, "GPF generate error: %v")
+		socket.Send([]byte(msg), 0)
+		log.Printf("Sending %v", request)
+
+		reply, err := socket.Recv(0)
+		check_err(err, "Recv error")
+		response := &itpkg_protocols.Response{}
+		err = proto.Unmarshal(reply, response)
+		check_err(err, "GPF parse error: %v")
+
+		log.Printf("Received %s", string(reply))
+	}
+}
+
 func main() {
 	log_f := set_logger("agent.log")
 	defer log_f.Close()
 	set_signal()
-	load_config("agent.cfg")
+	cfg := load_config("agent.cfg")
+	loop(cfg)
 }
-

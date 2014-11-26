@@ -9,8 +9,12 @@ namespace :proxy do
 
   desc 'Generate GPF'
   task :gpf do
-    %w(request response).each do |k|
-    `protoc -I #{Rails.root}/tools/protocols --ruby_out #{Rails.root}/lib/itpkg/protocols #{Rails.root}/tools/protocols/#{k}.proto`
+    `protoc -I #{Rails.root}/tools --ruby_out #{Rails.root}/lib/itpkg #{Rails.root}/tools/protocols.proto`
+    target = "#{ENV['GOPATH']}/src/itpkg"
+    unless Dir.exist?(target)
+      require 'fileutils'
+      FileUtils.mkdir_p target
     end
+    `protoc -I #{Rails.root}/tools --go_out #{target} #{Rails.root}/tools/protocols.proto`
   end
 end
