@@ -76,13 +76,13 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && for i in .rbenv-vars tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
 
 # itpkg setup
-RUN /tmp/itpkg_setup.sh
+RUN /tmp/mnt/tmp/itpkg_setup.sh
 
 # gitolite
 RUN cp ~/.ssh/id_rsa.pub /tmp \
 && sudo mkdir -p /home/git \
 && sudo chown -R git:git /home/git \
-&& sudo chmod 700 /home/git
+&& sudo chmod 700 /home/git \
 && sudo usermod -d /home/git git 
 USER git
 ENV HOME /home/git
@@ -92,7 +92,7 @@ RUN mkdir -p ~/local/gitolite \
 && /tmp/gitolite/install -to ~/local/gitolite \
 && echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc \
 && USER=git ~/local/gitolite/gitolite setup -pk /tmp/id_rsa.pub \
-&& cp /tmp/mnt/home/git/local/gitolite/VREF/itpkg ~/gitolite/VREF/itpkg
+&& cp /tmp/mnt/home/git/local/gitolite/VREF/itpkg ~/local/gitolite/VREF/itpkg
 
 USER deploy
 ENV HOME /home/deploy
@@ -122,7 +122,7 @@ RUN cd /tmp \
 RUN sudo abs extra/bind \
 && cp -r /var/abs/extra/bind /tmp \
 && cd /tmp/bind \
-&& patch -p0 < /tmp/bind-mysql.patch \
+&& patch -p0 < /tmp/mnt/tmp/bind-mysql.patch \
 && makepkg \
 && sudo pacman -U --noconfirm bind-*.pkg.tar.xz \
 && sudo sh /tmp/mnt/tmp/bind_setup.sh
@@ -132,20 +132,21 @@ RUN sudo sh /tmp/mnt/tmp/email_setup.sh
 
 # docker registry
 RUN virtualenv2 $HOME/local/python2 \
-&& echo '. $HOME/local/python2/bin/activate' >> ~/.bash_profile \
+&& echo '. $HOME/local/python2/bin/activate' >> ~/.bashrc \
 && source $HOME/local/python2/bin/activate \
 && pip install docker-registry \
 && patch $(python -c 'import boto; import os; print os.path.dirname(boto.__file__)')/connection.py < /tmp/mnt/tmp/boto_header_patch.diff \
 && sudo cp /tmp/mnt/etc/{boto.cfg,docker-registry.yml} /etc
 
 
-# clean
-RUN sudo rm -r /tmp/*
 # systemd
-RUN sudo cp /tmp/mnt/etc/systemd/system/*.service /etc/systemd/system
-&& for s in mysqld memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www nginx; \
+RUN sudo cp -v /tmp/mnt/etc/systemd/system/*.service /etc/systemd/system \
+&& for s in sshd mysqld memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www nginx; \
 do sudo systemctl enable $s; \
 done
+# clean
+RUN sudo cp /tmp/mnt/root/chdomain /root/chdomain
+RUN sudo rm -r /tmp/*
 
 
 VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "/home/git/repositories"]

@@ -112,7 +112,7 @@ func loop(cfg *Configuration) {
 	for {
 		request := &itpkg_protocols.Request{
 			Nid: proto.String(cfg.Nid),
-			Type: &itpkg_protocols.Request_docker,
+			Type: &itpkg_protocols.Type(0),
 			Created: proto.Int64(time.Now().Unix())}
 		msg, err := proto.Marshal(request)
 		check_err(err, "GPF generate error: %v")

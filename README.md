@@ -34,10 +34,10 @@ IT-PACKAGE
 
     ./itpkg ssh # password is toor.
 
-#### visit data
-
-    ls -al mnt
-
+#### change domain(after ssh)
+    ./chdomain YOUR_DOMAIN
+    
 
 ## That's ALL
+Enjoy it!
 
