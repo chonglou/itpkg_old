@@ -44,6 +44,7 @@ RSpec.configure do |config|
 
   # my add
   config.include Devise::TestHelpers, type: :controller
+  config.include UserHelper, type: :feature
   config.include FactoryGirl::Syntax::Methods
   Capybara.default_driver = :selenium
 
@@ -51,4 +52,6 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end
+
+
 end
