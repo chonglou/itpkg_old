@@ -23,7 +23,7 @@ class RepositoriesController < ApplicationController
     tree = git.tree(oid)
 
     tree.each_tree do |entry|
-      node = {children:[], state:{opened:true}, text:entry.fetch(:name), icon:'glyphicon glyphicon-list'}
+      node = {children:[], state:{opened:false}, text:entry.fetch(:name), icon:'glyphicon glyphicon-list'}
       _tree_walk(git, entry.fetch(:oid), node)
       parent.fetch(:children) << node
     end
