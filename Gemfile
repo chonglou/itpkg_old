@@ -54,6 +54,7 @@ group :development, :test do
   gem 'rspec-mocks'
   gem 'factory_girl_rails'
   gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
 

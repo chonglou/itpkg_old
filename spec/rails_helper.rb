@@ -42,5 +42,8 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
 
+  # my add
   config.include Devise::TestHelpers, type: :controller
+  config.include FactoryGirl::Syntax::Methods
+  Capybara.default_driver = :selenium
 end
