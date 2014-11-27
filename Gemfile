@@ -49,6 +49,11 @@ group :production do
   gem 'puma'
 end
 
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0.0'
+end
+
+
 gem 'rails-i18n'
 gem 'slim'
 gem 'devise'
