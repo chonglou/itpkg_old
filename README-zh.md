@@ -31,6 +31,9 @@ IT包
 
 ### 笔记
 
+#### 测试
+    rspec
+
 #### 创建项目
 
     rails new itpkg --database=mysql
