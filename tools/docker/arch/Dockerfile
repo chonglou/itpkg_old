@@ -122,7 +122,7 @@ RUN cd /tmp \
 RUN sudo abs extra/bind \
 && cp -r /var/abs/extra/bind /tmp \
 && cd /tmp/bind \
-&& patch -p0 < /tmp/mnt/tmp/bind-mysql.patch \
+&& patch -p0 < /tmp/mnt/tmp/bind-geoip.patch \
 && makepkg \
 && sudo pacman -U --noconfirm bind-*.pkg.tar.xz \
 && sudo sh /tmp/mnt/tmp/bind_setup.sh
