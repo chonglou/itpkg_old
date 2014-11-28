@@ -9,7 +9,10 @@ namespace :proxy do
 
   desc 'Generate GPF'
   task :gpf do
-    `protoc -I #{Rails.root}/tools --ruby_out #{Rails.root}/lib/itpkg #{Rails.root}/tools/protocols.proto`
+    %w(lib/itpkg tools/agent).each do |d|
+      `protoc -I #{Rails.root}/tools --ruby_out #{Rails.root}/#{d} #{Rails.root}/tools/protocols.proto`
+    end
+
     target = "#{ENV['GOPATH']}/src/itpkg"
     unless Dir.exist?(target)
       require 'fileutils'

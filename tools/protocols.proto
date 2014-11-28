@@ -1,46 +1,72 @@
 package itpkg.protocols;
 
+enum Type {
+  heart = 0;
+  docker = 1;
+  moint = 2;
+  logger = 3;
+}
 
 message Request {
-  enum Type {
-    docker = 0;
-    monitor = 1;
-    logging = 2;
+  message Logging {
+    required string name = 1;
+    repeated string lines = 2;
   }
-  required string version = 1 [ default = "v20141126" ]; 
-  required string nid = 2;
-  required Type type = 3;
-  repeated Monitor monitors = 4;
-  repeated Logging loggings = 5;
-  required int64 created = 6;
+
+  message Monitor {
+    message Memory {
+      required int32 total = 1;
+      required int32 usage = 2;
+    }
+    message Network {
+      required int32 in = 1;
+      required int32 out = 2;
+    }
+    message Disk {
+      required int32 read = 1;
+      required int32 write = 2;
+    }
+    optional int32 cpu = 1;
+    optional Memory memory = 2;
+    optional Network network = 3;
+    optional Disk disk = 4;
+    optional float load = 5;
+    required int64 created = 6;
+    required float value = 7;
+  }
+  
+  required string nid = 1;
+  required Type type = 2;
+  optional Monitor monitor = 3;
+  repeated Logging loggings = 4;
+  required int64 created = 5;
+  required string version = 6 [ default = "v20141127" ]; 
 }
 
-message Logging {
-  required string name = 1;
-  repeated string lines = 2;
-}
 
-message Monitor {
-  enum Type {
-    cpu = 0;
-    memory = 1;
-  }
-  required Type type = 1;
-  required int64 created = 2;
-  required float value = 3;
-}
 
 
 message Response {
-  enum Type {
-    docker = 0;
-    monitor = 1;
-    logging = 2;
+  message Heart {
+    message Monitor {
+      required bool cpu = 1;
+      required bool memory = 2;
+      required bool network = 3;
+    }
+    message Logging {
+      repeated string names = 1;
+      required int32 space = 2;
+    }
+    required Type type = 1;
+    optional Monitor monitor = 2;
+    optional Logging logging = 3;
   }
-  required string version = 1 [ default="v20141126" ]; 
+  required string nid = 1;
   required bool ok = 2;
-  optional Type type = 3;
-  repeated string lines = 4;
+  repeated string lines = 3;
+  optional Heart heart = 4;
   required int64 created = 5;
+  required string version = 6 [ default="v20141127" ]; 
 }
+
 

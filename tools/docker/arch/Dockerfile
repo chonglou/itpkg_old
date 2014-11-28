@@ -150,7 +150,7 @@ RUN sudo rm -r /tmp/*
 
 
 VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "/home/git/repositories"]
-EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp
+EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp 9999 10000
 USER root
 
 CMD ["/sbin/init"]

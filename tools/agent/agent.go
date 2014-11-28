@@ -56,7 +56,7 @@ func write_status(state *State) {
 func load_config(filename string) *Configuration {
 	var cfg *Configuration
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		log.Printf("Cfg file %v not exist, will write a demo!", filename)
+		log.Printf("Cfg file %v not exist, will generate a default!", filename)
 		f2, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0600)
 		defer f2.Close()
 		cfg = &Configuration{
