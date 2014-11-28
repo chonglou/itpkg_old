@@ -42,6 +42,7 @@ module Itpkg
 
     end
 
+    class Message < ::Protobuf::Message; end
 
 
     ##
@@ -78,12 +79,8 @@ module Itpkg
         required :float, :value, 7
       end
 
-      required :string, :nid, 1
-      required ::Itpkg::Protocols::Type, :type, 2
-      optional ::Itpkg::Protocols::Request::Monitor, :monitor, 3
-      repeated ::Itpkg::Protocols::Request::Logging, :loggings, 4
-      required :int64, :created, 5
-      required :string, :version, 6, :default => "v20141127"
+      optional ::Itpkg::Protocols::Request::Monitor, :monitor, 1
+      repeated ::Itpkg::Protocols::Request::Logging, :loggings, 2
     end
 
     class Response
@@ -92,6 +89,7 @@ module Itpkg
           required :bool, :cpu, 1
           required :bool, :memory, 2
           required :bool, :network, 3
+          required :bool, :disk, 4
         end
 
         class Logging
@@ -104,10 +102,16 @@ module Itpkg
         optional ::Itpkg::Protocols::Response::Heart::Logging, :logging, 3
       end
 
-      required :string, :nid, 1
-      required :bool, :ok, 2
+      required :bool, :ok, 1
+      optional ::Itpkg::Protocols::Response::Heart, :heart, 2
       repeated :string, :lines, 3
-      optional ::Itpkg::Protocols::Response::Heart, :heart, 4
+    end
+
+    class Message
+      required :string, :nid, 1
+      required ::Itpkg::Protocols::Type, :type, 2
+      required :bool, :plain, 3, :default => false
+      required :string, :payload, 4
       required :int64, :created, 5
       required :string, :version, 6, :default => "v20141127"
     end

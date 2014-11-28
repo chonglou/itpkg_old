@@ -35,15 +35,9 @@ message Request {
     required float value = 7;
   }
   
-  required string nid = 1;
-  required Type type = 2;
-  optional Monitor monitor = 3;
-  repeated Logging loggings = 4;
-  required int64 created = 5;
-  required string version = 6 [ default = "v20141127" ]; 
+  optional Monitor monitor = 1;
+  repeated Logging loggings = 2;
 }
-
-
 
 
 message Response {
@@ -52,6 +46,7 @@ message Response {
       required bool cpu = 1;
       required bool memory = 2;
       required bool network = 3;
+      required bool disk = 4;
     }
     message Logging {
       repeated string names = 1;
@@ -61,12 +56,16 @@ message Response {
     optional Monitor monitor = 2;
     optional Logging logging = 3;
   }
-  required string nid = 1;
-  required bool ok = 2;
+  required bool ok = 1;
+  optional Heart heart = 2;
   repeated string lines = 3;
-  optional Heart heart = 4;
-  required int64 created = 5;
-  required string version = 6 [ default="v20141127" ]; 
 }
 
-
+message Message {
+  required string nid = 1;
+  required Type type = 2;
+  required bool plain = 3 [default = false ];
+  required string payload = 4;
+  required int64 created = 5;
+  required string version = 6 [ default = "v20141127" ]; 
+}
