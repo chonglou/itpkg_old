@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141123030554) do
+ActiveRecord::Schema.define(version: 20141128075205) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -66,11 +66,6 @@ ActiveRecord::Schema.define(version: 20141123030554) do
     t.text     "encrypted_key",      null: false
     t.string   "encrypted_key_salt", null: false
     t.string   "encrypted_key_iv",   null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "clients", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -245,56 +240,12 @@ ActiveRecord::Schema.define(version: 20141123030554) do
     t.datetime "updated_at"
   end
 
-  create_table "logging_node_users", force: true do |t|
-    t.integer  "logging_node_id", null: false
-    t.integer  "user_id",         null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "logging_nodes", force: true do |t|
-    t.integer  "creator",                               null: false
-    t.string   "name",           limit: 32,             null: false
-    t.string   "uid",            limit: 36,             null: false
-    t.string   "title"
-    t.text     "config",                                null: false
-    t.integer  "status",         limit: 2,  default: 0, null: false
-    t.integer  "flag",           limit: 2,  default: 0, null: false
-    t.integer  "certificate_id",                        null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "logging_nodes", ["name"], name: "index_logging_nodes_on_name", using: :btree
-  add_index "logging_nodes", ["uid"], name: "index_logging_nodes_on_uid", unique: true, using: :btree
-
   create_table "logs", force: true do |t|
     t.integer  "user_id",    null: false
     t.string   "message",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "machine_node_users", force: true do |t|
-    t.integer  "machine_node_id", null: false
-    t.integer  "user_id",         null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "machine_nodes", force: true do |t|
-    t.integer  "creator",                           null: false
-    t.string   "name",       limit: 32,             null: false
-    t.string   "uid",        limit: 36,             null: false
-    t.string   "title"
-    t.text     "config",                            null: false
-    t.integer  "status",     limit: 2,  default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "machine_nodes", ["name"], name: "index_machine_nodes_on_name", using: :btree
-  add_index "machine_nodes", ["uid"], name: "index_machine_nodes_on_uid", unique: true, using: :btree
 
   create_table "mail_box_documents", force: true do |t|
     t.integer  "document_id", null: false
@@ -320,33 +271,54 @@ ActiveRecord::Schema.define(version: 20141123030554) do
   add_index "mail_boxes", ["subject"], name: "index_mail_boxes_on_subject", using: :btree
   add_index "mail_boxes", ["to"], name: "index_mail_boxes_on_to", using: :btree
 
-  create_table "monitor_node_users", force: true do |t|
-    t.integer  "monitor_node_id", null: false
-    t.integer  "user_id",         null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "monitor_nodes", force: true do |t|
-    t.integer  "creator",                               null: false
-    t.string   "name",           limit: 32,             null: false
-    t.string   "uid",            limit: 36,             null: false
-    t.string   "title"
-    t.text     "config",                                null: false
-    t.integer  "status",         limit: 2,  default: 0, null: false
-    t.integer  "flag",           limit: 2,  default: 0, null: false
-    t.integer  "certificate_id",                        null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "monitor_nodes", ["name"], name: "index_monitor_nodes_on_name", using: :btree
-  add_index "monitor_nodes", ["uid"], name: "index_monitor_nodes_on_uid", unique: true, using: :btree
-
   create_table "nginx_hosts", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "node_type_items", force: true do |t|
+    t.string   "name",         null: false
+    t.integer  "flag",         null: false
+    t.integer  "node_type_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "node_type_items", ["name", "node_type_id"], name: "index_node_type_items_on_name_and_node_type_id", unique: true, using: :btree
+
+  create_table "node_types", force: true do |t|
+    t.string   "name",       null: false
+    t.integer  "creator_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "node_types", ["name", "creator_id"], name: "index_node_types_on_name_and_creator_id", unique: true, using: :btree
+
+  create_table "node_users", force: true do |t|
+    t.integer  "node_id",    null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "node_users", ["node_id", "user_id"], name: "index_node_users_on_node_id_and_user_id", unique: true, using: :btree
+
+  create_table "nodes", force: true do |t|
+    t.integer  "creator_id",                     null: false
+    t.integer  "node_type_id",                   null: false
+    t.integer  "name",                           null: false
+    t.string   "public_key",                     null: false
+    t.text     "encrypted_cfg",                  null: false
+    t.string   "encrypted_cfg_salt",             null: false
+    t.string   "encrypted_cfg_iv",               null: false
+    t.integer  "status",             default: 0, null: false
+    t.string   "nid",                            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "nodes", ["nid"], name: "index_nodes_on_nid", unique: true, using: :btree
 
   create_table "notices", force: true do |t|
     t.integer  "user_id",    null: false
