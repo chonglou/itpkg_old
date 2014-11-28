@@ -1,2 +1,0 @@
-class MonitorNodesController < ApplicationController
-end

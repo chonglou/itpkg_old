@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
 
   #--------------- My Add -----------------
-  resources :monitor_nodes
-  resources :logging_nodes
   resources :templates
 
   #------------callback---------
@@ -15,13 +13,6 @@ Rails.application.routes.draw do
   resources :repositories do
     resources :users, expect:[:edit, :update], controller:'repositories/users'
     %w(commits changes tree file).each {|a| get a}
-  end
-
-  #------------Client---------------
-  resources :clients
-  #------------Nginx-------------
-  namespace :nginx do
-    resources :hosts
   end
 
   #-------------DNS-------------
