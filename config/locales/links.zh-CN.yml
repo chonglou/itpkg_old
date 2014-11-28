@@ -9,8 +9,10 @@ zh-CN:
       create: '新建项目'
       edit: '编辑项目 [%{name}]'
     docker: 'Docker'
-    logging: '日志系统'
-    monitor: '监控系统'
+    logging:
+      list: '日志系统'
+    monitor:
+      list: '监控系统'
     settings: '站点参数'
     repository:
       user:

@@ -40,12 +40,12 @@ class PersonalController < ApplicationController
         {
             url: monitor_nodes_path,
             logo: 'flat/256/heart255.png',
-            label: t('links.monitor')
+            label: t('links.monitor.list')
         },
         {
             url: logging_nodes_path,
             logo: 'flat/256/chopped.png',
-            label: t('links.logging')
+            label: t('links.logging.list')
         },
         {
             url: repositories_path,

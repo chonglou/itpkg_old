@@ -10,13 +10,12 @@ describe 'Home', type: :feature do
   end
 
   context 'has login' do
-
-    before(:all) {login :employee1}
-    after(:all) {logout}
+    before(:all) { login :employee1 }
+    after(:all) { logout }
 
     it 'root (login)' do
-      save_and_open_page
-      expect(page).to have_text('Welcome')
+      #save_and_open_page
+      expect(page).to have_text('Welcome, ')
     end
   end
 end

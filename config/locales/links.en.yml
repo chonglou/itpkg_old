@@ -9,8 +9,10 @@ en:
       create: 'Create Project'
       edit: 'Edit Profile [%{name}]'
     docker: 'Docker'
-    logging: 'Logging'
-    monitor: 'Monitor'
+    logging:
+      list: 'Logging'
+    monitor:
+      list: 'Monitor'
     settings: 'Settings'
     repository:
       user:
