@@ -5,7 +5,10 @@ Rails.application.routes.draw do
   #----------- docker-----------
   resources :nodes
   resources :node_types do
-    resources :templates
+    resources :templates, expect:[:index, :show]
+    resources :vars, only:[:new, :create, :destroy]
+    resources :ports, only:[:new, :create, :destroy]
+    resources :volumes, only:[:new, :create, :destroy]
   end
 
 

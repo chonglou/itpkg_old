@@ -28,6 +28,11 @@ zh-CN:
       volume:
         create: '添加卷'
         list: '卷列表'
+      template:
+        create: '新建模板'
+        edit: '编辑模板 [%{name}]'
+        remove: '删除模板 [%{name}]'
+        show: '显示模板 [%{name}]'
 
     settings: '站点参数'
     repository:
@@ -45,12 +50,6 @@ zh-CN:
       edit: '编辑GIT仓库 [%{name}]'
       remove: '删除GIT仓库 [%{name}]'
       show: '显示GIT仓库 [%{name}]'
-    template:
-      list: '模板列表'
-      create: '新建模板'
-      edit: '编辑模板 [%{name}]'
-      remove: '删除模板 [%{name}]'
-      show: '显示模板 [%{name}]'
     dns: 'DNS系统'
     nginx:
       list: 'NGINX服务器'

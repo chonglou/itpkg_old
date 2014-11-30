@@ -1,69 +1,48 @@
-class TemplatesController < ApplicationController
+class NodeType::TemplatesController < ApplicationController
   before_action :must_admin!
 
-  def index
-    @buttons = [
-        {label: t('links.template.create'), url: new_template_path, style: 'primary'},
-
-    ]
-    @templates = Template.select(:id, :flag, :name, :owner, :mode, :updated_at).map do |t|
-      {
-          cols: [t.flag, t.name, t.owner, t.mode, t.updated_at],
-          url: template_path(t.id)
-      }
-    end
-
-  end
-
   def new
-    @template = Template.new
+    @template = NtTemplate.new
     @owners = _owners
     @modes = _modes
+    render 'new', layout:'node_types/view'
   end
 
   def create
-    @template = Template.new params.require(:template).permit(:flag, :name, :owner, :mode, :body)
+    @template = NtTemplate.new params.require(:nt_template).permit(:name, :owner, :mode, :body)
+    @template.node_type_id = params[:node_type_id]
     @owners = _owners
     @modes = _modes
     if @template.save
-      redirect_to template_path(@template.id)
+      redirect_to node_type_path(params[:node_type_id])
     else
-      render 'new'
+      render 'new', layout:'node_types/view'
     end
   end
 
   def edit
-    @template = Template.find params[:id]
+    @template = NtTemplate.find params[:id]
     @owners = _owners
     @modes = _modes
+    render 'edit', layout:'node_types/view'
   end
 
   def update
 
-    @template = Template.find params[:id]
+    @template = NtTemplate.find params[:id]
     @owners = _owners
     @modes = _modes
 
     if @template.update(params.require(:template).permit(:name, :mode, :owner, :body))
-      redirect_to template_path(@template.id)
+      redirect_to node_type_path(params[:node_type_id])
     else
-      render 'edit'
+      render 'edit', layout:'node_types/view'
     end
   end
 
   def destroy
-    Template.destroy params[:id]
-    redirect_to templates_path
-  end
-
-  def show
-    @template = Template.find params[:id]
-    @buttons = [
-        {label: t('buttons.edit'), url: edit_template_path(@template.id), style: 'primary'},
-        {label: t('links.template.list'), url: templates_path, style: 'info'},
-
-    ]
-
+    NtTemplate.destroy params[:id]
+    redirect_to node_type_path(params[:node_type_id])
   end
 
   private

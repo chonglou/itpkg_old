@@ -24,8 +24,10 @@ en:
         create: 'Create var'
         list: 'Vars'
       template:
-        create: 'Create template file'
-        list: 'Template files'
+        create: 'Create a new template'
+        edit: 'Edit template [%{name}]'
+        remove: 'Remove template [%{name}]'
+        show: 'Show template [%{name}]'
     monitor:
       list: 'Monitor'
     settings: 'Settings'
@@ -44,12 +46,6 @@ en:
       edit: 'Edit repository [%{name}]'
       remove: 'Remove repository [%{name}]'
       show: 'Show repository [%{name}]'
-    template:
-      list: 'Templates'
-      create: 'Create a new template'
-      edit: 'Edit template [%{name}]'
-      remove: 'Remove template [%{name}]'
-      show: 'Show template [%{name}]'
     dns: 'Name Server'
     nginx:
       list: 'Nginx Server'

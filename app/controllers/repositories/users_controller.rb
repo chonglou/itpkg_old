@@ -1,6 +1,6 @@
 require 'securerandom'
 class Repositories::UsersController < ApplicationController
-  before_action :owner!
+  before_action :must_admin!
 
   def index
     @buttons = [
@@ -58,13 +58,13 @@ class Repositories::UsersController < ApplicationController
   end
 
   private
-  def owner!
-    if params[:repository_id] && current_user
-      @repository = Repository.find_by(id: params[:repository_id], creator_id: current_user.id, enable: true)
-      return if @repository
-    end
-    flash[:alert] = t('labels.not_valid')
-    redirect_to root_path
-  end
+  # def owner!
+  #   if params[:repository_id] && current_user
+  #     @repository = Repository.find_by(id: params[:repository_id], creator_id: current_user.id, enable: true)
+  #     return if @repository
+  #   end
+  #   flash[:alert] = t('labels.not_valid')
+  #   redirect_to root_path
+  # end
 end
 

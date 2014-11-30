@@ -1,16 +1,6 @@
 class NodeTypesController < ApplicationController
   before_action :must_admin!
 
-  def ports
-    case request.method
-      when 'GET'
-      when 'POST'
-      when 'DELETE'
-      else
-
-    end
-  end
-
   def index
     @buttons = [
         {label: t('links.node_type.create'), url: new_node_type_path, style: 'primary'},
@@ -26,7 +16,8 @@ class NodeTypesController < ApplicationController
   end
 
   def show
-    @type = NodeType.find params[:id]
+    @node_type = NodeType.find params[:id]
+    render 'show', layout:'node_types/view'
   end
 
   def new

@@ -1,6 +1,6 @@
 class NtTemplate < ActiveRecord::Base
 
-  validates :node_type_id, :name, :body, :owner, presence: true
+  validates :node_type_id, :name, :body, :owner, :mode, presence: true
   validates :name, uniqueness: {scope: :node_type_id}
 
   belongs_to :node_type

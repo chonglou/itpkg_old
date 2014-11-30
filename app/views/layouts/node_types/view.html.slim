@@ -1,0 +1,5 @@
+- @title=t('links.node_type.show', name:@node_type.name)
+
+- content_for :root
+  = render 'layouts/button_group', items:node_types_nav_buttons, back:true
+= render template:'layouts/application'

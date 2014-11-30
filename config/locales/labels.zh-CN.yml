@@ -17,4 +17,5 @@ zh-CN:
     need_setup: '需要配置'
     in_using: '正在使用'
     not_valid: '不合法'
+    please_waiting: '请等待后台任务处理'
     email_already_exist: '邮箱%{email}已存在!'

@@ -1,27 +1,25 @@
-- @title=t('links.node_type.show', name:@type.name)
-= render 'layouts/button_group', items:show_buttons, back:true
 h3 #{@title}
 hr
 h4 Dockerfile
 div
   pre
-    code #{@type.dockerfile}
+    code #{@node_type.dockerfile}
 
-- unless @type.ports.empty?
+- unless @node_type.ports.empty?
   h4 #{t 'links.node_type.port.list'}
   div
-    - @type.ports.map {|p| "#{p.d_port}:#{p.s_port}#{'/udp' unless p.tcp}"}.join ','
+    - @node_type.ports.map {|p| "#{p.d_port}:#{p.s_port}#{'/udp' unless p.tcp}"}.join ','
 
-- unless @type.vars.empty?
+- unless @node_type.vars.empty?
   h4 #{t 'links.node_type.var.list'}
   div
-    - @type.vars.map {|v| "#{v.name}=#{v.def_v}"}.join ','
+    - @node_type.vars.map {|v| "#{v.name}=#{v.def_v}"}.join ','
 
-- unless @type.volumes.empty?
+- unless @node_type.volumes.empty?
   h4 #{t 'links.node_type.volume.list'}
   div
-    - @type.volumes.map {|v| "#{v.d_path}:#{v.s_path}"}.join ','
+    - @node_type.volumes.map {|v| "#{v.d_path}:#{v.s_path}"}.join ','
 
-h3 #{t('links.node_type.remove', name:@type.name)}
+h3 #{t('links.node_type.remove', name:@node_type.name)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:node_type_path(@type)
+= render 'layouts/remove_button', name:'buttons.remove', url:node_type_path(@node_type)
