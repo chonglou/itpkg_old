@@ -13,17 +13,6 @@
       = f.label :dockerfile
       = f.text_area :dockerfile
 
-    = f.group do
-      = f.label :ports
-      = f.text_field :ports, placeholder:t('placeholders.docker.ports')
-
-    = f.group do
-      = f.label :volumes
-      = f.text_area :volumes, placeholder:t('placeholders.docker.volumes')
-
-    = f.group do
-      = f.label :vars
-      = f.text_area :vars, placeholder: t('placeholders.docker.vars')
 
     = f.button_group do
       = f.submit t('buttons.submit')

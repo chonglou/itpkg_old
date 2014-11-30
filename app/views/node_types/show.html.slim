@@ -7,27 +7,20 @@ div
   pre
     code #{@type.dockerfile}
 
-h4 Port mapping:
-div
-  pre
-    code #{@type.ports}
-
-h4 Volumes:
-div
-  pre
-    code #{@type.volumes}
-
-h4 Vars:
-div
-  pre
-    code #{@type.vars}
-
-- @type.templates.each do |t|
-  h4 #{t.name} [#{t.owner}, #{t.mode}]
+- unless @type.ports.empty?
+  h4 #{t 'links.node_type.port.list'}
   div
-    pre
-      code #{t.body}
+    - @type.ports.map {|p| "#{p.d_port}:#{p.s_port}#{'/udp' unless p.tcp}"}.join ','
 
+- unless @type.vars.empty?
+  h4 #{t 'links.node_type.var.list'}
+  div
+    - @type.vars.map {|v| "#{v.name}=#{v.def_v}"}.join ','
+
+- unless @type.volumes.empty?
+  h4 #{t 'links.node_type.volume.list'}
+  div
+    - @type.volumes.map {|v| "#{v.d_path}:#{v.s_path}"}.join ','
 
 h3 #{t('links.node_type.remove', name:@type.name)}
 hr

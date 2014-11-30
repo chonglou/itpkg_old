@@ -14,9 +14,18 @@ en:
     node_type:
       list: 'Node Types'
       create: 'Create a new node type'
-      edit: 'Edit node type [%{name}]'
+      edit_docker: 'Edit Dockerfile for [%{name}]'
       show: 'Show node type [%{name}]'
       remove: 'Remove node type [%{name}]'
+      port:
+        create: 'Create port mapping'
+        list: 'Port Mappings'
+      var:
+        create: 'Create var'
+        list: 'Vars'
+      template:
+        create: 'Create template file'
+        list: 'Template files'
     monitor:
       list: 'Monitor'
     settings: 'Settings'

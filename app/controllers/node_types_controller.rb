@@ -43,7 +43,7 @@ EOF
 
 
   def create
-    @type = NodeType.new params.require(:node_type).permit(:name, :ports, :dockerfile, :volumes, :vars)
+    @type = NodeType.new params.require(:node_type).permit(:name, :dockerfile)
     user = current_user
     @type.creator_id = user.id
 
@@ -62,7 +62,7 @@ EOF
   def update
     @type = NodeType.find params[:id]
 
-    if @type.update(params.require(:node_type).permit(:ports, :dockerfile, :volumes, :vars))
+    if @type.update(params.require(:node_type).permit(:dockerfile))
       redirect_to node_type_path(@type.id)
     else
       render 'edit'
@@ -72,9 +72,13 @@ EOF
 
   def destroy
     type = NodeType.find params[:id]
-    if Template.where(node_type_id: type.id).count >0 || Node.where(node_type_id: type.id).count>0
+    if Node.where(node_type_id: type.id).count>0
       flash[:alert] = t('labels.in_using')
     else
+      NtTemplate.destroy_all(node_type_id: type.id)
+      NtPort.destroy_all(node_type_id: type.id)
+      NtVolume.destroy_all(node_type_id: type.id)
+      NtVar.destroy_all(node_type_id: type.id)
       type.destroy
     end
     redirect_to node_types_path

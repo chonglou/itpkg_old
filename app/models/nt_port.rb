@@ -1,4 +1,7 @@
 class NtPort < ActiveRecord::Base
-  t.integer :node_type_id, null:false
+  validates :node_type_id, :s_port, :d_port, :tcp, presence: true
+  validates :d_port, uniqueness: {scope: [:node_type_id, :tcp]}
+
+ belongs_to :node_type
 
 end

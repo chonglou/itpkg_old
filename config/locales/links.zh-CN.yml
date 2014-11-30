@@ -16,9 +16,19 @@ zh-CN:
     node_type:
       list: '节点类型'
       create: '新建节点类型'
-      edit: '编辑节点类型 [%{name}]'
+      edit_docker: '编辑Dockerfile [%{name}]'
       show: '显示节点类型 [%{name}]'
       remove: '删除节点类型 [%{name}]'
+      port:
+        create: '添加端口映射'
+        list: '端口映射列表'
+      vars:
+        create: '添加变量'
+        list: '变量列表'
+      volume:
+        create: '添加卷'
+        list: '卷列表'
+
     settings: '站点参数'
     repository:
       user:
