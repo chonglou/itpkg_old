@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141128075205) do
+ActiveRecord::Schema.define(version: 20141128074949) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -271,23 +271,11 @@ ActiveRecord::Schema.define(version: 20141128075205) do
   add_index "mail_boxes", ["subject"], name: "index_mail_boxes_on_subject", using: :btree
   add_index "mail_boxes", ["to"], name: "index_mail_boxes_on_to", using: :btree
 
-  create_table "nginx_hosts", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "node_type_items", force: true do |t|
-    t.string   "name",         null: false
-    t.integer  "flag",         null: false
-    t.integer  "node_type_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "node_type_items", ["name", "node_type_id"], name: "index_node_type_items_on_name_and_node_type_id", unique: true, using: :btree
-
   create_table "node_types", force: true do |t|
     t.string   "name",       null: false
+    t.text     "dockerfile", null: false
+    t.string   "ports",      null: false
+    t.string   "volumes",    null: false
     t.integer  "creator_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -305,15 +293,17 @@ ActiveRecord::Schema.define(version: 20141128075205) do
   add_index "node_users", ["node_id", "user_id"], name: "index_node_users_on_node_id_and_user_id", unique: true, using: :btree
 
   create_table "nodes", force: true do |t|
-    t.integer  "creator_id",                     null: false
-    t.integer  "node_type_id",                   null: false
-    t.integer  "name",                           null: false
-    t.string   "public_key",                     null: false
-    t.text     "encrypted_cfg",                  null: false
-    t.string   "encrypted_cfg_salt",             null: false
-    t.string   "encrypted_cfg_iv",               null: false
-    t.integer  "status",             default: 0, null: false
-    t.string   "nid",                            null: false
+    t.integer  "creator_id",                      null: false
+    t.integer  "node_type_id",                    null: false
+    t.integer  "name",                            null: false
+    t.text     "encrypted_keys",                  null: false
+    t.string   "encrypted_keys_salt",             null: false
+    t.string   "encrypted_keys_iv",               null: false
+    t.text     "encrypted_cfg",                   null: false
+    t.string   "encrypted_cfg_salt",              null: false
+    t.string   "encrypted_cfg_iv",                null: false
+    t.integer  "status",              default: 0, null: false
+    t.string   "nid",                             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -482,20 +472,19 @@ ActiveRecord::Schema.define(version: 20141128075205) do
   end
 
   create_table "templates", force: true do |t|
-    t.string   "flag",       limit: 32,                       null: false
-    t.string   "name",                                        null: false
-    t.text     "body",                                        null: false
-    t.string   "mode",       limit: 3,  default: "400",       null: false
-    t.string   "owner",      limit: 16, default: "root:root", null: false
-    t.integer  "version",               default: 0,           null: false
+    t.string   "name",                                          null: false
+    t.text     "body",                                          null: false
+    t.string   "mode",         limit: 3,  default: "400",       null: false
+    t.string   "owner",        limit: 16, default: "root:root", null: false
+    t.integer  "node_type_id",                                  null: false
+    t.integer  "version",                 default: 0,           null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "templates", ["flag", "name"], name: "index_templates_on_flag_and_name", unique: true, using: :btree
-  add_index "templates", ["flag"], name: "index_templates_on_flag", using: :btree
   add_index "templates", ["mode"], name: "index_templates_on_mode", using: :btree
   add_index "templates", ["name"], name: "index_templates_on_name", using: :btree
+  add_index "templates", ["node_type_id", "name"], name: "index_templates_on_node_type_id_and_name", unique: true, using: :btree
   add_index "templates", ["owner"], name: "index_templates_on_owner", using: :btree
 
   create_table "translations", force: true do |t|

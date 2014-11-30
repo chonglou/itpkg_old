@@ -4,7 +4,7 @@ MAINTAINER Jitang Zheng <jitang.zheng@gmail.com>
 
 # upgrade system
 RUN pacman -Syu --noconfirm && \
-pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh \
+pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh iptables \
 # itpkg
 nodejs libmariadbclient imagemagick cmake libgit2 protobuf zeromq \
 # services
