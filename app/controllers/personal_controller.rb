@@ -38,16 +38,6 @@ class PersonalController < ApplicationController
             label: t('links.project.list')
         },
         {
-            url: monitor_nodes_path,
-            logo: 'flat/256/heart255.png',
-            label: t('links.monitor.list')
-        },
-        {
-            url: logging_nodes_path,
-            logo: 'flat/256/chopped.png',
-            label: t('links.logging.list')
-        },
-        {
             url: repositories_path,
             logo: 'flat/256/three128.png',
             label: t('links.repository.list')
@@ -55,10 +45,16 @@ class PersonalController < ApplicationController
     ]
     if admin?
       @items << {
-          url: clients_path,
+          url: nodes_path,
           logo: 'flat/256/hosting.png',
-          label: t('links.client.list')
+          label: t('links.node.list')
       }
+      @items << {
+          url: node_types_path,
+          logo: 'flat/256/black398.png',
+          label: t('links.node_type.list')
+      }
+
       @items << {
           url: email_path,
           logo: 'flat/256/black218.png',
@@ -73,16 +69,6 @@ class PersonalController < ApplicationController
           url: dns_path,
           logo: 'flat/256/internet5.png',
           label: t('links.dns')
-      }
-      @items << {
-          url: nginx_hosts_path,
-          logo: 'logo/nginx.png',
-          label: t('links.nginx.list')
-      }
-      @items << {
-          url: templates_path,
-          logo: 'flat/256/documents7.png',
-          label: t('links.template.list')
       }
       @items << {
           url: settings_path,

@@ -6,3 +6,7 @@ zh-CN:
     network: 'xxx.xxx.xxx.0'
     dns: "8.8.8.8"
     routes: "xxx.xxx.xxx.xxx 255.255.255.0"
+    docker:
+     ports: '80:80, 53:53/udp'
+     volumes: '/var/logs'
+     vars: 'DOMAIN=example.com'

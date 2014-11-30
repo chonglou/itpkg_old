@@ -274,14 +274,15 @@ ActiveRecord::Schema.define(version: 20141128074949) do
   create_table "node_types", force: true do |t|
     t.string   "name",       null: false
     t.text     "dockerfile", null: false
-    t.string   "ports",      null: false
-    t.string   "volumes",    null: false
+    t.string   "ports"
+    t.string   "volumes"
+    t.text     "vars"
     t.integer  "creator_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "node_types", ["name", "creator_id"], name: "index_node_types_on_name_and_creator_id", unique: true, using: :btree
+  add_index "node_types", ["name"], name: "index_node_types_on_name", unique: true, using: :btree
 
   create_table "node_users", force: true do |t|
     t.integer  "node_id",    null: false

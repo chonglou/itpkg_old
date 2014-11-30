@@ -20,7 +20,4 @@ Translation.create flag: 'notice', en: n1.id, 'zh-CN' => n2.id
 require 'itpkg/linux/certificate'
 Certificate.create Linux::Certificate.root(10)
 
-# todo
-#require 'itpkg/constants'
-#Itpkg::TEMPLATES_TO_LOAD.each { |t| Template.create t }
 

@@ -11,6 +11,12 @@ en:
     docker: 'Docker'
     logging:
       list: 'Logging'
+    node_type:
+      list: 'Node Types'
+      create: 'Create a new node type'
+      edit: 'Edit node type [%{name}]'
+      show: 'Show node type [%{name}]'
+      remove: 'Remove node type [%{name}]'
     monitor:
       list: 'Monitor'
     settings: 'Settings'
@@ -38,8 +44,8 @@ en:
     dns: 'Name Server'
     nginx:
       list: 'Nginx Server'
-    client:
-      list: 'Clients'
+    node:
+      list: 'Nodes'
     email: 'Email System'
     email_host:
       list: 'Email Hosts'

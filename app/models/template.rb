@@ -2,8 +2,8 @@ require 'erb'
 
 class Template < ActiveRecord::Base
 
-  validates :flag, :name, :body, :owner, presence: true
-  validates :name, uniqueness: {scope: :flag}
+  validates :node_type_id, :name, :body, :owner, presence: true
+  validates :name, uniqueness: {scope: :node_type_id}
 
   def to_sh
     <<-SHELL

@@ -13,6 +13,12 @@ zh-CN:
       list: '日志系统'
     monitor:
       list: '监控系统'
+    node_type:
+      list: '节点类型'
+      create: '新建节点类型'
+      edit: '编辑节点类型 [%{name}]'
+      show: '显示节点类型 [%{name}]'
+      remove: '删除节点类型 [%{name}]'
     settings: '站点参数'
     repository:
       user:
@@ -38,7 +44,7 @@ zh-CN:
     dns: 'DNS系统'
     nginx:
       list: 'NGINX服务器'
-    client:
+    node:
       list: '终端列表'
     email: '邮件系统'
     email_host:

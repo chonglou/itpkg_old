@@ -6,5 +6,7 @@ class Node < ActiveRecord::Base
   has_one :node_type
   enum status: {submit: 0, running: 1, stoped: 2}
 
-  validates :name, presence: true
+
+  validates :keys, :cfg, :creator_id, :node_type_id, :status, :nid, presence: true
+  validates :nid, uniqueness: true
 end

@@ -1,0 +1,34 @@
+- @title=t('links.node_type.show', name:@type.name)
+= render 'layouts/button_group', items:show_buttons, back:true
+h3 #{@title}
+hr
+h4 Dockerfile
+div
+  pre
+    code #{@type.dockerfile}
+
+h4 Port mapping:
+div
+  pre
+    code #{@type.ports}
+
+h4 Volumes:
+div
+  pre
+    code #{@type.volumes}
+
+h4 Vars:
+div
+  pre
+    code #{@type.vars}
+
+- @type.templates.each do |t|
+  h4 #{t.name} [#{t.owner}, #{t.mode}]
+  div
+    pre
+      code #{t.body}
+
+
+h3 #{t('links.node_type.remove', name:@type.name)}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:node_type_path(@type)

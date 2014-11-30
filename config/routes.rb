@@ -1,7 +1,13 @@
 Rails.application.routes.draw do
 
   #--------------- My Add -----------------
-  resources :templates
+
+  #----------- docker-----------
+  resources :nodes
+  resources :node_types do
+    resources :templates
+  end
+
 
   #------------callback---------
   namespace :callback do
@@ -29,6 +35,7 @@ Rails.application.routes.draw do
     resources :domains, expect:[:show]
     resources :users, expect:[:show]
     resources :aliases, only:[:destroy, :new, :create, :index]
+    # todo
     resources :hosts do
     get 'install_sh'
   end
@@ -39,6 +46,7 @@ Rails.application.routes.draw do
   namespace :vpn do
     get 'logs' => 'logs#index'
     resources :users, expect:[:show]
+    # todo
     resources :hosts do
       get 'install_sh'
     end

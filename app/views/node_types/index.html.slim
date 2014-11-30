@@ -1,0 +1,4 @@
+- @title=t('links.node_type.list')
+
+= render 'layouts/button_group', items:@buttons, back:true
+= render 'layouts/table', title:'node_type', items:@types, headers:[:name, :creator, :updated_at]
