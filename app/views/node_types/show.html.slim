@@ -28,7 +28,7 @@ div
   ol
     - @node_type.volumes.each do |v|
       li
-        = link_to "#{v.d_path}:#{v.s_path}", edit_node_type_volume_path(v.id, node_type_id:@node_type.id)
+        = link_to "#{v.t_path}:#{v.s_path}", edit_node_type_volume_path(v.id, node_type_id:@node_type.id)
 
 - unless @node_type.templates.empty?
   br

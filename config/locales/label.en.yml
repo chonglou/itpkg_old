@@ -1,6 +1,9 @@
 en:
   helpers:
     label:
+      nt_volume:
+        s_path: 'Source path'
+        t_path: 'Target path'
       nt_var:
         def_v: 'Default value'
       vpn_user:

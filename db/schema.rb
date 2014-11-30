@@ -319,12 +319,12 @@ ActiveRecord::Schema.define(version: 20141130171044) do
     t.integer  "node_type_id",                null: false
     t.integer  "s_port",                      null: false
     t.boolean  "tcp",          default: true, null: false
-    t.integer  "d_port",                      null: false
+    t.integer  "t_port",                      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "nt_ports", ["node_type_id", "tcp", "d_port"], name: "index_nt_ports_on_node_type_id_and_tcp_and_d_port", unique: true, using: :btree
+  add_index "nt_ports", ["node_type_id", "tcp", "t_port"], name: "index_nt_ports_on_node_type_id_and_tcp_and_t_port", unique: true, using: :btree
 
   create_table "nt_templates", force: true do |t|
     t.string   "name",                                          null: false
@@ -354,13 +354,13 @@ ActiveRecord::Schema.define(version: 20141130171044) do
 
   create_table "nt_volumes", force: true do |t|
     t.integer  "node_type_id", null: false
-    t.integer  "s_path",       null: false
-    t.integer  "d_path",       null: false
+    t.string   "s_path",       null: false
+    t.string   "t_path",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "nt_volumes", ["node_type_id", "d_path"], name: "index_nt_volumes_on_node_type_id_and_d_path", unique: true, using: :btree
+  add_index "nt_volumes", ["node_type_id", "t_path"], name: "index_nt_volumes_on_node_type_id_and_t_path", unique: true, using: :btree
 
   create_table "permissions", force: true do |t|
     t.string   "resource",                          null: false

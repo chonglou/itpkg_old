@@ -4,9 +4,9 @@ class CreateNtPorts < ActiveRecord::Migration
       t.integer :node_type_id, null:false
       t.integer :s_port, null:false
       t.boolean :tcp, null:false, default:true
-      t.integer :d_port, null:false
+      t.integer :t_port, null:false
       t.timestamps
     end
-    add_index :nt_ports, [:node_type_id, :tcp, :d_port], unique:true
+    add_index :nt_ports, [:node_type_id, :tcp, :t_port], unique:true
   end
 end

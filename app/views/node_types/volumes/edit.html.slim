@@ -1,7 +1,6 @@
-- @title=t('links.volume.create')
+- @title=t('links.volume.edit')
 
-
-= bootstrap_form(@volume, url:{action:'create'}) do |f|
+= bootstrap_form(@volume, url:{action:'update'}) do |f|
   = f.error_messages
   = f.fieldset do
     = f.legend(@title)
@@ -17,4 +16,8 @@
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
-      = f.back t('buttons.back')
+
+
+h3 #{t('buttons.other')}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:node_type_volume_path(@volume.id, node_type_id:@node_type.id), back:true

@@ -1,6 +1,9 @@
 zh-CN:
   helpers:
     label:
+      nt_volume:
+        s_path: '源目录'
+        t_path: '目的目录'
       nt_var:
         def_v: '默认值'
       ssh_key:
