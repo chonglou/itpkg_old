@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141128074949) do
+ActiveRecord::Schema.define(version: 20141130171044) do
 
   create_table "cdn_memcacheds", force: true do |t|
     t.string   "name",                   null: false
@@ -274,9 +274,6 @@ ActiveRecord::Schema.define(version: 20141128074949) do
   create_table "node_types", force: true do |t|
     t.string   "name",       null: false
     t.text     "dockerfile", null: false
-    t.string   "ports"
-    t.string   "volumes"
-    t.text     "vars"
     t.integer  "creator_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -317,6 +314,53 @@ ActiveRecord::Schema.define(version: 20141128074949) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "nt_ports", force: true do |t|
+    t.integer  "node_type_id",                null: false
+    t.integer  "s_port",                      null: false
+    t.boolean  "tcp",          default: true, null: false
+    t.integer  "d_port",                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "nt_ports", ["node_type_id", "tcp", "d_port"], name: "index_nt_ports_on_node_type_id_and_tcp_and_d_port", unique: true, using: :btree
+
+  create_table "nt_templates", force: true do |t|
+    t.string   "name",                                          null: false
+    t.text     "body",                                          null: false
+    t.string   "mode",         limit: 4,  default: "400",       null: false
+    t.string   "owner",        limit: 16, default: "root:root", null: false
+    t.integer  "node_type_id",                                  null: false
+    t.integer  "version",                 default: 0,           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "nt_templates", ["mode"], name: "index_nt_templates_on_mode", using: :btree
+  add_index "nt_templates", ["name"], name: "index_nt_templates_on_name", using: :btree
+  add_index "nt_templates", ["node_type_id", "name"], name: "index_nt_templates_on_node_type_id_and_name", unique: true, using: :btree
+  add_index "nt_templates", ["owner"], name: "index_nt_templates_on_owner", using: :btree
+
+  create_table "nt_vars", force: true do |t|
+    t.integer  "node_type_id", null: false
+    t.string   "name",         null: false
+    t.string   "def_v"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "nt_vars", ["node_type_id", "name"], name: "index_nt_vars_on_node_type_id_and_name", unique: true, using: :btree
+
+  create_table "nt_volumes", force: true do |t|
+    t.integer  "node_type_id", null: false
+    t.integer  "s_path",       null: false
+    t.integer  "d_path",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "nt_volumes", ["node_type_id", "d_path"], name: "index_nt_volumes_on_node_type_id_and_d_path", unique: true, using: :btree
 
   create_table "permissions", force: true do |t|
     t.string   "resource",                          null: false
@@ -471,22 +515,6 @@ ActiveRecord::Schema.define(version: 20141128074949) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "templates", force: true do |t|
-    t.string   "name",                                          null: false
-    t.text     "body",                                          null: false
-    t.string   "mode",         limit: 3,  default: "400",       null: false
-    t.string   "owner",        limit: 16, default: "root:root", null: false
-    t.integer  "node_type_id",                                  null: false
-    t.integer  "version",                 default: 0,           null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "templates", ["mode"], name: "index_templates_on_mode", using: :btree
-  add_index "templates", ["name"], name: "index_templates_on_name", using: :btree
-  add_index "templates", ["node_type_id", "name"], name: "index_templates_on_node_type_id_and_name", unique: true, using: :btree
-  add_index "templates", ["owner"], name: "index_templates_on_owner", using: :btree
 
   create_table "translations", force: true do |t|
     t.integer  "zh-CN"

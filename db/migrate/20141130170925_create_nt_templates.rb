@@ -10,9 +10,9 @@ class CreateNtTemplates < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :templates, :name
-    add_index :templates, :owner
-    add_index :templates, :mode
-    add_index :templates, [:node_type_id, :name], unique: true
+    add_index :nt_templates, :name
+    add_index :nt_templates, :owner
+    add_index :nt_templates, :mode
+    add_index :nt_templates, [:node_type_id, :name], unique: true
   end
 end
