@@ -1,5 +1,7 @@
 class NodeTypes::VolumesController < ApplicationController
   before_action :must_admin!
+  include NodeTypesHelper
+  before_action :get_node_type
 
   def new
     @volume = NtVolume.new
@@ -20,4 +22,5 @@ class NodeTypes::VolumesController < ApplicationController
     NtVolume.destroy(params[:id])
     redirect_to node_type_path(params[:node_type_id])
   end
+
 end

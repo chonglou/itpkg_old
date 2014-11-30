@@ -7,12 +7,8 @@
     = f.legend(@title)
 
     = f.group do
-      = f.label :flag
-      = f.name_field :flag, autofocus: true
-
-    = f.group do
       = f.label :name
-      = f.text_field :name
+      = f.text_field :name, autofocus: true
 
     = f.group do
       = f.label :owner

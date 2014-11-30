@@ -26,14 +26,11 @@ zh-CN:
         create: '添加变量'
         list: '变量列表'
       volume:
-        create: '添加卷'
-        list: '卷列表'
+        create: '添加目录映射'
+        list: '目录映射列表'
       template:
         create: '新建模板'
-        edit: '编辑模板 [%{name}]'
-        remove: '删除模板 [%{name}]'
-        show: '显示模板 [%{name}]'
-
+        list: '模板列表'
     settings: '站点参数'
     repository:
       user:

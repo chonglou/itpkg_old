@@ -1,4 +1,4 @@
 -@title=t('links.repository.user.remove', label:@user.label, name:@repository.name)
 h3 #{@title}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:repository_user_path(@ru.id, repository_id:@repository.id)
+= render 'layouts/remove_button', name:'buttons.remove', url:repository_user_path(@ru.id, repository_id:@repository.id), back:false

@@ -23,11 +23,12 @@ en:
       var:
         create: 'Create var'
         list: 'Vars'
+      volume:
+        create: 'Create volume mapping'
+        list: 'Volume mappings'
       template:
         create: 'Create a new template'
-        edit: 'Edit template [%{name}]'
-        remove: 'Remove template [%{name}]'
-        show: 'Show template [%{name}]'
+        list: 'Templates'
     monitor:
       list: 'Monitor'
     settings: 'Settings'

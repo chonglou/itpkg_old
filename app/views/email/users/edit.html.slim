@@ -15,4 +15,4 @@
 
 h3 #{t('links.email_user.remove', email:@user.email)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:email_user_path(@user)
+= render 'layouts/remove_button', name:'buttons.remove', url:email_user_path(@user), back:false

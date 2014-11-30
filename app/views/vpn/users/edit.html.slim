@@ -32,5 +32,5 @@
 
 h3 #{t('links.vpn_user.remove', email:@user.email)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:vpn_user_path(@user)
+= render 'layouts/remove_button', name:'buttons.remove', url:vpn_user_path(@user), back:false
 

@@ -20,6 +20,19 @@ div
   div
     - @node_type.volumes.map {|v| "#{v.d_path}:#{v.s_path}"}.join ','
 
+- unless @node_type.templates.empty?
+  h4 #{t 'links.node_type.template.list'}
+  div
+    - @node_type.templates.each do |t|
+      h5 #{t.name} (#{t.owner}, #{t.mode})
+      pre
+        code #{t.body}
+      div class='row'
+        div class='col-sm-1'
+          = link_to t('buttons.edit'), edit_node_type_template_path(t.id, node_type_id:@node_type.id), class:'btn btn-primary'
+        = render 'layouts/remove_button', name:'buttons.remove', url:node_type_template_path(t.id, node_type_id:@node_type.id), back:false
+
+
 h3 #{t('links.node_type.remove', name:@node_type.name)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:node_type_path(@node_type)
+= render 'layouts/remove_button', name:'buttons.remove', url:node_type_path(@node_type), back:false

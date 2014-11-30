@@ -107,6 +107,7 @@ class RepositoriesController < ApplicationController
 
 
   def show
+    @repository = Repository.find params[:id]
     if repositories_can_view?
       begin
         git = Linux::Git.new @repository.name
@@ -151,12 +152,14 @@ class RepositoriesController < ApplicationController
 
 
   def edit
+    @repository = Repository.find params[:id]
     unless repositories_can_edit?
       redirect_to repositories_path
     end
   end
 
   def update
+    @repository = Repository.find params[:id]
     if repositories_can_edit?
       if @repository.update(params.require(:repository).permit(:title))
         redirect_to repository_path(@repository.id)
@@ -170,6 +173,7 @@ class RepositoriesController < ApplicationController
   end
 
   def destroy
+    @repository = Repository.find params[:id]
     if repositories_can_edit? && RepositoryUser.where(repository_id: params[:id]).count == 0
       @repository.update enable: false
       GitAdminWorker.perform_async

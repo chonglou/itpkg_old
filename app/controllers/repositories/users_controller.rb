@@ -3,6 +3,7 @@ class Repositories::UsersController < ApplicationController
   before_action :must_admin!
 
   def index
+    @repository = Repository.find params[:repository_id]
     @buttons = [
         {label: t('links.repository.user.create', name: @repository.name), url: new_repository_user_path, style: 'primary'},
         {label: t('links.repository.list', name: @repository.name), url: repositories_path, style: 'warning'},
@@ -14,7 +15,12 @@ class Repositories::UsersController < ApplicationController
     end
   end
 
+  def new
+    @repository = Repository.find params[:repository_id]
+  end
+
   def create
+    @repository = Repository.find params[:repository_id]
     lbl = params[:user_label]
     success = false
 
@@ -44,11 +50,13 @@ class Repositories::UsersController < ApplicationController
   end
 
   def show
+    @repository = Repository.find params[:repository_id]
     @ru = RepositoryUser.find_by params[:id]
     @user = User.find @ru.user_id
   end
 
   def destroy
+    @repository = Repository.find params[:repository_id]
     ur = RepositoryUser.find params[:id]
     uid = ur.user_id
     ur.destroy

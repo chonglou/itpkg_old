@@ -1,5 +1,7 @@
-class NodeType::TemplatesController < ApplicationController
+class NodeTypes::TemplatesController < ApplicationController
   before_action :must_admin!
+  include NodeTypesHelper
+  before_action :get_node_type
 
   def new
     @template = NtTemplate.new
@@ -33,7 +35,7 @@ class NodeType::TemplatesController < ApplicationController
     @owners = _owners
     @modes = _modes
 
-    if @template.update(params.require(:template).permit(:name, :mode, :owner, :body))
+    if @template.update(params.require(:nt_template).permit(:name, :mode, :owner, :body))
       redirect_to node_type_path(params[:node_type_id])
     else
       render 'edit', layout:'node_types/view'
@@ -65,4 +67,6 @@ class NodeType::TemplatesController < ApplicationController
         %w(r--r--r-- 444)
     ]
   end
+
+
 end

@@ -4,4 +4,4 @@
 
 h3 #{t('links.vpn_host.remove', name:@host.name)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:vpn_host_path(@host)
+= render 'layouts/remove_button', name:'buttons.remove', url:vpn_host_path(@host), back:false

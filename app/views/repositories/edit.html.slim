@@ -15,4 +15,4 @@
 
 h3 #{t('links.repository.remove', name:@repository.name)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:repository_path(@repository)
+= render 'layouts/remove_button', name:'buttons.remove', url:repository_path(@repository), back:false

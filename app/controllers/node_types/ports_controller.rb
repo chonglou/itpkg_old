@@ -1,5 +1,7 @@
 class NodeTypes::PortsController < ApplicationController
   before_action :must_admin!
+  include NodeTypesHelper
+  before_action :get_node_type
 
 
   def new
@@ -21,4 +23,6 @@ class NodeTypes::PortsController < ApplicationController
     NtPort.destroy(params[:id])
     redirect_to node_type_path(params[:node_type_id])
   end
+
+
 end
