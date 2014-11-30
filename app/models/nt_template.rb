@@ -1,9 +1,9 @@
-require 'erb'
-
-class Template < ActiveRecord::Base
+class NtTemplate < ActiveRecord::Base
 
   validates :node_type_id, :name, :body, :owner, presence: true
   validates :name, uniqueness: {scope: :node_type_id}
+
+  belongs_to :node_type
 
   def to_sh
     <<-SHELL

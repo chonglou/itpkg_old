@@ -1,6 +1,16 @@
 class NodeTypesController < ApplicationController
   before_action :must_admin!
 
+  def ports
+    case request.method
+      when 'GET'
+      when 'POST'
+      when 'DELETE'
+      else
+
+    end
+  end
+
   def index
     @buttons = [
         {label: t('links.node_type.create'), url: new_node_type_path, style: 'primary'},
@@ -23,7 +33,7 @@ class NodeTypesController < ApplicationController
     user = current_user
     @type = NodeType.new
     @type.dockerfile = <<EOF
-FROM base/archlinux:latest
+FROM base/ubuntu:latest
 MAINTAINER #{user.label} <#{user.email}>
 
 USER root
