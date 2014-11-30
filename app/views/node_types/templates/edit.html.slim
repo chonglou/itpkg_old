@@ -26,4 +26,7 @@
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
-      = f.back t('buttons.back')
+
+h3 #{t('buttons.other')}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:node_type_template_path(@template.id, node_type_id:@node_type.id), back:true

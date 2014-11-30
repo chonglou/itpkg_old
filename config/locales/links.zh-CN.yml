@@ -22,7 +22,7 @@ zh-CN:
       port:
         create: '添加端口映射'
         list: '端口映射列表'
-      vars:
+      var:
         create: '添加变量'
         list: '变量列表'
       volume:

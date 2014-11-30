@@ -1,6 +1,8 @@
 zh-CN:
   helpers:
     label:
+      nt_var:
+        def_v: '默认值'
       ssh_key:
         public_key: '公钥'
       user:

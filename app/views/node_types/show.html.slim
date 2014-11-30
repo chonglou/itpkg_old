@@ -6,33 +6,42 @@ div
     code #{@node_type.dockerfile}
 
 - unless @node_type.ports.empty?
+  br
   h4 #{t 'links.node_type.port.list'}
-  div
-    - @node_type.ports.map {|p| "#{p.d_port}:#{p.s_port}#{'/udp' unless p.tcp}"}.join ','
+  ol
+    - @node_type.ports.each do |p|
+      li
+        = link_to "#{p.d_port}:#{p.s_port}#{'/udp' unless p.tcp}", edit_node_type_port_path(p.id, node_type_id:@node_type.id)
 
 - unless @node_type.vars.empty?
+  br
   h4 #{t 'links.node_type.var.list'}
-  div
-    - @node_type.vars.map {|v| "#{v.name}=#{v.def_v}"}.join ','
+  ol
+    - @node_type.vars.each do |v|
+      li
+        = link_to "#{v.name}=#{v.def_v}", edit_node_type_var_path(v.id, node_type_id:@node_type.id)
+
 
 - unless @node_type.volumes.empty?
+  br
   h4 #{t 'links.node_type.volume.list'}
-  div
-    - @node_type.volumes.map {|v| "#{v.d_path}:#{v.s_path}"}.join ','
+  ol
+    - @node_type.volumes.each do |v|
+      li
+        = link_to "#{v.d_path}:#{v.s_path}", edit_node_type_volume_path(v.id, node_type_id:@node_type.id)
 
 - unless @node_type.templates.empty?
+  br
   h4 #{t 'links.node_type.template.list'}
   div
     - @node_type.templates.each do |t|
-      h5 #{t.name} (#{t.owner}, #{t.mode})
+      h5
+        = link_to "#{t.name} (#{t.owner}, #{t.mode})", edit_node_type_template_path(t.id, node_type_id:@node_type.id)
       pre
         code #{t.body}
-      div class='row'
-        div class='col-sm-1'
-          = link_to t('buttons.edit'), edit_node_type_template_path(t.id, node_type_id:@node_type.id), class:'btn btn-primary'
-        = render 'layouts/remove_button', name:'buttons.remove', url:node_type_template_path(t.id, node_type_id:@node_type.id), back:false
 
 
+br
 h3 #{t('links.node_type.remove', name:@node_type.name)}
 hr
 = render 'layouts/remove_button', name:'buttons.remove', url:node_type_path(@node_type), back:false
