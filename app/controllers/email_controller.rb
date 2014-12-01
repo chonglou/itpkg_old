@@ -4,13 +4,8 @@ class EmailController < ApplicationController
   def index
     @items=[
         {
-            url: email_hosts_path,
-            logo: 'flat/256/hosting.png',
-            label: t('links.email_host.list')
-        },
-        {
             url: email_domains_path,
-            logo: 'flat/256/log2.png',
+            logo: 'flat/256/domain.png',
             label: t('links.email_domain.list')
         },
         {

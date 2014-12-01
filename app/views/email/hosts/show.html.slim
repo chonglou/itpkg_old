@@ -1,7 +1,0 @@
-- @title=t('links.email_host.show', name:@host.name)
-
-= render 'layouts/button_group', items:@buttons, back:false
-
-h3 #{t('links.email_host.remove', name:@host.name)}
-hr
-= render 'layouts/remove_button', name:'buttons.remove', url:email_host_path(@host), back:false
