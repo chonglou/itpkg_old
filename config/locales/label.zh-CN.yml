@@ -1,9 +1,15 @@
 zh-CN:
   helpers:
     label:
+      nt_port:
+        tcp: '协议'
+        tcp_true: 'tcp'
+        tcp_false: 'udp'
+        s_port: '本地端口'
+        t_port: '容器端口'
       nt_volume:
-        s_path: '源目录'
-        t_path: '目的目录'
+        s_path: '本地目录'
+        t_path: '容器目录'
       nt_var:
         def_v: '默认值'
       ssh_key:

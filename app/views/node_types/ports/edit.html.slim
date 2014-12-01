@@ -1,10 +1,11 @@
-- @title=t('links.port.create')
+- @title=t('links.port.edit')
 
 
-= bootstrap_form(@port, url:{action:'create'}) do |f|
+= bootstrap_form(@port, url:{action:'update'}) do |f|
   = f.error_messages
   = f.fieldset do
     = f.legend(@title)
+
 
     = f.group do
       = f.label :s_port
@@ -24,7 +25,11 @@
       = f.label :t_port
       = f.name_field :t_port
 
+
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
-      = f.back t('buttons.back')
+
+h3 #{t('buttons.other')}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:node_type_port_path(@port.id, node_type_id:@node_type.id), back:true

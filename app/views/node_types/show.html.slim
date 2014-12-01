@@ -11,7 +11,7 @@ div
   ol
     - @node_type.ports.each do |p|
       li
-        = link_to "#{p.d_port}:#{p.s_port}#{'/udp' unless p.tcp}", edit_node_type_port_path(p.id, node_type_id:@node_type.id)
+        = link_to "#{p.t_port}:#{p.s_port}#{'/udp' unless p.tcp}", edit_node_type_port_path(p.id, node_type_id:@node_type.id)
 
 - unless @node_type.vars.empty?
   br

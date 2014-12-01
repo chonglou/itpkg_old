@@ -1,9 +1,15 @@
 en:
   helpers:
     label:
+      nt_port:
+        tcp: 'Protocol'
+        tcp_true: 'tcp'
+        tcp_false: 'udp'
+        s_port: 'Local port'
+        t_port: 'Container port'
       nt_volume:
-        s_path: 'Source path'
-        t_path: 'Target path'
+        s_path: 'Local path'
+        t_path: 'Container path'
       nt_var:
         def_v: 'Default value'
       vpn_user:
