@@ -1,7 +1,8 @@
 mysql_password:text
 mysql_host:text
-host_id:text
 dns1:text
 dns2:text
 network:text
 routes:multi
+host_id:text
+server_name:text

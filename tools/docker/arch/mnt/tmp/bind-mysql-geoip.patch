@@ -1,5 +1,5 @@
---- /var/abs/extra/bind/PKGBUILD	2014-11-21 15:05:20.967517640 -0800
-+++ PKGBUILD	2014-11-21 20:40:35.453408946 -0800
+--- /var/abs/extra/bind/PKGBUILD	2014-11-30 15:05:05.942561413 -0800
++++ PKGBUILD	2014-12-01 11:13:32.718383677 -0800
 @@ -25,7 +25,6 @@
          'sysusers.conf'
          'named.conf'
