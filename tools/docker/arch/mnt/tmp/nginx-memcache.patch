@@ -1,0 +1,20 @@
+--- /var/abs/extra/nginx/PKGBUILD	2014-11-30 15:05:45.304959501 -0800
++++ PKGBUILD	2014-12-01 11:55:36.629906680 -0800
+@@ -34,6 +34,7 @@
+ 
+ build() {
+   cd $pkgname-$pkgver
++  git clone git://github.com/bpaquet/ngx_http_enhanced_memcached_module.git /tmp/ngx_http_enhanced_memcached_module
+ 
+   ./configure \
+     --prefix=/etc/nginx \
+@@ -67,7 +68,8 @@
+     --with-http_flv_module \
+     --with-http_mp4_module \
+     --with-http_secure_link_module \
+-    --with-http_sub_module
++    --with-http_sub_module \
++    --add-module=/tmp/ngx_http_enhanced_memcached_module 
+ 
+   make
+ }
