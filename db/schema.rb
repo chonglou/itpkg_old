@@ -343,8 +343,9 @@ ActiveRecord::Schema.define(version: 20141130171044) do
   add_index "nt_templates", ["owner"], name: "index_nt_templates_on_owner", using: :btree
 
   create_table "nt_vars", force: true do |t|
-    t.integer  "node_type_id", null: false
-    t.string   "name",         null: false
+    t.integer  "node_type_id",             null: false
+    t.string   "name",                     null: false
+    t.integer  "flag",         default: 0, null: false
     t.text     "def_v"
     t.datetime "created_at"
     t.datetime "updated_at"

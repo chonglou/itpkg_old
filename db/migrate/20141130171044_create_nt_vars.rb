@@ -3,6 +3,7 @@ class CreateNtVars < ActiveRecord::Migration
     create_table :nt_vars do |t|
       t.integer :node_type_id, null:false
       t.string :name, null:false
+      t.integer :flag, null:false, default:0
       t.text :def_v
       t.timestamps
     end

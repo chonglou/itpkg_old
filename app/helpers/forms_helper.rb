@@ -30,9 +30,9 @@ HTML
       @template.content_tag(:fieldset, @template.capture(&block))
     end
 
-    def select(name, choices, options={}, html_options = {})
+    def select(name, choices, selected=nil, options={}, html_options = {})
       update_options_with_class! html_options,'form-control'
-      input_div(super(name, @template.options_for_select(choices), options, html_options),3)
+      input_div(super(name, @template.options_for_select(choices, selected), options, html_options),3)
     end
 
     def group(options={}, &block)

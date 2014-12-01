@@ -1,7 +1,7 @@
-mysql_password
-mysql_host
-host_id
-dns1
-dns2
-network
-routes
+mysql_password:text
+mysql_host:text
+host_id:text
+dns1:text
+dns2:text
+network:text
+routes:multi

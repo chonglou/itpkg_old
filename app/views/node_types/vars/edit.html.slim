@@ -10,6 +10,10 @@
       = f.name_field :name, autofocus: true
 
     = f.group do
+      = f.label :flag
+      = f.select :flag, @flags, NtVar.flags[@var.flag]
+
+    = f.group do
       = f.label :def_v
       = f.text_field :def_v
 

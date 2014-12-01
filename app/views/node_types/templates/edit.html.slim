@@ -12,11 +12,11 @@
 
     = f.group do
       = f.label :owner
-      = f.select :owner, @owners
+      = f.select :owner, @owners, @template.owner
 
     = f.group do
       = f.label :mode
-      = f.select :mode, @modes
+      = f.select :mode, @modes, @template.mode
 
     = f.group do
       = f.label :body
