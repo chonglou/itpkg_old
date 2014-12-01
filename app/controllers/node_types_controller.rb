@@ -47,16 +47,17 @@ EOF
 
 
   def edit
-    @type = NodeType.find params[:id]
+    @node_type = NodeType.find params[:id]
+    render 'edit', layout:'node_types/view'
   end
 
   def update
-    @type = NodeType.find params[:id]
+    @node_type = NodeType.find params[:id]
 
-    if @type.update(params.require(:node_type).permit(:dockerfile))
-      redirect_to node_type_path(@type.id)
+    if @node_type.update(params.require(:node_type).permit(:dockerfile))
+      redirect_to node_type_path(@node_type.id)
     else
-      render 'edit'
+      render 'edit', layout:'node_types/view'
     end
   end
 
