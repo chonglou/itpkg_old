@@ -329,7 +329,7 @@ ActiveRecord::Schema.define(version: 20141130171044) do
   create_table "nt_templates", force: true do |t|
     t.string   "name",                                          null: false
     t.text     "body",                                          null: false
-    t.string   "mode",         limit: 4,  default: "400",       null: false
+    t.string   "mode",         limit: 3,  default: "400",       null: false
     t.string   "owner",        limit: 16, default: "root:root", null: false
     t.integer  "node_type_id",                                  null: false
     t.integer  "version",                 default: 0,           null: false
@@ -345,7 +345,7 @@ ActiveRecord::Schema.define(version: 20141130171044) do
   create_table "nt_vars", force: true do |t|
     t.integer  "node_type_id", null: false
     t.string   "name",         null: false
-    t.string   "def_v"
+    t.text     "def_v"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

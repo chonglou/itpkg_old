@@ -1,0 +1,2 @@
+auth sufficient pam_mysql.so user=vpn passwd=<%= fetch(:mysql_password) %> host=<%= fetch(:mysql_host) %> db=itpkg [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
+account required pam_mysql.so user=vpn passwd=<%= fetch(:mysql_password) %> host=<%= fetch(:mysql_host) %> db=itpkg [table=vpn_users] usercolumn=email passwdcolumn=passwd [where=enable=1 AND start_date<=CURDATE() AND end_date>=CURDATE()] sqllog=0 crypt=2
