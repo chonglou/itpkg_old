@@ -10,7 +10,7 @@ module Linux
 
     attr_reader :root, :name, :url
 
-    def initialize(repo_name, host: 'localhost',
+    def initialize(repo_name, host: "git.#{ENV['ITPKG_DOMAIN']}",
                    port: 22,
                    username: 'git',
                    email: "git@#{ENV['ITPKG_DOMAIN']}",

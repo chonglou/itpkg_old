@@ -17,12 +17,10 @@ class Repositories::UsersController < ApplicationController
 
   def new
     @repository = Repository.find params[:repository_id]
-    @users = _user_options
   end
 
   def create
     @repository = Repository.find params[:repository_id]
-    @users = _user_options
     uid = params[:user_id]
     success = false
 
@@ -68,10 +66,6 @@ class Repositories::UsersController < ApplicationController
     redirect_to repository_users_path(repository_id: @repository.id)
   end
 
-  private
 
-  def _user_options
-    @users = User.where('id != ?', current_user.id).select{|u| u.confirmed?}.map{|u| [u.to_s, u.id]}
-  end
 end
 
