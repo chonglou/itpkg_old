@@ -10,6 +10,8 @@ IT-PACKAGE(缩写：itpkg)是一款定位于企业运维自动化的解决方案
 
 ## 代码结构
 
+### 部署架构图
+![Deploy Arch](https://raw.githubusercontent.com/chonglou/itpkg/master/doc/pictures/arch.png)
 ### 分支说明
 
  * master 主分支 用于发布
