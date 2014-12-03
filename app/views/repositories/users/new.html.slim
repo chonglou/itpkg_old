@@ -4,7 +4,7 @@ fieldset
   = form_tag(repository_users_path, class:'form-inline') do
     div class="form-group"
       div class="input-group"
-        = text_field_tag :user_label, '', class:'form-control'
+        = select_tag :user_id, options_for_select(@users), class:'form-control'
 
     div class="form-group"
       = submit_tag t('buttons.submit'), class: 'btn btn-primary'

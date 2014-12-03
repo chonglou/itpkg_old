@@ -17,15 +17,17 @@ class Repositories::UsersController < ApplicationController
 
   def new
     @repository = Repository.find params[:repository_id]
+    @users = _user_options
   end
 
   def create
     @repository = Repository.find params[:repository_id]
-    lbl = params[:user_label]
+    @users = _user_options
+    uid = params[:user_id]
     success = false
 
-    if lbl && lbl != current_user.label
-      user = User.find_by label: lbl
+    if uid && uid != current_user.id
+      user = User.find uid
       if user
         unless RepositoryUser.find_by repository_id: @repository.id, user_id: user.id
           c = Confirmation.create extra: {
@@ -42,6 +44,7 @@ class Repositories::UsersController < ApplicationController
     end
 
     if success
+      flash[:notice] = t('labels.success')
       redirect_to(repository_users_path(@repository))
       else
         flash[:alert] = t('labels.not_valid')
@@ -66,13 +69,9 @@ class Repositories::UsersController < ApplicationController
   end
 
   private
-  # def owner!
-  #   if params[:repository_id] && current_user
-  #     @repository = Repository.find_by(id: params[:repository_id], creator_id: current_user.id, enable: true)
-  #     return if @repository
-  #   end
-  #   flash[:alert] = t('labels.not_valid')
-  #   redirect_to root_path
-  # end
+
+  def _user_options
+    @users = User.where('id != ?', current_user.id).select{|u| u.confirmed?}.map{|u| [u.to_s, u.id]}
+  end
 end
 

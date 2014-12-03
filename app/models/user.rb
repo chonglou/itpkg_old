@@ -24,4 +24,8 @@ class User < ActiveRecord::Base
   has_one :ssh_key
 
   validates_with UserValidator
+
+  def to_s
+    "#{self.label}<#{self.email}>"
+  end
 end
