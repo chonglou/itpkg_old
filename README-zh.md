@@ -89,5 +89,19 @@ IT包
     vi ~/.msmtprc
     chmod 600 ~/.msmtprc
 
+### coreos
+#### 安装到硬盘
+    wget https://raw.github.com/coreos/init/master/bin/coreos-install
+    coreos-install -d /dev/sda -C stable
+
+#### by vagrant
+    git clone https://github.com/coreos/coreos-vagrant.git
+    cd coreos-vagrant
+    cp config.rb.sample config.rb
+    vi config.rb # $num_instances=3 $update_channel='stable'
+    vagrant up
+    vagrant status
+    vagrant ssh core-01
+
 
 
