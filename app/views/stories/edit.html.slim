@@ -1,0 +1,31 @@
+- @title=t('links.story.edit', name: @story.title)
+
+= bootstrap_form(@story, url: {action: 'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :title
+      = f.text_field :title, autofocus: true
+
+    = f.group do
+      = f.label :point
+      = f.select :point, point_select_options, @story.point
+
+    = f.group do
+      = f.label :status
+      = f.select :status, status_select_options, @story.status
+
+    = f.group do
+      = f.label :description
+      = f.text_area :description
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')
+      = link_to t('links.story.remove'),
+                project_story_path(@project, @story),
+                data: {confirm: t('labels.are_you_sure')},
+                method: :delete,
+                class: 'btn btn-danger'

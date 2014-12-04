@@ -39,9 +39,20 @@ zh-CN:
       routes: '路由表'
       dns: 'DNS列表'
       weight: '优先级'
+    project:
+      id: 'ID'
+      name: '项目名称'
+      details: '详细信息'
+      creator: '项目创建者'
+      action: '操作'
     story:
       id: 'ID'
       title: '标题'
       points: '分值'
+      status: '状态'
       description: '描述'
+      action: '操作'
+    task:
+      id: 'ID'
+      details: '详细描述'
       action: '操作'

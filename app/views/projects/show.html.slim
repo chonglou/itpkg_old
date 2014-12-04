@@ -3,12 +3,14 @@
 = render 'layouts/button_group', items:@buttons, back:true
 h3 #{@title}
 hr
-h4 #{'Description'}
-div #{{@project.to_html}}
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('tables.story.description')}
+  div class='panel-body' #{{md2html @project.details}}
 
 = render partial: 'stories'
 
 div class='row row-fluid'
   div class='col-sm-1'
-    = button_to t('buttons.edit'), edit_project_path(@project), method: 'get', class: 'btn btn-primary'
+    = link_to t('buttons.edit'), edit_project_path(@project), class: 'btn btn-primary'
   = render 'layouts/remove_button', name: 'buttons.remove', url: project_path(@project), back: false

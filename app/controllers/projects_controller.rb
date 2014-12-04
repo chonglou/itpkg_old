@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @projects = Project.select(:id, :name, :details).where(creator_id: current_user.id).map { |p| {url: project_path(p.id), name: p.name, details: Itpkg::StringHelper.md2html(p.details)} }
+    @projects = Project.where(creator_id: current_user.id)
   end
 
   def new
@@ -17,50 +17,15 @@ class ProjectsController < ApplicationController
     if @project.save
       redirect_to project_path(@project.id)
     else
-      render :action => 'new'
+      render :new
     end
-
   end
 
   def show
     @project = Project.includes(:stories).find(params[:id])
     @buttons = [
         {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'},
-        {label: t('links.project.list'), url: projects_path, style: 'warning'},
-
-    ]
-
-    @items = [
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/coins24.png',
-            label: t('links.finance')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/multiple25.png',
-            label: t('links.contact')
-        },
-        {
-            url: document_show_path(name: 'help'),
-            logo: 'flat/call37.png',
-            label: t('links.about_us')
-        }
+        {label: t('links.project.list'), url: projects_path, style: 'warning'}
     ]
   end
 
@@ -73,14 +38,14 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       redirect_to project_path(@project.id)
     else
-      render :action => 'edit'
+      render :edit
     end
   end
 
   def destroy
     p = Project.find params[:id]
     if p.creator_id == current_user.id
-      if ProjectUser.where(project_id: p.id).count ==0
+      if ProjectUser.where(project_id: p.id).empty?
         p.destroy
       else
         flash[:alert] = t('labels.in_using')

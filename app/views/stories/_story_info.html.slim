@@ -1,0 +1,29 @@
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('titles.story.information')}
+  div class='panel-body'
+    div class='container-fluid'
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.project')}
+        div class='col-sm-10 text-left' #{link_to @story.project.name, project_path(@story.project)}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.title')}
+        div class='col-sm-10 text-left' #{@story.title}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.point')}
+        div class='col-sm-10 text-left' #{@story.point}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.status')}
+        div class='col-sm-10 text-left' #{@story.status}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.description')}
+        div class='col-sm-10 text-left' #{@story.description}

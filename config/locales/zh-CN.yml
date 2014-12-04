@@ -9,7 +9,19 @@ zh-CN:
       active: "没有收到确认邮件?"
       unlock: "没有收到解锁邮件?"
       edit_profile: '编辑个人信息'
-
-
-
-
+    project:
+      story: '故事'
+    story:
+      information: '基本信息'
+      description: '描述'
+      project: '所属项目'
+      title: '标题'
+      status: '状态'
+      point: '分值'
+      task: '任务'
+    task:
+      title: '任务'
+      information: '基本信息'
+      project: '所属项目'
+      story: '所属故事'
+      details: '详细描述'

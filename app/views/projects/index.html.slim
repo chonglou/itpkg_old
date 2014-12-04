@@ -1,4 +1,28 @@
-- @title=t('links.project.list')
+div class='accordion'
+  = render 'layouts/button_group', items:[{label:t('buttons.create'),url:new_project_path,style:'primary'}], back:true
 
-= render 'layouts/button_group', items:[{label:t('buttons.create'),url:new_project_path,style:'primary'}], back:true
-= render 'layouts/item_list', items:@projects
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('links.project.list')}
+  div class='panel-body'
+    table class='table table-striped'
+      thead
+        tr
+          th #{t('tables.project.id')}
+          th #{t('tables.project.name')}
+          th #{t('tables.project.creator')}
+          th #{t('tables.project.details')}
+          th #{t('tables.project.action')}
+      tbody
+        - for project in @projects do
+          tr
+            td class='col-sm-1 col-md-1' #{project.id}
+            td class='col-sm-2 col-md-2' #{project.name}
+            td class='col-sm-3 col-md-3'
+              = link_to project.creator.email,
+                        edit_user_registration_path
+            td class='col-sm-5 col-md-5' #{project.details}
+            td class='col-sm-1 col-md-1'
+              = link_to t('buttons.view'),
+                        project_path(project),
+                        class: 'btn btn-primary'

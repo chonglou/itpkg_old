@@ -1,10 +1,10 @@
-- @title=t('links.project.create')
+- @title = t('links.project.create')
 
 
 = bootstrap_form(@project, url:{action:'create'}) do |f|
   = f.error_messages
   = f.fieldset do
-    = f.legend(t('links.project.create'))
+    = f.legend(@title)
 
     = f.group do
       = f.label :name
@@ -17,6 +17,3 @@
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.back t('buttons.back')
-
-
-

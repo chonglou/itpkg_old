@@ -30,6 +30,14 @@ zh-CN:
           root: "APP目录：%{root}"
           uptime: '运行时间： %{time}'
           time: "系统时间： %{time}"
+      remove: '删除'
+    story:
+      list: '故事列表'
+      create: '新建故事'
+      edit: '编辑故事 [%{name}]'
+      remove: '删除'
+    task:
+      create: '新建任务'
     docker: 'Docker'
     logging:
       list: '日志系统'

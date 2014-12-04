@@ -1,0 +1,27 @@
+- @title=t('links.story.create')
+
+
+= bootstrap_form(@story, url: {action: 'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :title
+      = f.text_field :title, autofocus: true
+
+    = f.group do
+      = f.label :point
+      = f.select :point, point_select_options, 1
+
+    = f.group do
+      = f.label :status
+      = f.select :status, status_select_options, 'submit'
+
+    = f.group do
+      = f.label :description
+      = f.text_area :description
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')
