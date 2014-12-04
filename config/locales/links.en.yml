@@ -12,11 +12,11 @@ en:
     logging:
       list: 'Logging'
     node_type:
-      list: 'Node Types'
-      create: 'Create a new node type'
+      list: 'Node Templates'
+      create: 'Create a new node template'
       edit_docker: 'Edit Dockerfile for [%{name}]'
-      show: 'Show node type [%{name}]'
-      remove: 'Remove node type [%{name}]'
+      show: 'Show node template [%{name}]'
+      remove: 'Remove node template [%{name}]'
       port:
         create: 'Create port mapping'
         list: 'Port Mappings'

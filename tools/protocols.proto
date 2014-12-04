@@ -1,11 +1,5 @@
 package itpkg.protocols;
 
-enum Type {
-  heart = 0;
-  docker = 1;
-  moint = 2;
-  logger = 3;
-}
 
 message Request {
   message Logging {
@@ -52,7 +46,6 @@ message Response {
       repeated string names = 1;
       required int32 space = 2;
     }
-    required Type type = 1;
     optional Monitor monitor = 2;
     optional Logging logging = 3;
   }
@@ -62,6 +55,12 @@ message Response {
 }
 
 message Message {
+  enum Type {
+    HEART = 0;
+    DOCKER = 1;
+    MONITOR = 2;
+    LOGGING = 3;
+  }
   required string nid = 1;
   required Type type = 2;
   required bool plain = 3 [default = false ];

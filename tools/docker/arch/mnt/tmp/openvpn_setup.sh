@@ -97,5 +97,7 @@ cp ca.crt ta.key dh2048.pem server.crt server.key /etc/openvpn
 cd ..
 ./pkitool client
 
+mkdir -p /etc/openvpn/clients
+chown deploy:deploy /etc/openvpn/clients
 
 sed -i -e "s/PASSWORD/$password/g" /etc/pam.d/openvpn /etc/openvpn/scripts/config.sh

@@ -7,17 +7,6 @@ module Itpkg
   module Protocols
 
     ##
-    # Enum Classes
-    #
-    class Type < ::Protobuf::Enum
-      define :heart, 0
-      define :docker, 1
-      define :moint, 2
-      define :logger, 3
-    end
-
-
-    ##
     # Message Classes
     #
     class Request < ::Protobuf::Message
@@ -42,7 +31,16 @@ module Itpkg
 
     end
 
-    class Message < ::Protobuf::Message; end
+    class Message < ::Protobuf::Message
+      class Type < ::Protobuf::Enum
+        define :HEART, 0
+        define :DOCKER, 1
+        define :MONITOR, 2
+        define :LOGGING, 3
+      end
+
+    end
+
 
 
     ##
@@ -97,7 +95,6 @@ module Itpkg
           required :int32, :space, 2
         end
 
-        required ::Itpkg::Protocols::Type, :type, 1
         optional ::Itpkg::Protocols::Response::Heart::Monitor, :monitor, 2
         optional ::Itpkg::Protocols::Response::Heart::Logging, :logging, 3
       end
@@ -109,7 +106,7 @@ module Itpkg
 
     class Message
       required :string, :nid, 1
-      required ::Itpkg::Protocols::Type, :type, 2
+      required ::Itpkg::Protocols::Message::Type, :type, 2
       required :bool, :plain, 3, :default => false
       required :string, :payload, 4
       required :int64, :created, 5

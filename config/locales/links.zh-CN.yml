@@ -14,11 +14,11 @@ zh-CN:
     monitor:
       list: '监控系统'
     node_type:
-      list: '节点类型'
-      create: '新建节点类型'
+      list: '节点模板'
+      create: '新建节点模板'
       edit_docker: '编辑Dockerfile [%{name}]'
-      show: '显示节点类型 [%{name}]'
-      remove: '删除节点类型 [%{name}]'
+      show: '显示节点模板 [%{name}]'
+      remove: '删除节点模板 [%{name}]'
       port:
         create: '添加端口映射'
         list: '端口映射列表'
