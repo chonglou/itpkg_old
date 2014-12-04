@@ -95,15 +95,6 @@ IT-PACKAGE(缩写：itpkg)是一款定位于企业运维自动化的解决方案
 
 #### 关于model (仅适用于v1.0 release发布前)
 
- * 初期由于功能不确定，model设计会有偏差 建议直接改db/migrate里相应的文件，不用打补丁
- * git pull之后 建议运行重建数据库，而不是migrate
-
-
-    rake db:drop
-    rake db:create
-    rake db:migrate
-    rake db:seed
-
  * 默认新注册的第一个用户有admin, 可在rails console中激活
 
 
