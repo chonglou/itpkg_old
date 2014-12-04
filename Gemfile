@@ -37,6 +37,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano3-puma'
   gem 'capistrano-rbenv'
+  gem 'squasher'
 end
 
 # Use debugger
@@ -89,5 +90,4 @@ gem 'rufus-scheduler'
 gem 'protobuf'
 gem 'ffi-rzmq'
 gem 'geoip'
-gem 'squasher'
 gem 'rails-settings-cached', '0.4.1'
