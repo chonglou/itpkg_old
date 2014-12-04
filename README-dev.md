@@ -93,7 +93,7 @@ IT-PACKAGE(缩写：itpkg)是一款定位于企业运维自动化的解决方案
  * generate/destroy之后 要检查routes.rb文件 放my add行之后
 
 
-### 关于model (仅适用于v1.0 release发布前)
+#### 关于model (仅适用于v1.0 release发布前)
 
  * 初期由于功能不确定，model设计会有偏差 建议直接改db/migrate里相应的文件，不用打补丁
  * git pull之后 建议运行重建数据库，而不是migrate
@@ -108,6 +108,36 @@ IT-PACKAGE(缩写：itpkg)是一款定位于企业运维自动化的解决方案
 
 
     User.find(1).confirm!
+
+
+ * model说明
+基本所有的details都用markdown语法
+
+
+    cdn/* # cdn服务器相关
+    certificate # ssl证书管理
+    confirmation # 确认链接信息
+    contact # 联系人信息
+    dns/* # dns服务器相关
+    document # 文档文件
+    email/* # email服务器相关
+    finance # 简单的出入帐 有待扩展
+    log # 操作日志
+    mail_box* # 邮件处理
+    node_*和nt_* # 集群节点管理
+    notice # 站内通知公告
+    permission # rbac权限表
+    project_* story s_* # 项目/任务管理
+    repository_* # git 仓库管理
+    rss_site # rss站点 用于团队知识库
+    setting # 站点参数
+    ssh_key # ssh key pairs
+    user # 用户表
+    vpn/* # vpn服务器管理
+    wiki* # 知识库管理
+
+
+ 
 
 #### 关于view
  * 优先考虑使用slim
