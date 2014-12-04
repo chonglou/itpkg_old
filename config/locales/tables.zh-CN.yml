@@ -39,3 +39,9 @@ zh-CN:
       routes: '路由表'
       dns: 'DNS列表'
       weight: '优先级'
+    story:
+      id: 'ID'
+      title: '标题'
+      points: '分值'
+      description: '描述'
+      action: '操作'

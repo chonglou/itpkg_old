@@ -8,6 +8,7 @@ div #{{@project.to_html}}
 
 = render partial: 'stories'
 
-div class='col-sm-1'
-  = button_to t('buttons.edit'), edit_project_path(@project), method: 'get', class: 'btn btn-primary'
-= render 'layouts/remove_button', name:'buttons.remove', url:project_path(@project), back:false
+div class='row row-fluid'
+  div class='col-sm-1'
+    = button_to t('buttons.edit'), edit_project_path(@project), method: 'get', class: 'btn btn-primary'
+  = render 'layouts/remove_button', name: 'buttons.remove', url: project_path(@project), back: false

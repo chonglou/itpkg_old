@@ -12,3 +12,9 @@ en:
       enable: 'Status'
       start_date: 'Start date'
       end_date: 'End date'
+    story:
+      id: 'Id'
+      title: 'Title'
+      points: 'Points'
+      description: 'Description'
+      action: 'Action'
