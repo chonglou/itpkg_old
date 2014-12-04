@@ -3,6 +3,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
 
 
+
   #--------------- My Add -----------------
 
   #------status----------
@@ -62,8 +63,9 @@ Rails.application.routes.draw do
   resources :projects do
     resources :documents, controller: 'projects/documents' do
       get 'download'
-      get 'viewer'
+      get 'viewer' 
     end
+    resources :stories
   end
 
   #----------others---------

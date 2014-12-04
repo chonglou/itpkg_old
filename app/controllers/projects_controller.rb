@@ -23,7 +23,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find params[:id]
+    @project = Project.includes(:stories).find(params[:id])
     @buttons = [
         {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'},
         {label: t('links.project.list'), url: projects_path, style: 'warning'},
