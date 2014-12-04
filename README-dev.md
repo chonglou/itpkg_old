@@ -109,6 +109,10 @@ IT-PACKAGE(缩写：itpkg)是一款定位于企业运维自动化的解决方案
 
     User.find(1).confirm!
 
+#### 关于view
+ * 优先考虑使用slim
+ * form优先考虑使用bootstrap_form
+
 
 
 #### 关于图片
