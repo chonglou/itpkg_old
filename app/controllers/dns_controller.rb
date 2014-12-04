@@ -23,6 +23,24 @@
 # "DROP USER 'dns'@'#{host}'", 'FLUSH PRIVILEGES'
 
 class DnsController < ApplicationController
+   before_action :must_admin!
+
+   def regions
+     render 'regions', layout:false
+   end
   def index
+     @items=[
+        {
+            url: dns_acls_path,
+            logo: 'flat/256/calendar68.png',
+            label: t('links.dns_acl.list')
+        },
+        {
+            url: dns_records_path,
+            logo: 'flat/256/verification5.png',
+            label: t('links.dns_record.list')
+        }
+    ]
+
   end
 end

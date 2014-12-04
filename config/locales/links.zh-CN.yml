@@ -48,6 +48,13 @@ zh-CN:
       remove: '删除GIT仓库 [%{name}]'
       show: '显示GIT仓库 [%{name}]'
     dns: 'DNS系统'
+    dns_acl:
+      create: '添加新区'
+      list: '区域'
+      edit: '编辑区域'
+      remove: '删除该区域'
+    dns_record:
+      list: '解析记录'
     nginx:
       list: 'NGINX服务器'
     node:

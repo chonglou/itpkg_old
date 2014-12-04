@@ -1,0 +1,26 @@
+- @title=t('links.dns_acl.edit')
+
+= bootstrap_form(@acl, url: {action: 'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :country
+      = f.select :country, geoip_country_options, @acl.country
+
+    = f.group do
+      = f.label :region
+      = f.select :region, geoip_region_options(@acl.country), @acl.region
+
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')
+
+= javascript_include_tag 'dns/acl_form'
+
+h3 #{t('links.dns_acl.remove')}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:dns_acl_path(@acl), back:false

@@ -48,6 +48,13 @@ en:
       remove: 'Remove repository [%{name}]'
       show: 'Show repository [%{name}]'
     dns: 'Name Server'
+    dns_acl:
+      create: 'Add new region'
+      edit: 'Edit region'
+      remove: 'Remove region'
+      list: 'Regions'
+    dns_record:
+      list: 'Records'
     nginx:
       list: 'Nginx Server'
     node:

@@ -85,6 +85,11 @@ IT-PACKAGE(缩写：itpkg)是一款定位于企业运维自动化的解决方案
 #### 关于controller
 
  * 避免不必要的 helper和test 文件
+
+
+    rails generate controller NAME ACTION --no-test-framework --no-assets --no-helper
+
+
  * generate/destroy之后 要检查routes.rb文件 放my add行之后
 
 

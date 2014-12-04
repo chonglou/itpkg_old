@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+
+
   #--------------- My Add -----------------
 
   #----------- docker-----------
@@ -27,7 +29,9 @@ Rails.application.routes.draw do
   #-------------DNS-------------
   get 'dns' => 'dns#index'
   namespace :dns do
+    get 'regions'
     resources :records, expect: [:show]
+    resources :acls, expect: [:show]
   end
 
 
