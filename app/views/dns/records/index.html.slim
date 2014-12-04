@@ -1,0 +1,4 @@
+- @title=t('links.dns_record.list')
+
+= render 'layouts/button_group', items:@buttons, back:true
+= render 'layouts/table', title:'dns_record', items:@records, headers:[:zone, :host, :flag, :data, :ttl, :mx_priority]

@@ -1,6 +1,9 @@
 en:
   helpers:
     label:
+      dns_record:
+        code: 'Region'
+        ttl: 'TTL'
       nt_port:
         tcp: 'Protocol'
         tcp_true: 'tcp'

@@ -13,53 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20141130171044) do
 
-  create_table "cdn_memcacheds", force: true do |t|
-    t.string   "name",                   null: false
-    t.string   "ip",                     null: false
-    t.integer  "port",                   null: false
-    t.integer  "weight",     default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cdn_memcacheds", ["ip"], name: "index_cdn_memcacheds_on_ip", using: :btree
-
-  create_table "cdn_nginx_memcacheds", force: true do |t|
-    t.integer  "nginx_id",     null: false
-    t.integer  "memcached_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "cdn_nginx_servers", force: true do |t|
-    t.integer  "nginx_id",   null: false
-    t.integer  "server_id",  null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "cdn_nginxes", force: true do |t|
-    t.string   "name",                           null: false
-    t.string   "ip",                             null: false
-    t.boolean  "ssl",            default: false, null: false
-    t.integer  "certificate_id", default: 0,     null: false
-    t.text     "domains",                        null: false
-    t.text     "backs",                          null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cdn_nginxes", ["ip"], name: "index_cdn_nginxes_on_ip", using: :btree
-
-  create_table "cdn_servers", force: true do |t|
-    t.string   "address",                null: false
-    t.integer  "weight",     default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cdn_servers", ["address"], name: "index_cdn_servers_on_address", using: :btree
-
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
     t.text     "csr"
@@ -119,23 +72,10 @@ ActiveRecord::Schema.define(version: 20141130171044) do
 
   add_index "dns_counts", ["zone"], name: "index_dns_counts_on_zone", using: :btree
 
-  create_table "dns_hosts", force: true do |t|
-    t.string   "name",                                null: false
-    t.string   "ip",                                  null: false
-    t.string   "encrypted_password",                  null: false
-    t.string   "encrypted_password_salt",             null: false
-    t.string   "encrypted_password_iv",               null: false
-    t.integer  "weight",                  default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "dns_hosts", ["ip"], name: "index_dns_hosts_on_ip", unique: true, using: :btree
-
   create_table "dns_records", force: true do |t|
     t.string   "zone",                                  null: false
     t.string   "host",                  default: "@",   null: false
-    t.string   "type",        limit: 8,                 null: false
+    t.string   "flag",        limit: 8,                 null: false
     t.text     "data"
     t.integer  "ttl",                   default: 86400, null: false
     t.integer  "mx_priority"
@@ -151,9 +91,10 @@ ActiveRecord::Schema.define(version: 20141130171044) do
     t.datetime "updated_at"
   end
 
+  add_index "dns_records", ["flag"], name: "index_dns_records_on_flag", using: :btree
+  add_index "dns_records", ["host", "zone", "flag", "code"], name: "index_dns_records_on_host_and_zone_and_flag_and_code", unique: true, using: :btree
   add_index "dns_records", ["host", "zone"], name: "index_dns_records_on_host_and_zone", using: :btree
   add_index "dns_records", ["host"], name: "index_dns_records_on_host", using: :btree
-  add_index "dns_records", ["type"], name: "index_dns_records_on_type", using: :btree
   add_index "dns_records", ["zone"], name: "index_dns_records_on_zone", using: :btree
 
   create_table "dns_xfrs", force: true do |t|
@@ -197,20 +138,6 @@ ActiveRecord::Schema.define(version: 20141130171044) do
   end
 
   add_index "email_domains", ["name"], name: "index_email_domains_on_name", unique: true, using: :btree
-
-  create_table "email_hosts", force: true do |t|
-    t.string   "name",                                null: false
-    t.string   "encrypted_password",                  null: false
-    t.string   "encrypted_password_salt",             null: false
-    t.string   "encrypted_password_iv",               null: false
-    t.string   "ip",                                  null: false
-    t.integer  "weight",                  default: 0, null: false
-    t.integer  "certificate_id",                      null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "email_hosts", ["ip"], name: "index_email_hosts_on_ip", unique: true, using: :btree
 
   create_table "email_users", force: true do |t|
     t.integer  "domain_id",             null: false
@@ -555,25 +482,6 @@ ActiveRecord::Schema.define(version: 20141130171044) do
   add_index "users", ["label"], name: "index_users_on_label", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
-
-  create_table "vpn_hosts", force: true do |t|
-    t.string   "name",                                null: false
-    t.string   "domain",                              null: false
-    t.string   "ip",                                  null: false
-    t.string   "network",                             null: false
-    t.string   "routes",                              null: false
-    t.string   "dns",                                 null: false
-    t.string   "encrypted_password",                  null: false
-    t.string   "encrypted_password_salt",             null: false
-    t.string   "encrypted_password_iv",               null: false
-    t.integer  "weight",                  default: 0, null: false
-    t.integer  "certificate_id",                      null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "vpn_hosts", ["domain"], name: "index_vpn_hosts_on_domain", unique: true, using: :btree
-  add_index "vpn_hosts", ["ip"], name: "index_vpn_hosts_on_ip", unique: true, using: :btree
 
   create_table "vpn_logs", force: true do |t|
     t.string   "flag",    limit: 1, default: "O", null: false

@@ -50,11 +50,14 @@ en:
     dns: 'Name Server'
     dns_acl:
       create: 'Add new region'
-      edit: 'Edit region'
-      remove: 'Remove region'
+      edit: 'Edit dns region'
+      remove: 'Remove dns region'
       list: 'Regions'
     dns_record:
       list: 'Records'
+      create: 'Add new record'
+      edit: 'Edit dns record'
+      remove: 'Remove dns record'
     nginx:
       list: 'Nginx Server'
     node:

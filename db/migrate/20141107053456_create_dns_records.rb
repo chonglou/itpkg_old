@@ -3,7 +3,7 @@ class CreateDnsRecords < ActiveRecord::Migration
     create_table :dns_records do |t|
       t.string :zone, null: false
       t.string :host, null: false, default: '@'
-      t.string :type, null: false, limit: 8
+      t.string :flag, null: false, limit: 8
       t.text :data
       t.integer :ttl, null: false, default: 86400
       t.integer :mx_priority
@@ -17,9 +17,10 @@ class CreateDnsRecords < ActiveRecord::Migration
       t.integer :code, default: 0
       t.timestamps
     end
-    add_index :dns_records, :type
+    add_index :dns_records, :flag
     add_index :dns_records, :host
     add_index :dns_records, :zone
     add_index :dns_records, [:host, :zone]
+    add_index :dns_records, [:host, :zone, :flag, :code], unique:true
   end
 end

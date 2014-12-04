@@ -1,6 +1,8 @@
 zh-CN:
   helpers:
     label:
+      dns_record:
+        code: '区域'
       nt_port:
         tcp: '协议'
         tcp_true: 'tcp'

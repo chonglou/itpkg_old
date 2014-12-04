@@ -55,6 +55,9 @@ zh-CN:
       remove: '删除该区域'
     dns_record:
       list: '解析记录'
+      create: '添加新记录'
+      edit: '编辑解析记录'
+      remove: '删除该记录'
     nginx:
       list: 'NGINX服务器'
     node:

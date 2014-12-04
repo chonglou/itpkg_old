@@ -1,3 +1,4 @@
 class Dns::Record < ActiveRecord::Base
-  alias_attribute :flag, :type
+  validates :flag, :host, :ttl, :zone, :code, presence: true
+  validates :host, uniqueness: {scope: [:flag, :zone, :code]}
 end

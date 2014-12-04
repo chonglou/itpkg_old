@@ -1,0 +1,48 @@
+- @title=t('links.dns_record.create')
+
+= bootstrap_form(@record, url: {action: 'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :code
+      = f.select :code, dns_acl_options
+
+    = f.group do
+      = f.label :flag
+      = f.select :flag, dns_flag_options
+
+    = f.group do
+      = f.label :zone
+      = f.text_field :zone
+
+    = f.group do
+      = f.label :host
+      = f.name_field :host
+
+
+    = f.group do
+      = f.label :data
+      = f.text_area :data
+
+    = f.group do
+      = f.label :mx_priority
+      = f.select :mx_priority, dns_mx_priority_options
+
+
+    = f.group do
+      = f.label :ttl
+      = f.select :ttl, dns_ttl_options
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')
+
+= javascript_include_tag 'dns/record_form'
+
+javascript:
+  $(function(){
+    $('select#dns_record_flag').val('A').change();
+  });
