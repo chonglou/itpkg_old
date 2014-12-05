@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 20141205193304) do
     t.datetime "updated_at"
     t.string   "avatar",                            null: false
     t.integer  "size",                  default: 0, null: false
+    t.text     "detail"
   end
 
   add_index "documents", ["title"], name: "index_documents_on_title", using: :btree

@@ -52,7 +52,7 @@ Rails.application.routes.draw do
 
   #--------team work-----------
   resources :projects do
-    resources :documents
+    resources :documents,controller: 'projects/documents'
   end
 
   #----------others---------

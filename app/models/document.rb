@@ -6,4 +6,7 @@ class Document < ActiveRecord::Base
   enum status: {project: 0, personal: 1, publish: 2}
 
   mount_uploader :avatar, AvatarUploader
+
+  validates :creator_id, :project_id,:title,:name,:ext,:status,:size, presence: true
+
 end
