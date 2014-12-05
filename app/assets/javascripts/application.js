@@ -24,7 +24,14 @@
 //= require highcharts/highcharts-more
 //= require highlight-8.4
 //= require jstree-3.0.8
-//= require jquery.fileupload
+//= require jQuery-File-Upload-9.8.1/jquery.iframe-transport
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload.js
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload-process.js
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload-image.js
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload-audio.js
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload-video.js
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload-validate.js
+//= require jQuery-File-Upload-9.8.1/jquery.fileupload-angular.js
 //= require widgets
 
 
