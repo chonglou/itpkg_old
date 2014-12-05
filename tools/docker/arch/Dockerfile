@@ -4,7 +4,7 @@ MAINTAINER Jitang Zheng <jitang.zheng@gmail.com>
 
 # upgrade system
 RUN pacman -Syu --noconfirm && \
-pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh iptables \
+pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh iptables mongodb \
 # itpkg
 nodejs libmariadbclient imagemagick cmake libgit2 protobuf zeromq \
 # services
@@ -141,7 +141,7 @@ RUN virtualenv2 $HOME/local/python2 \
 
 # systemd
 RUN sudo cp -v /tmp/mnt/etc/systemd/system/*.service /etc/systemd/system \
-&& for s in sshd mysqld memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www nginx; \
+&& for s in sshd mysqld mongodb memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www nginx; \
 do sudo systemctl enable $s; \
 done
 # clean

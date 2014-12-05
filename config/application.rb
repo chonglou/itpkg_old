@@ -28,5 +28,9 @@ module Itpkg
       Devise::UnlocksController.layout 'non_login'
       Devise::PasswordsController.layout 'non_login'
     end
+
+    config.generators do |g|
+      g.orm :active_record
+    end
   end
 end
