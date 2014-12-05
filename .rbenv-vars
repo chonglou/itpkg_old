@@ -1,5 +1,5 @@
 ITPKG_DATABASE_PASSWORD=
-ITPKG_DOMAIN=localhost
+ITPKG_DOMAIN=localhost.localdomain
 # split by ';'
 ITPKG_MEMCACHED_HOSTS=localhost
 ITPKG_MAILER_SENDER=no-reply@$ITPKG_DOMAIN

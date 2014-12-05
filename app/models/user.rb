@@ -1,6 +1,6 @@
 class UserValidator < ActiveModel::Validator
   def validate(record)
-    if %w(deploy root git nobody mail mysql).include?(record.label)
+    if %w(deploy git nobody mail mysql).include?(record.label)
       record.errors[:label] << I18n.t('labels.not_valid')
     end
   end
@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable,
-         :async
+         :async, authentication_keys: [:label]
 
   has_one :contact
   validates :label, uniqueness:true
@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
   has_one :ssh_key
 
   validates_with UserValidator
+
 
   def to_s
     "#{self.label}<#{self.email}>"

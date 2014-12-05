@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   get 'home' => 'home#index'
   post 'search' => 'home#search'
 
-  devise_for :users
+  devise_for :users, controllers:{registrations: 'registrations'}
   root 'home#index'
 
 

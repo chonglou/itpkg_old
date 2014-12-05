@@ -11,18 +11,20 @@ Setting.git = {
     email: "git@#{ENV['ITPKG_DOMAIN']}"
 }
 
-ROOT=1
-Permission.create role: "user://#{ROOT}", resource: 'SYSTEM', operation: 'ROOT', start_date: Date.today.strftime, end_date: '9999-12-31'
-Permission.create role: "user://#{ROOT}", resource: 'SYSTEM', operation: 'ADMIN', start_date: Date.today.strftime, end_date: '9999-12-31'
-n1 = Notice.create user_id: ROOT, body: 'IT-PACKAGE System is online now!'
-n2 = Notice.create user_id: ROOT, body: 'IT-PACKAGE 系统正式上线!'
+root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'12345678', confirmed_at:DateTime.now
+root.skip_confirmation!
+root.save!
+Permission.create role: "user://#{root.id}", resource: 'SYSTEM', operation: 'root.id', start_date: Date.today.strftime, end_date: '9999-12-31'
+Permission.create role: "user://#{root.id}", resource: 'SYSTEM', operation: 'ADMIN', start_date: Date.today.strftime, end_date: '9999-12-31'
+n1 = Notice.create user_id: root.id, body: 'IT-PACKAGE System is online now!'
+n2 = Notice.create user_id: root.id, body: 'IT-PACKAGE 系统正式上线!'
 Translation.create flag: 'notice', en: n1.id, 'zh-CN' => n2.id
 
 require 'itpkg/linux/certificate'
 Certificate.create Linux::Certificate.root(10)
 
 Dir.glob("#{Rails.root}/tools/seeds/*") do |t|
-  nt = NodeType.new creator_id: ROOT, name: File.basename(t)
+  nt = NodeType.new creator_id: root.id, name: File.basename(t)
   File.open("#{t}/Dockerfile", 'r') { |f| nt.dockerfile = f.read }
   nt.save
 
