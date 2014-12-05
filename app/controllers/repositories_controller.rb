@@ -141,6 +141,7 @@ class RepositoriesController < ApplicationController
     @repository.creator_id = current_user.id
 
     if @repository.save
+      RepositoryUser.create repository_id: @repository.id, user_id: @repository.creator_id
       GitAdminWorker.perform_async
       #注意 直接到show会有EOF错误
       redirect_to(repositories_path) and return

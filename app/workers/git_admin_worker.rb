@@ -35,10 +35,10 @@ class GitAdminWorker
         Repository.where(enable:true).each do |r|
           f.puts "repo #{r.name}"
 
-          u = r.creator
-          f.puts "\tRW+\t= id_rsa"
-          f.puts "\tRW+\t= #{u.label}"
-          write_key index, u.id, u.label
+          # u = r.creator
+          # f.puts "\tRW+\t= id_rsa"
+          # f.puts "\tRW+\t= #{u.label}"
+          # write_key index, u.id, u.label
 
           RepositoryUser.where(repository_id: r.id).each do |ru|
             u = User.find(ru.user_id)

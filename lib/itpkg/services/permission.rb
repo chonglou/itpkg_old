@@ -4,7 +4,7 @@ module Itpkg
 
     def resources(user_id, operation, resource)
       t = Date.today
-      Permission.select(:resource).where("role = :role AND operation = :operation AND start_date <= :today AND end_date >= :today AND resource LIKE :resource",
+      Permission.select(:resource).where('role = :role AND operation = :operation AND start_date <= :today AND end_date >= :today AND resource LIKE :resource',
                        {role: "user://#{user_id}", operation: operation, today: t, resource: "#{resource}://%"}).map {|p|p.resource.split('://').last.to_i}
     end
 

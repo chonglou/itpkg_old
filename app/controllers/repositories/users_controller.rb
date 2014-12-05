@@ -1,4 +1,5 @@
 require 'securerandom'
+
 class Repositories::UsersController < ApplicationController
   before_action :must_admin!
 
@@ -28,14 +29,16 @@ class Repositories::UsersController < ApplicationController
       user = User.find uid
       if user
         unless RepositoryUser.find_by repository_id: @repository.id, user_id: user.id
-          c = Confirmation.create extra: {
-              repository_id: @repository.id,
-              type: :add_to_repository,
-              from: repository_url(@repository.id)
-          }.to_json,
-                                  subject:t('mails.add_to_repository.subject', name:@repository.name),
-                                  user_id: user.id, token: SecureRandom.uuid, deadline: 1.days.since
-          UserMailer.delay.confirm(c.id)
+          # c = Confirmation.create extra: {
+          #     repository_id: @repository.id,
+          #     type: :add_to_repository,
+          #     from: repository_url(@repository.id)
+          # }.to_json,
+          #                         subject:t('mails.add_to_repository.subject', name:@repository.name),
+          #                         user_id: user.id, token: SecureRandom.uuid, deadline: 1.days.since
+          # UserMailer.delay.confirm(c.id)
+          RepositoryUser.create repository_id: @repository.id, user_id: user.id
+          GitAdminWorker.perform_async
           success = true
         end
       end
