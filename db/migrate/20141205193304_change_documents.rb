@@ -1,6 +1,7 @@
-class AddToDocuments < ActiveRecord::Migration
+class ChangeDocuments < ActiveRecord::Migration
   def change
     add_column :documents, :size, :integer, null:false, default:0
     add_column :documents, :detail, :text
+    remove_column :documents, :title
   end
 end

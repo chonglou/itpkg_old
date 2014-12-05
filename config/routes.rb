@@ -52,7 +52,7 @@ Rails.application.routes.draw do
 
   #--------team work-----------
   resources :projects do
-    resources :documents,controller: 'projects/documents'
+    resources :documents,controller: 'projects/documents',expect: [:new]
   end
 
   #----------others---------

@@ -112,7 +112,6 @@ ActiveRecord::Schema.define(version: 20141205193304) do
   create_table "documents", force: true do |t|
     t.integer  "project_id",                        null: false
     t.integer  "creator_id",                        null: false
-    t.string   "title",                             null: false
     t.string   "name",       limit: 36,             null: false
     t.string   "ext",        limit: 5,              null: false
     t.integer  "status",     limit: 2,  default: 0, null: false
@@ -122,8 +121,6 @@ ActiveRecord::Schema.define(version: 20141205193304) do
     t.integer  "size",                  default: 0, null: false
     t.text     "detail"
   end
-
-  add_index "documents", ["title"], name: "index_documents_on_title", using: :btree
 
   create_table "email_aliases", force: true do |t|
     t.integer  "domain_id",               null: false

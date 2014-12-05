@@ -1,8 +1,5 @@
 (function () {
     'use strict';
-
-    var url = 'server/php/';
-
     angular.module('uploader', [
         'blueimp.fileupload'
     ])
@@ -20,7 +17,7 @@
             '$scope', '$http', '$filter', '$window',
             function ($scope, $http) {
                 $scope.options = {
-                    url: url
+                    url: gl_file_upload_url
                 };
             }
         ])

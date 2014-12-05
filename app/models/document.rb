@@ -7,6 +7,6 @@ class Document < ActiveRecord::Base
 
   mount_uploader :avatar, AvatarUploader
 
-  validates :creator_id, :project_id,:title,:name,:ext,:status,:size, presence: true
+  validates :creator_id, :project_id,:name,:status,:size, presence: true
 
 end
