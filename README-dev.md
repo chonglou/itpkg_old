@@ -37,6 +37,8 @@ Itpkg默认通信链路通过vpn进行保护
 
 ## 开发指导
 
+默认用户: root 12345678
+
 ### 开发环境
 强烈建议使用archlinux or mac
 
@@ -96,12 +98,6 @@ Itpkg默认通信链路通过vpn进行保护
 
 
 #### 关于model (仅适用于v1.0 release发布前)
-
- * 默认新注册的第一个用户有admin, 可在rails console中激活
-
-
-    User.find(1).confirm!
-
 
  * model说明
 基本所有的details都用markdown语法
