@@ -24,6 +24,7 @@
 //= require highcharts/highcharts-more
 //= require highlight-8.4
 //= require jstree-3.0.8
+//= require jquery.fileupload
 //= require widgets
 
 
