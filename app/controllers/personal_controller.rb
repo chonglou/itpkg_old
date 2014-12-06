@@ -71,6 +71,11 @@ class PersonalController < ApplicationController
           label: t('links.dns')
       }
       @items << {
+          url: status_versions_path,
+          logo: 'flat/256/lifeline6.png',
+          label: t('links.status.versions.title')
+      }
+      @items << {
           url: settings_path,
           logo: 'flat/256/settings48.png',
           label: t('links.settings')

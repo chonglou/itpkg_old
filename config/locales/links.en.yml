@@ -16,6 +16,17 @@ en:
         show: 'Show document [%{name}]'
         download: 'Download document [%{name}]'
         viewer: 'View document [%{name}] online'
+    status:
+      workers:
+        title: 'Workers'
+      logs:
+        title: 'Logs'
+      versions:
+        title: 'Current status'
+        rb: "RUBY：(%{ruby}) RAILS(%{rails}) APP(%{app})"
+        env: "ENV：%{env}"
+        root: "APP Directory：%{root}"
+        time: "System time： %{time}"
     docker: 'Docker'
     logging:
       list: 'Logging'

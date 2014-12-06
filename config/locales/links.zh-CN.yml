@@ -16,6 +16,17 @@ zh-CN:
         show: '查看文档 [%{name}]'
         download: '下载文档 [%{name}]'
         viewer: '在线查看文档 [%{name}]'
+    status:
+        workers:
+          title: '任务队列'
+        logs:
+          title: '运行日志'
+        versions:
+          title: '当前状态'
+          rb: "版本号：RUBY(%{ruby}) RAILS(%{rails}) APP(%{app})"
+          env: "模式：%{env}"
+          root: "APP目录：%{root}"
+          time: "系统时间： %{time}"
     docker: 'Docker'
     logging:
       list: '日志系统'

@@ -1,0 +1,4 @@
+ul class="nav nav-tabs"
+  - items.each_with_index do |item, i |
+    li role="presentation" class="#{'active' if i == index}"
+      a href="#{item.fetch :url}" #{item.fetch :name}

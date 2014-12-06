@@ -2,7 +2,14 @@ Rails.application.routes.draw do
 
 
 
+
+
   #--------------- My Add -----------------
+
+  #------status----------
+  namespace :status do
+    %w(workers logs versions).each {|a| get a}
+  end
 
   #----------- docker-----------
   resources :nodes

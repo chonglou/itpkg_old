@@ -2,5 +2,5 @@ div class="row"
   div class="panel panel-#{style || 'default'}" style='margin:20px 20px 20px 20px;'
     div class="panel-heading" #{title}
     ul class="list-group"
-      - items.reverse.each do |i|
+      - items.each do |i|
         li class="list-group-item" #{i}
