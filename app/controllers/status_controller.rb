@@ -25,7 +25,7 @@ class StatusController < ApplicationController
 
   def logs
     @index = 2
-    @items = BgLog.order(_id: :desc).page
+    @items = BgLog.order(_id: :desc).page(params[:page])
     render 'logs', layout: 'status/view'
   end
 end
