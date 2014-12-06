@@ -94,3 +94,4 @@ gem 'ffi-rzmq'
 gem 'geoip'
 gem 'rails-settings-cached', '0.4.1'
 gem 'kaminari'
+gem 'sinatra',require: nil

@@ -1,14 +1,13 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
-
-
-
 
 
   #--------------- My Add -----------------
 
   #------status----------
   namespace :status do
-    %w(workers logs versions users).each {|a| get a}
+    %w(workers logs versions users).each { |a| get a }
   end
 
   #----------- docker-----------
@@ -59,7 +58,7 @@ Rails.application.routes.draw do
 
   #--------team work-----------
   resources :projects do
-    resources :documents,controller: 'projects/documents' do
+    resources :documents, controller: 'projects/documents' do
       get 'download'
       get 'viewer'
     end
@@ -80,7 +79,13 @@ Rails.application.routes.draw do
   get 'home' => 'home#index'
   post 'search' => 'home#search'
 
-  devise_for :users, controllers:{registrations: 'registrations'}
+  devise_for :users, controllers: {registrations: 'registrations'}
+
+
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   root 'home#index'
 
 

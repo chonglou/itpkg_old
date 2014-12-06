@@ -1,3 +1,5 @@
+require 'itpkg/services/permission'
+
 class UserValidator < ActiveModel::Validator
   def validate(record)
     if %w(deploy git nobody mail mysql).include?(record.label)
@@ -28,5 +30,9 @@ class User < ActiveRecord::Base
 
   def to_s
     "#{self.label}<#{self.email}>"
+  end
+
+  def admin?
+    Itpkg::PermissionService.admin? self.id
   end
 end

@@ -1,0 +1,7 @@
+-@title = t('links.status.workers.title')
+
+br
+div class='row'
+  div class='col-sm-offset-2'
+    a href='#{sidekiq_web_path}' target='_blank'
+      = render 'layouts/draw_picture', text:'SIDEKIQ'
