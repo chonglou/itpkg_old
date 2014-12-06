@@ -103,6 +103,7 @@ Itpkg默认通信链路通过vpn进行保护
 基本所有的details都用markdown语法
 
 
+    bg_log # 后台任务日志
     cdn/* # cdn服务器相关
     certificate # ssl证书管理
     confirmation # 确认链接信息
