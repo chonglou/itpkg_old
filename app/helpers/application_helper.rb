@@ -17,7 +17,7 @@ module ApplicationHelper
   def personal_bar
     user = current_user
     if user
-      label = t('labels.welcome', username: user.email, logo:email2logo(user.email, 18))
+      label = t('labels.welcome', username: user.email, logo: email2logo(user.email, 18))
       links={
           personal_path => t('links.personal.self'),
           edit_user_registration_path => t('links.personal.info'),
@@ -42,7 +42,8 @@ module ApplicationHelper
   end
 
   def filename2type(name)
-    File.extname(name)[1..-1].downcase
+    ext = File.extname(name)[1..-1]
+    ext.downcase if ext
   end
 
   def md2html(md)

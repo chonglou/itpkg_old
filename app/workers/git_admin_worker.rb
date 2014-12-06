@@ -30,6 +30,7 @@ class GitAdminWorker
         f.puts 'repo testing'
         f.puts "\tRW+\t= @all"
         f.puts 'repo @all'
+        f.puts "\tRW+	\t= @all"
         f.puts "\t-   VREF/itpkg	= @all"
 
         Repository.where(enable:true).each do |r|

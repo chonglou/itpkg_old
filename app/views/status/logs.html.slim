@@ -1,3 +1,3 @@
 -@title = t('links.status.logs.title')
 = paginate @items
-= render 'layouts/list', title:@title, items:@items.map {|l| "#{l.created}: #{l.message}"}, style:nil
+= render 'layouts/list', title:@title, items:@items.map {|l| "#{l.created}: #{l.message.gsub "\n", '<br>'}"}, style:nil

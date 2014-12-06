@@ -44,7 +44,8 @@ Itpkg默认通信链路通过vpn进行保护
 
 #### ArchLinux
 
-    sudo pacman -S  git base-devel cmake libmariadbclient libgit2 percona-server percona-server-clients nodejs redis
+    sudo pacman -S  git base-devel cmake libmariadbclient libgit2 percona-server percona-server-clients nodejs redis mongodb
+    sudo systemctl start mysqld redis mongodb
 
 #### Mac
 待补

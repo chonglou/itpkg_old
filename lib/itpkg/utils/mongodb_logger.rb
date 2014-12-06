@@ -1,6 +1,7 @@
 module Itpkg
   class MongodbLogger < Logger
-    def initialize
+    def initialize(type)
+      @type = type
       @level = DEBUG
       @default_formatter = Formatter.new
     end
@@ -18,7 +19,7 @@ module Itpkg
     private
     def _write_message(message)
       message ||= message.strip
-      BgLog.create( message:message, created:Time.now)  unless message.empty?
+      BgLog.create( message:message, created:Time.now, type:@type)  unless message.empty?
     end
   end
 end
