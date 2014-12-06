@@ -26,6 +26,7 @@ en:
         rb: "RUBY：(%{ruby}) RAILS(%{rails}) APP(%{app})"
         env: "ENV：%{env}"
         root: "APP Directory：%{root}"
+        uptime: 'Uptime: %{time}'
         time: "System time： %{time}"
     docker: 'Docker'
     logging:

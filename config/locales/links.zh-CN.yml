@@ -26,6 +26,7 @@ zh-CN:
           rb: "版本号：RUBY(%{ruby}) RAILS(%{rails}) APP(%{app})"
           env: "模式：%{env}"
           root: "APP目录：%{root}"
+          uptime: '运行时间： %{time}'
           time: "系统时间： %{time}"
     docker: 'Docker'
     logging:
