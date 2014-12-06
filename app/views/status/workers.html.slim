@@ -1,7 +1,18 @@
 -@title = t('links.status.workers.title')
 
+
 br
 div class='row'
-  div class='col-sm-offset-2'
+  div class='col-sm-offset-1 col-sm-2'
     a href='#{sidekiq_web_path}' target='_blank'
-      = render 'layouts/draw_picture', text:'SIDEKIQ'
+      = render 'layouts/draw_picture', text:'SIDEKIQ-WEB'
+  div class=' col-sm-6'
+    pre
+      code id='sidekiq-status'
+
+javascript:
+  $(function(){
+    $.get("#{sidekiq_web_path(locale:nil)}/dashboard/stats", function(data){
+      $("code#sidekiq-status").text(JSON.stringify(data, null, '\t'));
+    });
+  });
