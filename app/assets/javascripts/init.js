@@ -8,6 +8,8 @@ $(function () {
     $('pre code').each(function(i, block) {
         hljs.highlightBlock(block);
     });
+
+    $.ajaxSetup({headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')}});
 });
 
 

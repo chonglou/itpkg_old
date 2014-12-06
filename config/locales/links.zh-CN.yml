@@ -8,8 +8,10 @@ zh-CN:
       list: '项目列表'
       create: '新建项目'
       edit: '编辑项目 [%{name}]'
+      show: '项目 [%{name}]'
       document:
         list: '文档列表'
+        create: '上传文档'
     docker: 'Docker'
     logging:
       list: '日志系统'

@@ -1,7 +1,7 @@
-<%- @title=t('links.project.document.list', name: @project.name) %>
-<%= render 'layouts/button_group', items: @buttons, back: true %>
+<%- @title=t('links.project.document.create', name: @project.name) %>
+<%= render 'layouts/button_group', items: [], back: true %>
 
-<form id="fileupload" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data" data-ng-app="uploader" data-ng-controller="DemoFileUploadController" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
+<form id="fileupload" method="POST" enctype="multipart/form-data" data-ng-app="uploader" data-ng-controller="DemoFileUploadController" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
 
   <div class="row fileupload-buttonbar">
     <div class="col-lg-7">
@@ -71,10 +71,8 @@
     </tr>
   </table>
 </form>
+
 <script>
     var gl_file_upload_url = "<%= project_documents_path(project_id:@project.id)%>";
 </script>
-
-<%= render 'layouts/table', title: 'project.document', items: @documents, headers: [:title, :ext, :size] %>
-
 <%= javascript_include_tag 'projects/document_upload' %>

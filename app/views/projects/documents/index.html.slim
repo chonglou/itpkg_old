@@ -1,0 +1,3 @@
+- @title=t('links.project.document.list', name: @project.name)
+= render 'layouts/button_group', items: @buttons, back: true
+= render 'layouts/table', title: 'project.document', items: @documents, headers: [:name, :size]

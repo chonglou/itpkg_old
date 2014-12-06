@@ -8,8 +8,10 @@ en:
       list: 'Projects'
       create: 'Create Project'
       edit: 'Edit Profile [%{name}]'
+      show: 'Project [%{name}]'
       document:
         list: 'Documents'
+        create: 'Upload documents'
     docker: 'Docker'
     logging:
       list: 'Logging'
