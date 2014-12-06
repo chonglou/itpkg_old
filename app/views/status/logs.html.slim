@@ -1,2 +1,3 @@
 -@title = t('links.status.logs.title')
-=render 'layouts/list', title:@title, items:@items, style:nil
+= paginate @items
+= render 'layouts/list', title:@title, items:@items.map {|l| "#{l.created}: #{l.message}"}, style:nil
