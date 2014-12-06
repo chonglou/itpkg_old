@@ -12,6 +12,8 @@ zh-CN:
       document:
         list: '文档列表'
         create: '上传文档'
+        edit: '编辑文档 [%{name}]'
+        show: '查看文档 [%{name}]'
     docker: 'Docker'
     logging:
       list: '日志系统'

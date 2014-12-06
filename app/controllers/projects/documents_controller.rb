@@ -3,7 +3,7 @@ class Projects::DocumentsController < ApplicationController
   before_action :_can_project?
 
   def index
-    @documents = Document.select(:id, :name, :size).where('project_id = ? AND status = ?', @project.id, Document.statuses[:project]).map { |d| {cols: [d.name, "#{d.size/1000}K"], url: project_document_path(d.id, project_id: @project.id)} }
+    @documents = Document.select(:id, :name, :size).where('project_id = ? AND status = ?', @project.id, Document.statuses[:project]).map { |d| {cols: [d.name, d.size_s], url: project_document_path(d.id, project_id: @project.id)} }
     @buttons=[
         {label: t('links.project.document.create', name: @project.name), url: new_project_document_path, style: 'primary'},
         {label: t('links.project.show', name: @project.name), url: project_path(@project), style: 'warning'}
@@ -11,14 +11,22 @@ class Projects::DocumentsController < ApplicationController
   end
 
   def show
-
+    if _can_view?
+      @document = Document.find params[:id]
+      @buttons=[
+          {label: t('links.project.document.edit', name: @document.name), url: edit_project_document_path, style: 'primary'},
+      ]
+      if _can_edit?
+        @buttons << {label: t('links.project.document.list'), url: project_documents_path, style: 'warning'}
+      end
+    end
   end
 
   def create
     files = params.fetch(:files).map do |tf|
       doc = Document.new project_id: @project.id, creator_id: current_user.id,
                          name: tf.original_filename, ext: _file_ext(tf.original_filename),
-                         size: tf.size
+                         size: tf.size, details:''
       doc.avatar= tf
       if doc.save
         {
@@ -42,25 +50,36 @@ class Projects::DocumentsController < ApplicationController
   end
 
   def edit
+    if _can_edit?
 
+    end
   end
 
   def update
-
+    if _can_edit?
+      @document = Document.find params[:id]
+      if @document.update(params.require(:document).permit(:name, :details))
+        redirect_to project_document_path(@document.id, project_id: @project.id)
+      else
+        render 'edit'
+      end
+    end
   end
 
   def destroy
-    files=[]
+    #files=[]
     if _can_edit?
-      d = Document.destroy params[:id]
-      files << {d.name=>true}
+      Document.destroy params[:id]
+      #files << {d.name => true}
     end
-    render json:{files:files}
-    #redirect_to project_documents_path(project_id:@project)
+    redirect_to project_documents_path(project_id:@project)
+    #render json: {files: files}
+
   end
 
   private
   def _can_edit?
+    @document ||= Document.find params[:id]
     @document.creator_id == current_user.id
   end
 

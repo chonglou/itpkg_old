@@ -1,5 +1,6 @@
 require 'digest/md5'
 require 'itpkg/services/site'
+require 'itpkg/utils/string_helper'
 
 module ApplicationHelper
   def nav_links
@@ -44,4 +45,7 @@ module ApplicationHelper
     File.extname(name)[1..-1].downcase
   end
 
+  def md2html(md)
+    Itpkg::StringHelper.md2html md
+  end
 end

@@ -5,4 +5,4 @@ h3 #{@title}
 hr
 = render 'layouts/thumbnail', items:@items
 br
-div #{{@project.to_html}}
+div #{{md2html @project.details}}

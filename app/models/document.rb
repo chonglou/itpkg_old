@@ -9,4 +9,15 @@ class Document < ActiveRecord::Base
 
   validates :creator_id, :project_id,:name,:status,:size, presence: true
 
+  def size_s
+    s = self.size
+    if s < 1024
+      s
+    elsif s<1024*1024
+      "#{s/1024}K"
+    elsif s<1024*1024*1024
+      "#{s/1024/1024}M"
+    end
+
+  end
 end

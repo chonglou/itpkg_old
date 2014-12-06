@@ -1,0 +1,5 @@
+- @title=t('links.project.document.show', name: @document.name)
+= render 'layouts/button_group', items: @buttons, back: true
+h3 #{@title}
+hr
+div class="row" #{{md2html @document.details}}

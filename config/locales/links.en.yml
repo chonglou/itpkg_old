@@ -12,6 +12,8 @@ en:
       document:
         list: 'Documents'
         create: 'Upload documents'
+        edit: 'Edit document [%{name}]'
+        show: 'Show document [%{name}]'
     docker: 'Docker'
     logging:
       list: 'Logging'

@@ -39,15 +39,15 @@ class AvatarUploader < CarrierWave::Uploader::Base
   # end
 
   # Create different versions of your uploaded files:
-  version :thumb do
+  version :thumb, :if => :image? do
     process :resize_to_fit => [200, 200]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
-  def extension_white_list
-    %w(jpg jpeg gif png zip tar gz bz2 7z doc)
-  end
+  # def extension_white_list
+  #   %w(jpg jpeg gif png zip tar gz bz2 7z doc)
+  # end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
@@ -60,5 +60,9 @@ class AvatarUploader < CarrierWave::Uploader::Base
   def secure_token
     var = :"@#{mounted_as}_secure_token"
     model.instance_variable_get(var) or model.instance_variable_set(var, SecureRandom.uuid)
+  end
+
+  def image?(new_file)
+    new_file.content_type.start_with? 'image'
   end
 end

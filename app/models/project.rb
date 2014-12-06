@@ -1,4 +1,4 @@
-require 'itpkg/utils/string_helper'
+
 
 class Project < ActiveRecord::Base
   validates :name, :creator_id, presence: true
@@ -9,7 +9,4 @@ class Project < ActiveRecord::Base
   has_many :s_types
   has_many :s_tags
 
-  def to_html
-    Itpkg::StringHelper.md2html self.details
-  end
 end
