@@ -1,0 +1,5 @@
+-@title = t('links.status.users.title')
+= paginate @users
+= render 'layouts/table', title: 'user', items: @items, headers: [:email, :last_login, :contact]
+
+

@@ -12,6 +12,10 @@ module StatusHelper
         {
             name: t('links.status.logs.title'),
             url: status_logs_path
+        },
+        {
+            name: t('links.status.users.title'),
+            url: status_users_path
         }
     ]
   end

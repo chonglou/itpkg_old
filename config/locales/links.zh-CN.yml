@@ -21,6 +21,8 @@ zh-CN:
           title: '任务队列'
         logs:
           title: '运行日志'
+        users:
+            title: '用户列表'
         versions:
           title: '当前状态'
           rb: "版本号：RUBY(%{ruby}) RAILS(%{rails}) APP(%{app})"

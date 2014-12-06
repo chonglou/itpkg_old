@@ -28,4 +28,11 @@ class StatusController < ApplicationController
     @items = BgLog.order(_id: :desc).page(params[:page])
     render 'logs', layout: 'status/view'
   end
+
+  def users
+    @index = 3
+    @users = User.order(id: :desc).page(params[:page])
+    @items = @users.map {|u|{cols:[u.email, u.current_sign_in_at||u.last_sign_in_at, u.contact.to_s]}}
+    render 'users',layout: 'status/view'
+  end
 end
