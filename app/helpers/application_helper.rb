@@ -52,4 +52,8 @@ module ApplicationHelper
   def google_viewer(url)
     "http://docs.google.com/viewer?url=#{CGI.escape url}"
   end
+
+  def js_viewer(path)
+    "/ViewerJS/#..#{path}"
+  end
 end

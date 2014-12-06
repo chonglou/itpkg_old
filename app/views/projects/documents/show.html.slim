@@ -10,8 +10,12 @@ div class='row'
       img src="#{project_document_viewer_path(@document.id, project_id:@project.id)}"
     - elsif @document.txt?
       = render 'layouts/code_block', style:filename2type(@document.name), code:Mongoid::GridFS[@document.avatar.path].data
+    - elsif @document.doc?
+      a target="_blank" href="#{js_viewer project_document_download_path(document_id:@document.id, project_id:@project.id, locale:nil)}.#{@document.ext}" #{t 'links.project.document.viewer', name:@document.name}
+      /a target="blank" href="#{google_viewer project_document_viewer_url(document_id:@document.id, project_id:@project.id, locale:nil)}.#{@document.ext}" #{t 'links.project.document.viewer', name:@document.name}
     - else
-      a target="blank" href="#{google_viewer project_document_viewer_url(document_id:@document.id, project_id:@project.id)}" #{t 'links.project.document.viewer', name:@document.name}
+      img src = ""
+
 
 
 
