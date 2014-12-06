@@ -25,6 +25,7 @@ class StatusController < ApplicationController
 
   def logs
     @index = 2
+    @items = BgLog.order(_id: :desc).page(1).per(50).map {|l| "#{l.created}: #{l.message}"}
     render 'logs', layout: 'status/view'
   end
 end

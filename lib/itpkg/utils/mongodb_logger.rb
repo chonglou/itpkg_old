@@ -17,7 +17,8 @@ module Itpkg
 
     private
     def _write_message(message)
-      BgLog.create message:message, created:Time.now
+      message ||= message.strip
+      BgLog.create( message:message, created:Time.now)  unless message.empty?
     end
   end
 end
