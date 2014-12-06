@@ -14,7 +14,7 @@ div class='row'
       a target="_blank" href="#{js_viewer project_document_download_path(document_id:@document.id, project_id:@project.id, locale:nil)}.#{@document.ext}" #{t 'links.project.document.viewer', name:@document.name}
       /a target="blank" href="#{google_viewer project_document_viewer_url(document_id:@document.id, project_id:@project.id, locale:nil)}.#{@document.ext}" #{t 'links.project.document.viewer', name:@document.name}
     - else
-      img src = ""
+      = render 'layouts/draw_picture', text:t('labels.fail_to_view_online')
 
 
 

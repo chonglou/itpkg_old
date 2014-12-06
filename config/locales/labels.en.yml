@@ -19,3 +19,4 @@ en:
     not_valid: 'Not valid'
     please_waiting: 'Please wait for task progressing.'
     email_already_exist: 'Email %{email} already exist!'
+    fail_to_view_online: 'There is no preview available!'

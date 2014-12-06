@@ -19,3 +19,4 @@ zh-CN:
     not_valid: '不合法'
     please_waiting: '请等待后台任务处理'
     email_already_exist: '邮箱%{email}已存在!'
+    fail_to_view_online: '不支持在线预览！'
