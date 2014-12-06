@@ -6,23 +6,25 @@ class Projects::DocumentsController < ApplicationController
     @document = Document.find params[:document_id]
     if _can_view?
       f = Mongoid::GridFS[@document.avatar.path]
-      send_data f.data, type:f.content_type, disposition: :inline
+      send_data f.data, type: f.content_type, disposition: :inline
     else
-      render status:404
+      render status: 404
     end
   end
+
   def download
     @document = Document.find params[:document_id]
     if _can_view?
       f = Mongoid::GridFS[@document.avatar.path]
-      send_data f.data, type:f.content_type, filename:@document.name
+      send_data f.data, type: f.content_type, filename: @document.name
     else
-      render status:404
+      render status: 404
     end
   end
 
   def index
-    @documents = Document.select(:id, :name, :size).order(id: :desc).where('project_id = ? AND status = ?', @project.id, Document.statuses[:project]).map { |d| {cols: [d.name, d.size_s], url: project_document_path(d.id, project_id: @project.id)} }
+    @documents = Document.select(:id, :name, :size, :updated_at).order(id: :desc).where('project_id = ? AND status = ?', @project.id, Document.statuses[:project]).page(params[:page])
+    @items = @documents.map { |d| {cols: [d.name, d.size_s, d.updated_at], url: project_document_path(d.id, project_id: @project.id)} }
     @buttons=[
         {label: t('links.project.document.create', name: @project.name), url: new_project_document_path, style: 'primary'},
         {label: t('links.project.show', name: @project.name), url: project_path(@project), style: 'warning'}
@@ -34,13 +36,13 @@ class Projects::DocumentsController < ApplicationController
     if _can_view?
       @buttons=[
           {label: t('links.project.document.edit', name: @document.name), url: edit_project_document_path, style: 'primary'},
-          {label: t('links.project.document.download', name: @document.name), url: project_document_download_path(document_id:@document.id, project_id:@project.id), style: 'success'},
+          {label: t('links.project.document.download', name: @document.name), url: project_document_download_path(document_id: @document.id, project_id: @project.id), style: 'success'},
       ]
       if _can_edit?
         @buttons << {label: t('links.project.document.list'), url: project_documents_path, style: 'warning'}
       end
     else
-      render status:404
+      render status: 404
     end
   end
 
@@ -48,7 +50,7 @@ class Projects::DocumentsController < ApplicationController
     files = params.fetch(:files).map do |tf|
       doc = Document.new project_id: @project.id, creator_id: current_user.id,
                          name: tf.original_filename, ext: _file_ext(tf.original_filename),
-                         size: tf.size, details:''
+                         size: tf.size, details: ''
       doc.avatar= tf
       if doc.save
         {
@@ -74,7 +76,7 @@ class Projects::DocumentsController < ApplicationController
   def edit
     @document = Document.find params[:id]
     unless _can_edit?
-      render status:404
+      render status: 404
     end
   end
 
@@ -87,7 +89,7 @@ class Projects::DocumentsController < ApplicationController
         render 'edit'
       end
     else
-      render status:404
+      render status: 404
     end
   end
 
@@ -98,7 +100,7 @@ class Projects::DocumentsController < ApplicationController
       Document.destroy params[:id]
       #files << {d.name => true}
     end
-    redirect_to project_documents_path(project_id:@project)
+    redirect_to project_documents_path(project_id: @project)
     #render json: {files: files}
 
   end
