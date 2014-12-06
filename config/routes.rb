@@ -52,7 +52,10 @@ Rails.application.routes.draw do
 
   #--------team work-----------
   resources :projects do
-    resources :documents,controller: 'projects/documents'
+    resources :documents,controller: 'projects/documents' do
+      get 'download'
+      get 'viewer'
+    end
   end
 
   #----------others---------

@@ -3,3 +3,15 @@
 h3 #{@title}
 hr
 div class="row" #{{md2html @document.details}}
+
+div class='row'
+  div class='col-sm-offset-1 col-sm-10'
+    - if @document.image?
+      img src="#{project_document_viewer_path(@document.id, project_id:@project.id)}"
+    - elsif @document.txt?
+      = render 'layouts/code_block', style:filename2type(@document.name), code:Mongoid::GridFS[@document.avatar.path].data
+    - else
+      a target="blank" href="#{google_viewer project_document_viewer_url(document_id:@document.id, project_id:@project.id)}" #{t 'links.project.document.viewer', name:@document.name}
+
+
+

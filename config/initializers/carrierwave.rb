@@ -7,7 +7,7 @@ CarrierWave::SanitizedFile.sanitize_regexp = /[^[:word:]\.\-\+]/
 CarrierWave.configure do |config|
   config.storage = :grid_fs
   config.root = Rails.root.join('tmp')
-  #config.cache_dir = 'uploads'
+  config.cache_dir = 'uploads'
   #todo
   config.grid_fs_access_url = '/attachments'
 

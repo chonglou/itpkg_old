@@ -20,4 +20,16 @@ class Document < ActiveRecord::Base
     end
 
   end
+
+  def image?
+    %w(jpg jpeg gif png).include? self.ext
+  end
+
+  def doc?
+    %w(pdf doc).include? self.ext
+  end
+
+  def txt?
+    %w(txt log rb py php java c cpp cxx h sh).include? self.ext
+  end
 end

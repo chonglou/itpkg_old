@@ -48,4 +48,8 @@ module ApplicationHelper
   def md2html(md)
     Itpkg::StringHelper.md2html md
   end
+
+  def google_viewer(url)
+    "http://docs.google.com/viewer?url=#{CGI.escape url}"
+  end
 end
