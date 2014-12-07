@@ -82,7 +82,7 @@ export KEY_COUNTRY="US"
 export KEY_PROVINCE="CA"
 export KEY_CITY="Goleta"
 export KEY_ORG="itpkg"
-export KEY_EMAIL="admin@itpkg.com"
+export KEY_EMAIL="deploy@itpkg.com"
 export KEY_OU="ops"
 EOF
 . ./vars
