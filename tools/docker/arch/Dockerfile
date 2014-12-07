@@ -1,10 +1,9 @@
 FROM base/archlinux:latest
 MAINTAINER Jitang Zheng <jitang.zheng@gmail.com>
 
-
 # upgrade system
-RUN pacman -Syu --noconfirm && \
-pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh iptables mongodb \
+RUN pacman -Syu --noconfirm \
+&& pacman -S --noconfirm --needed base-devel wget pwgen git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh iptables mongodb \
 # itpkg
 nodejs libmariadbclient imagemagick cmake libgit2 protobuf zeromq \
 # services
@@ -15,7 +14,9 @@ easy-rsa openvpn \
 postfix dovecot \
 # docker registry
 python2 python2-pip python2-virtualenv \
-&& sudo pacman -Scc --noconfirm 
+# htpasswd 
+apr-util \
+&& pacman -Scc --noconfirm 
 
 
 # useradd
