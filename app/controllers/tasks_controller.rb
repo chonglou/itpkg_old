@@ -19,6 +19,9 @@ class TasksController < ApplicationController
   end
 
   def update
+    if @task.update(task_params_for_update)
+      redirect_to project_story_path(@project, @story)
+    end
   end
 
   def destroy
@@ -43,5 +46,9 @@ class TasksController < ApplicationController
 
   def task_params
     params.permit(:details, :story_id)
+  end
+
+  def task_params_for_update
+    params.require(:task).permit(:details, :story_id)
   end
 end

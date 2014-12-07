@@ -25,12 +25,14 @@
   }
 
   $(function () {
-    var $new_task       = $('#new_task'),
-      $task_form_filed  = $('#task_form_filed'),
-      $task_details     = $('#details'),
-      $cancel_task      = $('#cancel_task'),
-      $create_task_form = $('#create_task_form'),
-      $task_form        = $('#task_form');
+    var $new_task        = $('#new_task'),
+      $task_form_filed   = $('#task_form_filed'),
+      $task_details      = $('#details'),
+      $cancel_task       = $('#cancel_task'),
+      $create_task_form  = $('#create_task_form'),
+      $task_form         = $('#task_form'),
+      $edit_task_form    = $('#edit_task_form'),
+      $edit_task_details = $('#edit_task_details');
 
     $new_task.on('click', function (e) {
       e.preventDefault();
@@ -60,6 +62,25 @@
       close_add_task_form($create_task_form, $new_task);
     });
 
+    $('.edit_task').on('click', function (e) {
+      e.preventDefault();
 
+      var $this = $(this),
+        task_id = $this.parent().siblings('.task_id').text().trim(),
+        task_details = $this.parent().siblings('.task_details'),
+        new_action;
+
+      $edit_task_details.val(task_details.text().trim());
+      $('#task_id').val(task_id);
+      new_action = $edit_task_form.prop('action').replace(/tasks\/\d*/, 'tasks/' + task_id);
+      $edit_task_form.prop('action', new_action);
+    });
+
+    $edit_task_form.on('submit', function () {
+      if ($('#edit_task_details').val() === '') {
+        alert('Details cannot be blank!');
+        return false;
+      }
+    });
   });
 })(jQuery);

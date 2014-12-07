@@ -17,19 +17,19 @@ zh-CN:
         download: '下载文档 [%{name}]'
         viewer: '在线查看文档 [%{name}]'
     status:
-        workers:
-          title: '任务队列'
-        logs:
-          title: '运行日志'
-        users:
-            title: '用户列表'
-        versions:
-          title: '当前状态'
-          rb: "版本号：RUBY(%{ruby}) RAILS(%{rails}) APP(%{app})"
-          env: "模式：%{env}"
-          root: "APP目录：%{root}"
-          uptime: '运行时间： %{time}'
-          time: "系统时间： %{time}"
+      workers:
+        title: '任务队列'
+      logs:
+        title: '运行日志'
+      users:
+          title: '用户列表'
+      versions:
+        title: '当前状态'
+        rb: "版本号：RUBY(%{ruby}) RAILS(%{rails}) APP(%{app})"
+        env: "模式：%{env}"
+        root: "APP目录：%{root}"
+        uptime: '运行时间： %{time}'
+        time: "系统时间： %{time}"
       remove: '删除'
     story:
       list: '故事列表'

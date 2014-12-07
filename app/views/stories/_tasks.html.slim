@@ -12,12 +12,13 @@ div class='panel panel-primary'
           th #{t('tables.task.action')}
       tbody id='tasks'
         tr id='task_row_template' class='hide'
-          td class='col-sm-1' #{'id'}
-          td class='col-sm-8 col-md-9' #{'details'}
+          td class='col-sm-1 task_id' #{'id'}
+          td class='col-sm-8 col-md-9 task_details' #{'details'}
           td class='col-sm-3 col-md-2'
             = link_to t('buttons.edit'),
-                      edit_project_story_task_path(@story.project, @story, 0),
-                      class: 'btn btn-primary col-sm-5'
+                      '',
+                      class: 'btn btn-primary col-sm-5',
+                      data: { toggle: 'modal', target:'#edit_task_modal' }
 
             = link_to t('buttons.remove'),
                       project_story_task_path(@story.project, @story, 0),
@@ -27,12 +28,13 @@ div class='panel panel-primary'
 
         - for task in @story.tasks do
           tr
-            td class='col-sm-1' #{task.id}
-            td class='col-sm-8 col-md-9' #{task.details}
+            td class='col-sm-1 task_id' #{task.id}
+            td class='col-sm-8 col-md-9 task_details' #{task.details}
             td class='col-sm-3 col-md-2'
               = link_to t('buttons.edit'),
-                        edit_project_story_task_path(@story.project, @story, task),
-                        class: 'btn btn-primary col-sm-5'
+                        '',
+                        class: 'btn btn-primary col-sm-5 edit_task',
+                        data: {toggle: 'modal', target: '#edit_task_modal'}
 
               = link_to t('buttons.remove'),
                         project_story_task_path(@story.project, @story, task),
@@ -55,3 +57,23 @@ div class='panel panel-primary'
             = submit_tag t('buttons.submit'), id: 'submit_task', class: 'btn btn-primary'
           div class='col-sm-1'
             = link_to t('buttons.cancel'), '', id: 'cancel_task', class: 'btn btn-info'
+
+div id='edit_task_modal' class='modal fade'
+  div class='modal-dialog'
+    div class='modal-content'
+      div class='modal-header'
+        = link_to '', class:'close', data: { dismiss: 'modal'} do
+          span #{'X'}
+          span class='sr-only' #{'Close'}
+        h4 class='modal-title' #{'Edit Task'}
+      div class='modal-body'
+        = bootstrap_form(Task.new,
+                         url: project_story_task_path(@project, @story, 0),
+                         html: { id:'edit_task_form', method: 'put', action: 'update' }) do |f|
+          = f.group do
+            = f.label t('tables.task.details')
+            = f.text_area :details, id: 'edit_task_details', rows: 5
+
+          = f.button_group do
+            = f.submit t('buttons.submit')
+            = f.cancel t('buttons.cancel'), data: { dismiss: 'modal' }
