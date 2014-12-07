@@ -37,5 +37,8 @@ module Itpkg
       MARKDOWN.render markdown
     end
 
+    def current
+      Time.now.strftime '%Y%m%d%H%M%S%L'
+    end
   end
 end

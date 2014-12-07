@@ -3,6 +3,11 @@ require 'json'
 class UserMailer < ActionMailer::Base
   default from: ENV['ITPKG_MAILER_SENDER']
 
+  def log(user_id, subject, message)
+    u = User.find user_id
+    mail(to: u.email, subject: subject, message: message).deliver
+  end
+
   def key_pairs(user_id)
     u = User.find user_id
     attachments['id_rsa'] = u.ssh_key.private_key

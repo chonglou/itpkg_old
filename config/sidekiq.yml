@@ -2,11 +2,13 @@
 :verbose: false
 :pidfile: ./tmp/pids/sidekiq.pid
 :logfile: ./log/sidekiq.log
-:concurrency:  32
+:concurrency:  12
 
 :queues:
   - default
-  - [git, 2]
+  - [git, 200]
+  - [docker, 20]
 
 :limits:
   git: 1
+  docker: 1

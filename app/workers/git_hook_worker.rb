@@ -14,7 +14,5 @@ class GitHookWorker
     @git.pull
     logger.info "close #{@git.url}"
     @git.close
-
-    #todo 发邮件
   end
 end

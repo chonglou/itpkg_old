@@ -12,5 +12,5 @@ GRANT SELECT ON itpkg.email_aliases TO 'email'@'localhost' IDENTIFIED BY '$passw
 FLUSH PRIVILEGES;"
 
 
-#sed -i -e "s/PASSWORD/$password/g" /etc/pam.d/openvpn /etc/openvpn/scripts/config.sh
+sed -i -e "s/PASSWORD/$password/g" /etc/pam.d/openvpn /etc/openvpn/scripts/config.sh
 

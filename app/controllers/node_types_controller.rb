@@ -1,6 +1,10 @@
 class NodeTypesController < ApplicationController
   before_action :must_admin!
 
+  def build
+
+  end
+
   def index
     @buttons = [
         {label: t('links.node_type.create'), url: new_node_type_path, style: 'primary'},

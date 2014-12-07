@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   #----------- docker-----------
   resources :nodes
   resources :node_types do
+    post 'build'
+    post 'push'
     resources :templates, expect: [:index, :show], controller: 'node_types/templates'
     resources :vars, expect: [:index, :show], controller: 'node_types/vars'
     resources :ports, expect: [:index, :show], controller: 'node_types/ports'

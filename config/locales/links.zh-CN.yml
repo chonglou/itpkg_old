@@ -36,11 +36,11 @@ zh-CN:
     monitor:
       list: '监控系统'
     node_type:
-      list: '节点模板'
-      create: '新建节点模板'
+      list: '应用列表'
+      create: '新建应用'
       edit_docker: '编辑Dockerfile [%{name}]'
-      show: '显示节点模板 [%{name}]'
-      remove: '删除节点模板 [%{name}]'
+      show: '显示应用 [%{name}]'
+      remove: '删除应用 [%{name}]'
       port:
         create: '添加端口映射'
         list: '端口映射列表'
@@ -83,7 +83,7 @@ zh-CN:
     nginx:
       list: 'NGINX服务器'
     node:
-      list: '终端列表'
+      list: '服务列表'
     email: '邮件系统'
     email_host:
       list: 'Email主机列表'

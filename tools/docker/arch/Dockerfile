@@ -15,7 +15,8 @@ easy-rsa openvpn \
 postfix dovecot \
 # docker registry
 python2 python2-pip python2-virtualenv \
-&& sudo pacman -Scc --noconfirm
+&& sudo pacman -Scc --noconfirm 
+
 
 # useradd
 RUN useradd -s /bin/bash -m deploy \
@@ -106,7 +107,13 @@ RUN sudo sed -i '$i\    include itpkg/*.conf;'  /etc/nginx/nginx.conf \
 && openssl genrsa -out key.pem 2048 \
 && openssl req -new -key key.pem  -subj "/C=US/ST=California/L=Goleta/O=itpkg/CN=itpkg.com" -out cert.csr -text \
 && openssl x509 -req -in cert.csr -sha512 -days 3650  -signkey key.pem -out cert.pem -text \
-&& chmod 400 key.pem && chmod 444 cert.pem cert.csr
+&& chmod 400 key.pem && chmod 444 cert.pem cert.csr \
+&& cd /tmp \
+&& wget https://aur.archlinux.org/packages/ap/apache-tools/apache-tools.tar.gz \
+&& tar xf apache-tools.tar.gz \
+&& cd apache-tools \
+&& makepkg \
+&& sudo pacman -U apache-tools-*-x86_64.pkg.tar.xz 
 
 
 # openvpn
@@ -115,7 +122,7 @@ RUN cd /tmp \
 && tar xf pam_mysql.tar.gz \
 && cd pam_mysql \
 && makepkg \
-&& sudo pacman -U --noconfirm pam_mysql-*.pkg.tar.xz \
+&& sudo pacman -U --noconfirm pam_mysql-*-x86_64.pkg.tar.xz \
 && sudo sh /tmp/mnt/tmp/openvpn_setup.sh
 
 # bind9
@@ -124,7 +131,7 @@ RUN sudo abs extra/bind \
 && cd /tmp/bind \
 && patch -p0 < /tmp/mnt/tmp/bind-mysql-geoip.patch \
 && makepkg \
-&& sudo pacman -U --noconfirm bind-*.pkg.tar.xz \
+&& sudo pacman -U --noconfirm bind-*-x86_64.pkg.tar.xz \
 && sudo sh /tmp/mnt/tmp/bind_setup.sh
 
 # postfix dovecot setup
@@ -136,7 +143,8 @@ RUN virtualenv2 $HOME/local/python2 \
 && source $HOME/local/python2/bin/activate \
 && pip install docker-registry \
 && patch $(python -c 'import boto; import os; print os.path.dirname(boto.__file__)')/connection.py < /tmp/mnt/tmp/boto_header_patch.diff \
-&& sudo cp /tmp/mnt/etc/{boto.cfg,docker-registry.yml} /etc
+&& sudo cp /tmp/mnt/etc/{boto.cfg,docker-registry.yml} /etc \
+&& sudo sh /tmp/mnt/tmp/docker_setup.sh
 
 
 # systemd

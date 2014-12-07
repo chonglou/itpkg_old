@@ -34,11 +34,11 @@ en:
     logging:
       list: 'Logging'
     node_type:
-      list: 'Node Templates'
-      create: 'Create a new node template'
+      list: 'Applications'
+      create: 'Create a new Application'
       edit_docker: 'Edit Dockerfile for [%{name}]'
-      show: 'Show node template [%{name}]'
-      remove: 'Remove node template [%{name}]'
+      show: 'Show node Application [%{name}]'
+      remove: 'Remove node Application [%{name}]'
       port:
         create: 'Create port mapping'
         list: 'Port Mappings'
@@ -83,7 +83,7 @@ en:
     nginx:
       list: 'Nginx Server'
     node:
-      list: 'Nodes'
+      list: 'Services'
     email: 'Email System'
     email_host:
       list: 'Email Hosts'

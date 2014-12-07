@@ -1,9 +1,11 @@
 ITPKG_DATABASE_PASSWORD=
 ITPKG_DOMAIN=localhost.localdomain
 # split by ';'
-ITPKG_MEMCACHED_HOSTS=localhost
+ITPKG_MEMCACHED_HOSTS=mc.$ITPKG_DOMAIN
 ITPKG_MAILER_SENDER=no-reply@$ITPKG_DOMAIN
-ITPKG_REDIS_URL=redis://localhost:6379/0
+ITPKG_REDIS_URL=redis://redis.$ITPKG_DOMAIN:6379/0
+ITPKG_DOCKER_HOST=http://docker.$ITPKG_DOMAIN
+ITPKG_DOCKER_PASSWORD=oMoyooquiejooza6
 # can be generate by 'pwgen -n 128'
 ITPKG_SECRET_KEY_BASE=nooviuboo4ish6bai4aebiezei4eibohd3eisu7keishoo7vingooch4vierahp9uph2ceiceliechahmahxaer8eehoo5ru8ahwae5te8ohghititeh8eik5ufeiz6o
 ITPKG_DEVISE_SECRET_KEY=leidai3rai6kai7ahsi7faihie3uin6aeshuheeshiveiphiepai8teimiecuyeng3aa5aeveixaleyetei7aihaipahw3uh7eimoosie9xie2gae2oajoosheith6ee
