@@ -25,6 +25,11 @@ zh-CN:
       project:
         name: '名称'
         details: '详细信息'
+      story:
+        title: '名称'
+        point: '分值'
+        status: '状态'
+        description: '描述'
       template:
         flag: '类型'
         name: '名称'

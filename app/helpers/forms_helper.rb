@@ -65,6 +65,11 @@ HTML
       @template.link_to(name, :back, options) << ' '
     end
 
+    def cancel(name, options={})
+      update_options_with_class!(options, 'btn btn-info')
+      @template.link_to(name, :back, options) << ' '
+    end
+
     def label(name, options={})
 
       case options[:mode]

@@ -54,3 +54,11 @@ footer {
     display: inline-block;
     border-radius: 50%;
 }
+
+/*
+ * bootstrap patches
+ */
+
+.accordion {
+    margin-bottom: 20px;
+}

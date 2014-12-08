@@ -1,0 +1,33 @@
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('titles.project.story')}
+  div class='panel-body'
+    table class='table table-striped'
+      thead
+        tr
+          th #{t('tables.story.id')}
+          th #{t('tables.story.title')}
+          th #{t('tables.story.points')}
+          th #{t('tables.story.status')}
+          th #{t('tables.story.description')}
+          th #{t('tables.story.action')}
+      tbody
+        - for story in @project.stories do
+         tr
+           td class="col-sm-1" #{story.id}
+           td class="col-sm-2"
+             = link_to story.title, project_story_path(@project, story)
+           td class="col-sm-1" #{story.point}
+           td class="col-sm-1" #{story.status}
+           td class="col-sm-5" #{story.description}
+           td class="col-sm-2"
+             = link_to t('buttons.edit'),
+                       edit_project_story_path(@project, story),
+                       class: 'btn btn-primary col-sm-5'
+             = link_to t('buttons.remove'),
+                       project_story_path(@project, story),
+                       data: {confirm: t('labels.are_you_sure')},
+                       method: :delete,
+                       class: 'btn btn-danger col-sm-5 col-sm-offset-2'
+
+    = link_to t('links.story.create'), new_project_story_path(@project), class: 'btn btn-primary'

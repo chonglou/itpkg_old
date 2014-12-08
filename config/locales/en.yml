@@ -30,3 +30,19 @@ en:
       active: "Didn't receive confirmation instructions?"
       unlock: "Didn't receive unlock instructions?"
       edit_profile: 'Edit profile'
+    project:
+      story: 'Stories'
+    story:
+      information: 'Information'
+      description: 'Description'
+      project: 'Project'
+      title: 'Title'
+      status: 'Status'
+      point: 'Point'
+      task: 'Task'
+    task:
+      title: 'Task'
+      information: 'Information'
+      project: 'Project'
+      story: 'Story'
+      details: 'Details'

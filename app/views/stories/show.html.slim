@@ -1,0 +1,11 @@
+= render 'layouts/button_group', items:@buttons, back:true
+h3 #{@story.title}
+hr
+
+= render partial: 'story_info'
+= render partial: 'tasks'
+
+div class='row row-fluid'
+  div class='col-sm-1'
+    = link_to t('buttons.edit'), edit_project_story_path(@project, @story), class: 'btn btn-primary'
+  = render 'layouts/remove_button', name: 'buttons.remove', url: project_story_path(@story.project, @story), back: false

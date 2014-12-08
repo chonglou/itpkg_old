@@ -30,6 +30,14 @@ en:
         root: "APP Directory：%{root}"
         uptime: 'Uptime: %{time}'
         time: "System time： %{time}"
+      remove: 'Remove'
+    story:
+      list: 'Stories'
+      create: 'Create Story'
+      edit: 'Edit Profile [%{name}]'
+      remove: 'Remove'
+    task:
+      create: 'Create Task'
     docker: 'Docker'
     logging:
       list: 'Logging'

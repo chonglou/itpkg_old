@@ -12,3 +12,20 @@ en:
       enable: 'Status'
       start_date: 'Start date'
       end_date: 'End date'
+    project:
+      id: 'ID'
+      name: 'Name'
+      details: 'Details'
+      creator: 'Creator'
+      action: 'Action'
+    story:
+      id: 'ID'
+      title: 'Title'
+      points: 'Points'
+      status: 'Status'
+      description: 'Description'
+      action: 'Action'
+    task:
+      id: 'ID'
+      details: 'Details'
+      action: 'Action'
