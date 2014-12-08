@@ -28,7 +28,7 @@ cat > connect.sh << "EOF"
 . /etc/openvpn/scripts/config.sh
 mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('1', 'C','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
 EOF
-cat > diconnect.sh << "EOF"
+cat > disconnect.sh << "EOF"
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
 mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs(host_id, flag,email,message,created) values('1', 'D','$common_name', '$trusted_ip;$trusted_port;$ifconfig_pool_remote_ip;$remote_port_1;$bytes_received;$bytes_sent', 'NOW()')"
@@ -37,7 +37,7 @@ chmod +x *.sh
 
 
 cd ..
-cat > openvpn.conf << "EOF"
+cat > server.conf << "EOF"
 port 1194
 proto udp
 dev tun
@@ -60,7 +60,7 @@ user nobody
 client-to-client
 username-as-common-name
 
-plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so openvpn
+plugin /usr/lib/openvpn/plugins/openvpn-plugin-auth-pam.so openvpn
 
 script-security 3 system
 client-connect /etc/openvpn/scripts/connect.sh

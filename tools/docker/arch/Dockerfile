@@ -114,7 +114,7 @@ RUN sudo sed -i '$i\    include itpkg/*.conf;'  /etc/nginx/nginx.conf \
 && tar xf apache-tools.tar.gz \
 && cd apache-tools \
 && makepkg \
-&& sudo pacman -U apache-tools-*-x86_64.pkg.tar.xz 
+&& sudo pacman -U --noconfirm apache-tools-*-x86_64.pkg.tar.xz 
 
 
 # openvpn

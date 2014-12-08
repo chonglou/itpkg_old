@@ -6,8 +6,8 @@
 
 :queues:
   - default
-  - [git, 200]
-  - [docker, 20]
+  - [git, 1]
+  - [docker, 1]
 
 :limits:
   git: 1
