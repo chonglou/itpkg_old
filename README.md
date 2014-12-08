@@ -8,9 +8,7 @@ IT-PACKAGE
 More details at: [https://docs.docker.com/installation/](https://docs.docker.com/installation/)
 
 #### For macos user
- * Download and install the latest release of [the Docker for OS X Installer](https://github.com/boot2docker/osx-installer/releases/latest)
- * Start
-
+Download and install the latest release of [the Docker for OS X Installer](https://github.com/boot2docker/osx-installer/releases/latest)
 
     boot2docker init
     boot2docker start
