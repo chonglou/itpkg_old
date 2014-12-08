@@ -4,6 +4,11 @@ password=$(pwgen 16)
 
 mysql -u root -h localhost -e "CREATE DATABASE itpkg CHARACTER SET utf8;GRANT ALL PRIVILEGES ON itpkg.* TO 'itpkg'@'localhost' IDENTIFIED BY '$password';FLUSH PRIVILEGES;" 
 
+for i in SECRET_KEY_BASE DEVISE_SECRET_KEY PASSWORD
+do
+	sed -i "s/^ITPKG_$i=.*/ITPKG_$i=$(pwgen 128)/g" $ITPKG_HOME/shared/.rbenv-vars
+done
+
 su deploy<<'EOF'
 sed -i "s/^ITPKG_DATABAE_PASSWORD=.*/ITPKG_DATABASE_PASSWORD=$password/g" $ITPKG_HOME/shared/.rbenv-vars
 export PATH="$HOME/.rbenv/bin:$PATH"
@@ -13,3 +18,7 @@ rake db:migrate
 rake db:seed 
 rake assets:precompile 
 EOF
+
+systemctl restart itpkg-bg
+systemctl restart itpkg-wss
+systemctl restart itpkg-www

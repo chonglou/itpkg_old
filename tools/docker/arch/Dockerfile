@@ -73,8 +73,7 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && for i in .rbenv-vars tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
 
 # gitolite
-RUN cp ~/.ssh/id_rsa.pub /tmp \
-&& sudo mkdir -p /home/git \
+RUN sudo mkdir -p /home/git \
 && sudo chown -R git:git /home/git \
 && sudo chmod 700 /home/git \
 && sudo usermod -d /home/git git 

@@ -66,3 +66,4 @@ view "default" {
 EOF
 
 sed -i -e "s/PASSWORD/$password/g" /etc/named.conf
+systemctl restart named

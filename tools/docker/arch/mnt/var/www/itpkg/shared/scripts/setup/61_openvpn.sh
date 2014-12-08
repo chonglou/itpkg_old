@@ -98,3 +98,5 @@ mkdir -p /etc/openvpn/clients
 chown deploy:deploy /etc/openvpn/clients
 
 sed -i -e "s/PASSWORD/$password/g" /etc/pam.d/openvpn /etc/openvpn/scripts/config.sh
+
+systemctl restart openvpn@server

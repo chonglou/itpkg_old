@@ -21,6 +21,8 @@ IT-PACKAGE
     chmod +x itpkg
 
 #### Running
+First time to runing maybe take a long time to auto setup(generating ssl certs, random password, etc.), please wait.
+
 
     ./itpkg start
 
@@ -30,7 +32,7 @@ IT-PACKAGE
 
 #### visit by ssh
 
-    ./itpkg ssh # password is toor.
+    ./itpkg ssh
 
 #### change domain(after login by ssh)
     ./chdomain YOUR_DOMAIN

@@ -9,3 +9,5 @@ FLUSH PRIVILEGES;"
 
 
 
+systemctl restart postfix
+systemctl restart dovecot
