@@ -1,8 +1,5 @@
 #!/bin/sh
 
-mysqld_safe --user=mysql &
-sleep 10
-
 mkdir -p /etc/openvpn/scripts
 password=$(pwgen 16)
 mysql -u root -h localhost -e "GRANT SELECT ON itpkg.vpn_users TO 'vpn'@'localhost' IDENTIFIED BY '$password';GRANT INSERT ON itpkg.vpn_logs TO 'vpn'@'localhost' IDENTIFIED BY '$password';FLUSH PRIVILEGES;"

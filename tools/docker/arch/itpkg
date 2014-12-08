@@ -65,10 +65,13 @@ case $1 in
 				;;
 		esac
 		;;
+	history)
+		docker history $REPO
+		;;
 	test)
 		docker run --rm -i $REPO $2
 		;;
 	*)
-		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|test'
+		echo 'Usage: ./itpkg.sh start|stop|status|remove|logs|history|test'
 esac
 

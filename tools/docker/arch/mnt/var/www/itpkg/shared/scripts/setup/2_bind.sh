@@ -1,8 +1,7 @@
 #!/bin/sh
-mysqld_safe --user=mysql &
-sleep 10
 
 password=$(pwgen 16)
+
 mysql -u root -h localhost -e "GRANT SELECT ON itpkg.dns_records TO dns@localhost IDENTIFIED BY '$password';GRANT SELECT ON itpkg.dns_xfrs TO dns@localhost IDENTIFIED BY '$password';GRANT UPDATE ON itpkg.dns_counts TO dns@localhost IDENTIFIED BY '$password';FLUSH PRIVILEGES"
 
 rndc-confgen > /etc/rndc.conf

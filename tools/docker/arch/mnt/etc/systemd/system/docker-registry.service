@@ -4,7 +4,7 @@ Description=DOCKER-REGISTRY
 [Service]
 Type=simple
 User=deploy
-ExecStart=/var/www/itpkg/shared/docker-registry.sh
+ExecStart=/var/www/itpkg/shared/scripts/docker-registry.sh
 
 [Install]
 WantedBy=multi-user.target

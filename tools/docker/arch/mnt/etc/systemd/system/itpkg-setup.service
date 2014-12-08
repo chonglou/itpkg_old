@@ -1,0 +1,11 @@
+[Unit]
+Description=IT-PACKAGE:SETUP
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/var/www/itpkg/shared/scripts/itpkg-setup.sh
+
+[Install]
+WantedBy=multi-user.target
+

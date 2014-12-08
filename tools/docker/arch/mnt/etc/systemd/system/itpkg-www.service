@@ -4,7 +4,7 @@ Description=IT-PACKAGE:WWW
 [Service]
 Type=forking
 User=deploy
-ExecStart=/var/www/itpkg/shared/itpkg-www.sh
+ExecStart=/var/www/itpkg/shared/scripts/itpkg-www.sh
 ExecReload=/usr/bin/kill -SIGUSR2 $(cat /var/www/itpkg/shared/tmp/pids/www.pid)
 ExecStop=/usr/bin/kill -9 $(cat /var/www/itpkg/shared/tmp/pids/www.pid)
 PIDFile=/var/www/itpkg/shared/tmp/pids/www.pid

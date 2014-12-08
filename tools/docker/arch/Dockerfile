@@ -40,11 +40,9 @@ RUN sudo pacman -R --noconfirm vi \
 && sudo cp $HOME/.vimrc /root/
 
 # ssh
-RUN sudo /usr/bin/ssh-keygen -A \
-&& echo 'root:toor' | sudo chpasswd \
-&& sudo sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config \
-&& sudo chown -R deploy:deploy $HOME \
-&& ssh-keygen -b 2048 -t rsa  -f $HOME/.ssh/id_rsa -q -N ""
+RUN sudo sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config \
+#&& echo 'root:toor' | sudo chpasswd \
+&& sudo chown -R deploy:deploy $HOME 
 
 # rbenv
 RUN git clone https://github.com/sstephenson/rbenv.git ~/.rbenv \
@@ -68,17 +66,11 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current \
 && cd $ITPKG_HOME/current \
 && git rev-parse --short HEAD > $ITPKG_HOME/current/REVISION \
-# date "+%Y%m%d%H%M%S" > $ITPKG_HOME/current/REVISION \
 && rm -r .git \
 && mv .rbenv-vars $ITPKG_HOME/shared/.rbenv-vars \
-&& sed -i '/^ITPKG_DATABASE_PASSWORD/d' $ITPKG_HOME/shared/.rbenv-vars \
-&& sed -i 's/#ITPKG_MAILER_SENDER/ITPKG_MAILER_SENDER/g' $ITPKG_HOME/shared/.rbenv-vars \
 && echo 'RAILS_ENV=production' >> $ITPKG_HOME/shared/.rbenv-vars \
 && bundle install --without test development \
 && for i in .rbenv-vars tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
-
-# itpkg setup
-RUN /tmp/mnt/tmp/itpkg_setup.sh
 
 # gitolite
 RUN cp ~/.ssh/id_rsa.pub /tmp \
@@ -93,23 +85,18 @@ RUN mkdir -p ~/local/gitolite \
 && git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite \
 && /tmp/gitolite/install -to ~/local/gitolite \
 && echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc \
-&& USER=git ~/local/gitolite/gitolite setup -pk /tmp/id_rsa.pub \
 && cp /tmp/mnt/home/git/local/gitolite/VREF/itpkg ~/local/gitolite/VREF/itpkg
 
 USER deploy
 ENV HOME /home/deploy
 
 
-# nginx setup
+# nginx config files
 RUN sudo sed -i '$i\    include itpkg/*.conf;'  /etc/nginx/nginx.conf \
 && sudo cp -r /tmp/mnt/etc/nginx/itpkg /etc/nginx/itpkg \
 && sudo chown -R deploy:deploy /etc/nginx/itpkg \
-&& cd /etc/nginx/itpkg \
-&& openssl genrsa -out key.pem 2048 \
-&& openssl req -new -key key.pem  -subj "/C=US/ST=California/L=Goleta/O=itpkg/CN=itpkg.com" -out cert.csr -text \
-&& openssl x509 -req -in cert.csr -sha512 -days 3650  -signkey key.pem -out cert.pem -text \
-&& chmod 400 key.pem && chmod 444 cert.pem cert.csr \
 && cd /tmp \
+# htpasswd tools
 && wget https://aur.archlinux.org/packages/ap/apache-tools/apache-tools.tar.gz \
 && tar xf apache-tools.tar.gz \
 && cd apache-tools \
@@ -123,8 +110,7 @@ RUN cd /tmp \
 && tar xf pam_mysql.tar.gz \
 && cd pam_mysql \
 && makepkg \
-&& sudo pacman -U --noconfirm pam_mysql-*-x86_64.pkg.tar.xz \
-&& sudo sh /tmp/mnt/tmp/openvpn_setup.sh
+&& sudo pacman -U --noconfirm pam_mysql-*-x86_64.pkg.tar.xz 
 
 # bind9
 RUN sudo abs extra/bind \
@@ -132,11 +118,7 @@ RUN sudo abs extra/bind \
 && cd /tmp/bind \
 && patch -p0 < /tmp/mnt/tmp/bind-mysql-geoip.patch \
 && makepkg \
-&& sudo pacman -U --noconfirm bind-*-x86_64.pkg.tar.xz \
-&& sudo sh /tmp/mnt/tmp/bind_setup.sh
-
-# postfix dovecot setup
-RUN sudo sh /tmp/mnt/tmp/email_setup.sh
+&& sudo pacman -U --noconfirm bind-*-x86_64.pkg.tar.xz 
 
 # docker registry
 RUN virtualenv2 $HOME/local/python2 \
@@ -144,13 +126,12 @@ RUN virtualenv2 $HOME/local/python2 \
 && source $HOME/local/python2/bin/activate \
 && pip install docker-registry \
 && patch $(python -c 'import boto; import os; print os.path.dirname(boto.__file__)')/connection.py < /tmp/mnt/tmp/boto_header_patch.diff \
-&& sudo cp /tmp/mnt/etc/{boto.cfg,docker-registry.yml} /etc \
-&& sudo sh /tmp/mnt/tmp/docker_setup.sh
+&& sudo cp /tmp/mnt/etc/{boto.cfg,docker-registry.yml} /etc 
 
 
 # systemd
 RUN sudo cp -v /tmp/mnt/etc/systemd/system/*.service /etc/systemd/system \
-&& for s in sshd mysqld mongodb memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www nginx; \
+&& for s in sshd mysqld mongodb memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www itpkg-setup nginx; \
 do sudo systemctl enable $s; \
 done
 # clean
