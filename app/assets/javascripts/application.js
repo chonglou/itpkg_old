@@ -24,6 +24,7 @@
 //= require highcharts/highcharts-more
 //= require highlight-8.4
 //= require jstree-3.0.8
+//= require jquery-ui/widget
 //= require jQuery-File-Upload-9.8.1/load-image.all.min
 //= require jQuery-File-Upload-9.8.1/canvas-to-blob.min
 //= require jQuery-File-Upload-9.8.1/jquery.iframe-transport
