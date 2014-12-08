@@ -13,9 +13,9 @@ module Linux
     def initialize(repo_name, host: "git.#{ENV['ITPKG_DOMAIN']}",
                    port: 22,
                    username: 'git',
-                   email: "git@#{ENV['ITPKG_DOMAIN']}",
-                   public_key: "#{ENV['HOME']}/.ssh/id_rsa.pub",
-                   private_key: "#{ENV['HOME']}/.ssh/id_rsa")
+                   email: "deploy@#{ENV['ITPKG_DOMAIN']}",
+                   public_key: "#{Rails.root}/.ssh/deploy.pub",
+                   private_key: "#{Rails.root}/.ssh/deploy")
       @root = "#{Rails.root}/tmp/repos/#{repo_name}"
       @name = repo_name
       @credential = Rugged::Credentials::SshKey.new({

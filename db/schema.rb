@@ -13,53 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20141205193304) do
 
-  create_table "cdn_memcacheds", force: true do |t|
-    t.string   "name",                   null: false
-    t.string   "ip",                     null: false
-    t.integer  "port",                   null: false
-    t.integer  "weight",     default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cdn_memcacheds", ["ip"], name: "index_cdn_memcacheds_on_ip", using: :btree
-
-  create_table "cdn_nginx_memcacheds", force: true do |t|
-    t.integer  "nginx_id",     null: false
-    t.integer  "memcached_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "cdn_nginx_servers", force: true do |t|
-    t.integer  "nginx_id",   null: false
-    t.integer  "server_id",  null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "cdn_nginxes", force: true do |t|
-    t.string   "name",                           null: false
-    t.string   "ip",                             null: false
-    t.boolean  "ssl",            default: false, null: false
-    t.integer  "certificate_id", default: 0,     null: false
-    t.text     "domains",                        null: false
-    t.text     "backs",                          null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cdn_nginxes", ["ip"], name: "index_cdn_nginxes_on_ip", using: :btree
-
-  create_table "cdn_servers", force: true do |t|
-    t.string   "address",                null: false
-    t.integer  "weight",     default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cdn_servers", ["address"], name: "index_cdn_servers_on_address", using: :btree
-
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
     t.text     "csr"
@@ -122,7 +75,7 @@ ActiveRecord::Schema.define(version: 20141205193304) do
   create_table "dns_records", force: true do |t|
     t.string   "zone",                                  null: false
     t.string   "host",                  default: "@",   null: false
-    t.string   "type",        limit: 8,                 null: false
+    t.string   "flag",        limit: 8,                 null: false
     t.text     "data"
     t.integer  "ttl",                   default: 86400, null: false
     t.integer  "mx_priority"
@@ -138,9 +91,10 @@ ActiveRecord::Schema.define(version: 20141205193304) do
     t.datetime "updated_at"
   end
 
+  add_index "dns_records", ["flag"], name: "index_dns_records_on_flag", using: :btree
+  add_index "dns_records", ["host", "zone", "flag", "code"], name: "index_dns_records_on_host_and_zone_and_flag_and_code", unique: true, using: :btree
   add_index "dns_records", ["host", "zone"], name: "index_dns_records_on_host_and_zone", using: :btree
   add_index "dns_records", ["host"], name: "index_dns_records_on_host", using: :btree
-  add_index "dns_records", ["type"], name: "index_dns_records_on_type", using: :btree
   add_index "dns_records", ["zone"], name: "index_dns_records_on_zone", using: :btree
 
   create_table "dns_xfrs", force: true do |t|
@@ -423,25 +377,28 @@ ActiveRecord::Schema.define(version: 20141205193304) do
   add_index "ssh_keys", ["user_id"], name: "index_ssh_keys_on_user_id", unique: true, using: :btree
 
   create_table "stories", force: true do |t|
-    t.string   "title",                               null: false
-    t.integer  "project_id",                          null: false
-    t.integer  "story_type_id",                       null: false
-    t.integer  "point",                   default: 0, null: false
-    t.integer  "requester_id",                        null: false
-    t.integer  "status",        limit: 1, default: 0, null: false
+    t.string   "title",                              null: false
+    t.integer  "project_id",                         null: false
+    t.integer  "point",                  default: 0, null: false
+    t.integer  "requester_id",                       null: false
+    t.integer  "status",       limit: 1, default: 0, null: false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "stories_stories_tags", id: false, force: true do |t|
-    t.integer "story_id"
-    t.integer "story_tags_id"
+  create_table "stories_story_tags", id: false, force: true do |t|
+    t.integer  "story_id"
+    t.integer  "story_tag_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "stories_stories_types", id: false, force: true do |t|
-    t.integer "story_id"
-    t.integer "story_types_id"
+  create_table "stories_story_types", id: false, force: true do |t|
+    t.integer  "story_id"
+    t.integer  "story_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "story_followers", force: true do |t|
@@ -461,6 +418,7 @@ ActiveRecord::Schema.define(version: 20141205193304) do
   create_table "story_tags", force: true do |t|
     t.string   "name"
     t.string   "icon"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -468,6 +426,7 @@ ActiveRecord::Schema.define(version: 20141205193304) do
   create_table "story_types", force: true do |t|
     t.string   "name"
     t.string   "icon"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -19,14 +19,14 @@ class GitAdminWorker
     @git.commit('Export users from database') do |index|
       Dir[@git.real_path('keydir/*')].each do |f|
         f = File.basename f
-        unless f == 'id_rsa.pub'
+        unless f == 'deploy.pub'
           @git.remove index, "keydir/#{f}"
         end
       end
 
       @git.write(index, 'conf/gitolite.conf') do |f|
         f.puts 'repo gitolite-admin'
-        f.puts "\tRW+\t= id_rsa"
+        f.puts "\tRW+\t= deploy"
         f.puts 'repo testing'
         f.puts "\tRW+\t= @all"
         f.puts 'repo @all'
@@ -35,11 +35,6 @@ class GitAdminWorker
 
         Repository.where(enable:true).each do |r|
           f.puts "repo #{r.name}"
-
-          # u = r.creator
-          # f.puts "\tRW+\t= id_rsa"
-          # f.puts "\tRW+\t= #{u.label}"
-          # write_key index, u.id, u.label
 
           RepositoryUser.where(repository_id: r.id).each do |ru|
             u = User.find(ru.user_id)

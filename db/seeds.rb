@@ -6,9 +6,9 @@ Setting.git = {
     host: '127.0.0.1',
     username: 'git',
     port: 22,
-    public_key: "#{ENV['HOME']}/.ssh/id_rsa.pub",
-    private_key: "#{ENV['HOME']}/.ssh/id_rsa",
-    email: "git@#{ENV['ITPKG_DOMAIN']}"
+    public_key: "#{Rails.root}/.ssh/deploy.pub",
+    private_key: "#{Rails.root}/.ssh/deploy",
+    email: "deploy@#{ENV['ITPKG_DOMAIN']}"
 }
 
 root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'changeme', confirmed_at:DateTime.now

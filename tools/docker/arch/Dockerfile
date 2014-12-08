@@ -65,11 +65,11 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current \
 && cd $ITPKG_HOME/current \
 && git rev-parse --short HEAD > $ITPKG_HOME/current/REVISION \
-&& rm -r .git \
+&& rm -r .git .ssh \
 && mv .rbenv-vars $ITPKG_HOME/shared/.rbenv-vars \
 && echo 'RAILS_ENV=production' >> $ITPKG_HOME/shared/.rbenv-vars \
 && bundle install --without test development \
-&& for i in .rbenv-vars tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
+&& for i in .rbenv-vars .ssh tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
 
 # gitolite
 RUN sudo mkdir -p /home/git \
