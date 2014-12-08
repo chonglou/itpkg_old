@@ -1,27 +1,47 @@
 IT-PACKAGE
 ======================
 
-## Deploy
+## Deploy (Using docker)
 
-### Using docker
+### Install docker
 
-#### Install docker
+More details at: [https://docs.docker.com/installation/](https://docs.docker.com/installation/)
+
+#### For macos user
+ * Download and install the latest release of [the Docker for OS X Installer](https://github.com/boot2docker/osx-installer/releases/latest)
+ * Start
+
+
+    boot2docker init
+    boot2docker start
+    $(boot2docker shellinit)
+
+#### For linux user
+
+    # centos
+    sudo rpm install docker
+    sudo service docker start
+    sudo chkconfig docker on
 
     # ubuntu
     sudo apt-get install docker.io
+
     # archlinux
     sudo pacman -S docker
+    sudo pacman systemctl start docker
     sudo pacman systemctl enable docker
+
     # add user to docker group
     sudo gpasswd -a $(whoami) docker # Need re-login to make valid
 
-#### Setup
+### Running
 
+#### Download
     wget https://raw.githubusercontent.com/chonglou/itpkg/master/tools/docker/arch/itpkg
     chmod +x itpkg
 
-#### Running
-First time to runing maybe take a long time to auto setup(generating ssl certs, random password, etc.), please wait.
+#### Start
+First time to runing maybe take a long time(several minutes) to auto setup(generating ssl certs, random password, etc.), please wait.
 
 
     ./itpkg start
