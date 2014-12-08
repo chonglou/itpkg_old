@@ -41,8 +41,7 @@ RUN sudo pacman -R --noconfirm vi \
 
 # ssh
 RUN sudo sed -i "s/#PermitRootLogin/PermitRootLogin/g" /etc/ssh/sshd_config \
-#&& echo 'root:toor' | sudo chpasswd \
-&& sudo chown -R deploy:deploy $HOME 
+&& echo 'root:changeme' | sudo chpasswd 
 
 # rbenv
 RUN git clone https://github.com/sstephenson/rbenv.git ~/.rbenv \
@@ -61,7 +60,7 @@ ADD mnt /tmp/mnt
 
 # itpkg install
 RUN sudo mkdir -pv $ITPKG_HOME \
-&& sudo chown -R deploy:deploy $ITPKG_HOME $HOME \
+&& sudo chown -R deploy:deploy $ITPKG_HOME \
 && cp -r /tmp/mnt$ITPKG_HOME/shared $ITPKG_HOME/shared \
 && git clone https://github.com/chonglou/itpkg.git --single-branch --branch master --depth 1 $ITPKG_HOME/current \
 && cd $ITPKG_HOME/current \

@@ -11,7 +11,7 @@ Setting.git = {
     email: "git@#{ENV['ITPKG_DOMAIN']}"
 }
 
-root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'12345678', confirmed_at:DateTime.now
+root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'changeme', confirmed_at:DateTime.now
 root.skip_confirmation!
 root.save!
 Permission.create role: "user://#{root.id}", resource: 'SYSTEM', operation: 'root.id', start_date: Date.today.strftime, end_date: '9999-12-31'

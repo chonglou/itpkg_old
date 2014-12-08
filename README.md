@@ -28,11 +28,11 @@ First time to runing maybe take a long time to auto setup(generating ssl certs, 
 
 #### visit by your web brower
 
-    https://www.localhost.localdomain # default user: root 12345678
+    https://www.localhost.localdomain # default user: root changeme
 
 #### visit by ssh
 
-    ./itpkg ssh
+    ./itpkg ssh # password: changeme
 
 #### change domain(after login by ssh)
     ./chdomain YOUR_DOMAIN
