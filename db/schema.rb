@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205193304) do
+ActiveRecord::Schema.define(version: 20141209193832) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -165,6 +165,15 @@ ActiveRecord::Schema.define(version: 20141205193304) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "histories", force: true do |t|
+    t.string   "url",        null: false
+    t.text     "data",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "histories", ["url"], name: "index_histories_on_url", using: :btree
 
   create_table "logs", force: true do |t|
     t.integer  "user_id",    null: false

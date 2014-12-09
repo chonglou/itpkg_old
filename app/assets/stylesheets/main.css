@@ -62,3 +62,29 @@ footer {
 .accordion {
     margin-bottom: 20px;
 }
+
+/*
+ * ba-callout 将来会被换掉
+ */
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}
+.bs-callout-warning {
+    border-left-color: #f0ad4e;
+}
+.bs-callout-info {
+    border-left-color: #5bc0de;
+}
+
+.bs-callout h4 {
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+

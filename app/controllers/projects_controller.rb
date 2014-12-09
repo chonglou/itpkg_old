@@ -4,6 +4,7 @@ class ProjectsController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    # fixme
     @projects = Project.where(creator_id: current_user.id)
   end
 
