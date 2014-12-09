@@ -5,8 +5,7 @@ class Project < ActiveRecord::Base
 
   belongs_to :creator,      class_name: 'User'
 
-  has_many :project_users
-  has_many :users, through: :project_users
+  has_and_belongs_to_many :users, through: :project_users
 
   has_many :stories
   has_many :story_tags,  through: 'Story'
