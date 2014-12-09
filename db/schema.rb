@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141209193832) do
+ActiveRecord::Schema.define(version: 20141209224859) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -19,6 +19,16 @@ ActiveRecord::Schema.define(version: 20141209193832) do
     t.text     "encrypted_key",      null: false
     t.string   "encrypted_key_salt", null: false
     t.string   "encrypted_key_iv",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "comments", force: true do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "project_id"
+    t.integer  "task_id"
+    t.integer  "story_id"
+    t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -441,10 +451,11 @@ ActiveRecord::Schema.define(version: 20141209193832) do
   end
 
   create_table "tasks", force: true do |t|
-    t.integer  "story_id",   null: false
-    t.string   "details",    null: false
+    t.integer  "story_id",                         null: false
+    t.string   "details",                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "level",      limit: 2, default: 0, null: false
   end
 
   create_table "translations", force: true do |t|
