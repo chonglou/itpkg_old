@@ -45,8 +45,8 @@ en:
       list: 'Applications'
       create: 'Create a new Application'
       edit_docker: 'Edit Dockerfile for [%{name}]'
-      show: 'Show node Application [%{name}]'
-      remove: 'Remove node Application [%{name}]'
+      show: 'Show Application [%{name}]'
+      remove: 'Remove Application [%{name}]'
       port:
         create: 'Create port mapping'
         list: 'Port Mappings'
