@@ -1,0 +1,16 @@
+- items.each do |i|
+  h3
+    a href="#{project_path(i.fetch :id)}" #{i.fetch :name}
+  hr
+
+  p #{{md2html i.fetch(:details)}}
+
+  - i.fetch(:logs).each do |l|
+    blockquote
+      p
+        - if l.link
+          a href="#{l.link}" #{l.text}.
+        - else
+          |#{l.text}.
+      footer by #{l.user} #{time_ago_in_words l.created}
+  br
