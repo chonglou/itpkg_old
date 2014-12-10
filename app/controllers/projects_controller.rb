@@ -46,6 +46,9 @@ class ProjectsController < ApplicationController
       end
       @buttons << {label: t('links.project.story.create'), url: new_project_story_path(@project), style: 'info'}
       @buttons << {label: t('links.project.list'), url: projects_path, style: 'warning'}
+
+      #todo 分页显示
+      @logs = ProjectLog.where(project_id: @project.id).order(created: :desc).limit(5)
     else
       render status: 404
     end

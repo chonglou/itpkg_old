@@ -1,6 +1,6 @@
 require 'itpkg/services/site'
-class StoriesController < ApplicationController
-  before_action :authenticate_user!
+
+class Projects::StoriesController < ApplicationController
   before_action :prepare_project
   before_action :prepare_story, except: [:new, :create]
 
@@ -50,6 +50,7 @@ class StoriesController < ApplicationController
 
   private
   def prepare_project
+    # todo 判断权限
     @project = Project.find params[:project_id]
   end
 

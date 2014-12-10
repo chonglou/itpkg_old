@@ -65,8 +65,8 @@ Rails.application.routes.draw do
       get 'download'
       get 'viewer' 
     end
-    resources :stories do
-      resources :tasks
+    resources(:stories, controller: 'projects/stories') do
+      resources :tasks, controller: 'projects/tasks'
     end
   end
 
