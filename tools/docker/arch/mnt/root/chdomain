@@ -1,11 +1,13 @@
 #!/bin/sh
+ITPKG_HOME=/var/www/itpkg
+
 if [ -z $1 ]
 then
 	echo 'Usage: ./chdomain YOUR_MAIN_DOMAIN'
 	exit
 fi
 
-sed -i "s/^ITPKG_DOMAIN=.*/ITPKG_DOMAIN=$1/g" /var/www/itpkg/shared/.rbenv-vars
+sed -i "s/^ITPKG_DOMAIN=.*/ITPKG_DOMAIN=$1/g" $ITPKG_HOME/shared/.rbenv-vars
 sed -i "s/^  server_name .*/  server_name www.$1;/g" /etc/nginx/itpkg/www.conf
 sed -i "s/^  server_name .*/  server_name wss.$1;/g" /etc/nginx/itpkg/wss.conf
 sed -i "s/^  server_name .*/  server_name docker.$1;/g" /etc/nginx/itpkg/docker-registry.conf
@@ -14,5 +16,7 @@ for s in itpkg-wss itpkg-www nginx
 do
 	systemctl restart $s
 done
+
+cd $ITPKG_HOME/current && rake setup:domain
 
 echo 'Done!'

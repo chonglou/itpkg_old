@@ -1,34 +1,21 @@
 namespace :setup do
 
+  desc "'Update domain to #{ENV['ITPKG_DOMAIN']}'"
+  task domain: :environment do
+    User.all.each do |u|
+      o_e = u.email
+      n_e = "#{u.label}@#{ENV['ITPKG_DOMAIN']}"
+      u.update(email:n_e)
+      puts "#{o_e} => #{n_e}"
+    end
+  end
+
   desc 'Shell env'
   task :env do
     require 'json'
     require 'highline/import'
     require_relative '../itpkg/utils/encryptor'
 
-    # types = %w(local s3)
-    # type = ask("Attachment storage type? (#{types.join '/'})") { |q| q.default=types[0] }.to_s
-    # case type
-    #   when 's3'
-    #     fog={
-    #         provider: 'AWS',
-    #         aws_access_key_id: ask('Access Key Id').to_s,
-    #         aws_secret_access_key: ask('Secret Access Key').to_s,
-    #         region: ask('Region').to_s,
-    #         host: ask('Host').to_s,
-    #         endpoint: ask('Endpoint').to_s
-    #     }
-    #   else
-    #     fog={
-    #         provider: 'Local',
-    #         local_root: ask('Local Root: ').to_s,
-    #         endpoint: ask('Endpoint: ').to_s
-    #     }
-    # end
-
-    # ITPKG_ATTACHMENT_CREDENTIALS='#{fog.to_json}'
-    # ITPKG_ATTACHMENT_BUCKET="#{ask('Bucket ?') { |q| q.default='uploads' }}"
-    # ITPKG_ATTACHMENT_CREDENTIALS ITPKG_ATTACHMENT_BUCKET
 
     File.open("#{Rails.root}/.rbenv-vars", 'w') do |f|
       f.write <<-EOF
