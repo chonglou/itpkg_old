@@ -88,7 +88,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {registrations: 'registrations'}
 
 
-  authenticate :user, lambda { |u| u.admin? } do
+  authenticate :user, lambda { |u| u.is_admin? } do
     mount Sidekiq::Web => '/sidekiq'
   end
 

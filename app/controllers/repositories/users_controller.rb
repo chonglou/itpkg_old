@@ -1,67 +1,67 @@
 require 'securerandom'
 
 class Repositories::UsersController < ApplicationController
-  before_action :must_admin!
+  before_action :authenticate_user!
+  before_action :_check_viewer
+  before_action :_check_editor, only: [:new, :create, :destroy]
+
+  include RepositoriesHelper
 
   def index
-    @repository = Repository.find params[:repository_id]
     @buttons = [
-        {label: t('links.repository.user.create', name: @repository.name), url: new_repository_user_path, style: 'primary'},
         {label: t('links.repository.list', name: @repository.name), url: repositories_path, style: 'warning'},
 
     ]
-    @users = RepositoryUser.where(repository_id: @repository.id).map do |ru|
-      u = User.find ru.user_id
-      {cols: [u.label, u.email, u.contact], url: repository_user_path(ru.id, repository_id: @repository.id)}
+    if repositories_can_edit?
+      @buttons.unshift({label: t('links.repository.user.create', name: @repository.name), url: new_repository_user_path, style: 'primary'})
+    end
+
+    @users = []
+    User.with_any_role({name: :reader, resource: @repository}).each do |u|
+      @users << {cols: [u.label, 'R', u.contact], url: repository_user_path(u.id, repository_id: @repository.id)}
+    end
+    User.with_any_role({name: :writer, resource: @repository}).each do |u|
+      @users << {cols: [u.label, 'RW', u.contact], url: repository_user_path(u.id, repository_id: @repository.id)}
     end
   end
 
-  def new
-    @repository = Repository.find params[:repository_id]
-  end
 
   def create
-    @repository = Repository.find params[:repository_id]
+
     uid = params[:user_id]
     success = false
 
     if uid && uid != current_user.id
       user = User.find uid
       if user
-        unless RepositoryUser.find_by repository_id: @repository.id, user_id: user.id
-          # c = Confirmation.create extra: {
-          #     repository_id: @repository.id,
-          #     type: :add_to_repository,
-          #     from: repository_url(@repository.id)
-          # }.to_json,
-          #                         subject:t('mails.add_to_repository.subject', name:@repository.name),
-          #                         user_id: user.id, token: SecureRandom.uuid, deadline: 1.days.since
-          # UserMailer.delay.confirm(c.id)
-          RepositoryUser.create repository_id: @repository.id, user_id: user.id
-          GitAdminWorker.perform_async
-          success = true
-        end
+        user.add_role (params[:readonly] == 'true' ? :reader : :writer), @repository
+        # c = Confirmation.create extra: {
+        #     repository_id: @repository.id,
+        #     type: :add_to_repository,
+        #     from: repository_url(@repository.id)
+        # }.to_json,
+        #                         subject:t('mails.add_to_repository.subject', name:@repository.name),
+        #                         user_id: user.id, token: SecureRandom.uuid, deadline: 1.days.since
+        # UserMailer.delay.confirm(c.id)
+        GitAdminWorker.perform_async
+        success = true
       end
     end
 
     if success
       flash[:notice] = t('labels.success')
       redirect_to(repository_users_path(@repository))
-      else
-        flash[:alert] = t('labels.not_valid')
-        render 'new'
+    else
+      flash[:alert] = t('labels.not_valid')
+      render 'new'
     end
   end
 
   def show
-    @repository = Repository.find params[:repository_id]
-    @ru = RepositoryUser.find_by params[:id]
-    @user = User.find @ru.user_id
+    @user = User.find params[:id]
   end
 
   def destroy
-    @repository = Repository.find params[:repository_id]
-    ur = RepositoryUser.find params[:id]
     uid = ur.user_id
     ur.destroy
     GitAdminWorker.perform_async
@@ -69,6 +69,20 @@ class Repositories::UsersController < ApplicationController
     redirect_to repository_users_path(repository_id: @repository.id)
   end
 
+
+  private
+  def _check_viewer
+    @repository = Repository.find params[:repository_id]
+    unless repositories_can_view?
+      render status: 404
+    end
+  end
+
+  def _check_editor
+    unless repositories_can_edit?
+      render status: 404
+    end
+  end
 
 end
 

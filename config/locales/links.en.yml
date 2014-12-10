@@ -69,8 +69,9 @@ en:
     repository:
       user:
         list: 'Repository Users '
-        create: 'Invite user to Repository [%{name}]'
-        remove: 'Remove user [%{label}@%{name}]'
+        create: 'Invite user to Repository [%{name}.git]'
+        remove: 'Remove user [%{label}@%{name}.git]'
+        show: 'Show user [%{label}@%{name}.git]'
       branch:
         list: 'Branches'
       tag:
@@ -78,9 +79,9 @@ en:
       clone: 'Clone Command'
       list: 'Repositories'
       create: 'Create a new repository'
-      edit: 'Edit repository [%{name}]'
-      remove: 'Remove repository [%{name}]'
-      show: 'Show repository [%{name}]'
+      edit: 'Edit repository [%{name}.git]'
+      remove: 'Remove repository [%{name}.git]'
+      show: 'Show repository [%{name}.git]'
     dns: 'Name Server'
     dns_acl:
       create: 'Add new region'

@@ -69,8 +69,9 @@ zh-CN:
     repository:
       user:
         list: 'GIT仓库用户列表'
-        create: '邀请用户到GIT仓库 [%{name}]'
-        remove: '删除用户 [%{label}@%{name}]'
+        create: '邀请用户到GIT仓库 [%{name}.git]'
+        remove: '删除用户 [%{label}@%{name}.git]'
+        show: '显示用户 [%{label}@%{name}.git]'
       branch:
         list: '分支列表'
       tag:
@@ -78,9 +79,9 @@ zh-CN:
       clone: 'CLONE 地址'
       list: 'GIT仓库列表'
       create: '新建GIT仓库'
-      edit: '编辑GIT仓库 [%{name}]'
-      remove: '删除GIT仓库 [%{name}]'
-      show: '显示GIT仓库 [%{name}]'
+      edit: '编辑GIT仓库 [%{name}.git]'
+      remove: '删除GIT仓库 [%{name}.git]'
+      show: '显示GIT仓库 [%{name}.git]'
     dns: 'DNS系统'
     dns_acl:
       create: '添加新区'

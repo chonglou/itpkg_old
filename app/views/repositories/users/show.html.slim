@@ -1,4 +1,9 @@
--@title=t('links.repository.user.remove', label:@user.label, name:@repository.name)
+-@title=t('links.repository.user.show', label:@user.label, name:@repository.name)
+
 h3 #{@title}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:repository_user_path(@ru.id, repository_id:@repository.id), back:false
+
+- if repositories_can_edit?
+  h3 #{t('links.repository.user.remove', label:@user.label, name:@repository.name)}
+  hr
+  = render 'layouts/remove_button', name:'buttons.remove', url:repository_user_path(@user.id, repository_id:@repository.id), back:false
