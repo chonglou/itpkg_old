@@ -87,6 +87,11 @@ class PersonalController < ApplicationController
         label: t('links.personal.info')
     }
     @items << {
+        url: wikis_path(name: 'help'),
+        logo: 'flat/256/edit26.png',
+        label: t('links.wiki.list')
+    }
+    @items << {
         url: document_show_path(name: 'help'),
         logo: 'flat/256/help.png',
         label: t('links.help')

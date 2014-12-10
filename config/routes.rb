@@ -4,7 +4,15 @@ Rails.application.routes.draw do
 
 
 
+
   #--------------- My Add -----------------
+
+
+  #------mail_box--------
+  get 'mail_boxes/index'
+
+  #-------wiki---------
+  resources :wikis
 
   #------status----------
   namespace :status do

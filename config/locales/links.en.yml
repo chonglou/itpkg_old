@@ -132,7 +132,9 @@ en:
       install_sh: 'install.sh'
     vpn_log:
       list: 'Vpn logs'
-    wiki: 'Wiki'
+    wiki:
+      list: 'Wiki pages'
+      create: 'Create a new wiki page'
     help: 'Help'
     about_us: 'About Us'
     finance: 'Finance'

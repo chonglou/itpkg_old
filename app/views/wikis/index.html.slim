@@ -1,0 +1,8 @@
+- @title=t('links.wiki.list')
+
+= render 'layouts/button_group', items:@buttons, back:true
+
+= paginate @wikis
+
+- @wikis.each do |w|
+  a href="" #{w.title}

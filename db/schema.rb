@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210182047) do
+ActiveRecord::Schema.define(version: 20141210212629) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -121,7 +121,6 @@ ActiveRecord::Schema.define(version: 20141210182047) do
 
   create_table "documents", force: true do |t|
     t.integer  "project_id",                        null: false
-    t.integer  "creator_id",                        null: false
     t.string   "name",       limit: 36,             null: false
     t.string   "ext",        limit: 5
     t.integer  "status",     limit: 2,  default: 0, null: false
@@ -326,7 +325,6 @@ ActiveRecord::Schema.define(version: 20141210182047) do
   end
 
   create_table "repositories", force: true do |t|
-    t.integer  "creator_id",                           null: false
     t.string   "name",       limit: 16,                null: false
     t.string   "title",                                null: false
     t.boolean  "enable",                default: true, null: false
@@ -513,13 +511,11 @@ ActiveRecord::Schema.define(version: 20141210182047) do
   add_index "vpn_users", ["email"], name: "index_vpn_users_on_email", unique: true, using: :btree
 
   create_table "wikis", force: true do |t|
-    t.integer  "project_id",                       null: false
-    t.integer  "creator_id",                       null: false
     t.string   "title",                            null: false
     t.text     "body",                             null: false
     t.integer  "status",     limit: 2, default: 0, null: false
-    t.integer  "author_id",                        null: false
-    t.datetime "created",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "wikis", ["title"], name: "index_wikis_on_title", using: :btree

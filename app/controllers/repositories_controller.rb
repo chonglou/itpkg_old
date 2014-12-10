@@ -141,8 +141,6 @@ class RepositoriesController < ApplicationController
 
   def create
     @repository = Repository.new(params.require(:repository).permit(:name, :title))
-    @repository.creator_id = current_user.id
-
     if @repository.save
       current_user.add_role :creator, @repository
       GitAdminWorker.perform_async

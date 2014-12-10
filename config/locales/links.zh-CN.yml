@@ -132,7 +132,9 @@ zh-CN:
       remove: '删除 VPN 账户 [%{email}]'
     vpn_log:
       list: 'VPN日志列表'
-    wiki: '知识库'
+    wiki:
+      list: '知识库'
+      create: '创建新wiki页面'
     help: '帮助文档'
     about_us: '关于我们'
     finance: '财务管理'

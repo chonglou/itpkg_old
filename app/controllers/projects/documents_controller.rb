@@ -48,7 +48,7 @@ class Projects::DocumentsController < ApplicationController
 
   def create
     files = params.fetch(:files).map do |tf|
-      doc = Document.new project_id: @project.id, creator_id: current_user.id,
+      doc = Document.new project_id: @project.id,
                          name: tf.original_filename, ext: _file_ext(tf.original_filename),
                          size: tf.size, details: ''
       doc.avatar= tf
