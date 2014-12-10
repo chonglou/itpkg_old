@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210053210) do
+ActiveRecord::Schema.define(version: 20141210182047) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -192,13 +192,6 @@ ActiveRecord::Schema.define(version: 20141210053210) do
     t.datetime "updated_at"
   end
 
-  create_table "mail_box_documents", force: true do |t|
-    t.integer  "document_id", null: false
-    t.integer  "mail_box_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "mail_boxes", force: true do |t|
     t.string   "from",       limit: 64,               null: false
     t.string   "to",         limit: 64,               null: false
@@ -215,6 +208,13 @@ ActiveRecord::Schema.define(version: 20141210053210) do
   add_index "mail_boxes", ["from"], name: "index_mail_boxes_on_from", using: :btree
   add_index "mail_boxes", ["subject"], name: "index_mail_boxes_on_subject", using: :btree
   add_index "mail_boxes", ["to"], name: "index_mail_boxes_on_to", using: :btree
+
+  create_table "mail_boxes_documents", id: false, force: true do |t|
+    t.integer  "mail_boxes_id"
+    t.integer  "documents_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "node_types", force: true do |t|
     t.string   "name",       null: false
@@ -336,15 +336,12 @@ ActiveRecord::Schema.define(version: 20141210053210) do
 
   add_index "repositories", ["name"], name: "index_repositories_on_name", unique: true, using: :btree
 
-  create_table "repository_users", force: true do |t|
-    t.integer  "repository_id",                 null: false
-    t.integer  "user_id",                       null: false
-    t.boolean  "writable",      default: false, null: false
+  create_table "repositories_users", id: false, force: true do |t|
+    t.integer  "repositories_id"
+    t.integer  "users_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "repository_users", ["user_id", "repository_id"], name: "index_repository_users_on_user_id_and_repository_id", unique: true, using: :btree
 
   create_table "roles", force: true do |t|
     t.string   "name"
@@ -522,13 +519,6 @@ ActiveRecord::Schema.define(version: 20141210053210) do
 
   add_index "vpn_users", ["email"], name: "index_vpn_users_on_email", unique: true, using: :btree
 
-  create_table "wiki_users", force: true do |t|
-    t.integer  "wiki_id",    null: false
-    t.integer  "user_id",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "wikis", force: true do |t|
     t.integer  "project_id",                       null: false
     t.integer  "creator_id",                       null: false
@@ -540,5 +530,11 @@ ActiveRecord::Schema.define(version: 20141210053210) do
   end
 
   add_index "wikis", ["title"], name: "index_wikis_on_title", using: :btree
+
+  create_table "wikis_users", id: false, force: true do |t|
+    t.integer  "wikis_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end
