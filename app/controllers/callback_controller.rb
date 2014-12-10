@@ -11,6 +11,7 @@ class CallbackController < ApplicationController
       if Time.now <= c.deadline
         extra = JSON.parse c.extra
         RepositoryUser.create repository_id: extra.fetch('repository_id'), user_id: user.id, writable:true
+
         GitAdminWorker.perform_async
         c.update status: :done
         flash[:notice] = t('labels.success')

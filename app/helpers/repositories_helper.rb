@@ -14,11 +14,10 @@ module RepositoriesHelper
 
 
   def repositories_can_view?
-    uid = current_user.id
-    @repository && @repository.enable && (RepositoryUser.find_by(repository_id: @repository.id, user_id: uid) || current_user.has_role?(:admin))
+    @repository && @repository.enable && (current_user.has_role?(:reader, @repository) || current_user.has_role?(:writer, @repository) || current_user.has_role?(:creator, @repository))
   end
 
   def repositories_can_edit?
-    @repository && @repository.enable && current_user.has_role?(:admin)
+    @repository && @repository.enable && (current_user.has_role?(:creator, @repository))
   end
 end

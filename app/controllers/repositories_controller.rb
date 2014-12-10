@@ -127,13 +127,12 @@ class RepositoriesController < ApplicationController
 
 
   def index
-    if current_user.has_role?(:admin)
-      rs = Repository.where(enable:true).all
-    else
-      rs = RepositoryUser.all.map{|ru| ru.repository}
+
+    @repositories = []
+    [:creator, :writer, :reader].each do |name|
+      Repository.with_role(name, current_user).each{|p| @repositories << {url: repository_path(p.id), name: p.name, details: p.title} if p.enable}
     end
 
-    @repositories = rs.map { |p| {url: repository_path(p.id), name: p.name, details: p.title} }
   end
 
   def new
@@ -145,7 +144,7 @@ class RepositoriesController < ApplicationController
     @repository.creator_id = current_user.id
 
     if @repository.save
-      RepositoryUser.create repository_id: @repository.id, user_id: @repository.creator_id
+      current_user.add_role :creator, @repository
       GitAdminWorker.perform_async
       #注意 直接到show会有EOF错误
       redirect_to(repositories_path) and return
@@ -179,7 +178,7 @@ class RepositoriesController < ApplicationController
 
   def destroy
     @repository = Repository.find params[:id]
-    if repositories_can_edit? && RepositoryUser.where(repository_id: params[:id]).count == 0
+    if repositories_can_edit? && User.with_any_role({name: :reader, resource:@repository}, {name: :writer, resource:@repository}).count == 0
       @repository.update enable: false
       GitAdminWorker.perform_async
     else

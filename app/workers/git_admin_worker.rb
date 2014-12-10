@@ -36,9 +36,13 @@ class GitAdminWorker
         Repository.where(enable:true).each do |r|
           f.puts "repo #{r.name}"
 
-          RepositoryUser.where(repository_id: r.id).each do |ru|
-            u = User.find(ru.user_id)
-            f.puts "\t#{ru.writable ? 'RW+' : 'R'}\t = #{u.label}"
+          User.with_any_role({name: :creator, resource:r}, {name: :writer, resource:r}).each do |u|
+            f.puts "\tRW+\t = #{u.label}"
+            write_key index, u.id, u.label
+          end
+
+          User.with_any_role({name: :reader, resource:r}).each do |u|
+            f.puts "\tR\t = #{u.label}"
             write_key index, u.id, u.label
           end
 

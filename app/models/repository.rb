@@ -8,9 +8,10 @@ class RepositoryValidator < ActiveModel::Validator
 end
 
 class Repository < ActiveRecord::Base
+  resourcify
+
   has_many :logs
   has_many :repository_users
-  has_many :users, through: :repository_users
 
   belongs_to :creator, class_name: 'User'
 

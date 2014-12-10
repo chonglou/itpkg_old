@@ -336,13 +336,6 @@ ActiveRecord::Schema.define(version: 20141210182047) do
 
   add_index "repositories", ["name"], name: "index_repositories_on_name", unique: true, using: :btree
 
-  create_table "repositories_users", id: false, force: true do |t|
-    t.integer  "repositories_id"
-    t.integer  "users_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "roles", force: true do |t|
     t.string   "name"
     t.integer  "resource_id"
