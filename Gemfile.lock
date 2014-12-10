@@ -53,6 +53,7 @@ GEM
       sass (~> 3.2)
     bson (2.3.0)
     builder (3.2.2)
+    cancancan (1.9.2)
     capistrano (3.3.3)
       capistrano-stats (~> 1.0.3)
       i18n
@@ -305,6 +306,7 @@ GEM
       redis (~> 3.0, >= 3.0.4)
     responders (1.1.2)
       railties (>= 3.2, < 4.2)
+    rolify (3.4.1)
     rspec-core (3.1.7)
       rspec-support (~> 3.1.0)
     rspec-expectations (3.1.2)
@@ -397,6 +399,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootstrap-datepicker-rails
   bootstrap-sass
+  cancancan (~> 1.9)
   capistrano-rails
   capistrano-rbenv
   capistrano3-puma
@@ -434,6 +437,7 @@ DEPENDENCIES
   rails-i18n
   rails-settings-cached (= 0.4.1)
   redcarpet
+  rolify
   rspec-mocks
   rspec-rails
   rufus-scheduler

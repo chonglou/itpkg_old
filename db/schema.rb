@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141209224859) do
+ActiveRecord::Schema.define(version: 20141210052644) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -361,6 +361,17 @@ ActiveRecord::Schema.define(version: 20141209224859) do
 
   add_index "repository_users", ["user_id", "repository_id"], name: "index_repository_users_on_user_id_and_repository_id", unique: true, using: :btree
 
+  create_table "roles", force: true do |t|
+    t.string   "name"
+    t.integer  "resource_id"
+    t.string   "resource_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
+  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+
   create_table "rss_sites", force: true do |t|
     t.string   "title",                     null: false
     t.string   "url",                       null: false
@@ -496,6 +507,13 @@ ActiveRecord::Schema.define(version: 20141209224859) do
   add_index "users", ["label"], name: "index_users_on_label", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
+
+  create_table "users_roles", id: false, force: true do |t|
+    t.integer "user_id"
+    t.integer "role_id"
+  end
+
+  add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
 
   create_table "vpn_logs", force: true do |t|
     t.string   "flag",    limit: 1, default: "O", null: false
