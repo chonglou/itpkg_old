@@ -79,9 +79,6 @@ Rails.application.routes.draw do
   end
 
   #----------others---------
-
-  get 'settings' => 'settings#index'
-
   get 'personal' => 'personal#index'
   namespace :personal do
     get 'logs'

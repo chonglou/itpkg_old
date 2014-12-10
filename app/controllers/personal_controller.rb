@@ -87,11 +87,6 @@ class PersonalController < ApplicationController
           logo: 'flat/256/lifeline6.png',
           label: t('links.status.versions.title')
       }
-      @items << {
-          url: settings_path,
-          logo: 'flat/256/settings48.png',
-          label: t('links.settings')
-      }
     end
     @items << {
         url: edit_user_registration_path,
