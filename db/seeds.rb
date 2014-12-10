@@ -15,6 +15,7 @@ root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'cha
 root.skip_confirmation!
 root.save!
 root.add_role 'admin'
+root.add_role 'root'
 
 n1 = Notice.create user_id: root.id, body: 'IT-PACKAGE System is online now!'
 n2 = Notice.create user_id: root.id, body: 'IT-PACKAGE 系统正式上线!'

@@ -43,7 +43,7 @@ class PersonalController < ApplicationController
             label: t('links.repository.list')
         }
     ]
-    if admin?
+    if current_user.has_role?(:admin)
       @items << {
           url: nodes_path,
           logo: 'flat/256/hosting.png',

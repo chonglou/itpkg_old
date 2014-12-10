@@ -127,7 +127,7 @@ class RepositoriesController < ApplicationController
 
 
   def index
-    if current_user.admin?
+    if current_user.has_role?(:admin)
       rs = Repository.where(enable:true).all
     else
       rs = RepositoryUser.all.map{|ru| ru.repository}
