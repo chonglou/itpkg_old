@@ -1,5 +1,9 @@
 zh-CN:
-  log:
+  logs:
     vpn_user:
       created: 'Create account'
       remove: 'Remove account'
+    project:
+      create: '创建项目'
+      edit: '更新基本信息 %{name}'
+      remove: '删除项目'

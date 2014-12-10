@@ -1,5 +1,9 @@
 en:
-  log:
+  logs:
     vpn_user:
       created: 'Create account'
       remove: 'Remove account'
+    project:
+      create: 'Create project'
+      edit: 'Update base info %{name}'
+      remove: 'Remove project'

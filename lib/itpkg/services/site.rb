@@ -3,6 +3,13 @@ require_relative '../utils/encryptor'
 
 module Itpkg
 
+  module LogService
+    module_function
+    def project(project_id, link, text, task_id=nil, story_id=nil)
+      ProjectLog.create project_id:project_id, link:link, text:text, task_id:task_id, story_id:story_id, created:Time.now
+    end
+  end
+
   module TranslationService
     module_function
 

@@ -9,6 +9,9 @@ zh-CN:
       create: '新建项目'
       edit: '编辑项目 [%{name}]'
       show: '项目 [%{name}]'
+      remove: '删除项目 [%{name}]'
+      story:
+        create: '创建新story'
       document:
         list: '文档列表'
         create: '上传文档'

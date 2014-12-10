@@ -1,6 +1,18 @@
 div class='accordion'
-  = render 'layouts/button_group', items:[{label:t('buttons.create'),url:new_project_path,style:'primary'}], back:true
+  = render 'layouts/button_group', items:@buttons, back:true
 
-- @projects.each do |p|
+- @items.each do |i|
+  h4
+    a href="#{project_path(i.fetch :id)}" #{i.fetch :name}
 
+  div class="bs-callout bs-callout-info"
+    p #{{md2html i.fetch（:details）}}
+    p
+      - i.fetch(:logs).each do |l|
+        - if l.link
+          a href="#{l.link}" #{l.text}
+          |&nbsp; #{time_ago_in_words l.created}
+        - else
+          |#{l.text} &nbsp; #{time_ago_in_words l.created}
+        br
 

@@ -323,13 +323,6 @@ ActiveRecord::Schema.define(version: 20141209224859) do
   add_index "permissions", ["role", "resource", "operation"], name: "index_permissions_on_role_and_resource_and_operation", unique: true, using: :btree
   add_index "permissions", ["role"], name: "index_permissions_on_role", using: :btree
 
-  create_table "project_users", force: true do |t|
-    t.integer  "project_id", null: false
-    t.integer  "user_id",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "projects", force: true do |t|
     t.string   "name",       null: false
     t.text     "details"
@@ -339,6 +332,13 @@ ActiveRecord::Schema.define(version: 20141209224859) do
   end
 
   add_index "projects", ["name"], name: "index_projects_on_name", using: :btree
+
+  create_table "projects_users", id: false, force: true do |t|
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "repositories", force: true do |t|
     t.integer  "creator_id",                           null: false

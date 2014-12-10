@@ -9,6 +9,9 @@ en:
       create: 'Create Project'
       edit: 'Edit Profile [%{name}]'
       show: 'Project [%{name}]'
+      remove: 'Remove project [%{name}]'
+      story:
+        create: 'Create new story'
       document:
         list: 'Documents'
         create: 'Upload documents'
