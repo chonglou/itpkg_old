@@ -25,7 +25,7 @@ class ProjectsController < ApplicationController
       @project.creator_id = current_user.id
       @project.users << current_user
       if @project.save
-        Itpkg::LogService.project @project.id, project_path(@project.id), t('logs.project.create')
+        Itpkg::LogService.teamwork current_user.label, @project.id, project_path(@project.id), t('logs.project.create')
         redirect_to project_path(@project.id)
       else
         render :new
@@ -62,7 +62,7 @@ class ProjectsController < ApplicationController
       @project = Project.find params[:id]
       bak = {name: @project.name, details: @project.details}
       if @project.update(project_params)
-        Itpkg::LogService.project @project.id, project_path(@project.id), t('logs.project.edit', name: @project.name)
+        Itpkg::LogService.teamwork current_user.label, @project.id, project_path(@project.id), t('logs.project.edit', name: @project.name)
         Itpkg::HistoryService.backup :project, @project.id, bak
         redirect_to project_path(@project.id)
       else
@@ -76,7 +76,7 @@ class ProjectsController < ApplicationController
       p = Project.find params[:id]
       if p.creator_id == current_user.id
         if p.users.count==1 && p.stories.empty?
-          Itpkg::LogService.project p.id, nil, t('logs.project.remove')
+          Itpkg::LogService.teamwork current_user.label, p.id, nil, t('logs.project.remove')
           Itpkg::HistoryService.backup :project, p.id, {name: p.name, details: p.details}
           p.destroy
         else

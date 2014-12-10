@@ -1,15 +1,18 @@
+require 'itpkg/services/site'
 class StoriesController < ApplicationController
+  before_action :authenticate_user!
   before_action :prepare_project
   before_action :prepare_story, except: [:new, :create]
 
   def new
-    @story   = Story.new
+    @story = Story.new
   end
 
   def create
     @story = @project.stories.build(story_params)
     @story.requester_id = current_user.id
     if @story.save
+      Itpkg::LogService.teamwork current_user.label, @project.id, project_story_path(@story.id, project_id: @project.id), t('logs.project.story.create', title: @story.title), story_id:@story.id
       redirect_to project_path(@project.id)
     else
       render :new
@@ -51,7 +54,7 @@ class StoriesController < ApplicationController
   end
 
   def prepare_story
-    @story   = Story.find params[:id]
+    @story = Story.find params[:id]
   end
 
   def story_params

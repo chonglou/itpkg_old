@@ -5,7 +5,8 @@
 h3 #{@title}
 hr
 div #{{md2html @project.details}}
-
+br
+  /todo 类似于project list
 = render partial: 'stories'
 
 - if current_user.admin?

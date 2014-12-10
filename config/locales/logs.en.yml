@@ -7,3 +7,5 @@ en:
       create: 'Create project'
       edit: 'Update base info %{name}'
       remove: 'Remove project'
+      story:
+        create: 'Create story %{title}'

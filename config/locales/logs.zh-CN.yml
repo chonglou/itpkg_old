@@ -7,3 +7,5 @@ zh-CN:
       create: '创建项目'
       edit: '更新基本信息 %{name}'
       remove: '删除项目'
+      story:
+        create: '创建 story %{title}'

@@ -6,13 +6,13 @@ div class='accordion'
     a href="#{project_path(i.fetch :id)}" #{i.fetch :name}
 
   div class="bs-callout bs-callout-info"
-    p #{{md2html i.fetch（:details）}}
+    p #{{md2html i.fetch(:details)}}
     p
       - i.fetch(:logs).each do |l|
         - if l.link
-          a href="#{l.link}" #{l.text}
-          |&nbsp; #{time_ago_in_words l.created}
+          a href="#{l.link}" #{l.text}.
+          | by #{l.user} #{time_ago_in_words l.created}
         - else
-          |#{l.text} &nbsp; #{time_ago_in_words l.created}
+          |#{l.text} by #{l.user} #{time_ago_in_words l.created}
         br
 
