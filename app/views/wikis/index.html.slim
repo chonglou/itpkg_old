@@ -5,4 +5,11 @@
 = paginate @wikis
 
 - @wikis.each do |w|
-  a href="" #{w.title}
+  h4
+    a href="#{wiki_path w}" #{w.title}
+  hr
+  blockquote
+
+    p
+      |#{{md2html w.body}}
+    footer #{w.updated_at}

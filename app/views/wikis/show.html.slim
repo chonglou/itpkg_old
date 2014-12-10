@@ -1,0 +1,11 @@
+-@title = @wiki.title
+
+h3
+  | #{@title} &nbsp;
+  -if current_user.is_author_of?(@wiki)
+    =link_to t('buttons.edit'), edit_wiki_path(@wiki)
+hr
+div class='row'
+  div class="col-sm-offset-1 col-sm-10" #{{md2html @wiki.body}}
+
+

@@ -135,6 +135,8 @@ zh-CN:
     wiki:
       list: '知识库'
       create: '创建新wiki页面'
+      edit: '编辑wiki页 [%{title}]'
+      remove: '删除wiki页 [%{title}]'
     help: '帮助文档'
     about_us: '关于我们'
     finance: '财务管理'

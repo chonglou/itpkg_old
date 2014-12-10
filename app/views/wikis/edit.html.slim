@@ -1,0 +1,27 @@
+- @title=t('links.wiki.edit', title:@wiki.title)
+
+
+= bootstrap_form(@wiki, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :title
+      = f.text_field :title, autofocus: true
+
+    = f.group do
+      = f.label :body
+      = f.text_area :body
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')
+
+
+
+br
+h3 #{t('links.wiki.remove', title:@wiki.title)}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:wiki_path(@wiki), back:false

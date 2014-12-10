@@ -135,6 +135,8 @@ en:
     wiki:
       list: 'Wiki pages'
       create: 'Create a new wiki page'
+      edit: 'Edit wiki page [%{title}]'
+      remove: 'Remove wiki page [%{title}]'
     help: 'Help'
     about_us: 'About Us'
     finance: 'Finance'
