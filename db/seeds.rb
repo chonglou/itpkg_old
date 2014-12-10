@@ -14,8 +14,8 @@ Setting.git = {
 root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'changeme', confirmed_at:DateTime.now
 root.skip_confirmation!
 root.save!
-Permission.create role: "user://#{root.id}", resource: 'SYSTEM', operation: 'root.id', start_date: Date.today.strftime, end_date: '9999-12-31'
-Permission.create role: "user://#{root.id}", resource: 'SYSTEM', operation: 'ADMIN', start_date: Date.today.strftime, end_date: '9999-12-31'
+root.add_role 'admin'
+
 n1 = Notice.create user_id: root.id, body: 'IT-PACKAGE System is online now!'
 n2 = Notice.create user_id: root.id, body: 'IT-PACKAGE 系统正式上线!'
 Translation.create flag: 'notice', en: n1.id, 'zh-CN' => n2.id

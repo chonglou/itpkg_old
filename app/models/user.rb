@@ -1,4 +1,3 @@
-require 'itpkg/services/permission'
 
 class UserValidator < ActiveModel::Validator
   def validate(record)

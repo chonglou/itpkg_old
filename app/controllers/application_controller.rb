@@ -1,5 +1,3 @@
-require 'itpkg/services/permission'
-
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -19,18 +17,8 @@ class ApplicationController < ActionController::Base
   end
 
 
-  def admin?
-    u = current_user
-    u && Itpkg::PermissionService.admin?(u.id)
-  end
-
-  def root?
-    u = current_user
-    u && Itpkg::PermissionService.root?(u.id)
-  end
-
   def must_admin!
-    unless admin?
+    unless current_user.admin?
       flash[:alert] = t('labels.must_admin')
       redirect_to root_path
     end

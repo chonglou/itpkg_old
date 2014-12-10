@@ -1,4 +1,3 @@
-require 'itpkg/services/permission'
 
 module RepositoriesHelper
   def repositories_nav_buttons
@@ -16,10 +15,10 @@ module RepositoriesHelper
 
   def repositories_can_view?
     uid = current_user.id
-    @repository && @repository.enable && (RepositoryUser.find_by(repository_id: @repository.id, user_id: uid) || Itpkg::PermissionService.admin?(uid))
+    @repository && @repository.enable && (RepositoryUser.find_by(repository_id: @repository.id, user_id: uid) || user.admin?)
   end
 
   def repositories_can_edit?
-    @repository && @repository.enable && Itpkg::PermissionService.admin?(current_user.id)
+    @repository && @repository.enable && user.admin?
   end
 end

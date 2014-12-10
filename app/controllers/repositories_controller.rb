@@ -1,5 +1,4 @@
 require 'itpkg/linux/git'
-require 'itpkg/services/permission'
 
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
@@ -128,8 +127,7 @@ class RepositoriesController < ApplicationController
 
 
   def index
-    uid = current_user.id
-    if Itpkg::PermissionService.admin?(uid)
+    if current_user.admin?
       rs = Repository.where(enable:true).all
     else
       rs = RepositoryUser.all.map{|ru| ru.repository}
