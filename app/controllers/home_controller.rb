@@ -2,6 +2,7 @@ require 'itpkg/utils/string_helper'
 
 class HomeController < ApplicationController
   def index
+    redirect_to user_signed_in? ? personal_path : new_user_session_path
   end
 
   def document
