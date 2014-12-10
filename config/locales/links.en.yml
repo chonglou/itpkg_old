@@ -2,7 +2,7 @@ en:
   links:
     home: 'Home'
     user:
-      update_public_key: 'Update public key'
+      public_key: 'Public key'
       generate_keys: 'Generate key pairs'
       need_confirm_email: 'Currently waiting confirmation for: %{email}'
     project:

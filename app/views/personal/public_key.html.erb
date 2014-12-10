@@ -1,0 +1,12 @@
+
+<%= render 'layouts/button_group', items: [{url: personal_generate_keys_path, label: t('links.user.generate_keys'), data: {confirm:t('labels.are_you_sure')}, method: :post, style: 'danger'}], back: true %>
+<p>&nbsp;</p>
+<fieldset>
+  <legend><%= t('links.user.public_key') %></legend>
+  <%= form_tag(personal_public_key_path) do %>
+      <%= text_area_tag :public_key, current_user.ssh_key ? current_user.ssh_key.public_key : '', class: 'form-control', rows: 12 %>
+      <br>
+      <%= submit_tag t('buttons.submit'), class: 'btn btn-primary' %>
+  <% end %>
+</fieldset>
+

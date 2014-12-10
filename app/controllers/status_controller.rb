@@ -4,7 +4,6 @@ class StatusController < ApplicationController
   include ActionView::Helpers::DateHelper
 
   def versions
-    @index = 0
 
     @items=[
         t('links.status.versions.rb', ruby: RUBY_VERSION, rails: Rails.version, app: Setting.version),
@@ -19,18 +18,15 @@ class StatusController < ApplicationController
   end
 
   def workers
-    @index = 1
     render 'workers', layout: 'status/view'
   end
 
   def logs
-    @index = 2
     @items = BgLog.order(_id: :desc).page(params[:page])
     render 'logs', layout: 'status/view'
   end
 
   def users
-    @index = 3
     @users = User.order(id: :desc).page(params[:page])
     @items = @users.map {|u|{cols:[u.email, u.current_sign_in_at||u.last_sign_in_at, u.contact.to_s]}}
     render 'users',layout: 'status/view'

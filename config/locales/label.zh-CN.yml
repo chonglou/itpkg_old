@@ -17,7 +17,7 @@ zh-CN:
       ssh_key:
         public_key: '公钥'
       user:
-        label: '标识'
+        label: '用户名'
         email: '邮箱'
         password: '密码'
         password_confirmation: '密码确认'
@@ -59,3 +59,5 @@ zh-CN:
       repository:
         name: '标识'
         title: '标题'
+      email_user:
+        email: '用户名'

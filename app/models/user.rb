@@ -32,4 +32,8 @@ class User < ActiveRecord::Base
     "#{self.label}<#{self.email}>"
   end
 
+  def after_database_authentication
+    Log.create user_id:self.id, message:'Sign in.'
+  end
+
 end

@@ -1,12 +1,20 @@
 <% @title=t('titles.personal.edit_profile') %>
 <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <%= render 'layouts/message', style:'danger', message:t('links.user.need_confirm_email', email:resource.unconfirmed_email) %>
+    <%= render 'layouts/message', style: 'danger', message: t('links.user.need_confirm_email', email: resource.unconfirmed_email) %>
 <% end %>
 
-<%= render 'layouts/button_group', items:[{label:@title, url:edit_user_registration_path, style:'primary'}, {url:personal_generate_keys_path, label:t('links.user.generate_keys'), data: {confirm: t('labels.are_you_sure')}, method: :post, style:'danger'}], back:true%>
+<%= render 'layouts/button_group', items: [], back: true %>
+<%= render 'layouts/tabs', items:personal_nav_items%>
 
+<p>&nbsp;</p>
+<fieldset>
+  <legend><%= t('labels.user_logo') %></legend>
+  <img src="<%= email2logo resource.email %>" title="<%= resource.email %>">
+</fieldset>
+
+<p>&nbsp;</p>
 <%= bootstrap_form(resource, as: resource_name, url: registration_path(resource_name), html: {method: :put}) do |f| %>
-    <%- # devise_error_messages!    -%>
+    <%- # devise_error_messages!     -%>
     <%= f.error_messages %>
 
     <%= f.fieldset do %>
@@ -34,20 +42,7 @@
     <% end %>
 
 <% end %>
-<p>&nbsp;</p>
-<fieldset>
-  <legend><%= t('links.user.update_public_key') %></legend>
-  <%= form_tag(personal_update_public_key_path) do %>
-      <%= text_area_tag :public_key,current_user.ssh_key ? current_user.ssh_key.public_key : '', class:'form-control', rows:12%>
-      <br>
-      <%= submit_tag t('buttons.submit'), class: 'btn btn-primary'%>
-  <% end %>
-</fieldset>
-<p>&nbsp;</p>
-<fieldset>
-  <legend><%= t('labels.user_logo') %></legend>
-  <img src="<%= email2logo resource.email %>" title="<%= resource.email %>">
-</fieldset>
+
 <p>&nbsp;</p>
 <fieldset>
   <legend><%= t('labels.unhappy') %></legend>

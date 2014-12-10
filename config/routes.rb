@@ -84,7 +84,8 @@ Rails.application.routes.draw do
 
   get 'personal' => 'personal#index'
   namespace :personal do
-    post 'update_public_key'
+    get 'public_key'
+    post 'public_key'
     post 'generate_keys'
   end
 

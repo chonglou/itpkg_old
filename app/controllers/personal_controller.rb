@@ -15,19 +15,26 @@ class PersonalController < ApplicationController
     GitAdminWorker.perform_async
     UserMailer.delay.key_pairs current_user.id
     flash[:notice] = t('labels.success')
-    redirect_to edit_user_registration_path
+    redirect_to personal_public_key_path
   end
 
-  def update_public_key
-    key = current_user.ssh_key
-    if key
-      key.update public_key: params[:public_key]
-    else
-      SshKey.create user_id: current_user.id, public_key: params[:public_key], private_key: 'NULL'
+  def public_key
+    case request.method
+      when 'GET'
+        render 'public_key', layout:'personal/self'
+      when 'POST'
+        key = current_user.ssh_key
+        if key
+          key.update public_key: params[:public_key]
+        else
+          SshKey.create user_id: current_user.id, public_key: params[:public_key], private_key: 'NULL'
+        end
+        GitAdminWorker.perform_async
+        flash[:notice] = t('labels.success')
+        redirect_to edit_user_registration_path
+      else
+        render status: 404
     end
-    GitAdminWorker.perform_async
-    flash[:notice] = t('labels.success')
-    redirect_to edit_user_registration_path
   end
 
   def index

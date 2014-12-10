@@ -15,7 +15,11 @@ en:
         t_path: 'Container path'
       nt_var:
         def_v: 'Default value'
+      user:
+        label: 'Username'
       vpn_user:
         status: 'Status'
         enable_true: 'Enable'
         enable_false: 'False'
+      email_user:
+        email: 'Username'

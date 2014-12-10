@@ -3,19 +3,19 @@ module StatusHelper
     [
         {
             name: t('links.status.versions.title'),
-            url: status_versions_path
+            url: status_versions_url
         },
         {
             name: t('links.status.workers.title'),
-            url: status_workers_path
+            url: status_workers_url
         },
         {
             name: t('links.status.logs.title'),
-            url: status_logs_path
+            url: status_logs_url
         },
         {
             name: t('links.status.users.title'),
-            url: status_users_path
+            url: status_users_url
         }
     ]
   end

@@ -2,7 +2,7 @@ zh-CN:
   links:
     home: '本站首页'
     user:
-      update_public_key: '更新公钥'
+      public_key: '公钥'
       generate_keys: '重新生成密钥对'
       need_confirm_email: '等待验证邮箱: %{email}'
     project:
