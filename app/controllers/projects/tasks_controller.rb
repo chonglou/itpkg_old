@@ -1,4 +1,4 @@
-class TasksController < ApplicationController
+class Projects::TasksController < ApplicationController
   before_action :prepare_project_and_story
   before_action :prepare_task, except: [:new, :create]
 
