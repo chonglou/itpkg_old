@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210052644) do
+ActiveRecord::Schema.define(version: 20141210053210) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -307,21 +307,6 @@ ActiveRecord::Schema.define(version: 20141210052644) do
   end
 
   add_index "nt_volumes", ["node_type_id", "t_path"], name: "index_nt_volumes_on_node_type_id_and_t_path", unique: true, using: :btree
-
-  create_table "permissions", force: true do |t|
-    t.string   "resource",                          null: false
-    t.string   "role",                              null: false
-    t.string   "operation",                         null: false
-    t.date     "start_date", default: '9999-12-31', null: false
-    t.date     "end_date",   default: '1000-01-01', null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "permissions", ["operation"], name: "index_permissions_on_operation", using: :btree
-  add_index "permissions", ["resource"], name: "index_permissions_on_resource", using: :btree
-  add_index "permissions", ["role", "resource", "operation"], name: "index_permissions_on_role_and_resource_and_operation", unique: true, using: :btree
-  add_index "permissions", ["role"], name: "index_permissions_on_role", using: :btree
 
   create_table "projects", force: true do |t|
     t.string   "name",       null: false

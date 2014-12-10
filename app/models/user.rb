@@ -35,7 +35,4 @@ class User < ActiveRecord::Base
     "#{self.label}<#{self.email}>"
   end
 
-  def admin?
-    Itpkg::PermissionService.admin? self.id
-  end
 end
