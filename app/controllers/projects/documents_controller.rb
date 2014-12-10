@@ -107,17 +107,16 @@ class Projects::DocumentsController < ApplicationController
 
   private
   def _can_edit?
-    @document.creator_id == current_user.id
+    current_user.is_creator_of?(@document)
   end
 
   def _can_view?
-    #todo
-    true
+    @document.project?
   end
 
   def _can_project?
-    #todo
     @project = Project.find params[:project_id]
+    current_user.is_member_of?(@project) || current_user.is_creator_of?(@project)
   end
 
   def _file_ext(name)

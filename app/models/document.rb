@@ -1,4 +1,5 @@
 class Document < ActiveRecord::Base
+  resourcify
   #attr_accessible :avatar, :avatar_cache
 
   belongs_to :project
