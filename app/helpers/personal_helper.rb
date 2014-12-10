@@ -10,13 +10,9 @@ module PersonalHelper
             url: personal_public_key_url
         },
         {
-            name: t('links.status.logs.title'),
-            url: status_logs_path
+            name: t('links.user.logs'),
+            url: personal_logs_url
         },
-        {
-            name: t('links.status.users.title'),
-            url: status_users_path
-        }
     ]
   end
 

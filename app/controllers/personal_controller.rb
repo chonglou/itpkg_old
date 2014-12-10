@@ -3,6 +3,11 @@ require 'itpkg/linux/git'
 class PersonalController < ApplicationController
   before_action :authenticate_user!
 
+  def logs
+    @logs = Log.where(user_id:current_user.id).order(id: :desc).page(params[:page])
+    render 'logs', layout: 'personal/self'
+  end
+
   def generate_keys
     key = current_user.ssh_key
     keys = Linux::Git.key_pairs current_user.label

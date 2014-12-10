@@ -1,0 +1,3 @@
+- @title=t('links.user.logs')
+= paginate @logs
+= render 'layouts/list', title:@title, items:@logs.map {|l| "#{l.created_at}: #{l.message}"}, style:nil
