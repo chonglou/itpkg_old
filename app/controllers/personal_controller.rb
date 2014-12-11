@@ -23,6 +23,18 @@ class PersonalController < ApplicationController
     redirect_to personal_public_key_path
   end
 
+  def mail_box
+    case request.method
+      when 'GET'
+        render 'mail_box',layout:'personal/self'
+      when 'POST'
+        #todo
+        redirect_to edit_user_registration_path
+      else
+        render status:404
+    end
+  end
+
   def public_key
     case request.method
       when 'GET'

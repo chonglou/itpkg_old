@@ -1,4 +1,5 @@
-<% @title=t('titles.personal.edit_profile') %>
+<% @title=t('links.personal.password') %>
+
 <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <%= render 'layouts/message', style: 'danger', message: t('links.user.need_confirm_email', email: resource.unconfirmed_email) %>
 <% end %>

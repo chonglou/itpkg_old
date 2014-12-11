@@ -3,8 +3,6 @@ zh-CN:
     home: '本站首页'
     user:
       status: '管理员？'
-      logs: '个人日志'
-      public_key: '公钥'
       generate_keys: '重新生成密钥对'
       need_confirm_email: '等待验证邮箱: %{email}'
     project:
@@ -144,6 +142,10 @@ zh-CN:
     finance: '财务管理'
     contact: '通讯录'
     personal:
+      mail_box: '邮箱设置'
+      password: '修改密码'
+      logs: '日志列表'
+      public_key: 'KEY管理'
       info: '个人参数'
       self: '控制中心'
       logout: '安全退出'

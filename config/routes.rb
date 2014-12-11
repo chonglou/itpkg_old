@@ -86,9 +86,14 @@ Rails.application.routes.draw do
   get 'personal' => 'personal#index'
   namespace :personal do
     get 'logs'
+
     get 'public_key'
     post 'public_key'
+
     post 'generate_keys'
+
+    get 'mail_box'
+    post 'mail_box'
   end
 
 
