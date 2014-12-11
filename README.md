@@ -44,6 +44,10 @@ First time to runing maybe take a long time(several minutes) to auto setup(gener
 
     ./itpkg start
 
+    # optional
+    ./itpkg ssh # password: changeme
+    tail -f /var/www/itpkg/install.log # see the install logging.
+
 #### visit by your web brower
 
     https://www.localhost.localdomain # default user: root changeme

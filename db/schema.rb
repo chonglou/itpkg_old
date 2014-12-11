@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210212629) do
+ActiveRecord::Schema.define(version: 20141211194333) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -148,9 +148,9 @@ ActiveRecord::Schema.define(version: 20141210212629) do
   add_index "email_domains", ["name"], name: "index_email_domains_on_name", unique: true, using: :btree
 
   create_table "email_users", force: true do |t|
-    t.integer  "domain_id",             null: false
-    t.string   "password",              null: false
-    t.string   "email",      limit: 32, null: false
+    t.integer  "domain_id",  null: false
+    t.string   "password",   null: false
+    t.string   "email",      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

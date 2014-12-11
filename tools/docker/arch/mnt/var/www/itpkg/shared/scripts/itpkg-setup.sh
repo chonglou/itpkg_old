@@ -1,5 +1,6 @@
 #!/bin/sh
 
+hostname localhost.localdomain
 ITPKG_HOME=/var/www/itpkg
 export ITPKG_HOME
 
@@ -15,3 +16,5 @@ do
 	sh $f &>> $init
 	echo "### end $f $(date) ###" >> $init
 done
+
+echo "DONE, ENJOY IT." >> $init
