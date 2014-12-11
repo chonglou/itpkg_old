@@ -38,4 +38,8 @@ class User < ActiveRecord::Base
     Log.create user_id:self.id, message:'Sign in.'
   end
 
+  def full_name
+    self.first_name + ' ' + self.last_name
+  end
+
 end

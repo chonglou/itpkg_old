@@ -115,7 +115,10 @@ Rails.application.routes.draw do
         get 'viewer'
       end
       resources(:stories, controller: 'projects/stories') do
-        resources :tasks, controller: 'projects/tasks'
+        resources :story_comments, controller: 'projects/story_comments'
+        resources :tasks, controller: 'projects/tasks' do
+          resources :task_comments
+        end
       end
     end
 

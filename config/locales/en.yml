@@ -47,3 +47,5 @@ en:
       project: 'Project'
       story: 'Story'
       details: 'Details'
+  message:
+    unauthorized: 'You are not allowed to do this operation'

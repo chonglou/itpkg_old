@@ -9,7 +9,7 @@ br
   /todo 类似于project list
 = render partial: 'stories'
 
-- if current_user.admin?
+- if current_user.is_admin?
   br
   h3 #{t('links.project.remove', name:@project.name)}
   hr

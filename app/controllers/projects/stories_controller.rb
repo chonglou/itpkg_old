@@ -1,6 +1,7 @@
 require 'itpkg/services/site'
 
 class Projects::StoriesController < ApplicationController
+  before_action :authenticate_user!
   before_action :prepare_project
   before_action :prepare_story, except: [:new, :create]
 

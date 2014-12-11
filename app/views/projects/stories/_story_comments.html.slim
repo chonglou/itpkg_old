@@ -1,0 +1,60 @@
+= javascript_include_tag 'story_comment'
+
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('titles.story.comments')}
+  div class='panel-body row-fluid'
+    - for comment in @story.story_comments do
+      li class='col-sm-10'
+        p
+          i #{comment.content}
+        div class='text-right' - by #{comment.user.full_name}, #{time_ago_in_words comment.created_at}
+      div class='col-sm-2'
+        = link_to t('buttons.edit'),
+                  '',
+                  class: 'btn btn-primary col-sm-5 edit_story_comment_button',
+                  data: {toggle: 'modal',
+                         target: '#edit_story_comment_modal',
+                         id: comment.id,
+                         content: comment.content}
+        = link_to t('buttons.remove'),
+                  project_story_story_comment_path(@story.project, @story, comment),
+                  data: {confirm: t('labels.are_you_sure')},
+                  method: :delete,
+                  class: 'btn btn-danger col-sm-5 col-sm-offset-2'
+
+  hr
+  = form_for StoryComment.new,
+             url: project_story_story_comments_path(@project, @story),
+             html: {class: 'form-horizontal'},
+             method: :post do |f|
+    div class='form-group'
+      div class='col-sm-10 col-sm-offset-1'
+        strong #{'New Comment'}
+
+    div class='form-group'
+      div class='col-sm-10 col-sm-offset-1'
+        = f.text_area :content, rows: 3, class: 'form-control'
+    div class='form-group'
+      div class='col-sm-1 col-sm-offset-1'
+        = f.submit 'Submit', class: 'btn btn-primary'
+
+div id='edit_story_comment_modal' class='modal fade'
+  div class='modal-dialog'
+    div class='modal-content'
+      div class='modal-header'
+        = link_to '', class: 'close', data: {dismiss: 'modal'} do
+          span #{'X'}
+          span class='sr-only' #{'Close'}
+        h4 class='modal-title' #{'Edit Comment'}
+      div class='modal-body'
+        = bootstrap_form(StoryComment.new,
+                         url: project_story_story_comment_path(@project, @story, 0),
+                         html: {id: 'edit_story_comment_form', method: 'put', action: 'update'}) do |f|
+          = f.group do
+            = f.label t('tables.task.details')
+            = f.text_area :content, id: 'edit_story_comment_content', rows: 5
+
+          = f.button_group do
+            = f.submit t('buttons.submit')
+            = f.cancel t('buttons.cancel'), data: {dismiss: 'modal'}
