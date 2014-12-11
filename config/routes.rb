@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
 
 
+
   #--------------- My Add -----------------
 
 
@@ -15,8 +16,11 @@ Rails.application.routes.draw do
   resources :wikis
 
   #------status----------
+  get '/status/user/:id', to:'status#user', as: :get_status_user
+  post '/status/user/:id', to:'status#user', as: :post_status_user
   namespace :status do
     %w(workers logs versions users).each { |a| get a }
+
   end
 
   #----------- docker-----------

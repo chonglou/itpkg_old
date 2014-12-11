@@ -2,6 +2,7 @@ en:
   links:
     home: 'Home'
     user:
+      status: 'Admin?'
       logs: 'Logs'
       public_key: 'Public key'
       generate_keys: 'Generate key pairs'

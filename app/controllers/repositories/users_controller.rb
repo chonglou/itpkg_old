@@ -62,10 +62,12 @@ class Repositories::UsersController < ApplicationController
   end
 
   def destroy
-    uid = ur.user_id
-    ur.destroy
+    @user = User.find params[:id]
+    @user.remove_role(:reader, @repository) if @user.is_reader_of?(@repository)
+    @user.remove_role(:writer, @repository) if @user.is_writer_of?(@repository)
+
     GitAdminWorker.perform_async
-    UserMailer.delay.remove_from_repository(repository_id: @repository.id, user_id: uid)
+    UserMailer.delay.remove_from_repository(repository_id: @repository.id, user_id: @user.id)
     redirect_to repository_users_path(repository_id: @repository.id)
   end
 

@@ -2,6 +2,7 @@ zh-CN:
   links:
     home: '本站首页'
     user:
+      status: '管理员？'
       logs: '个人日志'
       public_key: '公钥'
       generate_keys: '重新生成密钥对'
