@@ -22,7 +22,6 @@ class MailBoxesController < ApplicationController
 
   def sign_out
     reset_session
-    puts '#'*100, session
     redirect_to mail_boxes_sign_in_path
   end
 
