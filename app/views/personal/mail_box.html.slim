@@ -1,7 +1,31 @@
 fieldset
   legend #{t 'links.personal.mail_box'}
-  = form_tag(personal_mail_box_path) do
-    
+  = form_tag(personal_mail_box_path, class:'form-horizontal') do
+    div class="form-group"
+      label class="col-sm-2 control-label" Host
+      div class="col-sm-4"
+        =text_field_tag :host, @mail_box.fetch(:host), class:'form-control'
+    div class="form-group"
+      label class="col-sm-2 control-label" Smtp port
+      div class="col-sm-3"
+        =select_tag :smtp, options_for_select([25, 465, 587], @mail_box.fetch(:smtp)), class:'form-control'
+    div class="form-group"
+      label class="col-sm-2 control-label" Imap port
+      div class="col-sm-3"
+        =select_tag :imap, options_for_select([143, 993], @mail_box.fetch(:imap)), class: 'form-control'
 
-    br
-    = submit_tag t('buttons.submit'), class: 'btn btn-primary'
+    div class="form-group"
+      label class="col-sm-2 control-label" Email
+      div class="col-sm-6"
+        =text_field_tag :username, @mail_box.fetch(:username), class: 'form-control'
+
+    div class="form-group"
+      label class="col-sm-2 control-label" Password
+      div class="col-sm-5"
+        =password_field_tag :password, '', class: 'form-control', autocomplete: 'off'
+
+    div class="form-group"
+      div class="col-sm-offset-3"
+        = submit_tag t('buttons.submit'), class: 'btn btn-primary'
+        | &nbsp; &nbsp;
+        = link_to t('buttons.back'), :back, class:'btn btn-info'

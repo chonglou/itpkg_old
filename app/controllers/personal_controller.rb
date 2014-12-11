@@ -1,4 +1,4 @@
-require 'itpkg/linux/git'
+require 'itpkg/utils/encryptor'
 
 class PersonalController < ApplicationController
   before_action :authenticate_user!
@@ -26,7 +26,8 @@ class PersonalController < ApplicationController
   def mail_box
     case request.method
       when 'GET'
-        @mail_box = current_user.settings.mail_box || {
+        mb = current_user.settings.mail_box
+        @mail_box =  mb ? Itpkg::Encryptor.decode(mb) : {
             host:"mail.#{ENV['ITPKG_DOMAIN']}",
             smtp:'25',
             imap:'143',
@@ -35,7 +36,7 @@ class PersonalController < ApplicationController
         }
         render 'mail_box',layout:'personal/self'
       when 'POST'
-        current_user.settings.mail_box = params.permit(:host,:smtp, :imap,:username,:password)
+        current_user.settings.mail_box = Itpkg::Encryptor.encode(params.permit(:host,:smtp, :imap,:username,:password))
         redirect_to personal_mail_box_path
       else
         render status:404
