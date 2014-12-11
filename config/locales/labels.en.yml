@@ -4,6 +4,8 @@ en:
     user_logo: 'Logo'
     unhappy: 'Unhappy? '
     must_admin: 'You are not administrator!'
+    must_login: 'You must sign in first!'
+    must_non_login: 'You has sign in!'
     are_you_sure: 'Are you sure?'
     kill_self: 'Cancel my account'
     welcome: "Welcome, <img src='%{logo}' alt='%{username}' title='%{username}'/>"

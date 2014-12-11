@@ -155,3 +155,10 @@ zh-CN:
       active: '激活账户'
       unlock: '解锁账户'
       change_password: '修改密码'
+    mail_box:
+      inbox: '收件箱'
+      outbox: '发件箱'
+      drafts: '草稿箱'
+      spam: '垃圾邮件'
+      trash: '回收站'
+      list: '电子邮箱'

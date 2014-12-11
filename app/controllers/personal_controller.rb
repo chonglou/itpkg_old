@@ -28,15 +28,16 @@ class PersonalController < ApplicationController
       when 'GET'
         mb = current_user.settings.mail_box
         @mail_box =  mb ? Itpkg::Encryptor.decode(mb) : {
-            host:"mail.#{ENV['ITPKG_DOMAIN']}",
-            smtp:'25',
-            imap:'143',
+            smtp_host:"smtp.#{ENV['ITPKG_DOMAIN']}",
+            smtp_port:'25',
+            imap_host:"imap.#{ENV['ITPKG_DOMAIN']}",
+            imap_port:'143',
             username:current_user.email,
             password:nil
         }
         render 'mail_box',layout:'personal/self'
       when 'POST'
-        current_user.settings.mail_box = Itpkg::Encryptor.encode(params.permit(:host,:smtp, :imap,:username,:password))
+        current_user.settings.mail_box = Itpkg::Encryptor.encode(params.permit(:smtp_host,:smtp_port, :imap_host, :imap_port,:username,:password))
         redirect_to personal_mail_box_path
       else
         render status:404

@@ -155,3 +155,10 @@ en:
       active: 'Active'
       unlock: 'Unlock'
       change_password: 'Change Password'
+    mail_box:
+      inbox: 'Inbox'
+      outbox: 'Outbox'
+      drafts: 'Drafts'
+      spam: 'Spam'
+      trash: 'Trash'
+      list: 'Mail Box'

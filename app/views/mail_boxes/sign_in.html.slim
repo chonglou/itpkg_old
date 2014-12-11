@@ -1,27 +1,27 @@
 fieldset
-  legend #{t 'links.personal.mail_box'}
-  = form_tag(personal_mail_box_path, class:'form-horizontal') do
+  legend #{t 'links.mail_box.list'}
+  = form_tag(mail_boxes_sign_in_path, class:'form-horizontal') do
     div class="form-group"
       label class="col-sm-2 control-label" Smtp Host
       div class="col-sm-4"
-        =text_field_tag :smtp_host, @mail_box.fetch(:smtp_host), class:'form-control'
+        =text_field_tag :smtp_host, "smtp.#{ENV['ITPKG_DOMAIN']}", class:'form-control'
     div class="form-group"
       label class="col-sm-2 control-label" Smtp port
       div class="col-sm-3"
-        =select_tag :smtp_port, options_for_select([25, 465, 587], @mail_box.fetch(:smtp_port)), class:'form-control'
+        =select_tag :smtp_port, options_for_select([25, 465, 587], 25), class:'form-control'
     div class="form-group"
       label class="col-sm-2 control-label" Imap Host
       div class="col-sm-4"
-        =text_field_tag :imap_host, @mail_box.fetch(:imap_host), class: 'form-control'
+        =text_field_tag :imap_host, "imap.#{ENV['ITPKG_DOMAIN']}", class: 'form-control'
     div class="form-group"
       label class="col-sm-2 control-label" Imap port
       div class="col-sm-3"
-        =select_tag :imap_port, options_for_select([143, 993], @mail_box.fetch(:imap_port)), class: 'form-control'
+        =select_tag :imap_port, options_for_select([143, 993],143), class: 'form-control'
 
     div class="form-group"
       label class="col-sm-2 control-label" Account
       div class="col-sm-6"
-        =text_field_tag :username, @mail_box.fetch(:username), class: 'form-control'
+        =text_field_tag :username, '', class: 'form-control'
 
     div class="form-group"
       label class="col-sm-2 control-label" Password

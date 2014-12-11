@@ -8,6 +8,7 @@ module ApplicationHelper
     if current_user
       links[personal_path] = t('links.personal.self')
     end
+    links[mail_boxes_path(label: :inbox)]=t('links.mail_box.list')
     links[document_show_path(name: 'help')]=t('links.help')
     links[document_show_path(name: 'about_us')]=t('links.about_us')
     links

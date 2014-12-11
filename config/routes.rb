@@ -10,7 +10,12 @@ Rails.application.routes.draw do
 
 
   #------mail_box--------
-  get 'mail_boxes/index'
+  %w(sign_in sign_out).each do |a|
+    get "mail_boxes/#{a}"
+  end
+  post 'mail_boxes/sign_in'
+
+  resources :mail_boxes
 
   #-------wiki---------
   resources :wikis

@@ -1,5 +1,15 @@
 - @title=t('links.node_type.show', name:@node_type.name)
 
+
 - content_for :root
-  = render 'layouts/button_group', items:node_types_nav_buttons, back:true
-= render template:'layouts/application'
+  div class='row'
+    div class="col-sm-9 col-md-10"
+      = render 'layouts/message', message:notice, style:'info'
+      = render 'layouts/message', message:alert, style:'danger'
+      = render 'layouts/button_group', items:node_types_nav_buttons, back:true
+
+      = yield
+    div class="col-sm-3 col-sm-offset-3 col-md-2 col-md-offset-2"
+      = render 'layouts/sidebar'
+
+= render template:'layouts/base'
