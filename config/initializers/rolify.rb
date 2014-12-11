@@ -1,3 +1,9 @@
+module Rolify::Configure
+  def role_table_missing?(role_class)
+    !role_class.table_exists?
+  end
+end
+
 Rolify.configure do |config|
   # By default ORM adapter is ActiveRecord. uncomment to use mongoid
   # config.use_mongoid
