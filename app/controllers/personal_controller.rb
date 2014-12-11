@@ -26,10 +26,17 @@ class PersonalController < ApplicationController
   def mail_box
     case request.method
       when 'GET'
+        @mail_box = current_user.settings.mail_box || {
+            host:"mail.#{ENV['ITPKG_DOMAIN']}",
+            smtp:'25',
+            imap:'143',
+            username:current_user.email,
+            password:nil
+        }
         render 'mail_box',layout:'personal/self'
       when 'POST'
-        #todo
-        redirect_to edit_user_registration_path
+        current_user.settings.mail_box = params.permit(:host,:smtp, :imap,:username,:password)
+        redirect_to personal_mail_box_path
       else
         render status:404
     end
