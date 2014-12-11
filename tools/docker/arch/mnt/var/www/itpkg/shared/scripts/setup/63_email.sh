@@ -16,8 +16,8 @@ append_dot_mydomain = no
 #delay_warning_time = 4h
 readme_directory = no
 
-smtpd_tls_cert_file=/etc/dovecot/dovecot.pem
-smtpd_tls_key_file=/etc/dovecot/private/dovecot.pem
+smtpd_tls_cert_file=/etc/dovecot/server.crt
+smtpd_tls_key_file=/etc/dovecot/server.key
 smtpd_use_tls=yes
 smtpd_tls_auth_only = yes
 
@@ -66,7 +66,7 @@ user = email
 password = PASSWORD
 hosts = 127.0.0.1
 dbname = itpkg
-query = SELECT destination FROM virtual_aliases WHERE source='%s'
+query = SELECT destination FROM email_aliases WHERE source='%s'
 EOF
 
 mv master.cf master.cf.orig
@@ -75,12 +75,92 @@ smtp      inet  n       -       -       -       -       smtpd
 submission inet n       -       -       -       -       smtpd
 smtps     inet  n       -       -       -       -       smtpd
 EOF
-cat >> /etc/services << "EOF"
-smtps 465/tcp
-smtps 465/udp
+
+cd /etc/dovecot
+cat > dovecot.conf << "EOF"
+protocols = imap lmtp
+
+mail_location = maildir:/var/mail/vhosts/%d/%n
+mail_privileged_group = mail
+disable_plaintext_auth = yes
+auth_mechanisms = plain login
+
+ssl_cert = </etc/dovecot/server.crt
+ssl_key = </etc/dovecot/server.key
+ssl = required
+
+passdb {
+  driver = sql
+  args = /etc/dovecot/sql.conf.ext
+}
+userdb {
+  driver = static
+  args = uid=vmail gid=vmail home=/var/mail/vhosts/%d/%n
+}
+
+service lmtp {
+  unix_listener /var/spool/postfix/private/dovecot-lmtp {
+    mode = 0600
+    user = postfix
+    group = postfix
+  }
+}
+
+service imap-login {
+  inet_listener imap {
+    port = 0
+  }
+}
+
+service auth {
+  unix_listener /var/spool/postfix/private/auth {
+    mode = 0666
+    user = postfix
+    group = postfix
+  }
+
+  unix_listener auth-userdb {
+    mode = 0600
+    user = vmail
+  }
+
+  user = dovecot
+}
+
+service auth-worker {
+  user = vmail
+}
 EOF
 
+cat > sql.conf.ext << "EOF"
+driver = mysql
+connect = host=127.0.0.1 dbname=itpkg user=email password=PASSWORD
+default_pass_scheme = SHA512-CRYPT
+password_query = SELECT email as user, password FROM email_users WHERE email='%u';
+EOF
 
-sed -i -e "s/PASSWORD/$password/g" /etc/postfix/virtual-*s.cf
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out server.key
+chmod 400 server.key
+openssl req -new -key server.key -out server.csr -subj "/C=US/ST=California/L=Goleta/O=itpkg/CN=itpkg.com"
+openssl x509 -req -days 3650 -in server.csr -signkey server.key -out server.crt
+chmod 444 server.crt
+
+chown -R vmail:dovecot /etc/dovecot
+chmod -R o-rwx /etc/dovecot
+
+
+
+cat >> /etc/services << "EOF"
+smtps 465/tcp
+EOF
+
+sed -i -e "s/PASSWORD/$password/g" /etc/postfix/virtual-*s.cf /etc/dovecot/sql.conf.ext
+mkdir -p /var/mail/vhosts
+groupadd -g 5000 vmail
+useradd -g vmail -u 5000 vmail -d /var/mail
+passwd -l vmail
+chown -R vmail:vmail /var/mail/vhosts
+
+
 systemctl restart postfix
 systemctl restart dovecot
