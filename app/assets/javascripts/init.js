@@ -1,9 +1,5 @@
 $(function () {
-    var uri = window.location.pathname;
-    if (uri == '/') {
-        uri = '/home'
-    }
-    Itpkg.active_nav_link(uri);
+    Itpkg.active_nav_link(document.URL);
 
     $('pre code').each(function(i, block) {
         hljs.highlightBlock(block);

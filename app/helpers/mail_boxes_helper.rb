@@ -3,23 +3,23 @@ module MailBoxesHelper
     [
         {
             name: t('links.mail_box.inbox'),
-            url: mail_boxes_url(label: :inbox)
+            url: mail_boxes_inbox_url(label: :inbox)
         },
         {
             name: t('links.mail_box.outbox'),
-            url: mail_boxes_url(label: :outbox)
+            url: mail_boxes_outbox_url(label: :outbox)
         },
         {
             name: t('links.mail_box.drafts'),
-            url: mail_boxes_url(label: :draft)
+            url: mail_boxes_drafts_url(label: :draft)
         },
         {
             name: t('links.mail_box.spam'),
-            url: mail_boxes_url(label: :spam)
+            url: mail_boxes_spam_url(label: :spam)
         },
         {
             name: t('links.mail_box.trash'),
-            url: mail_boxes_url(label: :trash)
+            url: mail_boxes_trash_url(label: :trash)
         },
     ]
   end

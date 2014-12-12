@@ -8,14 +8,18 @@ Rails.application.routes.draw do
   ###################### mail.localhost.localdomain ##############
   constraints subdomain: 'mail' do
     #------mail_box--------
-    %w(sign_in sign_out).each do |a|
+    %w(sign_out inbox outbox drafts spam trash).each do |a|
       get "mail_boxes/#{a}"
     end
+    #get 'mail_boxes/inbox/:label' => 'mail_boxes#inbox', as: :mail_boxes_inbox
+    post 'mail_boxes/search'
+
+    get 'mail_boxes/sign_in'
     post 'mail_boxes/sign_in'
 
     resources :mail_boxes
 
-    get '/' => 'mail_boxes#index'
+    get '/' => 'mail_boxes#index', as: :mail_home
   end
 
 
@@ -115,10 +119,9 @@ Rails.application.routes.draw do
       mount Sidekiq::Web => '/sidekiq'
     end
 
-    get '/' => 'personal#index'
+    get '/' => 'home#index', as: :www_home
   end
 
-  get 'home' => 'home#index'
   root 'home#index'
 
 end

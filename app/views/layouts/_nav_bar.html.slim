@@ -5,7 +5,7 @@ div class="container-fluid"
       span class="icon-bar"
       span class="icon-bar"
       span class="icon-bar"
-    a class="navbar-brand" href="#{main_app.root_path}" #{t 'titles.home'}
+    a class="navbar-brand" href="#{www_home_url}" #{t 'titles.home'}
   div class="collapse navbar-collapse"
     ul id='nav_bar' class="nav navbar-nav"
       - nav_links.each do |k,v|
@@ -20,11 +20,7 @@ div class="container-fluid"
       = render 'layouts/personal_bar'
       li id="qqAuthBar"
       li id="googleAuthBar"
-      li
-        = link_to image_tag('fam/flags/gif/cn.gif', alt:'简体中文', class:'nav_bar-icon'), controller:controller.controller_name, action:controller.action_name, locale:'zh-CN'
-      li
-        = link_to image_tag('fam/flags/gif/us.gif', alt:'English', class:'nav_bar-icon'), controller:controller.controller_name, action:controller.action_name, locale:'en'
-
+      = render 'layouts/lang_bar'
 
 javascript:
   $(function () {

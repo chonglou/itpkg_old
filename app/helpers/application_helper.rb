@@ -4,12 +4,12 @@ require 'itpkg/utils/string_helper'
 
 module ApplicationHelper
   def nav_links
-    links = {home_path => t('links.home')}
+    links = {www_home_url => t('links.home')}
     if current_user
-      links[personal_path] = t('links.personal.self')
+      links[personal_url] = t('links.personal.self')
     end
-    links[document_show_path(name: 'help')]=t('links.help')
-    links[document_show_path(name: 'about_us')]=t('links.about_us')
+    links[document_show_url(name: 'help')]=t('links.help')
+    links[document_show_url(name: 'about_us')]=t('links.about_us')
     links
 
   end

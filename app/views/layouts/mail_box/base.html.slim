@@ -1,0 +1,47 @@
+doctype html
+html
+  head
+    meta charset="utf-8"
+    meta http-equiv="X-UA-Compatible" content="IE=edge"
+    meta name="viewport" content="width=device-width, initial-scale=1"
+    meta name="keywords" content="TODO"
+    meta name="description" content="TODO"
+    meta name="author" content="jitang.zheng@gmail.com"
+    link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#{image_path 'logo/32x32.ico'}"
+    title #{@title}#{'-' if @title}#{t 'titles.home' }
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    /[if lt IE 9]
+      = javascript_include_tag 'html5shiv.min'
+      = javascript_include_tag 'respond.min'
+    = csrf_meta_tags
+  body
+    div class="navbar navbar-inverse navbar-fixed-top" role="navigation"
+      div class="container-fluid"
+        div class="navbar-header"
+          button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse"
+            span class="sr-only"
+            span class="icon-bar"
+            span class="icon-bar"
+            span class="icon-bar"
+          a class="navbar-brand" href="#{mail_home_url}" #{@user ? @user.fetch(:username) : t('titles.home')}
+        div class="collapse navbar-collapse"
+          ul id='nav_bar' class="nav navbar-nav"
+            - if @user
+              - mail_boxes_nav_items.each do |i|
+                li
+                  a href="#{i.fetch :url}" #{i.fetch :name}
+          form method="post" target="_blank" action="#{mail_boxes_search_path}" class="navbar-form form-inline pull-left"
+            = hidden_field_tag :authenticity_token, form_authenticity_token
+            input class="form-control col-lg-8" name="keyword" text="text" placeholder="#{t 'labels.click_to_search'}"
+          ul class="nav navbar-nav navbar-right"
+            - if @user
+              li
+                a href="#{mail_boxes_sign_out_path}" #{t('links.personal.logout')}
+            = render 'layouts/lang_bar'
+    div class="container-fluid"
+      = render 'layouts/message', message:notice, style:'info'
+      = render 'layouts/message', message:alert, style:'danger'
+      = yield
+      = render 'layouts/footer'
+    = javascript_include_tag 'init'

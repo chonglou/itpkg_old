@@ -1,6 +1,7 @@
 active_nav_link = (uri)->
   $("ul#nav_bar li a").each (index, element)=>
-    if uri.indexOf($(element).attr('href').split('?')[0]) == 0
+    #if uri.indexOf($(element).attr('href').split('?')[0]) == 0
+    if $(element).attr('href') == uri
       $(element).parent().addClass('active')
     return
   return
