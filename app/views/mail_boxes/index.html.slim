@@ -5,7 +5,7 @@ div class="row"
     -@mails.each do |m|
       h4
         | #{m.subject} &nbsp;
-        =link_to t('buttons.remove'), mail_box_path(m.message_id, label:params[:label]), data: {confirm: t('labels.are_you_sure')}, method: :delete
+        /=link_to t('buttons.remove'), mail_box_path(m.message_id, label:params[:label]), data: {confirm: t('labels.are_you_sure')}, method: :delete
       blockquote
 
         p #{m.body.decoded}

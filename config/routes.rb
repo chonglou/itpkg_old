@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       post "mail_boxes/#{a}"
     end
 
-    resources :mail_boxes
+    resources :mail_boxes, only:[:index, :new, :create]
 
     get '/' => 'mail_boxes#index', as: :mail_home
   end

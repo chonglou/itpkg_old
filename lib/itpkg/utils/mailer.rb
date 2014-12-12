@@ -1,4 +1,5 @@
 require 'mail'
+require 'net/imap'
 
 module Itpkg
   class Mailer
@@ -20,8 +21,9 @@ module Itpkg
       _imap.find(mailbox:label, order:order,count:50)
     end
 
-    def remove(label, message_id)
+    def remove(message_id)
       #todo
+      message_id = Net::IMAP.encode_utf7 message_id
       _imap.connection do |c|
         c.select label
         c.copy message_id, 'trash'
@@ -58,6 +60,12 @@ module Itpkg
       end
       mail.from = @user
       _smtp.deliver! mail
+
+      _imap.connection do |c|
+        mb = 'Sent'
+        c.create mb unless c.list('', mb)
+        c.append mb, mail.to_s
+      end
     end
 
     private

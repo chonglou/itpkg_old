@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141211194333) do
+ActiveRecord::Schema.define(version: 20141212193637) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -187,30 +187,6 @@ ActiveRecord::Schema.define(version: 20141211194333) do
   create_table "logs", force: true do |t|
     t.integer  "user_id",    null: false
     t.string   "message",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "mail_boxes", force: true do |t|
-    t.string   "from",       limit: 64,               null: false
-    t.string   "to",         limit: 64,               null: false
-    t.string   "bcc",        limit: 1024
-    t.string   "cc",         limit: 1024
-    t.string   "subject"
-    t.text     "content"
-    t.integer  "owner_id",                            null: false
-    t.integer  "flag",       limit: 2,    default: 0, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "mail_boxes", ["from"], name: "index_mail_boxes_on_from", using: :btree
-  add_index "mail_boxes", ["subject"], name: "index_mail_boxes_on_subject", using: :btree
-  add_index "mail_boxes", ["to"], name: "index_mail_boxes_on_to", using: :btree
-
-  create_table "mail_boxes_documents", id: false, force: true do |t|
-    t.integer  "mail_boxes_id"
-    t.integer  "documents_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

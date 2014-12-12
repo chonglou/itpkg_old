@@ -4,21 +4,8 @@ require 'itpkg/utils/mailer'
 class MailBoxesController < ApplicationController
   layout 'mail_box/base'
   before_action :_mb_user
-  before_action :_must_login, only: [:show, :new, :create, :edit, :update, :destroy]
+  before_action :_must_login, only: [:new, :create]
 
-
-  def create
-    kv=params.permit(:to, :subject, :body)
-    begin
-      @mailer.push(kv.fetch(:to).split(';'), kv.fetch(:subject), kv.fetch(:body))
-      flash[:notice] = t('labels.success')
-      redirect_to new_mail_box_path
-    rescue => e
-      flash[:alert] = e
-      render 'new'
-    end
-
-  end
 
   def sign_in
     if @mailer
@@ -51,10 +38,17 @@ class MailBoxesController < ApplicationController
     redirect_to mail_boxes_sign_in_path
   end
 
-  def destroy
-    lbl = params[:label]
-    @mailer.remove lbl, params[:id]
-    redirect_to mail_boxes_path(label:lbl)
+  def create
+    kv=params.permit(:to, :subject, :body)
+    begin
+      @mailer.push(kv.fetch(:to).split(';'), kv.fetch(:subject), kv.fetch(:body))
+      flash[:notice] = t('labels.success')
+      redirect_to new_mail_box_path
+    rescue => e
+      flash[:alert] = e
+      render 'new'
+    end
+
   end
 
   def index
@@ -66,7 +60,7 @@ class MailBoxesController < ApplicationController
     end
 
     @items = @mailer.folders.map { |n| {name: n, url: mail_boxes_url(label: n)} }
-    
+
     begin
       @mails = @mailer.pull(params[:label])
     rescue Net::IMAP::NoResponseError

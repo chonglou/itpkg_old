@@ -18,7 +18,7 @@ describe 'Linux Email' do
       #puts e.inspect
       e.message_id
     end
-    @u2.remove 'INBOX', ids.first
+    @u2.remove  ids.first
   end
 
   it 'test' do
