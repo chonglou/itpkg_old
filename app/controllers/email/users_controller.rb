@@ -1,3 +1,5 @@
+require 'itpkg/utils/mysql_helper'
+
 class Email::UsersController < ApplicationController
   before_action :must_admin!
 
@@ -35,7 +37,7 @@ class Email::UsersController < ApplicationController
         render 'new'
       else
         @user.email = email
-        @user.password = _password @user.password
+        @user.password = Itpkg::MysqlHelper.email_password @user.password
         @user.save
         redirect_to email_users_path
       end
@@ -54,7 +56,7 @@ class Email::UsersController < ApplicationController
   def update
 
     rv = params.require(:email_user).permit(:password)
-    rv['password'] = _password rv['password']
+    rv['password'] = Itpkg::MysqlHelper.email_password rv['password']
     @user = Email::User.find params[:id]
     if @user.update(rv)
       redirect_to email_users_path
@@ -78,8 +80,5 @@ class Email::UsersController < ApplicationController
     params.require(:email_user).permit(:email, :password, :domain_id)
   end
 
-  def _password(password)
-    result = ActiveRecord::Base.connection.execute "SELECT ENCRYPT('#{password}', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16)))"
-    result.first[0]
-  end
+
 end

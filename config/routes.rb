@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
     post 'mail_boxes/search'
 
-    %w(sign_in).each do |a|
+    %w(sign_in password).each do |a|
       get "mail_boxes/#{a}"
       post "mail_boxes/#{a}"
     end

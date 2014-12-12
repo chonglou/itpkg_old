@@ -22,5 +22,12 @@ module Itpkg
       password
     end
 
+    def email_password(password)
+      result = ActiveRecord::Base.connection.execute "SELECT ENCRYPT('#{password}', CONCAT('$6$', SUBSTRING(SHA(RAND()), -16)))"
+      result.first[0]
+    end
+
+
+
   end
 end
