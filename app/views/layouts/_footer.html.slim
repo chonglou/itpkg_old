@@ -1,3 +1,9 @@
 hr
 footer
-  p #{{t 'labels.copyright', version:(Setting.version || t('labels.unknown'))}}
+  p
+    |#{{t 'labels.copyright', version:(Setting.version || t('labels.unknown'))}} &nbsp;
+    a href="#{www_home_url}"
+      img class='nav_bar-icon' title='#{www_home_url}' src="#{image_path 'flat/256/world15.png'}"
+    | &nbsp;
+    a href="#{mail_home_url}"
+      img class='nav_bar-icon' title='#{mail_home_url}' src="#{image_path 'flat/256/email27.png'}"
