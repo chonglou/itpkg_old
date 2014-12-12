@@ -13,10 +13,12 @@ describe 'Linux Email' do
   end
 
   it 'imap' do
-    @u2.pull do |e|
-      puts '#'*80
-      puts e.inspect
+    ids = @u2.pull.map do |e|
+      #puts '#'*80
+      #puts e.inspect
+      e.message_id
     end
+    @u2.remove 'INBOX', ids.first
   end
 
   it 'test' do

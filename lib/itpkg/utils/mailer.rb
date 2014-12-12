@@ -16,8 +16,29 @@ module Itpkg
       end
     end
 
-    def pull
-      _imap.all.each { |m| yield m }
+    def pull(label='INBOX', order=:desc)
+      _imap.find(mailbox:label, order:order,count:50)
+    end
+
+    def remove(label, message_id)
+      _imap.connection do |c|
+        c.select label
+        c.copy message_id, 'trash'
+        c.store message_id, '+FLAGS', [:Deleted]
+        c.expunge
+      end
+    end
+
+    def mkdir(label)
+      _imap.connection do |c|
+        c.create label
+      end
+    end
+
+    def rmdir(label)
+      _imap.connection do |c|
+        c.delete label
+      end
     end
 
 

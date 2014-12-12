@@ -160,7 +160,7 @@ zh-CN:
       inbox: '默认'
       outbox: '发件箱'
       drafts: '草稿箱'
-      spam: '垃圾邮件'
+      spam: '垃圾箱'
       trash: '回收站'
       list: '收件箱'
       compose: '新建邮件'

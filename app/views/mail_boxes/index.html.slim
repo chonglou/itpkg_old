@@ -1,0 +1,14 @@
+div class="row"
+  div class='col-sm-offset-1 col-sm-10'
+    =render 'layouts/tabs', items: @items
+    br
+    -@mails.each do |m|
+      h4
+        | #{m.subject} &nbsp;
+        =link_to t('buttons.remove'), mail_box_path(m.message_id, label:params[:label]), data: {confirm: t('labels.are_you_sure')}, method: :delete
+      blockquote
+
+        p #{m.body.decoded}
+        footer
+          | #{m.from[0]} &nbsp;
+          cite #{time_ago_in_words m.date}
