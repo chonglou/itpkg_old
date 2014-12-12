@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141212193637) do
+ActiveRecord::Schema.define(version: 20141212221832) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -465,26 +465,33 @@ ActiveRecord::Schema.define(version: 20141212193637) do
   add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
 
   create_table "vpn_logs", force: true do |t|
-    t.string   "flag",    limit: 1, default: "O", null: false
-    t.string   "email",                           null: false
-    t.string   "message",                         null: false
-    t.integer  "host_id",           default: 0,   null: false
-    t.datetime "created",                         null: false
+    t.string   "user",                                  null: false
+    t.string   "trusted_ip",   limit: 32
+    t.string   "trusted_port", limit: 16
+    t.string   "remote_ip",    limit: 32
+    t.string   "remote_port",  limit: 16
+    t.datetime "start_time",                            null: false
+    t.datetime "end_time",                              null: false
+    t.float    "received",     limit: 24, default: 0.0, null: false
+    t.float    "send",         limit: 24, default: 0.0, null: false
   end
 
-  add_index "vpn_logs", ["email"], name: "index_vpn_logs_on_email", using: :btree
+  add_index "vpn_logs", ["user"], name: "index_vpn_logs_on_user", using: :btree
 
   create_table "vpn_users", force: true do |t|
-    t.string   "passwd",                     null: false
-    t.string   "email",                      null: false
-    t.boolean  "enable",     default: false, null: false
+    t.string   "name",                       null: false
+    t.string   "email"
+    t.string   "phone"
+    t.string   "password",                   null: false
+    t.boolean  "online",     default: false
+    t.boolean  "enable",     default: false
     t.date     "start_date",                 null: false
     t.date     "end_date",                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "vpn_users", ["email"], name: "index_vpn_users_on_email", unique: true, using: :btree
+  add_index "vpn_users", ["name"], name: "index_vpn_users_on_name", unique: true, using: :btree
 
   create_table "wikis", force: true do |t|
     t.string   "title",                            null: false

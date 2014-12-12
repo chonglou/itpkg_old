@@ -102,14 +102,6 @@ RUN sudo sed -i '$i\    include itpkg/*.conf;'  /etc/nginx/nginx.conf \
 && sudo pacman -U --noconfirm apache-tools-*-x86_64.pkg.tar.xz 
 
 
-# openvpn
-RUN cd /tmp \
-&& wget https://aur.archlinux.org/packages/pa/pam_mysql/pam_mysql.tar.gz \
-&& tar xf pam_mysql.tar.gz \
-&& cd pam_mysql \
-&& makepkg \
-&& sudo pacman -U --noconfirm pam_mysql-*-x86_64.pkg.tar.xz 
-
 # bind9
 RUN sudo abs extra/bind \
 && cp -r /var/abs/extra/bind /tmp \
