@@ -24,18 +24,18 @@ html
             span class="icon-bar"
             span class="icon-bar"
             span class="icon-bar"
-          a class="navbar-brand" href="#{mail_home_url}" #{@user ? @user.fetch(:username) : t('titles.home')}
+          a class="navbar-brand" href="#{mail_home_url}" #{@mailer ? @mailer.user : t('titles.home')}
         div class="collapse navbar-collapse"
           ul id='nav_bar' class="nav navbar-nav"
-            - if @user
-              - mail_boxes_nav_items.each do |i|
+            - if @mailer
+              - mail_boxes_top_nav_items.each do |i|
                 li
                   a href="#{i.fetch :url}" #{i.fetch :name}
           form method="post" target="_blank" action="#{mail_boxes_search_path}" class="navbar-form form-inline pull-left"
             = hidden_field_tag :authenticity_token, form_authenticity_token
             input class="form-control col-lg-8" name="keyword" text="text" placeholder="#{t 'labels.click_to_search'}"
           ul class="nav navbar-nav navbar-right"
-            - if @user
+            - if @mailer
               li
                 a href="#{mail_boxes_sign_out_path}" #{t('links.personal.logout')}
             = render 'layouts/lang_bar'

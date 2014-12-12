@@ -157,9 +157,10 @@ en:
       change_password: 'Change Password'
     mail_box:
       client_settings: 'Email Client Setting '
-      inbox: 'Inbox'
+      inbox: 'Default'
       outbox: 'Outbox'
       drafts: 'Drafts'
       spam: 'Spam'
       trash: 'Trash'
-      list: 'Mail Box'
+      list: 'Inbox'
+      compose: 'Compose'

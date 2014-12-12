@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'itpkg/utils/mail_helper'
+require 'itpkg/utils/mailer'
 
 describe 'Linux Email' do
   before do
@@ -15,8 +15,15 @@ describe 'Linux Email' do
   it 'imap' do
     @u2.pull do |e|
       puts '#'*80
-      puts e.to_s
+      puts e.inspect
     end
+  end
+
+  it 'test' do
+    @u2.test
+  end
+  it 'folder' do
+    @u2.folders
   end
 
 
