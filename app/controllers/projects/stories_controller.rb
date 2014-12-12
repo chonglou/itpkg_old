@@ -4,6 +4,7 @@ class Projects::StoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :prepare_project
   before_action :prepare_story, except: [:new, :create]
+  before_action :check_user_authority
 
   def new
     @story = Story.new
@@ -57,6 +58,13 @@ class Projects::StoriesController < ApplicationController
 
   def prepare_story
     @story = Story.find params[:id]
+  end
+
+  def check_user_authority
+    unless current_user.has_role? :member, Project.find(params[:project_id])
+      flash[:alert] = t('message.unauthorized')
+      redirect_to :back
+    end
   end
 
   def story_params

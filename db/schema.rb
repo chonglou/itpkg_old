@@ -23,16 +23,6 @@ ActiveRecord::Schema.define(version: 20141217185325) do
     t.datetime "updated_at"
   end
 
-  create_table "comments", force: true do |t|
-    t.integer  "user_id",    null: false
-    t.integer  "project_id"
-    t.integer  "task_id"
-    t.integer  "story_id"
-    t.text     "content",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "confirmations", force: true do |t|
     t.string   "subject",                                     null: false
     t.integer  "status",                          default: 0, null: false
@@ -427,6 +417,17 @@ ActiveRecord::Schema.define(version: 20141217185325) do
     t.datetime "updated_at"
   end
 
+  create_table "story_comments", force: true do |t|
+    t.text     "content"
+    t.integer  "user_id"
+    t.integer  "story_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "story_comments", ["story_id"], name: "index_story_comments_on_story_id", using: :btree
+  add_index "story_comments", ["user_id"], name: "index_story_comments_on_user_id", using: :btree
+
   create_table "story_followers", force: true do |t|
     t.integer  "story_id"
     t.integer  "user_id"
@@ -456,6 +457,17 @@ ActiveRecord::Schema.define(version: 20141217185325) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "task_comments", force: true do |t|
+    t.text     "content"
+    t.integer  "user_id"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "task_comments", ["task_id"], name: "index_task_comments_on_task_id", using: :btree
+  add_index "task_comments", ["user_id"], name: "index_task_comments_on_user_id", using: :btree
 
   create_table "tasks", force: true do |t|
     t.integer  "story_id",                         null: false
@@ -496,6 +508,8 @@ ActiveRecord::Schema.define(version: 20141217185325) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "label",                               null: false
+    t.string   "first_name"
+    t.string   "last_name"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

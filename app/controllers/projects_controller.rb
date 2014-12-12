@@ -24,6 +24,8 @@ class ProjectsController < ApplicationController
     @project.creator_id = current_user.id
     @project.users << current_user
     if @project.save
+      current_user.add_role :creator, @project
+      current_user.add_role :member, @project
       Itpkg::LogService.teamwork current_user.label, @project.id, project_path(@project.id), t('logs.project.create')
       redirect_to project_path(@project.id)
     else

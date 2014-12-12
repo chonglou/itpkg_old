@@ -1,6 +1,6 @@
 class Projects::StoryCommentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_user_authorization, except: [:create]
+  before_action :check_user_authority
   before_action :prepare_story
   after_action  :redirect_back
 
@@ -13,15 +13,21 @@ class Projects::StoryCommentsController < ApplicationController
   end
 
   def destroy
-    @story_comment.destroy
+    if current_user.id == @story_comment.user_id
+      @story_comment.destroy
+    else
+      flash[:alert] = t('message.unauthorized')
+      redirect_to project_story_path(params[:project_id], params[:story_id])
+    end
   end
 
   private
-  def check_user_authorization
-    @story_comment = StoryComment.find params[:id]
-    unless current_user.id == @story_comment.user_id
+
+  def check_user_authority
+    if current_user.has_role? :member, Project.find(params[:project_id])
+      @story_comment = StoryComment.find params[:id]
+    else
       flash[:alert] = t('message.unauthorized')
-      redirect_to project_story_path(params[:project_id], params[:story_id])
     end
   end
 
