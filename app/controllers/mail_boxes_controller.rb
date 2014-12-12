@@ -34,6 +34,7 @@ class MailBoxesController < ApplicationController
         begin
           mailer.test
           session[_session_key] = Itpkg::Encryptor.encode cfg
+          flash[:notice] = t('labels.success')
           _goto_main and return
         rescue Net::IMAP::NoResponseError => e
           flash[:alert] = e
@@ -63,12 +64,9 @@ class MailBoxesController < ApplicationController
     unless params[:label]
       _goto_main and return
     end
-    @items = @mailer.folders.map { |n| {name: t("links.mail_box.#{n.downcase}", default:n), url: mail_boxes_url(label: n)} }
-    if @items.size == 1
-      %w(Outbox Drafts Spam Trash).each {|n| @mailer.mkdir n}
-      @items = @mailer.folders.map { |n| {name: t("links.mail_box.#{n.downcase}", default:n), url: mail_boxes_url(label: n)} }
-    end
-    #%w(inbox outbox drafts spam trash).each { |n| @items << {name: , url: mail_boxes_url(label: n)} }
+
+    @items = @mailer.folders.map { |n| {name: n, url: mail_boxes_url(label: n)} }
+    
     begin
       @mails = @mailer.pull(params[:label])
     rescue Net::IMAP::NoResponseError

@@ -12,7 +12,7 @@ module Itpkg
 
     def folders
       _imap.connection do |c|
-        c.list('*', '*').map{|l|l.name}
+        c.list('*', '*').map{|l|Net::IMAP.decode_utf7 l.name}
       end
     end
 
@@ -21,6 +21,7 @@ module Itpkg
     end
 
     def remove(label, message_id)
+      #todo
       _imap.connection do |c|
         c.select label
         c.copy message_id, 'trash'

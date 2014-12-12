@@ -113,7 +113,7 @@ Rails.application.routes.draw do
 
     get 'document/*name' => 'home#document', as: :document_show
     post 'search' => 'home#search'
-    devise_for :users, controllers: {registrations: 'registrations'}
+    devise_for :users#, controllers: {registrations: 'registrations'}
 
 
     authenticate :user, lambda { |u| u.is_admin? } do

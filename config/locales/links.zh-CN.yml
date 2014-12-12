@@ -157,10 +157,5 @@ zh-CN:
       change_password: '修改密码'
     mail_box:
       client_settings: '邮件客户端设置'
-      inbox: '默认'
-      outbox: '发件箱'
-      drafts: '草稿箱'
-      spam: '垃圾箱'
-      trash: '回收站'
       list: '收件箱'
       compose: '新建邮件'

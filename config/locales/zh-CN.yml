@@ -1,6 +1,7 @@
 zh-CN:
   titles:
-    home: 'IT解决方案包'
+    www_home: 'IT解决方案包'
+    mail_home: '邮件系统'
     about_us: '关于我们'
     personal:
       login: '登录'

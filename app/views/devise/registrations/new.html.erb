@@ -12,6 +12,10 @@
             <%= f.name_field :label, autofocus: true %>
         <% end %>
         <%= f.group do %>
+            <%= f.label :email %>
+            <%= f.email_field :email%>
+        <% end %>
+        <%= f.group do %>
             <%= f.label :password %>
             <% if @validatable %>
                 <i>(<%= @minimum_password_length %> characters minimum)</i>

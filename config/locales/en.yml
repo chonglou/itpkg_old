@@ -21,7 +21,8 @@
 
 en:
   titles:
-    home: "IT-PACKAGE"
+    www_home: "IT-PACKAGE"
+    mail_home: "Email System"
     about_us: 'About Us'
     personal:
       login: 'Sign In'
