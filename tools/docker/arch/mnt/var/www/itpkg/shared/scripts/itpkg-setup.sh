@@ -1,6 +1,6 @@
 #!/bin/sh
 
-hostname localhost.localdomain
+hostname itpkg.localhost.localdomain
 ITPKG_HOME=/var/www/itpkg
 export ITPKG_HOME
 
