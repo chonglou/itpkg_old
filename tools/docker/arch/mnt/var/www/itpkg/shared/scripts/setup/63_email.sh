@@ -89,6 +89,7 @@ auth_mechanisms = plain login
 #log_path = /var/log/dovecot.log
 #auth_verbose = yes
 #mail_debug = yes
+postmaster_address = ops@itpkg.com
 
 ssl_cert = </etc/dovecot/server.crt
 ssl_key = </etc/dovecot/server.key
