@@ -156,6 +156,7 @@ zh-CN:
       unlock: '解锁账户'
       change_password: '修改密码'
     mail_box:
+      client_settings: '邮件客户端设置'
       inbox: '收件箱'
       outbox: '发件箱'
       drafts: '草稿箱'

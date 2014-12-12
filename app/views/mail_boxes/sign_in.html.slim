@@ -19,10 +19,10 @@ div class="row"
           | &nbsp; &nbsp;
           = link_to t('buttons.back'), :back, class:'btn btn-info'
 
-h3 Email Client Setting
+h3 #{t('links.mail_box.client_settings')}
 hr
 div class="row"
-  div class="col-lg-offset-1 col-lg-4"
+  div class="col-lg-offset-1 col-lg-3"
     h2 SMTP
     p
       | Host: smtp.#{ENV['ITPKG_DOMAIN']}
@@ -30,7 +30,7 @@ div class="row"
       | Port: 25
       br
       | STARTTLS: true
-  div class="col-lg-4"
+  div class="col-lg-3"
     h2 IMAP
     p
       | Host: imap.#{ENV['ITPKG_DOMAIN']}
@@ -38,3 +38,16 @@ div class="row"
       | Port: 993
       br
       | STARTTLS: true
+  div class="col-lg-3"
+    h2 Claws Mail
+    p
+      div class="row"
+        div class="col-sm-2"
+          a href="http://www.claws-mail.org/win32/" target="_blank"
+            img src="#{image_path 'os/win32.png'}"
+        div class="col-sm-2"
+          a href="https://launchpad.net/~claws-mail/+archive/" target="_blank"
+            img src="#{image_path 'os/ubuntu.png'}"
+        div class="col-sm-2"
+          a href="http://www.claws-mail.org/downloads.php?section=downloads" target="_blank"
+            img src="#{image_path 'os/claws.png'}"
