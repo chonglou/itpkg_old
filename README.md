@@ -51,6 +51,7 @@ First time to runing maybe take a long time(several minutes) to auto setup(gener
 #### visit by your web brower
 
     https://www.localhost.localdomain # default user: root changeme
+    https://mail.localhost.localdomain # need create a email account first.
 
 #### visit by ssh
 

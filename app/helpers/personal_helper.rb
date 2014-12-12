@@ -12,11 +12,7 @@ module PersonalHelper
         {
             name: t('links.personal.logs'),
             url: personal_logs_url
-        },
-        {
-            name: t('links.personal.mail_box'),
-            url: personal_mail_box_url
-        },
+        }
     ]
   end
 

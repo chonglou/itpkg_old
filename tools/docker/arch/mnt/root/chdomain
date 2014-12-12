@@ -8,7 +8,7 @@ then
 fi
 
 sed -i "s/^ITPKG_DOMAIN=.*/ITPKG_DOMAIN=$1/g" $ITPKG_HOME/shared/.rbenv-vars
-sed -i "s/^  server_name .*/  server_name www.$1;/g" /etc/nginx/itpkg/www.conf
+sed -i "s/^  server_name .*/  server_name www.$1 mail.$1;/g" /etc/nginx/itpkg/www.conf
 sed -i "s/^  server_name .*/  server_name wss.$1;/g" /etc/nginx/itpkg/wss.conf
 sed -i "s/^  server_name .*/  server_name docker.$1;/g" /etc/nginx/itpkg/docker-registry.conf
 

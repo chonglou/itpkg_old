@@ -75,6 +75,11 @@ Itpkg默认通信链路通过vpn进行保护
     cd ../ruby-vars
     git pull
 
+#### 启动
+    rails server
+    firefox http://www.localhost.localdomain:3000
+    firefox http://mail.localhost.localdomain:3000
+
 
 
 ### 代码风格

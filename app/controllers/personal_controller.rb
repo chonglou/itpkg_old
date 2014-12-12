@@ -23,26 +23,26 @@ class PersonalController < ApplicationController
     redirect_to personal_public_key_path
   end
 
-  def mail_box
-    case request.method
-      when 'GET'
-        mb = current_user.settings.mail_box
-        @mail_box =  mb ? Itpkg::Encryptor.decode(mb) : {
-            smtp_host:"smtp.#{ENV['ITPKG_DOMAIN']}",
-            smtp_port:'25',
-            imap_host:"imap.#{ENV['ITPKG_DOMAIN']}",
-            imap_port:'143',
-            username:current_user.email,
-            password:nil
-        }
-        render 'mail_box',layout:'personal/self'
-      when 'POST'
-        current_user.settings.mail_box = Itpkg::Encryptor.encode(params.permit(:smtp_host,:smtp_port, :imap_host, :imap_port,:username,:password))
-        redirect_to personal_mail_box_path
-      else
-        render status:404
-    end
-  end
+  # def mail_box
+  #   case request.method
+  #     when 'GET'
+  #       mb = current_user.settings.mail_box
+  #       @mail_box =  mb ? Itpkg::Encryptor.decode(mb) : {
+  #           smtp_host:"smtp.#{ENV['ITPKG_DOMAIN']}",
+  #           smtp_port:'25',
+  #           imap_host:"imap.#{ENV['ITPKG_DOMAIN']}",
+  #           imap_port:'143',
+  #           username:current_user.email,
+  #           password:nil
+  #       }
+  #       render 'mail_box',layout:'personal/self'
+  #     when 'POST'
+  #       current_user.settings.mail_box = Itpkg::Encryptor.encode(params.permit(:smtp_host,:smtp_port, :imap_host, :imap_port,:username,:password))
+  #       redirect_to personal_mail_box_path
+  #     else
+  #       render status:404
+  #   end
+  # end
 
   def public_key
     case request.method
