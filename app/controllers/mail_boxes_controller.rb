@@ -22,7 +22,8 @@ class MailBoxesController < ApplicationController
             Email::User.find_by(email:email).update password:Itpkg::MysqlHelper.email_password(cfg.fetch(:new_password))
             reset_session
             redirect_to mail_boxes_sign_in_path and return
-          rescue Net::IMAP::NoResponseError => e
+
+          rescue => e #Net::IMAP::NoResponseError Errno::ECONNREFUSED
             flash[:alert] = e
           end
         else
@@ -50,7 +51,7 @@ class MailBoxesController < ApplicationController
           session[_session_key] = Itpkg::Encryptor.encode cfg
           flash[:notice] = t('labels.success')
           _goto_main and return
-        rescue Net::IMAP::NoResponseError => e
+        rescue => e
           flash[:alert] = e
           render 'sign_in'
         end
@@ -90,7 +91,8 @@ class MailBoxesController < ApplicationController
 
     begin
       @mails = @mailer.pull(params[:label])
-    rescue Net::IMAP::NoResponseError
+    rescue =>e
+      flash[:alert] = e
       @mails = []
     end
   end
