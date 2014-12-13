@@ -65,7 +65,7 @@ user nobody
 client-to-client
 username-as-common-name
 
-auth-user-pass-verify /etc/openvpn/script/login.sh via-env
+auth-user-pass-verify /etc/openvpn/scripts/login.sh via-env
 
 script-security 3 system
 client-connect /etc/openvpn/scripts/connect.sh
