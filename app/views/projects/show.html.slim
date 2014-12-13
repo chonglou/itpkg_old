@@ -1,3 +1,5 @@
+= javascript_include_tag 'project'
+
 - @title=@project.name
 
 = render 'layouts/button_group', items:@buttons, back:true
@@ -14,3 +16,35 @@ br
   h3 #{t('links.project.remove', name:@project.name)}
   hr
   = render 'layouts/remove_button', name: 'buttons.remove', url: project_path(@project), back: false
+
+div id='invite_modal' class='modal fade'
+  div class='modal-dialog'
+    div class='modal-content'
+      div class='modal-header'
+        = link_to '', class:'close', data: { dismiss: 'modal'} do
+          span #{'X'}
+          span class='sr-only' #{'Close'}
+        h4 class='modal-title' #{t('links.project.add')}
+      div class='modal-body'
+        table class='table table-striped'
+          thead
+            tr
+              th #{t('tables.user.label')}
+              th #{t('tables.user.email')}
+              th #{t('tables.user.add')}
+          tbody
+            - for user in @users do
+              tr
+                td class="col-sm-5" #{user.full_name}
+                td class="col-sm-5" #{user.email}
+                td class="col-sm-2"
+                  - if user.has_role? :member, @project
+                    = link_to '',
+                              class: 'remove-user-link btn btn-info btn-sm',
+                              data: {project_id: @project.id, user_id: user.id} do
+                      span class='glyphicon glyphicon-ok'
+                  - else
+                    = link_to '',
+                              class: 'add-user-link btn btn-info btn-sm',
+                              data: { project_id: @project.id, user_id: user.id } do
+                      span class='glyphicon glyphicon-plus-sign'

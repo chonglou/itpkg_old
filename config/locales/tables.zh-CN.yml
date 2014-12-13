@@ -52,7 +52,12 @@ zh-CN:
       status: '状态'
       description: '描述'
       action: '操作'
+      new_comment: '新评论'
     task:
       id: 'ID'
       details: '详细描述'
       action: '操作'
+    user:
+      label: '用户列表'
+      email: '邮件'
+      add: '添加'

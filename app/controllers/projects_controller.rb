@@ -5,7 +5,7 @@ require 'itpkg/services/history'
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_user_authority, expcept: [:index, :show]
-  before_action :prepare_project, only: [:edit, :update, :destroy]
+  before_action :prepare_project, only: [:edit, :update, :destroy, :add_user, :remove_user]
 
   def index
     @items = current_user.projects.map { |p| {id: p.id, details: p.details, name: p.name, logs: ProjectLog.where(project_id: p.id).order(created: :desc).limit(5)} }
@@ -43,10 +43,12 @@ class ProjectsController < ApplicationController
         @buttons << {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'}
       end
       @buttons << {label: t('links.project.story.create'), url: new_project_story_path(@project), style: 'info'}
+      @buttons << {label: t('links.project.add'), url: '', method: '', data: {toggle: 'modal', target: '#invite_modal'}, style: 'success'}
       @buttons << {label: t('links.project.list'), url: projects_path, style: 'warning'}
 
       #todo 分页显示
       @logs = ProjectLog.where(project_id: @project.id).order(created: :desc).limit(5)
+      @users = User.all
     else
       render status: 404
     end
@@ -79,6 +81,22 @@ class ProjectsController < ApplicationController
     redirect_to projects_path
   end
 
+  def add_user
+    User.find(params[:user_id]).add_role :member, @project
+
+    respond_to do |format|
+      format.json { render json: :success }
+    end
+  end
+
+  def remove_user
+    User.find(params[:user_id]).remove_role :member, @project
+
+    respond_to do |format|
+      format.json { render json: :success }
+    end
+  end
+
   private
 
   def project_params
@@ -93,6 +111,6 @@ class ProjectsController < ApplicationController
   end
 
   def prepare_project
-    @project = Project.find params[:id]
+    @project = Project.find(params[:id] || params[:project_id])
   end
 end

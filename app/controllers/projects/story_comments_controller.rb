@@ -2,14 +2,22 @@ class Projects::StoryCommentsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_user_authority
   before_action :prepare_story
-  after_action  :redirect_back
 
   def create
-    @story.story_comments.create(story_comment_params.merge(user: current_user))
+    story_comment = StoryComment.new(story_comment_params.merge(user: current_user))
+
+    unless story_comment.save
+      flash[:alert] = t('message.empty_comment')
+      redirect_back and return
+    end
+
+    @story.story_comments << story_comment
+    redirect_back
   end
 
   def update
     @story_comment.update(story_comment_params)
+    redirect_back
   end
 
   def destroy
@@ -19,13 +27,15 @@ class Projects::StoryCommentsController < ApplicationController
       flash[:alert] = t('message.unauthorized')
       redirect_to project_story_path(params[:project_id], params[:story_id])
     end
+
+    redirect_back
   end
 
   private
 
   def check_user_authority
     if current_user.has_role? :member, Project.find(params[:project_id])
-      @story_comment = StoryComment.find params[:id]
+      @story_comment = StoryComment.find(params[:id]) if params[:id].present?
     else
       flash[:alert] = t('message.unauthorized')
     end

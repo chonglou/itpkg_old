@@ -41,6 +41,9 @@ en:
       status: 'Status'
       point: 'Point'
       task: 'Task'
+      comment: 'Comment'
+      comments: 'Comments'
+      edit_comment: 'Edit Comment'
     task:
       title: 'Task'
       information: 'Information'
@@ -48,4 +51,5 @@ en:
       story: 'Story'
       details: 'Details'
   message:
-    unauthorized: 'You are not allowed to do this operation'
+    unauthorized: 'You are not allowed to do this operation.'
+    empty_comment: 'You cannot submit an empty comment.'
