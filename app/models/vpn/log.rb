@@ -1,3 +1,3 @@
 class Vpn::Log < ActiveRecord::Base
-  has_one :host
+  validates :user, presence: true
 end

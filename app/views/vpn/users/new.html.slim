@@ -7,12 +7,20 @@
     = f.legend(t('links.vpn_user.create'))
 
     = f.group do
+      = f.label :name
+      = f.name_field :name, autofocus: true
+
+    = f.group do
       = f.label :email
-      = f.email_field :email, autofocus: true
+      = f.email_field :email
 
     = f.group do
       = f.label :password
       = f.text_field :password, autocomplete: 'off', default:''
+
+    = f.group do
+      = f.label :phone
+      = f.name_field :phone
 
     = f.group do
       = f.label :start_date

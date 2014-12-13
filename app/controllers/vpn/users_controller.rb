@@ -7,7 +7,12 @@ class Vpn::UsersController < ApplicationController
         {label: t('links.vpn'), url: vpn_path, style: 'warning'},
 
     ]
-    @users = Vpn::User.select(:id, :email, :enable, :start_date, :end_date).map { |u| {cols: [u.email, u.enable, u.start_date, u.end_date], url: edit_vpn_user_path(u.id)} }
+    @users = Vpn::User.all.map do |u|
+      {
+          cols: [u.name, u.email, u.phone, u.online, u.enable, u.start_date, u.end_date],
+          url: edit_vpn_user_path(u.id)
+      }
+    end
   end
 
   def new
@@ -15,12 +20,13 @@ class Vpn::UsersController < ApplicationController
   end
 
   def create
-    @user = Vpn::User.new params.require(:vpn_user).permit(:email, :password, :start_date, :end_date)
+    @user = Vpn::User.new params.require(:vpn_user).permit(:name, :phone, :email, :password, :start_date, :end_date)
     @user.enable = true
     if @user.valid?
       @user.password = _password @user.password
       @user.save
-      Vpn::Log.create email: @user.email, message: t('log.vpn_user.created'), created: Time.now
+      #Vpn::Log.create user: @user.name, message: t('logs.vpn_user.created'), start_time: Time.now
+
       redirect_to vpn_users_path
     else
       @user.password = ''
@@ -36,9 +42,9 @@ class Vpn::UsersController < ApplicationController
 
   def update
     if params['vpn_user']['password'] == ''
-      rv = params.require(:vpn_user).permit(:enable, :start_date, :end_date)
+      rv = params.require(:vpn_user).permit(:email, :phone, :enable, :start_date, :end_date)
     else
-      rv = params.require(:vpn_user).permit(:password, :enable, :start_date, :end_date)
+      rv = params.require(:vpn_user).permit(:email, :phone, :enable, :start_date, :end_date, :password)
       rv['password'] = _password rv['password']
     end
 
@@ -56,8 +62,7 @@ class Vpn::UsersController < ApplicationController
   def destroy
     user = Vpn::User.find params[:id]
     if user
-      #Vpn::Log.destroy_all email: user.email
-      Vpn::Log.create email: user.email, message: t('log.vpn_user.remove'), created: Time.now
+      #Vpn::Log.create user: user.name, message: t('logs.vpn_user.remove'), start_time: Time.now
       user.destroy
     end
     redirect_to vpn_users_path

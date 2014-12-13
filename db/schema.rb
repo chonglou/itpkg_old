@@ -470,6 +470,7 @@ ActiveRecord::Schema.define(version: 20141212221832) do
     t.string   "trusted_port", limit: 16
     t.string   "remote_ip",    limit: 32
     t.string   "remote_port",  limit: 16
+    t.string   "message"
     t.datetime "start_time",                            null: false
     t.datetime "end_time",                              null: false
     t.float    "received",     limit: 24, default: 0.0, null: false

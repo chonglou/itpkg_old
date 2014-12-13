@@ -6,6 +6,14 @@
     = f.legend(@title)
 
     = f.group do
+      = f.label :email
+      = f.email_field :email
+
+    = f.group do
+      = f.label :phone
+      = f.name_field :phone
+
+    = f.group do
       = f.label :password
       = f.text_field :password, autocomplete: 'off', placeholder:t('placeholders.do_not_change_password')
 

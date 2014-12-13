@@ -21,8 +21,9 @@ class ChangeVpn < ActiveRecord::Migration
       t.string :trusted_port, limit:16
       t.string :remote_ip, limit:32
       t.string :remote_port, limit:16
-      t.timestamp :start_time, null:false
-      t.timestamp :end_time, null:false, default:'0000-00-00 00:00:00'
+      t.string :message
+      t.datetime :start_time, null:false
+      t.datetime :end_time, null:false, default:'0000-00-00 00:00:00'
       t.float :received, null:false, default:0
       t.float :send, null:false, default:0
     end

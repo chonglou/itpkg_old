@@ -1,3 +1,4 @@
 - @title=t('links.vpn_log.list')
 = render 'layouts/button_group', items:[], back:true
-= render 'layouts/list', title:t('links.vpn_log.list'), items:@items, style:nil
+= paginate @items
+= render 'layouts/table', title:'vpn_log', items:@logs, headers:[:username, :trusted, :remote, :start_time, :end_time,:received,:send, :message]

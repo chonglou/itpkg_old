@@ -10,7 +10,6 @@ end
 class Repository < ActiveRecord::Base
   resourcify
 
-  has_many :logs
   has_many :repository_users
 
   validates :name, :title, presence: true
