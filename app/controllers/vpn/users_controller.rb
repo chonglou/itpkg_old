@@ -25,7 +25,7 @@ class Vpn::UsersController < ApplicationController
     if @user.valid?
       @user.password = _password @user.password
       @user.save
-      #Vpn::Log.create user: @user.name, message: t('logs.vpn_user.created'), start_time: Time.now
+      Vpn::Log.create user: @user.name, message: t('logs.vpn_user.created'), start_time: Time.now
 
       redirect_to vpn_users_path
     else
@@ -62,7 +62,7 @@ class Vpn::UsersController < ApplicationController
   def destroy
     user = Vpn::User.find params[:id]
     if user
-      #Vpn::Log.create user: user.name, message: t('logs.vpn_user.remove'), start_time: Time.now
+      Vpn::Log.create user: user.name, message: t('logs.vpn_user.remove'), start_time: Time.now
       user.destroy
     end
     redirect_to vpn_users_path
@@ -70,9 +70,9 @@ class Vpn::UsersController < ApplicationController
 
   private
   def _password(password)
-    result = ActiveRecord::Base.connection.execute "SELECT PASSWORD('#{password}')"
-    result.first[0]
-    #"*#{Digest::SHA1.hexdigest(Digest::SHA1.digest(password)).upcase}"
+    # result = ActiveRecord::Base.connection.execute "SELECT PASSWORD('#{password}')"
+    # result.first[0]
+    "*#{Digest::SHA1.hexdigest(Digest::SHA1.digest(password)).upcase}"
   end
 
 end

@@ -474,7 +474,7 @@ ActiveRecord::Schema.define(version: 20141212221832) do
     t.datetime "start_time",                            null: false
     t.datetime "end_time",                              null: false
     t.float    "received",     limit: 24, default: 0.0, null: false
-    t.float    "send",         limit: 24, default: 0.0, null: false
+    t.float    "sent",         limit: 24, default: 0.0, null: false
   end
 
   add_index "vpn_logs", ["user"], name: "index_vpn_logs_on_user", using: :btree

@@ -3,9 +3,10 @@ class Vpn::LogsController < ApplicationController
 
   def index
     @items = Vpn::Log.order(id: :desc).page(params[:page])
+
     @logs = @items.map do |i|
       {
-          cols:[i.user, "#{i.trusted_ip}:#{i.trusted_port}", "#{i.remote_ip}:#{i.remote_port}", i.start_time, i.end_time, i.received, i.send, i.message]
+          cols:[i.user, "#{i.trusted_ip}:#{i.trusted_port}", "#{i.remote_ip}:#{i.remote_port}", i.start_time, i.end_time, i.received, i.sent, i.message]
       }
     end
   end

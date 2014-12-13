@@ -25,7 +25,7 @@ class ChangeVpn < ActiveRecord::Migration
       t.datetime :start_time, null:false
       t.datetime :end_time, null:false, default:'0000-00-00 00:00:00'
       t.float :received, null:false, default:0
-      t.float :send, null:false, default:0
+      t.float :sent, null:false, default:0
     end
     add_index :vpn_logs, :user
   end

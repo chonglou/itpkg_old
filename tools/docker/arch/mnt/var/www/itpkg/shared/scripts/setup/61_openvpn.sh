@@ -27,7 +27,7 @@ EOF
 cat > connect.sh << "EOF"
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs (user, trusted_ip, trusted_port, remote_ip, remote_port, start_time, end_time, received, send) VALUES('$common_name', '$trusted_ip', '$trusted_port', '$ifconfig_pool_remote_ip', '$remote_port_1', now(), '0000-00-00 00:00:00', '$bytes_received', '$bytes_sent')"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "INSERT INTO vpn_logs (user, trusted_ip, trusted_port, remote_ip, remote_port, start_time, end_time, received, sent) VALUES('$common_name', '$trusted_ip', '$trusted_port', '$ifconfig_pool_remote_ip', '$remote_port_1', now(), '0000-00-00 00:00:00', '$bytes_received', '$bytes_sent')"
 mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "UPDATE vpn_users SET online=1 WHERE name='$common_name'"
 EOF
 
@@ -35,7 +35,7 @@ cat > disconnect.sh << "EOF"
 #!/bin/sh
 . /etc/openvpn/scripts/config.sh
 mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "UPDATE vpn_users SET online=0 WHERE name='$common_name'"
-mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "UPDATE vpn_logs SET end_time=now(), received='$bytes_received', send='$bytes_sent' WHERE trusted_ip='$trusted_ip' AND trusted_port='$trusted_port' AND name='$common_name' AND end_time='0000-00-00 00:00:00'"
+mysql -h$HOST -P$PORT -u$USER -p$PASS $DB -e "UPDATE vpn_logs SET end_time=now(), received='$bytes_received', sent='$bytes_sent' WHERE trusted_ip='$trusted_ip' AND trusted_port='$trusted_port' AND name='$common_name' AND end_time='0000-00-00 00:00:00'"
 EOF
 
 chmod +x *.sh
