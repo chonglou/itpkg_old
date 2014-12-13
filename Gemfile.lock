@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/chonglou/ffi-inliner.git
+  revision: ef193928426181984960a59912fedc523e5c3b2e
+  specs:
+    ffi-inliner (0.2.5)
+
+GIT
   remote: git://github.com/chonglou/sidekiq.git
   revision: 7f18e486c94f43b597a3f5cfefa12fc1773a3a54
   specs:
@@ -251,7 +257,12 @@ GEM
     mysql2 (0.3.17)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
+    net-snmp (0.2.5)
+      ffi-inliner
+      nice-ffi
     net-ssh (2.9.1)
+    nice-ffi (0.4)
+      ffi (>= 0.5.0)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     omniauth (1.2.2)
@@ -417,6 +428,7 @@ DEPENDENCIES
   eventmachine
   factory_girl_rails
   faye-websocket
+  ffi-inliner!
   ffi-rzmq
   fog
   geoip
@@ -429,6 +441,7 @@ DEPENDENCIES
   launchy
   mini_magick
   mysql2
+  net-snmp
   net-ssh
   omniauth
   page-object

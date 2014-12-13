@@ -3,7 +3,8 @@ MAINTAINER Jitang Zheng <jitang.zheng@gmail.com>
 
 # upgrade system
 RUN pacman -Syu --noconfirm \
-&& pacman -S --noconfirm --needed base-devel wget pwgen expect git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openssh iptables mongodb elasticsearch \
+&& pacman -S --noconfirm --needed base-devel wget pwgen expect git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo net-snmp\
+ openssh iptables mongodb elasticsearch \
 # itpkg
 nodejs libmariadbclient imagemagick cmake libgit2 protobuf zeromq \
 # services

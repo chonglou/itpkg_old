@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'itpkg/utils/mailer'
 
-describe 'Linux Email' do
+describe 'Email Helper' do
   before do
 
     @u1 = Itpkg::Mailer.new 'u1@itpkg.com', '123456', 'itpkg.com'
@@ -14,9 +14,8 @@ describe 'Linux Email' do
 
   it 'imap' do
     ids = @u2.pull.map do |e|
-      #puts '#'*80
-      #puts e.inspect
-      e.message_id
+      puts '#'*80
+      puts e.inspect
     end
     @u2.remove  ids.first
   end
