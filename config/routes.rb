@@ -3,6 +3,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
 
 
+
   #--------------- My Add -----------------
 
   ###################### mail.localhost.localdomain ##############
@@ -29,12 +30,20 @@ Rails.application.routes.draw do
     #-------wiki---------
     resources :wikis
 
-    #------status----------
-    get '/status/user/:id', to: 'status#user', as: :get_status_user
-    post '/status/user/:id', to: 'status#user', as: :post_status_user
-    namespace :status do
-      %w(workers logs versions users).each { |a| get a }
+    #-------settings--------------
+    get 'settings/user/:id'=>'settings#user', as: :get_settings_user
+    post 'settings/user/:id'=>'settings#user', as: :post_settings_user
+    namespace :settings do
+      get 'users'
 
+      get 'rss_sites'
+
+    end
+
+
+    #------status----------
+    namespace :status do
+      %w(workers logs versions).each { |a| get a }
     end
 
     #----------- docker-----------

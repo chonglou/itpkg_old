@@ -1,7 +1,7 @@
 -unless @user.is_root?
   fieldset
     legend #{t 'links.user.status', name:@user.label}
-    = form_tag(post_status_user_path) do
+    = form_tag(post_settings_user_path) do
       div
         - %w(yes no).each do |v|
           label class='radio-inline'

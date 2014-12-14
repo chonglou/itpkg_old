@@ -25,8 +25,6 @@ en:
         title: 'Workers'
       logs:
         title: 'Logs'
-      users:
-        title: 'Members'
       versions:
         title: 'Current status'
         rb: "RUBY：(%{ruby}) RAILS(%{rails}) APP(%{app})"
@@ -65,7 +63,10 @@ en:
         list: 'Templates'
     monitor:
       list: 'Monitor'
-    settings: 'Settings'
+    settings:
+      title: 'Settings'
+      users:
+        title: 'Members'
     repository:
       user:
         list: 'Repository Users '
