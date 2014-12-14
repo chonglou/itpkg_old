@@ -84,7 +84,9 @@ RUN mkdir -p ~/local/gitolite \
 && git clone https://github.com/sitaramc/gitolite.git --single-branch --branch master /tmp/gitolite \
 && /tmp/gitolite/install -to ~/local/gitolite \
 && echo 'export PATH="$HOME/local/gitolite:$PATH"' >> ~/.bashrc \
-&& cp /tmp/mnt/home/git/local/gitolite/VREF/itpkg ~/local/gitolite/VREF/itpkg
+&& cp /tmp/mnt/home/git/local/gitolite/VREF/itpkg.sh ~/local/gitolite/VREF/itpkg.sh \
+&& cd ~/local/gitolite/VREF \
+&& sh itpkg.sh www.localhost.localdomain
 
 USER deploy
 ENV HOME /home/deploy

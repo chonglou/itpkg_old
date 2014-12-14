@@ -17,4 +17,6 @@ do
 	systemctl restart $s
 done
 
+cd ~/local/gitolite/VREF && sh itpkg.sh $1
+
 echo 'Done!'
