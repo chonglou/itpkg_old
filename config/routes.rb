@@ -101,13 +101,13 @@ Rails.application.routes.draw do
     namespace :personal do
       get 'logs'
 
-      get 'public_key'
-      post 'public_key'
-
       post 'generate_keys'
 
-      get 'mail_box'
-      post 'mail_box'
+      %w(public_key contact).each do |n|
+        get n
+        post n
+      end
+
     end
 
 

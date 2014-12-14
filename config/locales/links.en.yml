@@ -142,6 +142,7 @@ en:
     finance: 'Finance'
     contact: 'Contact'
     personal:
+      contact: 'Contact Info'
       mail_box: 'Mail Box'
       password: 'Password'
       logs: 'Logs'

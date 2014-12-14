@@ -48,7 +48,7 @@ class StatusController < ApplicationController
 
   def users
     @users = User.order(id: :desc).page(params[:page])
-    @items = @users.map { |u| {cols: [u.email, u.is_admin? ? 'Y':'N', u.current_sign_in_at||u.last_sign_in_at, u.contact.to_s], url: get_status_user_path(u.id)} }
+    @items = @users.map { |u| {cols: [u.email, u.is_admin? ? 'Y':'N', u.current_sign_in_at||u.last_sign_in_at, u.contact], url: get_status_user_path(u.id)} }
     render 'users', layout: 'status/view'
   end
 end

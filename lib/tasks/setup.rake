@@ -1,14 +1,14 @@
 namespace :setup do
 
-  desc "'Update domain to #{ENV['ITPKG_DOMAIN']}'"
-  task domain: :environment do
-    User.all.each do |u|
-      o_e = u.email
-      n_e = "#{u.label}@#{ENV['ITPKG_DOMAIN']}"
-      u.update(email:n_e)
-      puts "#{o_e} => #{n_e}"
-    end
-  end
+  # desc "'Update domain to #{ENV['ITPKG_DOMAIN']}'"
+  # task domain: :environment do
+  #   User.all.each do |u|
+  #     o_e = u.email
+  #     n_e = "#{u.label}@#{ENV['ITPKG_DOMAIN']}"
+  #     u.update(email:n_e)
+  #     puts "#{o_e} => #{n_e}"
+  #   end
+  # end
 
   desc 'Shell env'
   task :env do

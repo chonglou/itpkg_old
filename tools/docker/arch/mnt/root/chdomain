@@ -17,6 +17,4 @@ do
 	systemctl restart $s
 done
 
-cd $ITPKG_HOME/current && rake setup:domain
-
 echo 'Done!'

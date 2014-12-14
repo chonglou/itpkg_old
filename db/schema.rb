@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141212221832) do
+ActiveRecord::Schema.define(version: 20141214191934) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -52,9 +52,18 @@ ActiveRecord::Schema.define(version: 20141212221832) do
     t.integer  "user_id",    null: false
     t.string   "logo",       null: false
     t.string   "username",   null: false
-    t.text     "content",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "qq"
+    t.string   "wechat"
+    t.string   "phone"
+    t.string   "fax"
+    t.string   "address"
+    t.string   "weibo"
+    t.string   "linkedin"
+    t.string   "facebook"
+    t.string   "skype"
+    t.text     "others"
   end
 
   add_index "contacts", ["username"], name: "index_contacts_on_username", using: :btree

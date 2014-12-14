@@ -1,0 +1,54 @@
+- @title=t('links.personal.contact')
+
+= bootstrap_form(@contact, url:personal_contact_path, method: :post) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :username
+      = f.name_field :username, autofocus: true
+
+    = f.group do
+      = f.label :phone
+      = f.name_field :phone
+    = f.group do
+      = f.label :fax
+      = f.name_field :fax
+    = f.group do
+      = f.label :qq
+      = f.name_field :qq
+    = f.group do
+      = f.label :wechat
+      = f.name_field :wechat
+    = f.group do
+      = f.label :skype
+      = f.name_field :username
+    = f.group do
+      = f.label :address
+      = f.text_field :address
+
+
+    = f.group do
+      = f.label :logo
+      = f.text_field :logo
+
+
+    = f.group do
+      = f.label :weibo
+      = f.text_field :weibo
+    = f.group do
+      = f.label :linkedin
+      = f.text_field :linkedin
+    = f.group do
+      = f.label :facebook
+      = f.text_field :facebook
+
+    = f.group do
+      = f.label :others
+      = f.text_area :others
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.reset t('buttons.reset')
+      = f.back t('buttons.back')

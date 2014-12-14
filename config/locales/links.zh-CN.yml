@@ -142,6 +142,7 @@ zh-CN:
     finance: '财务管理'
     contact: '通讯录'
     personal:
+      contact: '联系人信息'
       mail_box: '邮箱设置'
       password: '修改密码'
       logs: '日志列表'
