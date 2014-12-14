@@ -1,7 +1,7 @@
 module NodeTypesHelper
 
   def node_types_nav_buttons
-    @buttons = [
+    @nav_items = [
         {label: t('links.node_type.show', name:@node_type.name), url: node_type_path(@node_type.id), style: 'info'},
         {label: t('links.node_type.edit_docker', name:@node_type.name), url: edit_node_type_path(@node_type.id), style: 'primary'},
         {label: t('links.node_type.template.create', name:@node_type.name), url: new_node_type_template_path(node_type_id:@node_type.id), style: 'success'},
@@ -15,5 +15,6 @@ module NodeTypesHelper
 
   def get_node_type
     @node_type = NodeType.find params[:node_type_id]
+    node_types_nav_buttons
   end
 end

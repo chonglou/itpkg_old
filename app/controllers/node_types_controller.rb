@@ -1,9 +1,6 @@
 class NodeTypesController < ApplicationController
   before_action :must_admin!
-
-  def build
-
-  end
+  include NodeTypesHelper
 
   def index
     @buttons = [
@@ -21,7 +18,8 @@ class NodeTypesController < ApplicationController
 
   def show
     @node_type = NodeType.find params[:id]
-    render 'show', layout:'node_types/view'
+    node_types_nav_buttons
+    render 'show', layout:'buttoned'
   end
 
   def new
@@ -52,7 +50,8 @@ EOF
 
   def edit
     @node_type = NodeType.find params[:id]
-    render 'edit', layout:'node_types/view'
+    node_types_nav_buttons
+    render 'edit', layout:'buttoned'
   end
 
   def update
@@ -61,7 +60,8 @@ EOF
     if @node_type.update(params.require(:node_type).permit(:dockerfile))
       redirect_to node_type_path(@node_type.id)
     else
-      render 'edit', layout:'node_types/view'
+      node_types_nav_buttons
+      render 'edit', layout:'buttoned'
     end
   end
 

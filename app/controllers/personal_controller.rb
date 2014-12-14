@@ -1,13 +1,13 @@
 require 'itpkg/utils/encryptor'
 
 class PersonalController < ApplicationController
+  layout 'tabbed'
   before_action :authenticate_user!
 
   def contact
     case request.method
       when 'GET'
         @contact = current_user.contact || Contact.new
-        render 'contact', layout: 'personal/self'
       when 'POST'
         @contact = current_user.contact
         kv = params.require(:contact).permit(:logo, :username, :qq, :wechat, :phone, :fax, :address, :weibo, :linkedin, :facebook, :skype, :others)
@@ -27,7 +27,6 @@ class PersonalController < ApplicationController
 
   def logs
     @logs = Log.where(user_id: current_user.id).order(id: :desc).page(params[:page])
-    render 'logs', layout: 'personal/self'
   end
 
   def generate_keys
@@ -69,7 +68,7 @@ class PersonalController < ApplicationController
   def public_key
     case request.method
       when 'GET'
-        render 'public_key', layout: 'personal/self'
+
       when 'POST'
         key = current_user.ssh_key
         if key
@@ -156,6 +155,9 @@ class PersonalController < ApplicationController
         logo: 'flat/256/call37.png',
         label: t('links.about_us')
     }
+    render 'index', layout:'application'
 
   end
+
+
 end

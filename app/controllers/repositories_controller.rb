@@ -2,7 +2,6 @@ require 'itpkg/linux/git'
 
 class RepositoriesController < ApplicationController
   before_action :authenticate_user!
-
   include RepositoriesHelper
 
   def file
@@ -15,25 +14,10 @@ class RepositoriesController < ApplicationController
       @content = node.read_raw.data
       @name =params[:name]
       git.close
-      render 'file', layout: 'repositories/view'
+      render 'file', layout: 'buttoned'
     end
   end
 
-  def _tree_walk(git, oid, parent)
-    tree = git.tree(oid)
-
-    tree.each_tree do |entry|
-      node = {children: [], state: {opened: false}, text: entry.fetch(:name), icon: 'glyphicon glyphicon-list'}
-      _tree_walk(git, entry.fetch(:oid), node)
-      parent.fetch(:children) << node
-    end
-
-    tree.each_blob { |entry| parent.fetch(:children) << {
-        a_attr: {href: "#{repository_file_path(repository_id: @repository.id, oid: entry.fetch(:oid), name: entry.fetch(:name))}"},
-        text: entry.fetch(:name),
-        icon: 'glyphicon glyphicon-leaf'}
-    }
-  end
 
   def tree
     id = params[:oid]
@@ -73,7 +57,7 @@ class RepositoriesController < ApplicationController
 
 
         git.close
-        render('changes', layout: 'repositories/view') and return
+        render('changes', layout: 'buttoned') and return
       end
     end
     flash[:alert] = t('labels.not_valid')
@@ -97,7 +81,7 @@ class RepositoriesController < ApplicationController
         @previous_url = prev_oids.first == target ? nil : repository_commits_path(@repository.id, oid: prev_oids.first, branch: @branch)
 
         @next_url = @logs.empty? || @logs.size < size ? nil : repository_commits_path(@repository.id, oid: @logs.last.first, branch: @branch)
-        render('commits', layout: 'repositories/view') and return
+        render('commits', layout: 'buttoned') and return
       end
     end
 
@@ -117,7 +101,7 @@ class RepositoriesController < ApplicationController
           {url: repository_commits_path(@repository.id, branch: b, oid: git.target_id(b)), name: b}
         end
         git.close
-        render( 'show', layout: 'repositories/view') and return
+        render( 'show', layout: 'buttoned') and return
       rescue Rugged::NetworkError => _
         flash[:alert] = t('labels.please_waiting')
       end
@@ -187,4 +171,22 @@ class RepositoriesController < ApplicationController
   end
 
 
+
+
+  private
+  def _tree_walk(git, oid, parent)
+    tree = git.tree(oid)
+
+    tree.each_tree do |entry|
+      node = {children: [], state: {opened: false}, text: entry.fetch(:name), icon: 'glyphicon glyphicon-list'}
+      _tree_walk(git, entry.fetch(:oid), node)
+      parent.fetch(:children) << node
+    end
+
+    tree.each_blob { |entry| parent.fetch(:children) << {
+        a_attr: {href: "#{repository_file_path(repository_id: @repository.id, oid: entry.fetch(:oid), name: entry.fetch(:name))}"},
+        text: entry.fetch(:name),
+        icon: 'glyphicon glyphicon-leaf'}
+    }
+  end
 end

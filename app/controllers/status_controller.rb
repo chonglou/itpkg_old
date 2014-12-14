@@ -1,7 +1,8 @@
 class StatusController < ApplicationController
-  layout 'status/base'
+  layout 'tabbed'
 
   before_action :must_admin!
+  before_action :_nav_items
   include ActionView::Helpers::DateHelper
 
   def versions
@@ -27,4 +28,22 @@ class StatusController < ApplicationController
     render 'logs'
   end
 
+  private
+  def _nav_items
+    @nav_items = [
+        {
+            name: t('links.status.versions.title'),
+            url: status_versions_url
+        },
+        {
+            name: t('links.status.workers.title'),
+            url: status_workers_url
+        },
+        {
+            name: t('links.status.logs.title'),
+            url: status_logs_url
+        }
+    ]
+
+  end
 end

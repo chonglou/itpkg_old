@@ -1,3 +1,5 @@
+- @nav_items = repositories_nav_buttons
+
 h3 #{"#{@commit.fetch :time}: #{@commit.fetch :message}"}
 hr
 = render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url

@@ -1,4 +1,6 @@
 class NodeTypes::TemplatesController < ApplicationController
+  layout 'buttoned'
+
   before_action :must_admin!
   include NodeTypesHelper
   before_action :get_node_type
@@ -7,7 +9,7 @@ class NodeTypes::TemplatesController < ApplicationController
     @template = NtTemplate.new
     @owners = _owners
     @modes = _modes
-    render 'new', layout:'node_types/view'
+    render 'new'
   end
 
   def create
@@ -18,7 +20,7 @@ class NodeTypes::TemplatesController < ApplicationController
     if @template.save
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'new', layout:'node_types/view'
+      render 'new'
     end
   end
 
@@ -26,7 +28,7 @@ class NodeTypes::TemplatesController < ApplicationController
     @template = NtTemplate.find params[:id]
     @owners = _owners
     @modes = _modes
-    render 'edit', layout:'node_types/view'
+    render 'edit'
   end
 
   def update
@@ -38,7 +40,7 @@ class NodeTypes::TemplatesController < ApplicationController
     if @template.update(params.require(:nt_template).permit(:name, :mode, :owner, :body))
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'edit', layout:'node_types/view'
+      render 'edit'
     end
   end
 

@@ -1,4 +1,5 @@
 <%- @title=t('links.personal.public_key') %>
+<%- @nav_items=personal_nav_items %>
 <%= render 'layouts/button_group', items: [{url: personal_generate_keys_path, label: t('links.user.generate_keys'), data: {confirm:t('labels.are_you_sure')}, method: :post, style: 'danger'}], back: true %>
 <p>&nbsp;</p>
 <fieldset>

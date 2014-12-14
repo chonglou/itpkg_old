@@ -1,6 +1,13 @@
+- @nav_items = repositories_nav_buttons
+
 h3 #{t 'links.repository.clone'}
 hr
-p git clone #{@clone_url}
+pre
+  code
+    git clone #{@clone_url}
+|OR
+pre
+  code ssh-agent bash -c 'ssh-add YOUR_KEY_FILE; git clone #{@clone_url}'
 p &nbsp;
 
 h3 #{t 'links.repository.branch.list'}

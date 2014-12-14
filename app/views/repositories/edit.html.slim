@@ -1,4 +1,5 @@
 - @title=t('links.repository.edit', name:@repository.name)
+- @nav_items = repositories_nav_buttons
 
 = bootstrap_form(@repository, url:{action:'update'}) do |f|
   = f.error_messages

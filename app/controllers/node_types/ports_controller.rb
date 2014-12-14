@@ -1,4 +1,6 @@
 class NodeTypes::PortsController < ApplicationController
+  layout 'buttoned'
+
   before_action :must_admin!
   include NodeTypesHelper
   before_action :get_node_type
@@ -7,7 +9,7 @@ class NodeTypes::PortsController < ApplicationController
   def new
     @port = NtPort.new
     @tcp_options = _tcp_items
-    render 'new', layout:'node_types/view'
+    render 'new'
   end
 
   def create
@@ -17,7 +19,7 @@ class NodeTypes::PortsController < ApplicationController
     if @port.save
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'new', layout:'node_types/view'
+      render 'new'
     end
   end
 
@@ -25,7 +27,7 @@ class NodeTypes::PortsController < ApplicationController
   def edit
     @tcp_options = _tcp_items
     @port = NtPort.find params[:id]
-    render 'edit', layout:'node_types/view'
+    render 'edit'
   end
 
   def update
@@ -34,7 +36,7 @@ class NodeTypes::PortsController < ApplicationController
     if @port.update(params.require(:nt_port).permit(:t_port, :s_port, :tcp))
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'edit', layout:'node_types/view'
+      render 'edit'
     end
   end
 

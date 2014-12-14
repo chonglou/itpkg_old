@@ -1,4 +1,6 @@
 class NodeTypes::VarsController < ApplicationController
+  layout 'buttoned'
+
   before_action :must_admin!
   include NodeTypesHelper
   before_action :get_node_type
@@ -6,7 +8,7 @@ class NodeTypes::VarsController < ApplicationController
   def new
     @flags = _flag_options
     @var = NtVar.new
-    render 'new', layout: 'node_types/view'
+    render 'new'
   end
 
   def create
@@ -16,14 +18,14 @@ class NodeTypes::VarsController < ApplicationController
     if @var.save
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'new', layout: 'node_types/view'
+      render 'new'
     end
   end
 
   def edit
     @flags = _flag_options
     @var = NtVar.find params[:id]
-    render 'edit', layout: 'node_types/view'
+    render 'edit'
   end
 
   def update
@@ -33,7 +35,7 @@ class NodeTypes::VarsController < ApplicationController
     if @var.update(_params)
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'new', layout: 'node_types/view'
+      render 'new'
     end
   end
 

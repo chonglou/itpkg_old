@@ -1,3 +1,5 @@
 - @title=t('links.personal.logs')
+- @nav_items=personal_nav_items
+
 = paginate @logs
 = render 'layouts/list', title:@title, items:@logs.map {|l| "#{l.created_at}: #{l.message}"}, style:nil

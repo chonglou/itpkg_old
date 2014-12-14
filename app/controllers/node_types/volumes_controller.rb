@@ -1,11 +1,14 @@
 class NodeTypes::VolumesController < ApplicationController
-  before_action :must_admin!
+  layout 'buttoned'
+
   include NodeTypesHelper
+  before_action :must_admin!
   before_action :get_node_type
+
 
   def new
     @volume = NtVolume.new
-    render 'new', layout:'node_types/view'
+    render 'new'
   end
 
   def create
@@ -14,13 +17,13 @@ class NodeTypes::VolumesController < ApplicationController
     if @volume.save
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'new', layout:'node_types/view'
+      render 'new'
     end
   end
 
   def edit
     @volume = NtVolume.find params[:id]
-    render 'edit', layout:'node_types/view'
+    render 'edit'
   end
 
   def update
@@ -28,7 +31,7 @@ class NodeTypes::VolumesController < ApplicationController
     if @volume.update(params.require(:nt_volume).permit(:t_path, :s_path))
       redirect_to node_type_path(params[:node_type_id])
     else
-      render 'edit', layout:'node_types/view'
+      render 'edit'
     end
   end
   def destroy
