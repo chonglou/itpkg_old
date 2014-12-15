@@ -29,6 +29,8 @@ en:
         title: 'Cache'
       logs:
         title: 'Logs'
+      database:
+        title: 'Database'
       versions:
         title: 'System'
         os: 'OS：%{info}'

@@ -1,0 +1,13 @@
+-@title = t('links.status.database.title')
+
+div class='row'
+  div class='col-sm-offset-1 col-sm-5'
+    h3 Mysql
+    hr
+    =render 'layouts/json', body:@mysql
+
+  div class='col-sm-5'
+    h3 Mongodb
+    hr
+    =render 'layouts/json', body: @mongodb
+

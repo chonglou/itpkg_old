@@ -2,6 +2,6 @@
 
 br
 div class='row'
-  div class='col-sm-1'
-  =render 'layouts/json', body:(Rails.env.production? ? Rails.cache.stats : {})
+  div class='col-sm-offset-1 col-sm-6'
+    =render 'layouts/json', body:(Rails.env.production? ? Rails.cache.stats : {})
 

@@ -29,6 +29,8 @@ zh-CN:
         title: '缓存系统'
       logs:
         title: '运行日志'
+      database:
+        title: '数据库'
       versions:
         title: '系统信息'
         os: '操作系统：%{info}'

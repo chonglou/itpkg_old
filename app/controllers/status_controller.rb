@@ -5,6 +5,11 @@ class StatusController < ApplicationController
   before_action :_nav_items
   include ActionView::Helpers::DateHelper
 
+  def database
+    @mysql=ActiveRecord::Base.connection.execute('SHOW STATUS').inject({}){|rs,(k,v)| rs[k]=v;rs}
+    @mongodb=Mongoid::Sessions.default.command(serverStatus:1).inject({}){|rs,(k,v)| rs[k]=v;rs}
+  end
+
   def versions
 
     @items=[
@@ -35,6 +40,10 @@ class StatusController < ApplicationController
         {
             name: t('links.status.versions.title'),
             url: status_versions_url
+        },
+        {
+            name: t('links.status.database.title'),
+            url: status_database_url
         },
         {
             name: t('links.status.workers.title'),
