@@ -36,8 +36,10 @@ Rails.application.routes.draw do
     end
 
     #-------monitor---------
+    resources :monitor_nodes
 
     #-------logging----------
+    resources :logging_nodes
 
     #-------rss------------
     get 'rss'=>'rss#index'

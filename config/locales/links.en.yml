@@ -41,7 +41,7 @@ en:
     task:
       create: 'Create Task'
     docker: 'Docker'
-    logging:
+    logging_node:
       list: 'Logging'
     node_type:
       list: 'Applications'
@@ -61,12 +61,14 @@ en:
       template:
         create: 'Create a new template'
         list: 'Templates'
-    monitor:
-      list: 'Monitor'
+    monitor_node:
+      list: 'Monitors'
     settings:
       title: 'Settings'
       users:
         title: 'Members'
+    rss_item:
+      list: 'Rss feeds'
     rss_site:
       list: 'RSS Sites'
       create: 'Add RSS'

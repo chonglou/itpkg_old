@@ -41,9 +41,9 @@ zh-CN:
     task:
       create: '新建任务'
     docker: 'Docker'
-    logging:
+    logging_node:
       list: '日志系统'
-    monitor:
+    monitor_node:
       list: '监控系统'
     node_type:
       list: '应用列表'
@@ -67,6 +67,8 @@ zh-CN:
       title: '站点参数'
       users:
         title: '用户'
+    rss_item:
+      list: 'RSS列表'
     rss_site:
       list: 'RSS站点'
       create: '添加RSS源'

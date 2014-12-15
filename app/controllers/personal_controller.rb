@@ -97,6 +97,18 @@ class PersonalController < ApplicationController
             label: t('links.repository.list')
         }
     ]
+    if current_user.has_role?(:admin) || current_user.has_role?(:ops)
+      @items << {
+          url: monitor_nodes_path,
+          logo: 'flat/256/lifeline6.png',
+          label: t('links.monitor_node.list')
+      }
+      @items << {
+          url: logging_nodes_path,
+          logo: 'flat/256/log2.png',
+          label: t('links.logging_node.list')
+      }
+    end
     if current_user.has_role?(:admin)
       @items << {
           url: nodes_path,
@@ -126,7 +138,7 @@ class PersonalController < ApplicationController
       }
       @items << {
           url: status_versions_path,
-          logo: 'flat/256/lifeline6.png',
+          logo: 'flat/256/house129.png',
           label: t('links.status.versions.title')
       }
       @items << {
@@ -144,6 +156,11 @@ class PersonalController < ApplicationController
         url: wikis_path(name: 'help'),
         logo: 'flat/256/edit26.png',
         label: t('links.wiki.list')
+    }
+    @items << {
+        url: rss_path,
+        logo: 'flat/256/rss47.png',
+        label: t('links.rss_item.list')
     }
     @items << {
         url: document_show_path(name: 'help'),
