@@ -21,5 +21,8 @@ en:
         status: 'Status'
         enable_true: 'Enable'
         enable_false: 'False'
+      logging_node:
+        flag_enable: 'Enable'
+        flag_disable: 'Disable'
       email_user:
         email: 'Username'

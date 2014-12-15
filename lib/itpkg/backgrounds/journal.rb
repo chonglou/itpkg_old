@@ -10,9 +10,13 @@ module Itpkg
 
         def post_init
           @port, @ip = Socket.unpack_sockaddr_in(get_peername)
-          if LoggingNode.count(vip: @ip) == 0
-            LoggingNode.create name: 'UNKNOWN', vip: @ip
+          node = LoggingNode.find_by vip: @ip
+          unless node
+            node = LoggingNode.create name: 'UNKNOWN', vip: @ip
           end
+
+          close_connection unless node.enable?
+
           @client = Itpkg::SearchClient.new
 
           Rails.logger.info "Connect From #{@ip}:#{@port}"

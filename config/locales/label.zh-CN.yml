@@ -56,6 +56,9 @@ zh-CN:
         status: '状态'
         enable_true: '启用'
         enable_false: '禁用'
+      logging_node:
+        flag_enable: '启用'
+        flag_disable: '禁用'
       repository:
         name: '标识'
         title: '标题'

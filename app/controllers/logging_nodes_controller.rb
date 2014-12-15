@@ -10,7 +10,7 @@ class LoggingNodesController < ApplicationController
     @nodes = LoggingNode.order(id: :desc).page(params[:page])
     @items = @nodes.map do |n|
       {
-          cols: [n.name, n.vip, n.created_at],
+          cols: [n.name, n.vip, n.flag, n.created_at],
           url: logging_node_path(n.id)
       }
     end
@@ -47,9 +47,11 @@ EOF
 
   def update
     @node = LoggingNode.find params[:id]
-    @node.update params.require(:logging_node).permit(:name)
+    kv = params.require(:logging_node).permit(:name, :flag).tap do |p|
+      p[:flag]= p[:flag] ? p[:flag].to_i : LoggingNode.flags[:disable]
+    end
+    @node.update kv
     redirect_to logging_nodes_path
   end
 
-  private
 end
