@@ -1,9 +1,7 @@
 class LoggingNode < ActiveRecord::Base
 
-  validates :uuid, :flag, :name, :cfg, presence: true
-  validates :uid, uniqueness: true
+  validates :vip, :flag, :name, presence: true
+  validates :vip, uniqueness: true
 
-  attr_encrypted :cfg, key: ENV['ITPKG_PASSWORD'], mode: :per_attribute_iv_and_salt
-
-  enum flag: {journald:0, rsyslog:1}
+  enum flag: {submit:0,journald:1, rsyslog:2}
 end

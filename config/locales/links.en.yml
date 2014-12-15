@@ -50,6 +50,9 @@ en:
     docker: 'Docker'
     logging_node:
       list: 'Logging'
+      create: 'Add a logging'
+      edit: 'Edit logging[%{name}]'
+      remove: 'Remove logging[%{name}]'
     node_type:
       list: 'Applications'
       create: 'Create a new Application'
@@ -70,6 +73,9 @@ en:
         list: 'Templates'
     monitor_node:
       list: 'Monitors'
+      create: 'Add a monitor'
+      edit: 'Edit monitor [%{name}]'
+      remove: 'Edit monitor [%{name}]'
     settings:
       title: 'Settings'
       users:

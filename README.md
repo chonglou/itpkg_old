@@ -57,7 +57,11 @@ First time to runing maybe take a long time(several minutes) to auto setup(gener
 
     ./itpkg ssh # password: changeme
 
-#### change domain(after login by ssh)
+## Change domain(optional)
+Make sure *.YOUR_DOMAIN point right.
+
+### Login by ssh and run:
+
     ./chdomain YOUR_DOMAIN
     
 

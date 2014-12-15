@@ -45,7 +45,7 @@ Rails.application.configure do
    }
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:ENV['ITPKG_MAILER_SENDER']}
 
-  Slim::Engine.set_default_options pretty: true, sort_attrs: false
+  Slim::Engine.set_options pretty: true, sort_attrs: false
 
 
 end

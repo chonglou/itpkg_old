@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141215014404) do
+ActiveRecord::Schema.define(version: 20141215070115) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -194,18 +194,15 @@ ActiveRecord::Schema.define(version: 20141215014404) do
   add_index "histories", ["url"], name: "index_histories_on_url", using: :btree
 
   create_table "logging_nodes", force: true do |t|
-    t.integer  "flag",               limit: 2,  default: 0, null: false
-    t.string   "name",                                      null: false
-    t.string   "uuid",               limit: 36,             null: false
-    t.text     "encrypted_cfg",                             null: false
-    t.string   "encrypted_cfg_salt",                        null: false
-    t.string   "encrypted_cfg_iv",                          null: false
+    t.integer  "flag",       limit: 2,  default: 0, null: false
+    t.string   "name",                              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "vip",        limit: 15,             null: false
   end
 
   add_index "logging_nodes", ["name"], name: "index_logging_nodes_on_name", using: :btree
-  add_index "logging_nodes", ["uuid"], name: "index_logging_nodes_on_uuid", unique: true, using: :btree
+  add_index "logging_nodes", ["vip"], name: "index_logging_nodes_on_vip", unique: true, using: :btree
 
   create_table "logs", force: true do |t|
     t.integer  "user_id",    null: false
@@ -217,16 +214,16 @@ ActiveRecord::Schema.define(version: 20141215014404) do
   create_table "monitor_nodes", force: true do |t|
     t.integer  "flag",               limit: 2,  default: 0, null: false
     t.string   "name",                                      null: false
-    t.string   "uuid",               limit: 36,             null: false
     t.text     "encrypted_cfg",                             null: false
     t.string   "encrypted_cfg_salt",                        null: false
     t.string   "encrypted_cfg_iv",                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "vip",                limit: 15,             null: false
   end
 
   add_index "monitor_nodes", ["name"], name: "index_monitor_nodes_on_name", using: :btree
-  add_index "monitor_nodes", ["uuid"], name: "index_monitor_nodes_on_uuid", unique: true, using: :btree
+  add_index "monitor_nodes", ["vip"], name: "index_monitor_nodes_on_vip", unique: true, using: :btree
 
   create_table "node_types", force: true do |t|
     t.string   "name",       null: false
