@@ -1,0 +1,11 @@
+[Unit]
+Description=IT-PACKAGE:DISPATCHER
+
+[Service]
+Type=simple
+User=deploy
+ExecStart=/var/www/itpkg/shared/scripts/itpkg-dispatcher.sh
+
+[Install]
+WantedBy=multi-user.target
+

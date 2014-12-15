@@ -1,0 +1,13 @@
+[Unit]
+Description=IT-PACKAGE:WORKERS
+
+[Service]
+Type=forking
+User=deploy
+ExecStart=/var/www/itpkg/shared/scripts/itpkg-workers.sh
+ExecStop=/usr/bin/kill -USR1 $(cat /var/www/itpkg/shared/tmp/pids/workers.pid)
+PIDFile=/var/www/itpkg/shared/tmp/pids/workers.pid
+
+[Install]
+WantedBy=multi-user.target
+

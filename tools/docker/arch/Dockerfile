@@ -124,7 +124,7 @@ RUN virtualenv2 $HOME/local/python2 \
 
 # systemd
 RUN sudo cp -v /tmp/mnt/etc/systemd/system/*.service /etc/systemd/system \
-&& for s in sshd mysqld mongodb elasticsearch memcached redis docker-registry dovecot postfix named openvpn@server itpkg-bg itpkg-wss itpkg-www itpkg-setup nginx; \
+&& for s in sshd mysqld mongodb elasticsearch memcached redis docker-registry dovecot postfix named openvpn@server itpkg-workers itpkg-dispatcher itpkg-journal itpkg-wss itpkg-www itpkg-setup nginx; \
 do sudo systemctl enable $s; \
 done
 # clean
@@ -133,7 +133,7 @@ RUN sudo rm -r /tmp/*
 
 
 VOLUME ["/etc/nginx/itpkg", "$ITPKG_HOME/shared", "/home/git/repositories"]
-EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp 9999
+EXPOSE 22 443 25 587 465 143 993 53/udp 1194/udp 10001 10002
 USER root
 
 CMD ["/sbin/init"]

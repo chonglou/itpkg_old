@@ -1,0 +1,11 @@
+[Unit]
+Description=IT-PACKAGE:JOURNAL
+
+[Service]
+Type=simple
+User=deploy
+ExecStart=/var/www/itpkg/shared/scripts/itpkg-journal.sh
+
+[Install]
+WantedBy=multi-user.target
+
