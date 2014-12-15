@@ -1,0 +1,9 @@
+= paginate @items
+
+-@items.each do |item|
+  h4
+    a href="#{item.link}" #{item.title}
+  hr
+  blockquote
+    p #{{item.body}}
+    footer #{item.created}
