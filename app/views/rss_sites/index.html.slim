@@ -1,0 +1,3 @@
+- @title=t('links.rss_site.list')
+= render 'layouts/button_group', items:@buttons, back:true
+= render 'layouts/table', title:'rss_site', items:@items, headers:[:title, :url, :last_sync]

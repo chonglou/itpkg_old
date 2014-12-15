@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141214214731) do
+ActiveRecord::Schema.define(version: 20141215014404) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -359,10 +359,10 @@ ActiveRecord::Schema.define(version: 20141214214731) do
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
 
   create_table "rss_sites", force: true do |t|
-    t.string   "title",                     null: false
-    t.string   "url",                       null: false
+    t.string   "url",        null: false
+    t.string   "title"
     t.string   "logo"
-    t.integer  "space",      default: 1440, null: false
+    t.datetime "last_sync"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

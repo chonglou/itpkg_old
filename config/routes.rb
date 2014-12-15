@@ -2,8 +2,6 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
 
-
-
   #--------------- My Add -----------------
 
   ###################### mail.localhost.localdomain ##############
@@ -35,11 +33,15 @@ Rails.application.routes.draw do
     post 'settings/user/:id'=>'settings#user', as: :post_settings_user
     namespace :settings do
       get 'users'
-
-      get 'rss_sites'
-
     end
 
+    #-------monitor---------
+
+    #-------logging----------
+
+    #-------rss------------
+    get 'rss'=>'rss#index'
+    resources :rss_sites, expect:[:show]
 
     #------status----------
     namespace :status do

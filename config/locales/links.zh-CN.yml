@@ -66,7 +66,12 @@ zh-CN:
     settings:
       title: '站点参数'
       users:
-        title: '用户列表'
+        title: '用户'
+    rss_site:
+      list: 'RSS站点'
+      create: '添加RSS源'
+      edit: '修改RSS源 [%{title}]'
+      remove: '删除RSS源 [%{title}]'
     repository:
       user:
         list: 'GIT仓库用户列表'

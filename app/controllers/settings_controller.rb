@@ -1,7 +1,6 @@
 class SettingsController < ApplicationController
   layout 'tabbed'
   before_action :must_admin!
-  before_action :_nav_items
 
   def user
     @user = User.find params[:id]
@@ -30,18 +29,5 @@ class SettingsController < ApplicationController
     render 'users'
   end
 
-  private
-  def _nav_items
-    @nav_items = [
-        {
-            name: t('links.settings.users.title'),
-            url: settings_users_url
-        },
-        {
-            name: t('links.rss_sites.users.title'),
-            url: settings_rss_sites_url
-        }
-    ]
-  end
 
 end

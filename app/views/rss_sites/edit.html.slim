@@ -1,0 +1,17 @@
+- @title=t('links.rss_site.edit', title:@site.title)
+
+= bootstrap_form(@site, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :url
+      = f.text_field :url, autofocus: true
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+
+h3 #{t('links.rss_site.remove', title:@site.title)}
+hr
+= render 'layouts/remove_button', name:'buttons.remove', url:rss_site_path(@site), back:true

@@ -1,8 +1,8 @@
 -@title = t('links.settings.users.title')
+-@nav_items = settings_nav_items
 = paginate @users
 div class="row"
   div class="col-sm-offset-1 col-sm-6" id="user-form"
-br
 = render 'layouts/table', title: 'user', items: @items, headers: [:email, :admin, :last_login, :contact]
 
 javascript:

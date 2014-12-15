@@ -2,7 +2,7 @@ require 'itpkg/utils/encryptor'
 require 'itpkg/utils/mailer'
 
 class MailBoxesController < ApplicationController
-  layout 'mail_box/base'
+  layout 'mail_box'
   before_action :_mb_user
   before_action :_must_login, only: [:new, :create, :password]
 

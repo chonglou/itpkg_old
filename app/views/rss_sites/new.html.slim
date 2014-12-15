@@ -1,0 +1,14 @@
+- @title=t('links.rss_site.create')
+
+= bootstrap_form(@site, url:{action:'create'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :url
+      = f.text_field :url, autofocus: true
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')

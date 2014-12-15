@@ -67,6 +67,11 @@ en:
       title: 'Settings'
       users:
         title: 'Members'
+    rss_site:
+      list: 'RSS Sites'
+      create: 'Add RSS'
+      edit: 'Edit Rss url [%{title}]'
+      remove: 'Remove Rss url [%{title}]'
     repository:
       user:
         list: 'Repository Users '
