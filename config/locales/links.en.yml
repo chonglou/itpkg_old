@@ -23,10 +23,15 @@ en:
     status:
       workers:
         title: 'Workers'
+      search:
+        title: 'Search Engine'
+      cache:
+        title: 'Cache'
       logs:
         title: 'Logs'
       versions:
-        title: 'Current status'
+        title: 'System'
+        os: 'OS：%{info}'
         rb: "RUBY：(%{ruby}) RAILS(%{rails}) APP(%{app})"
         env: "ENV：%{env}"
         root: "APP Directory：%{root}"

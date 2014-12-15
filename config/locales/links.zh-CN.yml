@@ -23,10 +23,15 @@ zh-CN:
     status:
       workers:
         title: '任务队列'
+      search:
+        title: '搜索引擎'
+      cache:
+        title: '缓存系统'
       logs:
         title: '运行日志'
       versions:
-        title: '当前状态'
+        title: '系统信息'
+        os: '操作系统：%{info}'
         rb: "版本号：RUBY(%{ruby}) RAILS(%{rails}) APP(%{app})"
         env: "模式：%{env}"
         root: "APP目录：%{root}"

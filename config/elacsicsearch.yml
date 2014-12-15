@@ -1,0 +1,14 @@
+default: &default
+  url: http://localhost:9200
+  log: true
+
+production:
+  <<: *default
+  log: false
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+

@@ -98,4 +98,5 @@ gem 'kaminari'
 gem 'sinatra', require: nil
 gem 'net-snmp'
 gem 'ffi-inliner', github:'chonglou/ffi-inliner'
+gem 'elasticsearch'
 

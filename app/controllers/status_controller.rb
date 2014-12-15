@@ -8,11 +8,12 @@ class StatusController < ApplicationController
   def versions
 
     @items=[
+        t('links.status.versions.os', info:`uname -a`),
         t('links.status.versions.rb', ruby: RUBY_VERSION, rails: Rails.version, app: Setting.version),
         t('links.status.versions.env', env: Rails.env),
         t('links.status.versions.root', root: Rails.root),
         t('links.status.versions.uptime', time: time_ago_in_words(Itpkg::BOOTED_AT)),
-        t('links.status.versions.time', time: Time.now),
+        #t('links.status.versions.time', time: Time.now),
 
     ]
 
@@ -38,6 +39,14 @@ class StatusController < ApplicationController
         {
             name: t('links.status.workers.title'),
             url: status_workers_url
+        },
+        {
+            name: t('links.status.cache.title'),
+            url: status_cache_url
+        },
+        {
+            name: t('links.status.search.title'),
+            url: status_search_url
         },
         {
             name: t('links.status.logs.title'),

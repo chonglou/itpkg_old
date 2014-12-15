@@ -47,7 +47,7 @@ Rails.application.routes.draw do
 
     #------status----------
     namespace :status do
-      %w(workers logs versions).each { |a| get a }
+      %w(workers logs search cache versions).each { |a| get a }
     end
 
     #----------- docker-----------
