@@ -1,4 +1,6 @@
-class MonitorWorker
-  include Sidekiq::Worker
+module Itpkg
+  class MonitorWorker
+    include Sidekiq::Worker
 
+  end
 end

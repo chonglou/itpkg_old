@@ -127,7 +127,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.new(params.require(:repository).permit(:name, :title))
     if @repository.save
       current_user.add_role :creator, @repository
-      GitAdminWorker.perform_async
+      Itpkg::GitAdminWorker.perform_async
       #注意 直接到show会有EOF错误
       redirect_to(repositories_path) and return
     end
@@ -162,7 +162,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.find params[:id]
     if repositories_can_edit? && User.with_any_role({name: :reader, resource:@repository}, {name: :writer, resource:@repository}).count == 0
       @repository.update enable: false
-      GitAdminWorker.perform_async
+      Itpkg::GitAdminWorker.perform_async
     else
       flash[:alert] = t('labels.in_using')
 

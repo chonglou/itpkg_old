@@ -43,7 +43,7 @@ class Repositories::UsersController < ApplicationController
         #                         subject:t('mails.add_to_repository.subject', name:@repository.name),
         #                         user_id: user.id, token: SecureRandom.uuid, deadline: 1.days.since
         # UserMailer.delay.confirm(c.id)
-        GitAdminWorker.perform_async
+        Itpkg::GitAdminWorker.perform_async
         success = true
       end
     end
@@ -66,7 +66,7 @@ class Repositories::UsersController < ApplicationController
     @user.remove_role(:reader, @repository) if @user.is_reader_of?(@repository)
     @user.remove_role(:writer, @repository) if @user.is_writer_of?(@repository)
 
-    GitAdminWorker.perform_async
+    Itpkg::GitAdminWorker.perform_async
     UserMailer.delay.remove_from_repository(repository_id: @repository.id, user_id: @user.id)
     redirect_to repository_users_path(repository_id: @repository.id)
   end
