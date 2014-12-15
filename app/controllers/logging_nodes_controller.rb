@@ -12,7 +12,7 @@ class LoggingNodesController < ApplicationController
 LC_ALL=en_US.utf8
 since=$(date +"%Y-%m-%d %H:%M:%S")
 echo since >> .log
-#{type == :journald ? 'journalctl --since "$since" -f' : 'tail -n 0 -f $1'} | nc log.#{ENV[ITPKG_DOMAIN]} 10002
+#{type == :journald ? 'journalctl --utc --since "$since" -f' : 'tail -n 0 -f $1'} | nc log.#{ENV[ITPKG_DOMAIN]} 10002
 EOF
   end
 end

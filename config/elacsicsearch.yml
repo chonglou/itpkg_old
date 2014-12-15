@@ -5,10 +5,13 @@ default: &default
 production:
   <<: *default
   log: false
+  index: itpkg
 
 development:
   <<: *default
+  index: itpkg_development
 
 test:
   <<: *default
+  index: itpkg_test
 
