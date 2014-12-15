@@ -11,7 +11,7 @@ class LoggingNodesController < ApplicationController
     @items = @nodes.map do |n|
       {
           cols: [n.name, n.vip, n.flag, n.created_at],
-          url: logging_node_path(n.id)
+          url: edit_logging_node_path(n.id)
       }
     end
 

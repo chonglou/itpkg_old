@@ -50,6 +50,7 @@ zh-CN:
     docker: 'Docker'
     logging_node:
       list: '日志系统'
+      search: '日志搜索'
       create: '添加新日志节点'
       edit: '编辑日志节点[%{name}]'
       show: '显示日志节点[%{name}]'

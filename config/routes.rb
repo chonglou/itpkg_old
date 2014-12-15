@@ -39,7 +39,9 @@ Rails.application.routes.draw do
     resources :monitor_nodes
 
     #-------logging----------
-    resources :logging_nodes, expect:[:create,:destroy]
+    get 'logging_nodes/search'
+    post 'logging_nodes/search'
+    resources :logging_nodes, expect:[:create,:destroy,:show]
 
     #-------rss------------
     get 'rss'=>'rss#index'

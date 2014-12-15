@@ -50,6 +50,7 @@ en:
     docker: 'Docker'
     logging_node:
       list: 'Logging'
+      search: 'Search in logs'
       create: 'Add a new logging node'
       edit: 'Edit logging[%{name}]'
       show: 'Show logging[%{name}]'
