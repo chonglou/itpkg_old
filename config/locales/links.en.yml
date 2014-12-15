@@ -50,9 +50,9 @@ en:
     docker: 'Docker'
     logging_node:
       list: 'Logging'
-      create: 'Add a logging'
+      create: 'Add a new logging node'
       edit: 'Edit logging[%{name}]'
-      remove: 'Remove logging[%{name}]'
+      show: 'Show logging[%{name}]'
     node_type:
       list: 'Applications'
       create: 'Create a new Application'

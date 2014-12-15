@@ -4,6 +4,7 @@ zh-CN:
     user_logo: '头像'
     unhappy: '不开心？ '
     must_admin: '你不是管理员!'
+    must_ops: '你不是运维人员！'
     must_login: '需要登录'
     must_non_login: '已经登录!'
     are_you_sure: '你确定？'

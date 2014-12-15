@@ -1,0 +1,14 @@
+- @title=t('links.logging_node.edit', name:@node.name)
+
+= bootstrap_form(@node, url:{action:'update'}) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(@title)
+
+    = f.group do
+      = f.label :name
+      = f.name_field :name
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')

@@ -1,0 +1,4 @@
+- @title=t('links.logging_node.list')
+= render 'layouts/button_group', items:@buttons, back:true
+= paginate @nodes
+= render 'layouts/table', title:'logging_node', items:@items, headers:[:name, :vip, :created]

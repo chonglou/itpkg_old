@@ -24,8 +24,15 @@ class ApplicationController < ActionController::Base
 
 
   def must_admin!
-    if current_user.nil? || !current_user.has_role?(:admin)
+    unless current_user && current_user.has_role?(:admin)
       flash[:alert] = t('labels.must_admin')
+      redirect_to root_path
+    end
+  end
+
+  def must_ops!
+    unless current_user && (current_user.has_role?(:ops) || current_user.has_role?(:admin))
+      flash[:alert] = t('labels.must_ops')
       redirect_to root_path
     end
   end

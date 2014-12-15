@@ -50,9 +50,9 @@ zh-CN:
     docker: 'Docker'
     logging_node:
       list: '日志系统'
-      create: '添加日志点'
-      edit: '编辑日志点[%{name}]'
-      remove: '删除日志点[%{name}]'
+      create: '添加新日志节点'
+      edit: '编辑日志节点[%{name}]'
+      show: '显示日志节点[%{name}]'
     monitor_node:
       list: '监控系统'
       create: '添加监控点'
