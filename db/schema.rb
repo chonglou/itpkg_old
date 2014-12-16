@@ -205,8 +205,9 @@ ActiveRecord::Schema.define(version: 20141216002924) do
   add_index "logging_nodes", ["vip"], name: "index_logging_nodes_on_vip", unique: true, using: :btree
 
   create_table "logging_searches", force: true do |t|
-    t.string   "keyword",    default: ".*", null: false
-    t.string   "host",       default: ".*", null: false
+    t.string   "name",                      null: false
+    t.string   "message",    default: ".*", null: false
+    t.string   "vip",        default: ".*", null: false
     t.string   "hostname",   default: ".*", null: false
     t.string   "tag",        default: ".*", null: false
     t.datetime "created_at"

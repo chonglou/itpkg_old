@@ -1,5 +1,8 @@
 class LoggingNodesController < ApplicationController
+  layout 'tabbed'
   before_action :must_ops!
+  include LoggingNodesHelper
+  before_action :_nav_items
 
   def index
     @buttons = [
@@ -54,4 +57,8 @@ EOF
     redirect_to logging_nodes_path
   end
 
+  private
+  def _nav_items
+    @nav_items = logging_nodes_nav_items
+  end
 end

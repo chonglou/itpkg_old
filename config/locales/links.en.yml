@@ -49,11 +49,17 @@ en:
       create: 'Create Task'
     docker: 'Docker'
     logging_node:
-      list: 'Logging'
-      search: 'Search in logs'
+      list: 'Logging Nodes'
       create: 'Add a new logging node'
       edit: 'Edit logging[%{name}]'
       show: 'Show logging[%{name}]'
+    logging_search:
+      quick: 'Quick Search'
+      list: 'Logging Filters'
+      create: 'Create a filter(Regexp)'
+      edit: 'Edit filter(Regexp) [%{name}]'
+      show: 'Show log search by filter(Regexp) result [%{name}]'
+      remove: 'Remove filter(Regexp) [%{name}]'
     node_type:
       list: 'Applications'
       create: 'Create a new Application'

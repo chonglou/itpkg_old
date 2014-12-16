@@ -49,11 +49,17 @@ zh-CN:
       create: '新建任务'
     docker: 'Docker'
     logging_node:
-      list: '日志系统'
-      search: '日志搜索'
+      list: '日志节点'
       create: '添加新日志节点'
       edit: '编辑日志节点[%{name}]'
       show: '显示日志节点[%{name}]'
+    logging_search:
+      quick: '快速查询'
+      list: '过滤器列表'
+      create: '创建过滤器(正则)'
+      edit: '编辑过滤器(正则) [%{name}]'
+      show: '显示过滤器(正则)查询结果 [%{name}]'
+      remove: '删除过滤器(正则) [%{name}]'
     monitor_node:
       list: '监控系统'
       create: '添加监控点'
