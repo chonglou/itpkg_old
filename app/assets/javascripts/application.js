@@ -39,5 +39,12 @@
 //= require widgets
 
 
+function swap_select_items(from, to){
+
+    $("select#"+from+" :selected").map(function (i, el) {
+        $("select#"+to).append("<option value='" + $(el).val() + "'>" + $(el).text() + "</option>");
+        $("select#"+from+" option[value='" + $(el).val() + "']").remove();
+    });
+}
 
 

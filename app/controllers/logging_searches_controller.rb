@@ -8,10 +8,18 @@ class LoggingSearchesController < ApplicationController
     case request.method
       when 'GET'
       when 'POST'
+        kv = params.permit(:vips, :keyword, :tag, :since, :until).tap { |p|
+          kv[:since] = Time.parse(kv[:since]) if kv[:since]
+          kv[:until] = Time.parse(kv[:until]) if kv[:until]
+        }.delete_if {|_,v| v.nil? || v=='' }
+        
+
+        render 'show'
       else
-        render status:404
+        render status: 404
     end
   end
+
   def index
   end
 
