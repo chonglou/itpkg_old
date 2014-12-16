@@ -1,4 +1,4 @@
-class RssSitesController < ApplicationController
+class Rss::SitesController < ApplicationController
   layout 'tabbed'
   before_action :must_admin!
   before_action :_nav_items

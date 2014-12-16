@@ -158,7 +158,7 @@ class PersonalController < ApplicationController
         label: t('links.wiki.list')
     }
     @items << {
-        url: rss_path,
+        url: rss_items_path,
         logo: 'flat/256/rss47.png',
         label: t('links.rss_item.list')
     }

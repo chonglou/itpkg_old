@@ -2,8 +2,6 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
 
-  get 'logging_searches/index'
-
   #--------------- My Add -----------------
 
   ###################### mail.localhost.localdomain ##############
@@ -48,8 +46,10 @@ Rails.application.routes.draw do
     resources :logging_searches
 
     #-------rss------------
-    get 'rss'=>'rss#index'
-    resources :rss_sites, expect:[:show]
+    namespace :rss do
+      get 'items'=>'items#index'
+      resources :sites, expect:[:show]
+    end
 
     #------status----------
     namespace :status do
