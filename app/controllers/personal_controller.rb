@@ -104,9 +104,9 @@ class PersonalController < ApplicationController
           label: t('links.monitor_node.list')
       }
       @items << {
-          url: logging_nodes_path,
+          url: logging_items_path,
           logo: 'flat/256/log2.png',
-          label: t('links.logging_node.list')
+          label: t('links.logging_item.list')
       }
     end
     if current_user.has_role?(:admin)

@@ -48,6 +48,8 @@ zh-CN:
     task:
       create: '新建任务'
     docker: 'Docker'
+    logging_item:
+      list: '日志存储'
     logging_node:
       list: '日志节点'
       create: '添加新日志节点'

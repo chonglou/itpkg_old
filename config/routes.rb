@@ -41,7 +41,8 @@ Rails.application.routes.draw do
     #-------logging----------
     namespace :logging do
       resources :nodes, expect:[:create,:destroy,:show]
-      get 'searches/query'
+
+      get 'items'=>'items#index'
 
       get 'searches/quick'
       post 'searches/quick'

@@ -48,6 +48,8 @@ en:
     task:
       create: 'Create Task'
     docker: 'Docker'
+    logging_item:
+      list: 'Logs'
     logging_node:
       list: 'Logging Nodes'
       create: 'Add a new logging node'

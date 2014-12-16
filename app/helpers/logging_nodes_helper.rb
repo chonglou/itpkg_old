@@ -2,6 +2,10 @@ module LoggingNodesHelper
   def logging_nodes_nav_items
     [
         {
+            name: t('links.logging_item.list'),
+            url: logging_items_url
+        },
+        {
             name: t('links.logging_node.list'),
             url: logging_nodes_url
         },

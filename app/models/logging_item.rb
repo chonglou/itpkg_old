@@ -12,4 +12,8 @@ class LoggingItem
   attribute :created, Time
 
   validates :vip, :vport, :hostname, :created, :message, presence: true
+
+  def to_s
+    "#{self.created} #{self.hostname} #{self.tag}[#{self.pid}]: #{self.message}"
+  end
 end
