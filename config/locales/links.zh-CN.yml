@@ -150,8 +150,8 @@ zh-CN:
     vpn_user:
       create: '创建VPN账户'
       list: 'VPN账户列表'
-      edit: "编辑 VPN 账户 [%{email}]"
-      remove: '删除 VPN 账户 [%{email}]'
+      edit: "编辑 VPN 账户 [%{name}]"
+      remove: '删除 VPN 账户 [%{name}]'
     vpn_log:
       list: 'VPN日志列表'
     wiki:

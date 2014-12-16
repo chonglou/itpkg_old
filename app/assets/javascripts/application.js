@@ -14,9 +14,10 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require holder
+//= require moment
+//= require moment/zh-cn
 //= require bootstrap-sprockets
-//= require bootstrap-datepicker/core
-//= require bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.js
+//= require bootstrap-datetimepicker
 //= require angular
 //= require angular-animate
 //= require angular-resource

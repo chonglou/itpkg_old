@@ -31,8 +31,8 @@ HTML
     end
 
     def select(name, choices, selected=nil, options={}, html_options = {})
-      update_options_with_class! html_options,'form-control'
-      input_div(super(name, @template.options_for_select(choices, selected), options, html_options),3)
+      update_options_with_class! html_options, 'form-control'
+      input_div(super(name, @template.options_for_select(choices, selected), options, html_options), 3)
     end
 
     def group(options={}, &block)
@@ -138,18 +138,47 @@ HTML
       input_div(super(name, options), 7)
     end
 
-    def date_picker(name, options={})
-      update_options_with_class! options, 'form-control'
-      options['data-provide']='datepicker'
-      options['data-date-format'] = 'yyyy-mm-dd'
-      options['data-date-language'] = I18n.locale
-      options['data-date-autoclose'] = true
-      options['data-date-today-btn'] = true
+    def date_select(method, options = {})
+      existing_date = @object.send(method)
+      formatted_date = existing_date.to_date.strftime('%F') if existing_date.present?
 
-      c1 = super_text_field(name, options)
-      c2 = "<span class='input-group-addon'><i class='glyphicon glyphicon-th'></i></span>"
-      @template.content_tag(:div, @template.content_tag(:div, c1+c2.html_safe, class: 'input-group date'), class: 'col-sm-4')
+      update_options_with_class! options, 'form-control'
+      options['data-date-format'] = 'YYYY-MM-DD'
+      options['data-date-language'] = I18n.locale
+      options['value']=formatted_date
+
+      @template.content_tag(:div, :class => 'col-sm-3') do
+        @template.content_tag(:div, class:'input-group date datetimepicker') do
+        super_text_field(method, options) +
+            @template.content_tag(:span, @template.content_tag(:span, '', class: 'glyphicon glyphicon-calendar'), class: 'input-group-addon')
+          end
+      end
     end
+
+    def datetime_select(method, options = {})
+      existing_time = @object.send(method)
+      formatted_time = existing_time.to_time.strftime('%F %I:%M %p') if existing_time.present?
+
+      update_options_with_class! options, 'form-control'
+
+      @template.content_tag(:div, :class => 'input-group date') do
+        super_text_field(method, :value => formatted_time, :class => 'form-control', :'data-date-format' => 'YYYY-MM-DD hh:mm A') +
+            @template.content_tag(:span, @template.content_tag(:span, '', :class => 'glyphicon glyphicon-calendar'), :class => 'input-group-addon')
+      end
+    end
+
+    # def date_picker(name, options={})
+    #   update_options_with_class! options, 'form-control'
+    #   options['data-provide']='datepicker'
+    #   options['data-date-format'] = 'yyyy-mm-dd'
+    #   options['data-date-language'] = I18n.locale
+    #   options['data-date-autoclose'] = true
+    #   options['data-date-today-btn'] = true
+    #
+    #   c1 = super_text_field(name, options)
+    #   c2 = "<span class='input-group-addon'><i class='glyphicon glyphicon-th'></i></span>"
+    #   @template.content_tag(:div, @template.content_tag(:div, c1+c2.html_safe, class: 'input-group date'), class: 'col-sm-4')
+    # end
 
 
     private

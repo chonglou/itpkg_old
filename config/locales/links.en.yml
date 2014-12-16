@@ -143,8 +143,8 @@ en:
     vpn_user:
       create: 'Create vpn account'
       list: 'Vpn accounts'
-      edit: 'Edit vpn account [%{email}]'
-      remove: 'Remove vpn account [%{email}]'
+      edit: 'Edit vpn account [%{name}]'
+      remove: 'Remove vpn account [%{name}]'
     vpn_host:
       list: 'Vpn hosts'
       edit: 'Edit vpn host [%{name}]'

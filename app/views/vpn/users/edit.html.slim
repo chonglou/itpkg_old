@@ -1,4 +1,4 @@
-- @title=t('links.vpn_user.edit', email:@user.email)
+- @title=t('links.vpn_user.edit', name:@user.name)
 
 = bootstrap_form(@user, url:{action:'update'}) do |f|
   = f.error_messages
@@ -19,11 +19,11 @@
 
     = f.group do
       = f.label :start_date
-      = f.date_picker :start_date
+      = f.date_select :start_date
 
     = f.group do
       = f.label :end_date
-      = f.date_picker :end_date
+      = f.date_select :end_date
 
     = f.group do
       = f.label :status
@@ -38,7 +38,7 @@
       = f.submit t('buttons.submit')
       = f.reset t('buttons.reset')
 
-h3 #{t('links.vpn_user.remove', email:@user.email)}
+h3 #{t('links.vpn_user.remove', name:@user.name)}
 hr
-= render 'layouts/remove_button', name:'buttons.remove', url:vpn_user_path(@user), back:false
+= render 'layouts/remove_button', name:'buttons.remove', url:vpn_user_path(@user), back:true
 
