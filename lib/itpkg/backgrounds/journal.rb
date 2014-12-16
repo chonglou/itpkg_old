@@ -1,6 +1,5 @@
 require 'socket'
 require 'eventmachine'
-require 'itpkg/utils/search_client'
 
 module Itpkg
   module Background
@@ -17,8 +16,6 @@ module Itpkg
 
           close_connection unless node.enable?
 
-          @client = Itpkg::SearchClient.new
-
           Rails.logger.info "Connect From #{@ip}:#{@port}"
         end
 
@@ -32,7 +29,7 @@ module Itpkg
           else
             body.merge! message:line, created:Time.now
           end
-          @client.insert :logs, body
+          LoggingItem.create(body)
         end
 
         def unbind

@@ -1,3 +1,4 @@
+require 'elasticsearch/rails/instrumentation'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -10,7 +11,7 @@ Rails.application.configure do
   config.eager_load = false
 
   # Show full error reports and disable caching.
-  config.consider_all_requests_local       = true
+  config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
@@ -39,13 +40,12 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = false
   config.action_mailer.delivery_method = :sendmail
-   config.action_mailer.sendmail_settings = {
-     location: '/usr/bin/msmtp',
-     arguments: "-C #{Rails.root}/config/msmtprc --logfile #{Rails.root}/log/msmtp.log -a default -t"
-   }
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 , from:ENV['ITPKG_MAILER_SENDER']}
+  config.action_mailer.sendmail_settings = {
+      location: '/usr/bin/msmtp',
+      arguments: "-C #{Rails.root}/config/msmtprc --logfile #{Rails.root}/log/msmtp.log -a default -t"
+  }
+  config.action_mailer.default_url_options = {host: 'localhost', port: 3000, from: ENV['ITPKG_MAILER_SENDER']}
 
   Slim::Engine.set_options pretty: true, sort_attrs: false
-
 
 end

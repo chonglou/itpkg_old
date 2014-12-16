@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
     #-------logging----------
     resources :logging_nodes, expect:[:create,:destroy,:show]
+    get 'logging_searches/query'
     get 'logging_searches/quick'
     post 'logging_searches/quick'
     resources :logging_searches

@@ -59,6 +59,7 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'database_cleaner'
   gem 'page-object'
+  gem 'lograge'
 end
 
 
@@ -100,5 +101,7 @@ gem 'kaminari'
 gem 'sinatra', require: nil
 gem 'net-snmp'
 gem 'ffi-inliner', github:'chonglou/ffi-inliner'
-gem 'elasticsearch'
+gem 'elasticsearch-model'
+gem 'elasticsearch-persistence'
+gem 'elasticsearch-rails'
 
