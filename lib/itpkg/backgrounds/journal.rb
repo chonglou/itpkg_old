@@ -8,7 +8,7 @@ module Itpkg
         LOG_R=/(^[A-Z][a-z]{2}[0-9: ]{12}) ([-\w]+) ([-\w]+)\[([0-9]+)\]: (.*)/
 
         def post_init
-          @port, @ip = Socket.unpack_sockaddr_in(get_peername)
+          @port, @ip = Socket.unpack_sockaddr_in(get_peername) if get_peername
           node = LoggingNode.find_by vip: @ip
           unless node
             node = LoggingNode.create name: 'UNKNOWN', vip: @ip
@@ -20,7 +20,8 @@ module Itpkg
         end
 
         def receive_data(line)
-          line = line.chomp
+          line = line.chomp.force_encoding('UTF-8')
+          Rails.logger.debug "收到:#{line}"
           ss = LOG_R.match line
           body = {vip:@ip, vport:@port}
           if ss

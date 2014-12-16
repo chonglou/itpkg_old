@@ -5,7 +5,7 @@ class Logging::ItemsController < ApplicationController
   before_action :_nav_items
 
   def index
-    query = params[:q] ? JSON.parse(params[:q], symbolize_names: true) : {match_all: {}}
+    query = params[:query] ? JSON.parse(params[:query], symbolize_names: true) : {match_all: {}}
     @size = params[:size] ? params[:size].to_i : 120
     @page = params[:page] ? params[:page].to_i : 1
 
