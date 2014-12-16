@@ -39,11 +39,14 @@ Rails.application.routes.draw do
     resources :monitor_nodes
 
     #-------logging----------
-    resources :logging_nodes, expect:[:create,:destroy,:show]
-    get 'logging_searches/query'
-    get 'logging_searches/quick'
-    post 'logging_searches/quick'
-    resources :logging_searches
+    namespace :logging do
+      resources :nodes, expect:[:create,:destroy,:show]
+      get 'searches/query'
+
+      get 'searches/quick'
+      post 'searches/quick'
+      resources :searches
+    end
 
     #-------rss------------
     namespace :rss do

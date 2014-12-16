@@ -1,4 +1,4 @@
-class LoggingNodesController < ApplicationController
+class Logging::NodesController < ApplicationController
   layout 'tabbed'
   before_action :must_ops!
   include LoggingNodesHelper

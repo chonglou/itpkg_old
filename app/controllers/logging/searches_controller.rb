@@ -1,4 +1,4 @@
-class LoggingSearchesController < ApplicationController
+class Logging::SearchesController < ApplicationController
   layout 'tabbed'
   before_action :must_ops!
   include LoggingNodesHelper
