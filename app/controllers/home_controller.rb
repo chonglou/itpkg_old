@@ -4,6 +4,10 @@ class HomeController < ApplicationController
   def index
     redirect_to user_signed_in? ? personal_path : new_user_session_path
   end
+  def search
+    flash[:alert] = t('labels.not_support')
+    redirect_to document_show_path(name:'help')
+  end
 
   def document
     name = "#{Rails.root}/doc/#{I18n.locale}/#{params[:name]}.md"

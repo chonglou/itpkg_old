@@ -9,3 +9,4 @@
 
 ## 其它资源
  * [Markdown语法说明](http://wowubuntu.com/markdown)
+ * [在线测试正则] (http://www.rubular.com)

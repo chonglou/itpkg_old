@@ -20,6 +20,7 @@ zh-CN:
     need_setup: '需要配置'
     in_using: '正在使用'
     not_valid: '不合法'
+    not_support: '暂不支持'
     please_waiting: '请等待后台任务处理'
     email_already_exist: '邮箱%{email}已存在!'
     email_password: "密码太短 (至少8字符) 或两次输入不一致!"
