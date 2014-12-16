@@ -3,5 +3,5 @@
 br
 div class='row'
   div class='col-sm-offset-1 col-sm-6'
-    =render 'layouts/json', body:Itpkg::ESClient.cluster.health
+    =render 'layouts/json', body:Elasticsearch::Persistence.client.cluster.health
 

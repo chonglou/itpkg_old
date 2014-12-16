@@ -48,6 +48,7 @@ group :production do
   gem 'rack-cache'
   gem 'dalli'
   gem 'puma'
+  gem 'lograge'
 end
 
 group :development, :test do
@@ -59,7 +60,6 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'database_cleaner'
   gem 'page-object'
-  gem 'lograge'
 end
 
 
