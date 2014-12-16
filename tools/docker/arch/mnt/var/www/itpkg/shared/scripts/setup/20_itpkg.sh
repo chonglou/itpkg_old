@@ -19,6 +19,8 @@ rake db:seed
 rake assets:precompile 
 EOF
 
-systemctl restart itpkg-bg
+systemctl restart itpkg-journal
+systemctl restart itpkg-workers
+systemctl restart itpkg-dispatcher
 systemctl restart itpkg-wss
 systemctl restart itpkg-www

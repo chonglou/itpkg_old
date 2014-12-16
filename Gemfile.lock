@@ -110,7 +110,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.8.0)
-    colorize (0.7.4)
+    colorize (0.7.5)
     connection_pool (2.1.0)
     dalli (2.7.2)
     data_magic (0.20)
