@@ -1,12 +1,15 @@
 -unless @user.is_root?
   fieldset
-    legend #{t 'links.user.status', name:@user.label}
+    legend #{t 'links.user.role', name:@user.label}
     = form_tag(post_settings_user_path) do
       div
         - %w(yes no).each do |v|
           label class='radio-inline'
-            = radio_button_tag :status, v
+            = radio_button_tag :role, v
             | #{v}
-
       br
       = submit_tag t('buttons.submit'), class: 'btn btn-primary'
+  javascript:
+    $(function(){
+      $("input#role_#{@user.is_admin? ? 'yes': 'no'}").prop('checked', true);
+    });

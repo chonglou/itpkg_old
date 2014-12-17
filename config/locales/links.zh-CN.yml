@@ -2,7 +2,7 @@ zh-CN:
   links:
     home: '本站首页'
     user:
-      status: '管理员？'
+      role: '管理员? [%{role}]'
       generate_keys: '重新生成密钥对'
       need_confirm_email: '等待验证邮箱: %{email}'
     project:

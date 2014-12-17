@@ -9,7 +9,7 @@ class SettingsController < ApplicationController
         render 'user', layout: false
       when 'POST'
         unless @user.is_root?
-          if params[:status] == 'yes'
+          if params[:role] == 'yes'
             @user.add_role :admin unless @user.is_admin?
           elsif params[:status] == 'no'
             @user.remove_role :admin if @user.is_admin?

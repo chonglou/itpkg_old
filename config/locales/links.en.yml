@@ -2,7 +2,7 @@ en:
   links:
     home: 'Home'
     user:
-      status: 'Admin?'
+      role: 'Admin？ [%{name}]'
       generate_keys: 'Generate key pairs'
       need_confirm_email: 'Currently waiting confirmation for: %{email}'
     project:

@@ -1,5 +1,5 @@
 class MonitorNodesController < ApplicationController
-  before_action :must_ops!
+  before_action :must_admin!
 
   def index
     @buttons = [
