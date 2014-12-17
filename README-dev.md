@@ -44,7 +44,7 @@ Itpkg默认通信链路通过vpn进行保护
 
 #### ArchLinux
 
-    sudo pacman -S  git base-devel cmake libmariadbclient libgit2 percona-server percona-server-clients nodejs redis mongodb elasticsearch
+    sudo pacman -S  git base-devel cmake libmariadbclient libgit2 percona-server percona-server-clients nodejs redis mongodb elasticsearch zeromq
     sudo systemctl start mysqld 
     sudo systemctl start redis 
     sudo systemctl start mongodb
@@ -52,10 +52,37 @@ Itpkg默认通信链路通过vpn进行保护
 
 #### Mac(需要xcode)
 
-    #安装Home brew
+安装 Homebrew
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    brew install git 
 
+安装基本工具(可选)
+    brew install coreutils
+    cat >> ~/.bash_profile <<"EOF"
+    PATH="$(brew --prefix coreutils)/libexec/gnubin:$PATH"
+    MANPATH="$(brew --prefix coreutils)/libexec/gnuman:$MANPATH"
+    export PATH MANPATH
+    EOF
+    brew install vim --override-system-vi
+    brew install openssl
+    brew link openssl --force
+
+安装开发依赖
+    brew install redis percona-server nodejs mongodb zmq
+    # goto "http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html" download and install jdk7
+    brew install elasticsearch
+    brew install cmake pkg-config
+
+    mkdir -p ~/Library/LaunchAgents
+    cp `brew --prefix percona-server`/*percona-server*.plist ~/Library/LaunchAgents/
+    cp `brew --prefix redis`/*redis*.plist ~/Library/LaunchAgents/
+    cp `brew --prefix mongodb`/*mongodb*.plist ~/Library/LaunchAgents/
+    launchctl load -w ~/Library/LaunchAgents/*.plist
+
+
+修改/etc/hosts(其它根据需要酌情考虑)
+    127.0.0.1 www.localhost.localdomain
+    127.0.0.1 mail.localhost.localdomain
+    127.0.0.1 es.localhost.localdomain
 
 
 #### rbenv

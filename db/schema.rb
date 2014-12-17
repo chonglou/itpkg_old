@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141216002924) do
+ActiveRecord::Schema.define(version: 20141217185325) do
 
   create_table "certificates", force: true do |t|
     t.text     "cert",               null: false
@@ -222,14 +222,17 @@ ActiveRecord::Schema.define(version: 20141216002924) do
   end
 
   create_table "monitor_nodes", force: true do |t|
-    t.integer  "flag",               limit: 2,  default: 0, null: false
-    t.string   "name",                                      null: false
-    t.text     "encrypted_cfg",                             null: false
-    t.string   "encrypted_cfg_salt",                        null: false
-    t.string   "encrypted_cfg_iv",                          null: false
+    t.integer  "flag",               limit: 2,  default: 0,                     null: false
+    t.string   "name",                                                          null: false
+    t.text     "encrypted_cfg",                                                 null: false
+    t.string   "encrypted_cfg_salt",                                            null: false
+    t.string   "encrypted_cfg_iv",                                              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "vip",                limit: 15,             null: false
+    t.string   "vip",                limit: 15,                                 null: false
+    t.integer  "status",             limit: 2,  default: 0,                     null: false
+    t.integer  "space",                         default: 60,                    null: false
+    t.datetime "next_run",                      default: '9999-12-31 23:59:59', null: false
   end
 
   add_index "monitor_nodes", ["name"], name: "index_monitor_nodes_on_name", using: :btree

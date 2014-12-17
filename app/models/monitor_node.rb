@@ -13,4 +13,6 @@ class MonitorNode < ActiveRecord::Base
            redis:52,
            mysql:61
        }
+
+  enum submit: {submit:0, enable:1, disable:false}
 end
