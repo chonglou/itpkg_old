@@ -1,1 +1,1 @@
-Rails.application.config.lograge.enabled = Rails.env.production?
+Rails.application.config.lograge.enabled = true if Rails.env.production?
