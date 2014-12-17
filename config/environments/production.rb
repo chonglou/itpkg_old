@@ -85,5 +85,4 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: "www.#{ENV['ITPKG_DOMAIN']}", from:ENV['ITPKG_MAILER_SENDER']}
 
-  #config.lograge.enabled=true
 end

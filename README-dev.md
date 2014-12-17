@@ -50,9 +50,9 @@ Itpkg默认通信链路通过vpn进行保护
     sudo systemctl start mongodb
     sudo systemctl start elasticsearch
 
-#### Mac
+#### Mac(需要xcode)
 
-    #安装brew
+    #安装Home brew
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew install git 
 

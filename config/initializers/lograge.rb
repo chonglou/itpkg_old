@@ -1,0 +1,1 @@
+Rails.application.config.lograge.enabled = Rails.env.production?
