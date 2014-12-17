@@ -85,20 +85,17 @@ HTML
       super name, options
     end
 
-    def radio_option(&block)
-      input_div(@template.content_tag(:div, @template.capture(&block), class: 'radio-inline'), 1)
-    end
+    def radios(name, values, options={})
 
-    def radio_group(&block)
-      input_div(@template.capture(&block))
-    end
-
-    def radio_button(name, value, options={})
       update_options_with_style! options, 'margin-left:0px;'
+      values.map { |v|
+        @template.content_tag(:div,
+                              radio_button(name, v, @object.send(name)==v ? options.merge(checked: true) : options)+
+                                  label("#{name}_#{v}", mode:'radio'), class: 'radio-inline')
+      }.join('').html_safe
 
-      super name, value, options
+
     end
-
 
     def check_box_group(&block)
       @template.content_tag(:div, class: 'col-sm-offset-2 col-sm-10') do

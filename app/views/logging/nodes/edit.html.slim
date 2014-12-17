@@ -11,7 +11,7 @@
 
     = f.group do
       = f.label :flag
-      = f.select :flag, LoggingNode.flags.map{|k,v|[k,v]}
+      = f.radios :flag, [:enable, :disable]
 
     = f.button_group do
       = f.submit t('buttons.submit')

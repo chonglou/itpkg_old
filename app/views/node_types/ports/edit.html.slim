@@ -13,13 +13,7 @@
 
     = f.group do
       = f.label :tcp
-      = f.radio_option
-        = f.radio_button :tcp, true
-        = f.label :tcp_true, mode:'radio'
-
-      = f.radio_option
-        = f.radio_button :tcp, false
-        = f.label :tcp_false, mode:'radio'
+      = f.radios :tcp, [true, false]
 
     = f.group do
       = f.label :t_port

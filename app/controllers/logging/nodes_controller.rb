@@ -33,7 +33,7 @@ class Logging::NodesController < ApplicationController
 #!/bin/sh
 LC_ALL=en_US.utf8
 since=$(date +"%Y-%m-%d %H:%M:%S")
-echo since >> .history
+echo $since >> .history
 NC="nc log.#{ENV['ITPKG_DOMAIN']} 10002"
 if which journalctl >/dev/null
 then
@@ -51,7 +51,7 @@ EOF
   def update
     @node = LoggingNode.find params[:id]
     kv = params.require(:logging_node).permit(:name, :flag).tap do |p|
-      p[:flag]= p[:flag] ? p[:flag].to_i : LoggingNode.flags[:disable]
+      p[:flag]= p[:flag] ? p[:flag].to_sym : LoggingNode.flags[:disable]
     end
     @node.update kv
     redirect_to logging_nodes_path

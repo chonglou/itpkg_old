@@ -27,12 +27,7 @@
 
     = f.group do
       = f.label :status
-      = f.radio_option
-        = f.radio_button :enable, true
-        = f.label :enable_true, mode:'radio'
-      = f.radio_option
-        = f.radio_button :enable, false
-        = f.label :enable_false, mode:'radio'
+      = f.radios :enable, [true, false]
 
     = f.button_group do
       = f.submit t('buttons.submit')
