@@ -37,18 +37,26 @@ Itpkg默认通信链路通过vpn进行保护
 
 ## 开发指导
 
-默认用户: root 12345678
+默认用户: root changme
 
 ### 开发环境
 强烈建议使用archlinux or mac
 
 #### ArchLinux
 
-    sudo pacman -S  git base-devel cmake libmariadbclient libgit2 percona-server percona-server-clients nodejs redis mongodb
-    sudo systemctl start mysqld redis mongodb
+    sudo pacman -S  git base-devel cmake libmariadbclient libgit2 percona-server percona-server-clients nodejs redis mongodb elasticsearch
+    sudo systemctl start mysqld 
+    sudo systemctl start redis 
+    sudo systemctl start mongodb
+    sudo systemctl start elasticsearch
 
 #### Mac
-待补
+
+    #安装brew
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    brew install git 
+
+
 
 #### rbenv
     git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
