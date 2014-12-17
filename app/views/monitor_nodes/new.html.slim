@@ -1,7 +1,7 @@
-- @title=t('links.node_type.var.create')
+- @title=t('links.monitor_node.create')
 
 
-= bootstrap_form(@var, url:{action:'create'}) do |f|
+= bootstrap_form(@node, url:{action:'create'}) do |f|
   = f.error_messages
   = f.fieldset do
     = f.legend(@title)
@@ -11,12 +11,13 @@
       = f.name_field :name, autofocus: true
 
     = f.group do
-      = f.label :flag
-      = f.select :flag, @flags
+      = f.label :vip
+      = f.name_field :vip
 
     = f.group do
-      = f.label :def_v
-      = f.text_field :def_v
+      = f.label :flag
+      = f.select :flag, monitor_node_flag_options
+
 
     = f.button_group do
       = f.submit t('buttons.submit')

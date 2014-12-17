@@ -7,11 +7,11 @@
 
     = f.group do
       = f.label :country
-      = f.select :country, dns_country_options, @acl.country
+      = f.select :country, dns_country_options
 
     = f.group do
       = f.label :region
-      = f.select :region, dns_region_options(@acl.country), @acl.region
+      = f.select :region, dns_region_options(@acl.country)
 
 
     = f.button_group do

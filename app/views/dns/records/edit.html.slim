@@ -7,11 +7,11 @@
 
     = f.group do
       = f.label :code
-      = f.select :code, dns_acl_options, @record.code
+      = f.select :code, dns_acl_options
 
     = f.group do
       = f.label :flag
-      = f.select :flag, dns_flag_options, @record.flag
+      = f.select :flag, dns_flag_options
 
     = f.group do
       = f.label :zone
@@ -28,12 +28,12 @@
 
     = f.group do
       = f.label :mx_priority
-      = f.select :mx_priority, dns_mx_priority_options, @record.mx_priority
+      = f.select :mx_priority, dns_mx_priority_options
 
 
     = f.group do
       = f.label :ttl
-      = f.select :ttl, dns_ttl_options, @record.ttl
+      = f.select :ttl, dns_ttl_options
 
     = f.button_group do
       = f.submit t('buttons.submit')
