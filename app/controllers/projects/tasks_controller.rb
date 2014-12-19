@@ -17,6 +17,7 @@ class Projects::TasksController < ApplicationController
   end
 
   def edit
+    render 'edit', layout:nil
   end
 
   def update

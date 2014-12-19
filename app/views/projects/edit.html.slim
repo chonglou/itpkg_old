@@ -16,7 +16,7 @@
     = f.button_group do
       = f.submit t('buttons.submit')
       = f.back t('buttons.back')
-      = link_to t('links.project.remove'),
+      = link_to t('buttons.remove'),
                 project_path(@project),
                 data: {confirm: t('labels.are_you_sure')},
                 method: :delete,
