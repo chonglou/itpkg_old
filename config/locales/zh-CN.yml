@@ -23,6 +23,8 @@ zh-CN:
       comment: '评论'
       comments: '评论'
       edit_comment: '编辑评论'
+      story_types: '类型'
+      story_tags: '标签'
     task:
       title: '任务'
       information: '基本信息'

@@ -1,7 +1,9 @@
+= javascript_include_tag 'projects/story'
+
 - @title=t('links.story.create')
 
 
-= bootstrap_form(@story, url: {action: 'create'}) do |f|
+= bootstrap_form(@story, url: {action: 'create'}, data: { project_id: @project.id }) do |f|
   = f.error_messages
   = f.fieldset do
     = f.legend(@title)
@@ -17,6 +19,14 @@
     = f.group do
       = f.label :status
       = f.select :status, status_select_options, 'submit'
+
+    = f.group do
+      = f.label :story_types
+      = f.text_field :story_type_ids, value: nil
+
+    = f.group do
+      = f.label :story_tags
+      = f.text_field :story_tag_ids, value: nil
 
     = f.group do
       = f.label :description

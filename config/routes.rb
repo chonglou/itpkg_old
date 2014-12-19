@@ -116,15 +116,21 @@ Rails.application.routes.draw do
       get 'download'
       get 'viewer' 
     end
+
     resources(:stories, controller: 'projects/stories') do
       resources :story_comments, controller: 'projects/story_comments'
       resources :tasks, controller: 'projects/tasks' do
         resources :task_comments
       end
     end
+
     post :add_user
     post :remove_user
+
+    resources :story_types, controller: 'projects/story_types'
+    resources :story_tags, controller: 'projects/story_tags'
   end
+
 
     #----------others---------
     get 'personal' => 'personal#index'
