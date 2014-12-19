@@ -5,16 +5,15 @@
     var $tasks          = $('#tasks'),
       $new_row          = $('#task_row_template').clone().removeClass('hide'),
       $new_row_els      = $new_row.find('td'),
-      $new_action_links = $new_row.find('a'),
-      new_task_id       = 'tasks/' + data.id;
+      $delete_button    = $new_row.find('.btn-danger'),
+      new_task_id       = 'tasks/' + data.id,
+      href;
 
     $new_row_els.eq(0).text(data.id);
     $new_row_els.eq(1).text(data.details);
 
-    $new_action_links.each(function () {
-      var href = $(this).prop('href').replace('tasks/0', new_task_id);
-      $(this).prop('href', href);
-    });
+    href = $delete_button.prop('href').replace('tasks/0', new_task_id);
+    $delete_button.prop('href', href);
 
     $tasks.append($new_row);
   }
@@ -50,7 +49,7 @@
       }
     });
 
-    $task_form.on('ajax:success', function (xhr, data, status) {
+    $task_form.on('ajax:success', function (xhr, data) {
       add_new_task_to_table(data);
 
       close_add_task_form($create_task_form, $new_task);
@@ -62,7 +61,7 @@
       close_add_task_form($create_task_form, $new_task);
     });
 
-    $('.edit_task').on('click', function (e) {
+    $('#tasks').on('click', '.edit_task', function (e) {
       e.preventDefault();
 
       var $this = $(this),
