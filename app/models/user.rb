@@ -31,11 +31,15 @@ class User < ActiveRecord::Base
 
 
   def to_s
-    "#{self.first_name} #{self.last_name}<#{self.email}>"
+    "#{self.full_name}<#{self.email}>"
   end
 
   def after_database_authentication
     Log.create user_id:self.id, message:'Sign in.'
+  end
+
+  def full_name
+    self.first_name.to_s + ' ' + self.last_name.to_s
   end
 
 end
