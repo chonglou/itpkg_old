@@ -9,6 +9,7 @@ end
 
 class User < ActiveRecord::Base
   rolify
+  attr_accessor :login
 
   include RailsSettings::Extend
   # Include default devise modules. Others available are:
@@ -16,11 +17,11 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable,
-         :async, authentication_keys: [:label]
+         :async, authentication_keys: [:login]
 
   has_one :contact
   validates :label, uniqueness: true
-  validates :label, presence: true
+  validates :label, :first_name, :last_name, presence: true
   validates_format_of :label, with: /\A[a-zA-Z][a-zA-Z0-9_]{2,12}\z/, on: :create
 
   has_and_belongs_to_many :projects
@@ -42,4 +43,12 @@ class User < ActiveRecord::Base
     self.first_name.to_s + ' ' + self.last_name.to_s
   end
 
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if (login = conditions.delete(:login))
+      where(conditions).where(['label = :value OR email = :value', { :value => login }]).first
+    else
+      where(conditions).first
+    end
+  end
 end

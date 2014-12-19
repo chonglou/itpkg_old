@@ -17,7 +17,9 @@ zh-CN:
       ssh_key:
         public_key: '公钥'
       user:
-        label: '用户名'
+        login: 'ID/邮箱'
+        label: '唯一ID'
+        username: '用户名'
         email: '邮箱'
         password: '密码'
         password_confirmation: '密码确认'

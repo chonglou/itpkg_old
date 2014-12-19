@@ -16,7 +16,7 @@ en:
       nt_var:
         def_v: 'Default value'
       user:
-        label: 'Username'
+        login: 'ID/Email'
       vpn_user:
         status: 'Status'
         enable_true: 'Enable'

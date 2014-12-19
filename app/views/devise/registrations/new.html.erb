@@ -11,6 +11,21 @@
             <%= f.label :label %>
             <%= f.name_field :label, autofocus: true %>
         <% end %>
+
+        <%= f.group do %>
+            <%= f.label :username %>
+            <div class="col-sm-10">
+              <div class="row">
+                <div class="col-sm-3">
+                  <%= f.super_text_field :first_name, class: 'form-control', placeholder:'First Name' %>
+                </div>
+                <div class="col-sm-3">
+                  <%= f.super_text_field :last_name, class: 'form-control', placeholder:'Last Name' %>
+                </div>
+              </div>
+            </div>
+        <% end %>
+
         <%= f.group do %>
             <%= f.label :email %>
             <%= f.email_field :email%>

@@ -11,7 +11,7 @@ Setting.git = {
     email: "deploy@#{ENV['ITPKG_DOMAIN']}"
 }
 
-root = User.new label:'root', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'changeme', confirmed_at:DateTime.now
+root = User.new label:'root', first_name:'Admin', last_name:'Ops', email:"root@#{ENV['ITPKG_DOMAIN']}", password:'changeme', confirmed_at:DateTime.now
 root.skip_confirmation!
 root.save!
 root.add_role 'admin'
