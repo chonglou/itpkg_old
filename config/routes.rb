@@ -17,13 +17,10 @@ Rails.application.routes.draw do
       post "mail_boxes/#{a}"
     end
 
-    resources :mail_boxes, only:[:index, :new, :create]
+    resources :mail_boxes, only: [:index, :new, :create]
 
     get '/' => 'mail_boxes#index', as: :mail_home
   end
-  post 'mail_boxes/sign_in'
-
-  resources :mail_boxes
 
   ###################### www.localhost.localdomain ##############
   constraints subdomain: 'www' do
@@ -31,8 +28,8 @@ Rails.application.routes.draw do
     resources :wikis
 
     #-------settings--------------
-    get 'settings/user/:id'=>'settings#user', as: :get_settings_user
-    post 'settings/user/:id'=>'settings#user', as: :post_settings_user
+    get 'settings/user/:id' => 'settings#user', as: :get_settings_user
+    post 'settings/user/:id' => 'settings#user', as: :post_settings_user
     namespace :settings do
       get 'users'
     end
@@ -42,9 +39,9 @@ Rails.application.routes.draw do
 
     #-------logging----------
     namespace :logging do
-      resources :nodes, expect:[:create,:destroy,:show]
+      resources :nodes, expect: [:create, :destroy, :show]
 
-      get 'items'=>'items#index'
+      get 'items' => 'items#index'
 
       get 'searches/quick'
       post 'searches/quick'
@@ -53,8 +50,8 @@ Rails.application.routes.draw do
 
     #-------rss------------
     namespace :rss do
-      get 'items'=>'items#index'
-      resources :sites, expect:[:show]
+      get 'items' => 'items#index'
+      resources :sites, expect: [:show]
     end
 
     #------status----------
@@ -103,33 +100,33 @@ Rails.application.routes.draw do
       resources :aliases, only: [:destroy, :new, :create, :index]
     end
 
-  #----------vpn-----------
-  get 'vpn' => 'vpn#index'
-  namespace :vpn do
-    get 'logs' => 'logs#index'
-    resources :users, expect: [:show]
-  end
-
-  #--------team work-----------
-  resources :projects do
-    resources :documents, controller: 'projects/documents' do
-      get 'download'
-      get 'viewer' 
+    #----------vpn-----------
+    get 'vpn' => 'vpn#index'
+    namespace :vpn do
+      get 'logs' => 'logs#index'
+      resources :users, expect: [:show]
     end
 
-    resources(:stories, controller: 'projects/stories') do
-      resources :story_comments, controller: 'projects/story_comments'
-      resources :tasks, controller: 'projects/tasks' do
-        resources :task_comments
+    #--------team work-----------
+    resources :projects do
+      resources :documents, controller: 'projects/documents' do
+        get 'download'
+        get 'viewer'
       end
+
+      resources(:stories, controller: 'projects/stories') do
+        resources :story_comments, controller: 'projects/story_comments'
+        resources :tasks, controller: 'projects/tasks' do
+          resources :task_comments
+        end
+      end
+
+      post :add_user
+      post :remove_user
+
+      resources :story_types, controller: 'projects/story_types'
+      resources :story_tags, controller: 'projects/story_tags'
     end
-
-    post :add_user
-    post :remove_user
-
-    resources :story_types, controller: 'projects/story_types'
-    resources :story_tags, controller: 'projects/story_tags'
-  end
 
 
     #----------others---------
@@ -149,7 +146,7 @@ Rails.application.routes.draw do
 
     get 'document/*name' => 'home#document', as: :document_show
     post 'search' => 'home#search'
-    devise_for :users#, controllers: {registrations: 'registrations'}
+    devise_for :users #, controllers: {registrations: 'registrations'}
 
 
     authenticate :user, lambda { |u| u.is_admin? } do
