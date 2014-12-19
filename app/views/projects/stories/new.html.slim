@@ -14,11 +14,11 @@
 
     = f.group do
       = f.label :point
-      = f.select :point, point_select_options
+      = f.select :point, point_select_options, value: 1
 
     = f.group do
       = f.label :status
-      = f.select :status, status_select_options
+      = f.select :status, status_select_options, value: 'submit'
 
     = f.group do
       = f.label :story_types
