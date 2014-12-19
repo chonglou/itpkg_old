@@ -29,6 +29,9 @@ zh-CN:
         title: '名称'
         point: '分值'
         status: '状态'
+        story_types: '类型'
+        story_tags: '标签'
+        status: '状态'
         description: '描述'
       template:
         flag: '类型'

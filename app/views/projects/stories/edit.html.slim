@@ -1,6 +1,11 @@
+= javascript_include_tag 'projects/story'
+
 - @title=t('links.story.edit', name: @story.title)
 
-= bootstrap_form(@story, url: {action: 'update'}) do |f|
+= bootstrap_form(@story,
+                 url: {action: 'update'},
+                 html: {id: 'edit_story'},
+                 data: {project_id: @story.project_id}) do |f|
   = f.error_messages
   = f.fieldset do
     = f.legend(@title)
@@ -16,6 +21,14 @@
     = f.group do
       = f.label :status
       = f.select :status, status_select_options, @story.status
+
+    = f.group do
+      = f.label :story_types
+      = f.text_field :story_type_ids, value: @story.story_types.map(&:id).join(',')
+
+    = f.group do
+      = f.label :story_tags
+      = f.text_field :story_tag_ids, value: @story.story_tags.map(&:id).join(',')
 
     = f.group do
       = f.label :description

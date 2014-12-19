@@ -5,6 +5,9 @@ hr
 = render partial: 'story_info'
 = render partial: 'tasks'
 
+- if @story.story_comments.any?
+  = render partial: 'story_comments'
+
 div class='row row-fluid'
   div class='col-sm-1'
     = link_to t('buttons.edit'), edit_project_story_path(@project, @story), class: 'btn btn-primary'

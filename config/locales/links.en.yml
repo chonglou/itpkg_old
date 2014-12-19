@@ -7,6 +7,7 @@ en:
       need_confirm_email: 'Currently waiting confirmation for: %{email}'
     project:
       list: 'Projects'
+      add: 'Add Users'
       create: 'Create Project'
       edit: 'Edit Profile [%{name}]'
       show: 'Project [%{name}]'

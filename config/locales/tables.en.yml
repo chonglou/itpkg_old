@@ -25,7 +25,12 @@ en:
       status: 'Status'
       description: 'Description'
       action: 'Action'
+      new_comment: 'New Comment'
     task:
       id: 'ID'
       details: 'Details'
       action: 'Action'
+    user:
+      label: 'User List'
+      email: 'Email'
+      add: 'Add'

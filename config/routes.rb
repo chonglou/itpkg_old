@@ -21,7 +21,9 @@ Rails.application.routes.draw do
 
     get '/' => 'mail_boxes#index', as: :mail_home
   end
+  post 'mail_boxes/sign_in'
 
+  resources :mail_boxes
 
   ###################### www.localhost.localdomain ##############
   constraints subdomain: 'www' do
@@ -101,23 +103,34 @@ Rails.application.routes.draw do
       resources :aliases, only: [:destroy, :new, :create, :index]
     end
 
-    #----------vpn-----------
-    get 'vpn' => 'vpn#index'
-    namespace :vpn do
-      get 'logs' => 'logs#index'
-      resources :users, expect: [:show]
+  #----------vpn-----------
+  get 'vpn' => 'vpn#index'
+  namespace :vpn do
+    get 'logs' => 'logs#index'
+    resources :users, expect: [:show]
+  end
+
+  #--------team work-----------
+  resources :projects do
+    resources :documents, controller: 'projects/documents' do
+      get 'download'
+      get 'viewer' 
     end
 
-    #--------team work-----------
-    resources :projects do
-      resources :documents, controller: 'projects/documents' do
-        get 'download'
-        get 'viewer'
-      end
-      resources(:stories, controller: 'projects/stories') do
-        resources :tasks, controller: 'projects/tasks'
+    resources(:stories, controller: 'projects/stories') do
+      resources :story_comments, controller: 'projects/story_comments'
+      resources :tasks, controller: 'projects/tasks' do
+        resources :task_comments
       end
     end
+
+    post :add_user
+    post :remove_user
+
+    resources :story_types, controller: 'projects/story_types'
+    resources :story_tags, controller: 'projects/story_tags'
+  end
+
 
     #----------others---------
     get 'personal' => 'personal#index'

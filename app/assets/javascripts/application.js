@@ -37,6 +37,8 @@
 //= require jQuery-File-Upload-9.8.1/jquery.fileupload-validate.js
 //= require jQuery-File-Upload-9.8.1/jquery.fileupload-angular.js
 //= require widgets
+//= require select2
+//= require select2_locale_zh-CN
 
 
 function swap_select_items(from, to){

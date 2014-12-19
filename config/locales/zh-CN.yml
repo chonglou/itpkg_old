@@ -20,9 +20,17 @@ zh-CN:
       status: '状态'
       point: '分值'
       task: '任务'
+      comment: '评论'
+      comments: '评论'
+      edit_comment: '编辑评论'
+      story_types: '类型'
+      story_tags: '标签'
     task:
       title: '任务'
       information: '基本信息'
       project: '所属项目'
       story: '所属故事'
       details: '详细描述'
+  message:
+    unauthorized: '您没有足够的权限执行此操作'
+    empty_comment: '提交评论不能为空'

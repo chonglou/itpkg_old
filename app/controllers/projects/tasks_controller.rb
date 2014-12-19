@@ -1,6 +1,7 @@
-class TasksController < ApplicationController
+class Projects::TasksController < ApplicationController
   before_action :prepare_project_and_story
   before_action :prepare_task, except: [:new, :create]
+  before_action :check_user_authority
 
   def new
   end
@@ -42,6 +43,13 @@ class TasksController < ApplicationController
 
   def prepare_task
     @task = Task.find params[:id]
+  end
+
+  def check_user_authority
+    unless current_user.has_role? :member, Project.find(params[:project_id])
+      flash[:alert] = t('message.unauthorized')
+      redirect_to :back
+    end
   end
 
   def task_params

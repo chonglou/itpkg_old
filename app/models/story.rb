@@ -1,6 +1,7 @@
 class Story < ActiveRecord::Base
   belongs_to :project
   has_one :requester, class_name: 'User'
+  has_many :story_comments
   has_many :tasks
   has_and_belongs_to_many :story_types
   has_and_belongs_to_many :story_tags
