@@ -11,14 +11,22 @@ class Projects::StoriesController < ApplicationController
   end
 
   def create
-    @story = @project.stories.build(story_params)
-    @story.requester_id = current_user.id
+    params_for_create = story_params
+    story_type_ids    = params_for_create.delete(:story_type_ids)
+    story_tag_ids     = params_for_create.delete(:story_tag_ids)
 
-    @story.story_type_ids = prepare_story_type_ids(story_params)
-    @story.story_tag_ids  = prepare_story_tag_ids(story_params)
+    @story = @project.stories.build(params_for_create)
+    @story.requester_id   = current_user.id
+    @story.story_type_ids = prepare_story_type_ids(story_type_ids.try(:split, ',') || [])
+    @story.story_tag_ids  = prepare_story_tag_ids(story_tag_ids.try(:split, ',') || [])
 
     if @story.save
-      Itpkg::LogService.teamwork current_user.label, @project.id, project_story_path(@story.id, project_id: @project.id), t('logs.project.story.create', title: @story.title), story_id:@story.id
+      Itpkg::LogService.teamwork current_user.label,
+                                 @project.id,
+                                 project_story_path(@story.id,
+                                                    project_id: @project.id),
+                                 t('logs.project.story.create', title: @story.title),
+                                 story_id:@story.id
       redirect_to project_story_path(@project, @story)
     else
       render :new
@@ -36,9 +44,9 @@ class Projects::StoriesController < ApplicationController
   end
 
   def update
-    params_for_update = story_params
-    @story.story_type_ids = prepare_story_type_ids(params_for_update)
-    @story.story_tag_ids  = prepare_story_tag_ids(params_for_update)
+    params_for_update     = story_params
+    @story.story_type_ids = prepare_story_type_ids(params_for_update.delete(:story_type_ids).try(:split, ',') || [])
+    @story.story_tag_ids  = prepare_story_tag_ids(params_for_update.delete(:story_tag_ids).try(:split, ',') || [])
 
     if @story.update(params_for_update)
       redirect_to project_story_path(@project, @story)
@@ -73,8 +81,7 @@ class Projects::StoriesController < ApplicationController
     end
   end
 
-  def prepare_story_type_ids(params)
-    story_types     = params.delete(:story_type_ids).try(:split, ',') || []
+  def prepare_story_type_ids(story_types)
     story_types_ids = []
 
     if story_types.any?
@@ -87,8 +94,7 @@ class Projects::StoriesController < ApplicationController
     story_types_ids
   end
 
-  def prepare_story_tag_ids(params)
-    story_tags    = params.delete(:story_tag_ids).try(:split, ',') || []
+  def prepare_story_tag_ids(story_tags)
     story_tag_ids = []
 
     if story_tags.any?
