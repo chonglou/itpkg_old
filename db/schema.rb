@@ -322,7 +322,6 @@ ActiveRecord::Schema.define(version: 20141224213047) do
   create_table "projects", force: :cascade do |t|
     t.string   "name",       limit: 255,   null: false
     t.text     "details",    limit: 65535
-    t.integer  "creator_id", limit: 4,     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

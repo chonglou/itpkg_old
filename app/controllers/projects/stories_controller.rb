@@ -75,7 +75,7 @@ class Projects::StoriesController < ApplicationController
   end
 
   def check_user_authority
-    unless current_user.has_role? :member, Project.find(params[:project_id])
+    unless current_user.is_member_of? Project.find(params[:project_id])
       flash[:alert] = t('message.unauthorized')
       redirect_to :back
     end
