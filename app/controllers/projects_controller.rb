@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_action :check_user_authority, except: [:index, :new, :create]
 
   def index
-    @items = current_user.projects.map { |p| {id: p.id, details: p.details, name: p.name, logs: ProjectLog.where(project_id: p.id).order(created: :desc).limit(5)} }
+    @items   = Project.with_role(:member, current_user).map { |p| {id: p.id, details: p.details, name: p.name, logs: ProjectLog.where(project_id: p.id).order(created: :desc).limit(5)} }
     @buttons = [{label: t('buttons.create'), url: new_project_path, style: 'primary'}]
   end
 
@@ -94,6 +94,10 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(:name, :details)
   end
 
+  def project_id
+    params.permit(:id, :project_id)
+  end
+
   def check_user_authority
     unless current_user.is_creator_of?(@project) || current_user.is_member_of?(@project)
       flash[:alert] = t('message.unauthorized')
@@ -102,6 +106,6 @@ class ProjectsController < ApplicationController
   end
 
   def prepare_project
-    @project = Project.find(params[:id] || params[:project_id])
+    @project = Project.find(project_id[:id] || project_id[:project_id])
   end
 end

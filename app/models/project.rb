@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  resourcify
+
   validates :name, presence: true
 
   has_many :stories
