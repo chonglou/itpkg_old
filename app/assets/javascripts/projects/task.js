@@ -38,6 +38,7 @@
 
       $(this).hide();
       $task_details.val('');
+      $task_form_filed.removeClass('has-error');
       $create_task_form.show();
     });
 

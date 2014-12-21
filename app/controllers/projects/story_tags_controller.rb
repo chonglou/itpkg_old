@@ -5,7 +5,7 @@ class Projects::StoryTagsController < ApplicationController
   before_action :prepare_project
 
   def index
-    all_tags = StoryTag.all
+    all_tags = StoryTag.where(project: @project)
 
     respond_to do |format|
       format.json { render json: all_tags}

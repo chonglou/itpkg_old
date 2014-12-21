@@ -65,7 +65,7 @@ div id='edit_task_modal' class='modal fade'
         = link_to '', class:'close', data: { dismiss: 'modal'} do
           span #{'X'}
           span class='sr-only' #{'Close'}
-        h4 class='modal-title' #{'Edit Task'}
+        h4 class='modal-title' #{t('titles.task.edit')}
       div class='modal-body'
         = bootstrap_form(Task.new,
                          url: project_story_task_path(@project, @story, 0),

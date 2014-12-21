@@ -27,7 +27,7 @@ class Projects::TasksController < ApplicationController
   end
 
   def destroy
-    if @story.requester_id == current_user.id
+    if current_user.is_member_of? @project
       @task.destroy
     else
       flash[:alert] = t('labels.in_using')

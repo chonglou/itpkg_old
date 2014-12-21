@@ -52,6 +52,7 @@ en:
       project: 'Project'
       story: 'Story'
       details: 'Details'
+      edit: 'Edit Task'
   message:
     unauthorized: 'You are not allowed to do this operation.'
     empty_comment: 'You cannot submit an empty comment.'

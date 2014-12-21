@@ -5,7 +5,7 @@ class Projects::StoryTypesController < ApplicationController
   before_action :prepare_project
 
   def index
-    all_types = StoryType.all
+    all_types = StoryType.where(project: @project)
 
     respond_to do |format|
       format.json { render json: all_types}

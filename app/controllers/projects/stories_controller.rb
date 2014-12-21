@@ -16,7 +16,7 @@ class Projects::StoriesController < ApplicationController
     story_tag_ids     = params_for_create.delete(:story_tag_ids)
 
     @story = @project.stories.build(params_for_create)
-    @story.requester_id   = current_user.id
+    current_user.add_role :creator, @story
     @story.story_type_ids = prepare_story_type_ids(story_type_ids.try(:split, ',') || [])
     @story.story_tag_ids  = prepare_story_tag_ids(story_tag_ids.try(:split, ',') || [])
 
@@ -56,7 +56,7 @@ class Projects::StoriesController < ApplicationController
   end
 
   def destroy
-    if @story.requester_id == current_user.id
+    if current_user.is_member_of? @project
       @story.destroy
     else
       flash[:alert] = t('labels.in_using')
@@ -84,11 +84,10 @@ class Projects::StoriesController < ApplicationController
   def prepare_story_type_ids(story_types)
     story_types_ids = []
 
-    if story_types.any?
-      story_types_ids = story_types.map.select { |st| st.to_i != 0 }
-      new_types       = story_types.map.select { |st| st.to_i == 0 }
+    story_types.each do |st_id|
+      st = StoryType.where(id: st_id)
 
-      story_types_ids += new_types.map { |nt| StoryType.create(name: nt, project: @project).id } if new_types.any?
+      story_types_ids << (st.any? ? st.first.id : StoryType.create(name: st_id, project: @project).id)
     end
 
     story_types_ids
@@ -97,11 +96,10 @@ class Projects::StoriesController < ApplicationController
   def prepare_story_tag_ids(story_tags)
     story_tag_ids = []
 
-    if story_tags.any?
-      story_tag_ids = story_tags.map.select { |st| st.to_i != 0 }
-      new_tags      = story_tags.map.select { |st| st.to_i == 0 }
+    story_tags.each do |st_id|
+      st = StoryTag.where(id: st_id)
 
-      story_tag_ids += new_tags.map { |nt| StoryTag.create(name: nt, project: @project).id } if new_tags.any?
+      story_tag_ids << (st.any? ? st.first.id : StoryTag.create(name: st_id, project: @project).id)
     end
 
     story_tag_ids
