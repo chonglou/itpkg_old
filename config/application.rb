@@ -32,5 +32,6 @@ module Itpkg
     config.generators do |g|
       g.orm :active_record
     end
+    config.active_record.raise_in_transactional_callbacks = true
   end
 end
