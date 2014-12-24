@@ -20,6 +20,10 @@ module Itpkg
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
     config.i18n.available_locales = [:en, 'zh-CN']
+
+    # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.active_record.raise_in_transactional_callbacks = true
+
     #defise layout
     config.to_prepare do
       Devise::SessionsController.layout 'non_login'
@@ -32,6 +36,5 @@ module Itpkg
     config.generators do |g|
       g.orm :active_record
     end
-    config.active_record.raise_in_transactional_callbacks = true
   end
 end
