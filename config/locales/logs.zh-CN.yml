@@ -1,5 +1,10 @@
 zh-CN:
   logs:
+    user:
+      login:
+        success: '成功登录'
+        fail: '登录失败 [%{login}]'
+      logout: '安全退出'
     vpn_user:
       created: '创建账户'
       remove: '删除账户'

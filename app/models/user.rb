@@ -35,9 +35,9 @@ class User < ActiveRecord::Base
     "#{self.full_name}<#{self.email}>"
   end
 
-  def after_database_authentication
-    Log.create user_id:self.id, message:'Sign in.'
-  end
+  # def after_database_authentication
+  #   Log.create user_id:self.id, message:'Sign in.'
+  # end
 
   def full_name
     self.first_name.to_s + ' ' + self.last_name.to_s

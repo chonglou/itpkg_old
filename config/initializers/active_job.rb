@@ -4,6 +4,7 @@ end
 
 Sidekiq.configure_server do |config|
   config.redis = { url: ENV['ITPKG_REDIS_URL'] }
+  #config.poll_interval = 15
 end
 
 Sidekiq.configure_client do |config|

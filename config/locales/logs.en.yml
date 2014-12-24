@@ -1,5 +1,10 @@
 en:
   logs:
+    user:
+      login:
+        success: 'Sign in success'
+        fail: 'Sign in fail with [%{login}]'
+      logout: 'Sign Out'
     vpn_user:
       created: 'Create account'
       remove: 'Remove account'
