@@ -3,9 +3,8 @@ require 'fileutils'
 require 'itpkg/utils/string_helper'
 
 module Itpkg
-  class DockerWorker
-    include Sidekiq::Worker
-    sidekiq_options queue: :docker
+  class DockerJob < ActiveJob::Base
+    queue_as :docker
 
 
     def perform(nt_id, cache=true)

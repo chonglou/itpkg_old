@@ -1,10 +1,9 @@
 require 'sidekiq'
 require 'itpkg/linux/git'
 
-module Itpkg
-  class GitAdminWorker
-    include Sidekiq::Worker
-    sidekiq_options queue: :git
+
+  class GitAdminJob < ActiveJob::Base
+    queue_as :git
 
     ADMIN_NAME = 'gitolite-admin'
     TESTING_NAME = 'testing'
@@ -70,4 +69,3 @@ module Itpkg
       end
     end
   end
-end

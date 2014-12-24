@@ -1,7 +1,7 @@
 
 class RepositoryValidator < ActiveModel::Validator
   def validate(record)
-    if record.name == Itpkg::GitAdminWorker::TESTING_NAME || record.name == Itpkg::GitAdminWorker::ADMIN_NAME
+    if record.name == GitAdminJob::TESTING_NAME || record.name == GitAdminJob::ADMIN_NAME
       record.errors[:name] << I18n.t('labels.not_valid')
     end
   end

@@ -14,7 +14,7 @@ module Itpkg
         end
 
         sch.cron '0 3 * * *' do
-          Itpkg::RssSyncWorker.perform_async
+          RssSyncJob.perform_later
         end
 
         sch.join

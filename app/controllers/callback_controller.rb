@@ -12,7 +12,7 @@ class CallbackController < ApplicationController
         extra = JSON.parse c.extra
         RepositoryUser.create repository_id: extra.fetch('repository_id'), user_id: user.id, writable:true
 
-        Itpkg::GitAdminWorker.perform_async
+        GitAdminJob.perform_later
         c.update status: :done
         flash[:notice] = t('labels.success')
         redirect_to(params[:from] || root_path) and return
@@ -33,7 +33,7 @@ class CallbackController < ApplicationController
     reason = nil
     if ip == Setting.git.fetch(:host)
       if Repository.find_by(name: name, enable: true)
-        Itpkg::GitHookWorker.perform_async name
+        GitHookJob.perform_later name
         ok = true
       else
         reason = 'invalid repo name.'

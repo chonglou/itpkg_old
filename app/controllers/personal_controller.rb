@@ -38,7 +38,7 @@ class PersonalController < ApplicationController
       keys[:user_id] = current_user.id
       SshKey.create keys
     end
-    Itpkg::GitAdminWorker.perform_async
+    GitAdminJob.perform_later
     UserMailer.delay.key_pairs current_user.id
     flash[:notice] = t('labels.success')
     redirect_to personal_public_key_path
@@ -76,7 +76,7 @@ class PersonalController < ApplicationController
         else
           SshKey.create user_id: current_user.id, public_key: params[:public_key], private_key: 'NULL'
         end
-        Itpkg::GitAdminWorker.perform_async
+        GitAdminJob.perform_later
         flash[:notice] = t('labels.success')
         redirect_to edit_user_registration_path
       else

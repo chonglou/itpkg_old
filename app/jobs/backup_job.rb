@@ -1,6 +1,6 @@
 module Itpkg
-  class BackupWorker
-    include Sidekiq::Worker
+  class BackupJob < ActiveJob::Base
+    queue_as :default
 
     def perform
       tmp = "#{Rails.root}/tmp/storage/backups"

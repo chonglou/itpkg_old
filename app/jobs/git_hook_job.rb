@@ -2,10 +2,8 @@ require 'sidekiq'
 require 'itpkg/linux/git'
 
 module Itpkg
-  class GitHookWorker
-    include Sidekiq::Worker
-    sidekiq_options queue: :git
-
+  class GitHookJob < ActiveJob::Base
+    queue_as :git
 
     def perform(name)
       @git = Linux::Git.new name, Setting.git
