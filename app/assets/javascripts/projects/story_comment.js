@@ -14,5 +14,12 @@
       new_action = $edit_story_comment_form.prop('action').replace(/story_comments\/\d*/, 'story_comments/' + $this.data('id'));
       $edit_story_comment_form.prop('action', new_action);
     });
+
+    $edit_story_comment_form.on('submit', function () {
+      if ($edit_story_comment_content.val() === '') {
+        alert('Comment cannot be blank!');
+        return false;
+      }
+    });
   });
 })(jQuery);

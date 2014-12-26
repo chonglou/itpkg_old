@@ -28,12 +28,14 @@
 
     $('#story_story_type_ids').select2({
       tags: story_types,
-      multiple: true
+      multiple: true,
+      maxLength: 10
     });
 
     $('#story_story_tag_ids').select2({
       tags: story_tags,
-      multiple: true
+      multiple: true,
+      maxLength: 10
     });
   });
 })(jQuery);
