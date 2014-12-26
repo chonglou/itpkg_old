@@ -38,16 +38,16 @@ class Projects::TasksController < ApplicationController
 
   private
   def prepare_project_and_story
-    @project = Project.find params[:project_id]
-    @story   = Story.find params[:story_id]
+    @project = Project.where(id: params[:project_id], active: true).first
+    @story   = Story.where(id: params[:story_id], active: true).first
   end
 
   def prepare_task
-    @task = Task.find params[:id]
+    @task = Task.where(id: params[:id], active: true).first
   end
 
   def check_user_authority
-    unless current_user.is_member_of? Project.find(params[:project_id])
+    unless current_user.is_member_of? @project
       flash[:alert] = t('message.unauthorized')
       redirect_to :back
     end

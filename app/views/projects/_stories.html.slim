@@ -12,7 +12,7 @@ div class='panel panel-primary'
           th #{t('tables.story.description')}
           th #{t('tables.story.action')}
       tbody
-        - for story in @project.stories do
+        - for story in @project.stories.select(&:active?) do
          tr
            td class="col-sm-1" #{story.id}
            td class="col-sm-2"

@@ -8,7 +8,9 @@ class ProjectsController < ApplicationController
   before_action :check_user_authority, except: [:index, :new, :create]
 
   def index
-    @items   = Project.with_role(:member, current_user).map { |p| {id: p.id, details: p.details, name: p.name, logs: ProjectLog.where(project_id: p.id).order(created: :desc).limit(5)} }
+    @items  = Project.with_role(:member, current_user)
+                 .where(active: true)
+                 .map { |p| {id: p.id, details: p.details, name: p.name, logs: ProjectLog.where(project_id: p.id).order(created: :desc).limit(5)} }
     @buttons = [{label: t('buttons.create'), url: new_project_path, style: 'primary'}]
   end
 
@@ -31,17 +33,23 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.includes(:stories).find(params[:id])
-    # todo include?有性能问题
-    @buttons = []
-    @buttons << {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'}
-    @buttons << {label: t('links.project.story.create'), url: new_project_story_path(@project), style: 'info'}
-    @buttons << {label: t('links.project.add'), url: '', method: '', data: {toggle: 'modal', target: '#invite_modal'}, style: 'success'}
-    @buttons << {label: t('links.project.list'), url: projects_path, style: 'warning'}
+    @project = Project.includes(:stories).where(id: params[:id], active: true).first
 
-    #todo 分页显示
-    @logs = ProjectLog.where(project_id: @project.id).order(created: :desc).limit(5)
-    @users = User.all
+    if @project.present?
+      # todo include?有性能问题
+      @buttons = []
+      @buttons << {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'}
+      @buttons << {label: t('links.project.story.create'), url: new_project_story_path(@project), style: 'info'}
+      @buttons << {label: t('links.project.add'), url: '', method: '', data: {toggle: 'modal', target: '#invite_modal'}, style: 'success'}
+      @buttons << {label: t('links.project.list'), url: projects_path, style: 'warning'}
+
+      #todo 分页显示
+      @logs = ProjectLog.where(project_id: @project.id).order(created: :desc).limit(5)
+      @users = User.all.reject { |u| u == current_user }
+    else
+      flash[:alert] = t('message.project_not_exists')
+      redirect_to :back
+    end
   end
 
   def edit
@@ -60,7 +68,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    if User.with_role(:member, @project).size == 1 && @project.stories.empty?
+    if User.with_role(:member, @project).size == 1 && @project.stories.select(&:active?).empty?
       Itpkg::LogService.teamwork current_user.label, @project.id, nil, t('logs.project.remove')
       Itpkg::HistoryService.backup :project, @project.id, {name: @project.name, details: @project.details}
       @project.destroy
@@ -99,7 +107,7 @@ class ProjectsController < ApplicationController
   end
 
   def check_user_authority
-    unless current_user.is_creator_of?(@project) || current_user.is_member_of?(@project)
+    unless current_user.is_member_of?(@project)
       flash[:alert] = t('message.unauthorized')
       redirect_to :back
     end

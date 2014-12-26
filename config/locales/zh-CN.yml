@@ -34,4 +34,5 @@ zh-CN:
       edit: '编辑任务'
   message:
     unauthorized: '您没有足够的权限执行此操作'
+    project_not_exists: '项目不存在'
     empty_comment: '提交评论不能为空'

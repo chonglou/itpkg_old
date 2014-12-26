@@ -1,4 +1,6 @@
 class Story < ActiveRecord::Base
+  include FakeDestroy
+
   belongs_to :project
   has_many :story_comments, dependent: :destroy
   has_many :tasks,          dependent: :destroy

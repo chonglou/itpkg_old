@@ -1,4 +1,5 @@
 class Project < ActiveRecord::Base
+  include FakeDestroy
   resourcify
 
   validates :name, presence: true

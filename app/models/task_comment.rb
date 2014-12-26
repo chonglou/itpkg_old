@@ -1,4 +1,6 @@
 class TaskComment < ActiveRecord::Base
+  include FakeDestroy
+
   belongs_to :user
   belongs_to :task
 

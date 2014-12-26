@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141224213047) do
+ActiveRecord::Schema.define(version: 20141226184517) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -320,20 +320,14 @@ ActiveRecord::Schema.define(version: 20141224213047) do
   add_index "nt_volumes", ["node_type_id", "t_path"], name: "index_nt_volumes_on_node_type_id_and_t_path", unique: true, using: :btree
 
   create_table "projects", force: :cascade do |t|
-    t.string   "name",       limit: 255,   null: false
+    t.string   "name",       limit: 255,                  null: false
     t.text     "details",    limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",     limit: 1,     default: true
   end
 
   add_index "projects", ["name"], name: "index_projects_on_name", using: :btree
-
-  create_table "projects_users", id: false, force: :cascade do |t|
-    t.integer  "project_id", limit: 4
-    t.integer  "user_id",    limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "repositories", force: :cascade do |t|
     t.string   "name",       limit: 16,                 null: false
@@ -391,14 +385,14 @@ ActiveRecord::Schema.define(version: 20141224213047) do
   add_index "ssh_keys", ["user_id"], name: "index_ssh_keys_on_user_id", unique: true, using: :btree
 
   create_table "stories", force: :cascade do |t|
-    t.string   "title",        limit: 255,               null: false
-    t.integer  "project_id",   limit: 4,                 null: false
-    t.integer  "point",        limit: 4,     default: 0, null: false
-    t.integer  "requester_id", limit: 4,                 null: false
-    t.integer  "status",       limit: 1,     default: 0, null: false
-    t.text     "description",  limit: 65535
+    t.string   "title",       limit: 255,                  null: false
+    t.integer  "project_id",  limit: 4,                    null: false
+    t.integer  "point",       limit: 4,     default: 0,    null: false
+    t.integer  "status",      limit: 1,     default: 0,    null: false
+    t.text     "description", limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",      limit: 1,     default: true
   end
 
   create_table "stories_story_tags", id: false, force: :cascade do |t|
@@ -421,6 +415,7 @@ ActiveRecord::Schema.define(version: 20141224213047) do
     t.integer  "story_id",   limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",     limit: 1,     default: true
   end
 
   add_index "story_comments", ["story_id"], name: "index_story_comments_on_story_id", using: :btree
@@ -462,17 +457,19 @@ ActiveRecord::Schema.define(version: 20141224213047) do
     t.integer  "task_id",    limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",     limit: 1,     default: true
   end
 
   add_index "task_comments", ["task_id"], name: "index_task_comments_on_task_id", using: :btree
   add_index "task_comments", ["user_id"], name: "index_task_comments_on_user_id", using: :btree
 
   create_table "tasks", force: :cascade do |t|
-    t.integer  "story_id",   limit: 4,               null: false
-    t.string   "details",    limit: 255,             null: false
+    t.integer  "story_id",   limit: 4,                  null: false
+    t.string   "details",    limit: 255,                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "level",      limit: 2,   default: 0, null: false
+    t.integer  "level",      limit: 2,   default: 0,    null: false
+    t.boolean  "active",     limit: 1,   default: true
   end
 
   create_table "translations", force: :cascade do |t|

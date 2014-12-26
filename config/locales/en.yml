@@ -55,4 +55,5 @@ en:
       edit: 'Edit Task'
   message:
     unauthorized: 'You are not allowed to do this operation.'
+    project_not_exists: 'The project does not exist.'
     empty_comment: 'You cannot submit an empty comment.'

@@ -1,4 +1,6 @@
 class Task < ActiveRecord::Base
+  include FakeDestroy
+
   belongs_to :story
   has_many :task_comments, dependent: :destroy
 

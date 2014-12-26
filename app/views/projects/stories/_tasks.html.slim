@@ -26,7 +26,7 @@ div class='panel panel-primary'
                       class: 'btn btn-danger col-sm-5 col-sm-offset-2' do
               span class='glyphicon glyphicon-remove'
 
-        - for task in @story.tasks do
+        - for task in @story.tasks.select(&:active?) do
           tr
             td class='col-sm-1 col-md-1 task_id' #{task.id}
             td class='col-sm-9 col-md-9 task_details' #{task.details}

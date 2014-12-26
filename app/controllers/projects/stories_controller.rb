@@ -3,7 +3,6 @@ require 'itpkg/services/site'
 class Projects::StoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :check_user_authority
-  before_action :prepare_project
   before_action :prepare_story, except: [:new, :create]
 
   def new
@@ -38,6 +37,8 @@ class Projects::StoriesController < ApplicationController
         {label: t('links.story.edit', name: @story.title), url: edit_project_story_path(@story.project, @story), style: 'primary'},
         {label: t('links.story.list'), url: project_path(@story.project), style: 'warning'}
     ]
+
+    @story_comments = @story.story_comments.select(&:active?)
   end
 
   def edit
@@ -66,16 +67,14 @@ class Projects::StoriesController < ApplicationController
   end
 
   private
-  def prepare_project
-    @project = Project.find params[:project_id]
-  end
-
   def prepare_story
-    @story = Story.find params[:id]
+    @story = Story.where(id: params[:id], active: true).first
   end
 
   def check_user_authority
-    unless current_user.is_member_of? Project.find(params[:project_id])
+    @project = Project.where(id: params[:project_id], active: true).first
+
+    unless current_user.is_member_of? @project
       flash[:alert] = t('message.unauthorized')
       redirect_to :back
     end
