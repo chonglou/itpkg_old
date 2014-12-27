@@ -1,0 +1,29 @@
+div id='invite_modal' class='modal fade'
+  div class='modal-dialog'
+    div class='modal-content'
+      div class='modal-header'
+        = link_to '', class: 'close', data: {dismiss: 'modal'} do
+          span #{'x'}
+          span class='sr-only' #{'Close'}
+        h4 class='modal-title' #{t('links.project.add')}
+      div class='modal-body'
+        table class='table table-striped'
+          thead
+            tr
+              th #{t('tables.user.add')}
+              th #{t('tables.user.label')}
+              th #{t('tables.user.email')}
+          tbody
+            - for user in @users do
+              tr
+                td class="col-sm-2"
+                  = check_box_tag :user, user.id, user.is_member_of?(@project), class: 'js-user-checkbox'
+                td class="col-sm-5" #{user.full_name}
+                td class="col-sm-5" #{user.email}
+            = form_tag project_add_users_path(@project), id: 'add_users_form' do
+              = hidden_field_tag :project_members, nil
+              = hidden_field_tag :none_project_members, nil
+
+      div class='modal-footer'
+        = link_to t('buttons.submit'), '', id: 'add_users_button', class: 'btn btn-primary'
+        = link_to t('buttons.cancel'), '', class: 'btn btn-default', data: {dismiss: 'modal'}

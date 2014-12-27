@@ -2,39 +2,31 @@
   'use strict';
 
   $(function () {
+    var $add_users_form     = $('#add_users_form'),
+      $add_users_button     = $('#add_users_button'),
+      $project_members      = $('#project_members'),
+      $none_project_members = $('#none_project_members');
 
-    $('.add-user-link').on('click', function (e) {
+    $add_users_button.on('click', function (e) {
       e.preventDefault();
 
-      var $this = $(this),
-        project_id = $this.data('project-id'),
-        user_id = $this.data('user-id');
+      var checked_users_ids = [],
+        unchecked_users_ids = [];
 
-      $.ajax({
-        url: '/projects/' + project_id + '/add_user',
-        type: 'POST',
-        data: {user_id: user_id},
-        dataType: 'json'
-      }).complete(function () {
-        $this.find('.glyphicon').removeClass('glyphicon-plus-sign').addClass('glyphicon-ok');
+      $('.js-user-checkbox').each(function () {
+        var $this = $(this);
+
+        if ($this.is(':checked')) {
+          checked_users_ids.push($this.val());
+        } else {
+          unchecked_users_ids.push($this.val());
+        }
       });
-    });
 
-    $('.remove-user-link').on('click', function (e) {
-      e.preventDefault();
+      $project_members.val(checked_users_ids.toString());
+      $none_project_members.val(unchecked_users_ids.toString());
 
-      var $this = $(this),
-        project_id = $this.data('project-id'),
-        user_id = $this.data('user-id');
-
-      $.ajax({
-        url: '/projects/' + project_id + '/remove_user',
-        type: 'POST',
-        data: {user_id: user_id},
-        dataType: 'json'
-      }).complete(function () {
-        $this.find('.glyphicon').removeClass('glyphicon-ok').addClass('glyphicon-plus-sign');
-      });
+      $add_users_form.trigger('submit');
     });
   });
 })(jQuery);

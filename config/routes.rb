@@ -121,8 +121,7 @@ Rails.application.routes.draw do
         end
       end
 
-      post :add_user
-      post :remove_user
+      post :add_users
 
       resources :story_types, controller: 'projects/story_types'
       resources :story_tags, controller: 'projects/story_tags'

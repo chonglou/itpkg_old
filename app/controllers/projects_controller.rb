@@ -4,7 +4,7 @@ require 'itpkg/services/history'
 
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :prepare_project, only: [:edit, :update, :show, :destroy, :add_user, :remove_user]
+  before_action :prepare_project, only: [:edit, :update, :show, :destroy, :add_users]
   before_action :check_user_authority, except: [:index, :new, :create]
 
   def index
@@ -80,12 +80,16 @@ class ProjectsController < ApplicationController
     redirect_to projects_path
   end
 
-  def add_user
-    User.find(params[:user_id]).add_role :member, @project
-
-    respond_to do |format|
-      format.json { render json: :success }
+  def add_users
+    params[:project_members].split(',').each do |user_id|
+      User.find(user_id).add_role :member, @project
     end
+
+    params[:none_project_members].split(',').each do |user_id|
+      User.find(user_id).remove_role :member, @project
+    end
+
+    redirect_to project_path(@project)
   end
 
   def remove_user
