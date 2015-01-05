@@ -3,6 +3,7 @@ MAINTAINER Jitang Zheng <jitang.zheng@gmail.com>
 
 # upgrade system
 RUN pacman -Syu --noconfirm \
+&& pacman-db-upgrade \
 && pacman -S --noconfirm --needed base-devel wget pwgen expect git geoip abs s-nail net-tools dnsutils vim-minimal lsof curl sudo openbsd-netcat net-snmp\
  openssh iptables mongodb elasticsearch \
 # itpkg
@@ -110,7 +111,8 @@ RUN sudo abs extra/bind \
 && cp -r /var/abs/extra/bind /tmp \
 && cd /tmp/bind \
 && patch -p0 < /tmp/mnt/tmp/bind-mysql-geoip.patch \
-&& makepkg \
+# fix 'unknown public key' error
+&& makepkg --skippgpcheck  \
 && sudo pacman -U --noconfirm bind-*-x86_64.pkg.tar.xz 
 
 # docker registry
