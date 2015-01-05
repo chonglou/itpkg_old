@@ -28,7 +28,7 @@ RUN useradd -s /bin/bash -m deploy \
 ENV HOME /home/deploy
 ENV ITPKG_HOME /var/www/itpkg
 ENV PATH $HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH
-ENV RUBY_VERSION 2.1.5
+ENV RUBY_VERSION 2.2.0
 ENV CONFIGURE_OPTS --disable-install-doc
 USER deploy
 
