@@ -26,12 +26,16 @@ div class='panel panel-primary'
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.story_types')}
-        div class='col-sm-10 text-left' #{@story.story_types.map(&:name).join(', ')}
+        div class='col-sm-10 text-left'
+          - for story_type in @story.story_types.map(&:name) do
+              span class='story-type' #{story_type}
 
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.story_tags')}
-        div class='col-sm-10 text-left' #{@story.story_tags.map(&:name).join(', ')}
+        div class='col-sm-10 text-left'
+          - for story_tag in @story.story_tags.map(&:name) do
+            span class='story-tag' #{story_tag}
 
       div class='row'
         div class='col-sm-2 text-right'

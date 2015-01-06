@@ -1,16 +1,37 @@
-@for $item from 1 through 10 {
+$colors: Aqua, Aquamarine, BurlyWood, CornflowerBlue, Crimson,
+         GreenYellow, DarkCyan, Darkorange, DeepSkyBlue, Fuchsia,
+         Lavender, MediumTurquoise;
 
+@mixin type-tag-edit($color) {
+  background: $color none !important;
+}
+
+@mixin type-tag-show($color) {
+  background-color: $color;
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid #aaaaaa;
+  font-size: smaller;
+}
+
+@for $i from 1 through 12 {
   #s2id_story_story_type_ids {
-    .select2-search-choice:nth-child(#{$item}) {
-      background: hsla(random(365), 90%, 50%, 1) none !important;
-      color: #818181 !important;
+    .select2-search-choice:nth-child(#{12}n+#{$i}) {
+      @include type-tag-edit(nth($colors, $i));
     }
   }
 
   #s2id_story_story_tag_ids {
-    .select2-search-choice:nth-child(#{$item}) {
-      background: hsla(random(365), 90%, 50%, 1) none !important;
-      color: #818181 !important;
+    .select2-search-choice:nth-child(#{12}n-#{$i}) {
+      @include type-tag-edit(nth($colors, $i));
     }
+  }
+
+  .story-type:nth-child(#{12}n+#{$i}) {
+    @include type-tag-show(nth($colors, $i));
+  }
+
+  .story-tag:nth-child(#{12}n-#{$i}) {
+    @include type-tag-show(nth($colors, $i));
   }
 }
