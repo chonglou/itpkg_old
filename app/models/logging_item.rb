@@ -14,6 +14,6 @@ class LoggingItem
   validates :vip, :vport, :created, :message, presence: true
 
   def to_s
-    "#{self.created} #{self.hostname} #{self.tag}[#{self.pid}]: #{self.message}"
+    "[#{self.vip}] #{self.created} #{self.hostname} #{self.tag}[#{self.pid}]: #{self.message}"
   end
 end

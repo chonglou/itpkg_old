@@ -42,9 +42,6 @@ Rails.application.routes.draw do
       resources :nodes, expect: [:create, :destroy, :show]
 
       get 'items' => 'items#index'
-
-      get 'searches/quick'
-      post 'searches/quick'
       resources :searches
     end
 

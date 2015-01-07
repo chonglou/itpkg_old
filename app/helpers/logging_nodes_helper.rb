@@ -11,7 +11,7 @@ module LoggingNodesHelper
         },
         {
             name: t('links.logging_search.quick'),
-            url: logging_searches_quick_url
+            url: new_logging_search_url
         },
         {
             name: t('links.logging_search.list'),

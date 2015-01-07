@@ -34,7 +34,7 @@ class Repositories::UsersController < ApplicationController
     if uid && uid != current_user.id
       user = User.find uid
       if user
-        user.add_role (params[:readonly] == 'true' ? :reader : :writer), @repository
+        user.add_role (params[:readonly] == 'false' ? :writer : :reader), @repository
         # c = Confirmation.create extra: {
         #     repository_id: @repository.id,
         #     type: :add_to_repository,
