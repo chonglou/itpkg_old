@@ -5,7 +5,7 @@
     var $tasks          = $('#tasks'),
       $new_row          = $('#task_row_template').clone().removeClass('hide'),
       $new_row_els      = $new_row.find('td'),
-      $delete_button    = $new_row.find('.btn-danger'),
+      $delete_button    = $new_row.find('.js-delete-task'),
       new_task_id       = 'tasks/' + data.id,
       href;
 
@@ -16,6 +16,8 @@
     $delete_button.prop('href', href);
 
     $tasks.append($new_row);
+
+    $('[data-toggle="tooltip"]').tooltip();
   }
 
   function close_add_task_form(create_task_form, new_task) {
@@ -62,7 +64,7 @@
       close_add_task_form($create_task_form, $new_task);
     });
 
-    $('#tasks').on('click', '.edit_task', function (e) {
+    $('#tasks').on('click', '.edit-task', function (e) {
       e.preventDefault();
 
       var $this = $(this),
