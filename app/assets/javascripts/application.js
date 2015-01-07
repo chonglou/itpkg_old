@@ -49,4 +49,13 @@ function swap_select_items(from, to){
     });
 }
 
+(function ($) {
+  'use strict';
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+})(jQuery);
+
 

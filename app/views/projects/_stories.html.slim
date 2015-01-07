@@ -19,15 +19,17 @@ div class='panel panel-primary'
              = link_to story.title, project_story_path(@project, story)
            td class="col-sm-1" #{story.point}
            td class="col-sm-1" #{story.status}
-           td class="col-sm-5" #{story.description}
-           td class="col-sm-2"
-             = link_to t('buttons.edit'),
-                       edit_project_story_path(@project, story),
-                       class: 'btn btn-primary col-sm-5'
-             = link_to t('buttons.remove'),
-                       project_story_path(@project, story),
-                       data: {confirm: t('labels.are_you_sure')},
-                       method: :delete,
-                       class: 'btn btn-danger col-sm-5 col-sm-offset-2'
+           td class="col-sm-6" #{story.description}
+           td class="col-sm-1 edit-remove-icons"
+             = link_to edit_project_story_path(@project, story),
+                       data: {toggle: 'tooltip'},
+                       title: t('buttons.edit') do
+               span class='glyphicon glyphicon-edit'
+             = link_to project_story_path(@project, story),
+                       data: {confirm: t('labels.are_you_sure'), toggle: 'tooltip'},
+                       title: t('buttons.remove'),
+                       method: :delete do
+               span class='glyphicon glyphicon-remove'
+
 
     = link_to t('links.story.create'), new_project_story_path(@project), class: 'btn btn-primary'
