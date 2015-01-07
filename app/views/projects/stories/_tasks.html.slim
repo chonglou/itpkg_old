@@ -14,32 +14,32 @@ div class='panel panel-primary'
         tr id='task_row_template' class='hide'
           td class='col-sm-1 col-md-1 task_id' #{'id'}
           td class='col-sm-9 col-md-9 task_details' #{'details'}
-          td class='col-sm-2 col-md-2'
-            = link_to t('buttons.edit'),
-                      '',
-                      class: 'btn btn-primary col-sm-5 edit_task',
-                      data: { toggle: 'modal', target:'#edit_task_modal' }
-
+          td class='col-sm-1 col-md-1 edit-remove-icons'
+            = link_to '',
+                      class: 'edit-task',
+                      data: {toggle: 'modal', target: '#edit_task_modal'} do
+              span class='glyphicon glyphicon-edit' data-toggle='tooltip' title=t('buttons.edit')
             = link_to project_story_task_path(@story.project, @story, 0),
-                      data: {confirm: t('labels.are_you_sure')},
-                      method: :delete,
-                      class: 'btn btn-danger col-sm-5 col-sm-offset-2' do
+                      class: 'js-delete-task',
+                      data: {confirm: t('labels.are_you_sure'), toggle: 'tooltip'},
+                      title: t('buttons.remove'),
+                      method: :delete do
               span class='glyphicon glyphicon-remove'
 
         - for task in @story.tasks.select(&:active?) do
           tr
             td class='col-sm-1 col-md-1 task_id' #{task.id}
             td class='col-sm-9 col-md-9 task_details' #{task.details}
-            td class='col-sm-2 col-md-2'
-              = link_to t('buttons.edit'),
-                        '',
-                        class: 'btn btn-primary col-sm-5 edit_task',
-                        data: {toggle: 'modal', target: '#edit_task_modal'}
-
+            td class='col-sm-1 col-md-1 edit-remove-icons'
+              = link_to '',
+                        class: 'edit-task',
+                        data: {toggle: 'modal', target: '#edit_task_modal'} do
+                span class='glyphicon glyphicon-edit' data-toggle='tooltip' title=t('buttons.edit')
               = link_to project_story_task_path(@story.project, @story, task),
-                        data: {confirm: t('labels.are_you_sure')},
-                        method: :delete,
-                        class: 'btn btn-danger col-sm-5 col-sm-offset-2'
+                        class: 'js-delete-task',
+                        data: {confirm: t('labels.are_you_sure'), toggle: 'tooltip'},
+                        title: t('buttons.remove'),
+                        method: :delete do
                 span class='glyphicon glyphicon-remove'
     = link_to t('links.task.create'), '', id: 'new_task', class: 'btn btn-primary'
 
