@@ -3,7 +3,20 @@ require 'itpkg/services/site'
 class Projects::StoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :check_user_authority
-  before_action :prepare_story, except: [:new, :create]
+  before_action :prepare_story, except: [:new, :create, :index]
+
+  def index
+    @buttons = []
+    @stories = []
+    @story_type = params.delete(:type_name)
+    @story_tag = params.delete(:tag_name)
+
+    if @story_type
+      @stories = StoryType.find_by_name(@story_type).stories
+    elsif @story_tag
+      @stories = StoryTag.find_by_name(@story_tag).stories
+    end
+  end
 
   def new
     @story = Story.new

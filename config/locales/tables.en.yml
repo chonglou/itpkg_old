@@ -26,6 +26,8 @@ en:
       description: 'Description'
       action: 'Action'
       new_comment: 'New Comment'
+      list_title_type: 'Story with type - '
+      list_title_tag: 'Story with tag - '
     task:
       id: 'ID'
       details: 'Details'

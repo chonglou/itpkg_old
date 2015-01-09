@@ -12,6 +12,19 @@ $colors: Aqua, Aquamarine, BurlyWood, CornflowerBlue, Crimson,
   border-radius: 3px;
   border: 1px solid #aaaaaa;
   font-size: smaller;
+
+  a {
+    color: #535353;
+
+    &:hover {
+      text-decoration: none;
+      color: #3b3b3b
+    }
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
 @for $i from 1 through 12 {

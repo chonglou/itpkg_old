@@ -27,17 +27,19 @@ div class='panel panel-primary'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.story_types')}
         div class='col-sm-10 text-left'
-          - for story_type in @story.story_types.map(&:name) do
-              span class='story-type' #{story_type}
+          - for story_type in @story.story_types do
+              span class='story-type'
+                = link_to story_type.name, project_stories_path(@story.project, type_name: story_type.name)
 
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.story_tags')}
         div class='col-sm-10 text-left'
-          - for story_tag in @story.story_tags.map(&:name) do
-            span class='story-tag' #{story_tag}
+          - for story_tag in @story.story_tags do
+            span class='story-tag'
+              = link_to story_tag.name, project_stories_path(tag_name: story_tag.name)
 
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.description')}
-        div class='col-sm-10 text-left' #{@story.description}
+        div class='col-sm-10 text-left' #{{md2html @story.description}}

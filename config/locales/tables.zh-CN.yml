@@ -53,6 +53,8 @@ zh-CN:
       description: '描述'
       action: '操作'
       new_comment: '新评论'
+      list_title_type: '带有此类型的故事 - '
+      list_title_tag: '带有此标签的故事 - '
     task:
       id: 'ID'
       details: '详细描述'

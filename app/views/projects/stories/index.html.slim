@@ -1,0 +1,14 @@
+= javascript_include_tag 'projects/story'
+
+= render 'layouts/button_group', items:@buttons, back:true
+
+- if @story_type
+    h3 #{t('tables.story.list_title_type') + @story_type}
+- if @story_tag
+    h3 #{t('tables.story.list_title_tag') + @story_tag}
+
+div class="list-group"
+  - for story in @stories
+    = link_to project_story_path(@project, story), class: 'list-group-item js-story-list' do
+      h4 class="list-group-item-heading" #{story.title}
+      p class="list-group-item-text" #{{md2html story.description}}
