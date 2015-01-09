@@ -19,7 +19,7 @@ div class='panel panel-primary'
              = link_to story.title, project_story_path(@project, story)
            td class="col-sm-1" #{story.point}
            td class="col-sm-1" #{story.status}
-           td class="col-sm-6" #{story.description}
+           td class="col-sm-6" #{{md2html story.description}}
            td class="col-sm-1 edit-remove-icons"
              = link_to edit_project_story_path(@project, story),
                        data: {toggle: 'tooltip'},

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141226184517) do
+ActiveRecord::Schema.define(version: 20150109190554) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -464,12 +464,12 @@ ActiveRecord::Schema.define(version: 20141226184517) do
   add_index "task_comments", ["user_id"], name: "index_task_comments_on_user_id", using: :btree
 
   create_table "tasks", force: :cascade do |t|
-    t.integer  "story_id",   limit: 4,                  null: false
-    t.string   "details",    limit: 255,                null: false
+    t.integer  "story_id",   limit: 4,                    null: false
+    t.text     "details",    limit: 65535,                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "level",      limit: 2,   default: 0,    null: false
-    t.boolean  "active",     limit: 1,   default: true
+    t.integer  "level",      limit: 2,     default: 0,    null: false
+    t.boolean  "active",     limit: 1,     default: true
   end
 
   create_table "translations", force: :cascade do |t|

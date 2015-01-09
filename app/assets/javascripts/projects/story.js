@@ -37,5 +37,14 @@
       multiple: true,
       maxLength: 10
     });
+
+    $('.js-story-list').hover(
+      function () {
+        $(this).addClass('active');
+      },
+      function () {
+        $(this).removeClass('active');
+      }
+    );
   });
 })(jQuery);
