@@ -16,6 +16,7 @@ class Rss::SitesController < ApplicationController
   def create
     @site = RssSite.create _rs_params
     if @site.save
+      RssSyncJob.perform_later @site.id
       redirect_to rss_sites_path
     else
       render 'new'
@@ -29,6 +30,7 @@ class Rss::SitesController < ApplicationController
   def update
     @site = RssSite.find params[:id]
     if @site.update(_rs_params)
+      RssSyncJob.perform_later @site.id
       redirect_to rss_sites_path
     else
       render 'edit'
