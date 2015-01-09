@@ -29,7 +29,7 @@ div class='panel panel-primary'
         - for task in @story.tasks.select(&:active?) do
           tr
             td class='col-sm-1 col-md-1 task_id' #{task.id}
-            td class='col-sm-9 col-md-9 task_details' #{task.details}
+            td class='col-sm-9 col-md-9 task_details' #{{md2html task.details}}
             td class='col-sm-1 col-md-1 edit-remove-icons'
               = link_to '',
                         class: 'edit-task',

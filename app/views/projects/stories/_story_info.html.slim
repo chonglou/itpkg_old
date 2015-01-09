@@ -40,4 +40,4 @@ div class='panel panel-primary'
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.description')}
-        div class='col-sm-10 text-left' #{@story.description}
+        div class='col-sm-10 text-left' #{{md2html @story.description}}
