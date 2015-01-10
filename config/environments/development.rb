@@ -48,7 +48,7 @@ Rails.application.configure do
       location: '/usr/bin/msmtp',
       arguments: "-C #{Rails.root}/config/msmtprc --logfile #{Rails.root}/log/msmtp.log -a default -t"
   }
-  config.action_mailer.default_url_options = {host: 'localhost', port: 3000, from: ENV['ITPKG_MAILER_SENDER']}
+  config.action_mailer.default_url_options = {host: "www.#{ENV['ITPKG_DOMAIN']}", port: 3000, from: ENV['ITPKG_MAILER_SENDER']}
 
   Slim::Engine.set_options pretty: true, sort_attrs: false
 
