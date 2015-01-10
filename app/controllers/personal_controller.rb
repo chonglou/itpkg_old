@@ -95,20 +95,19 @@ class PersonalController < ApplicationController
             url: repositories_path,
             logo: 'flat/256/three128.png',
             label: t('links.repository.list')
+        },
+        {
+            url: monitor_nodes_path,
+            logo: 'flat/256/lifeline6.png',
+            label: t('links.monitor_node.list')
+        },
+        {
+            url: logging_nodes_path,
+            logo: 'flat/256/log2.png',
+            label: t('links.logging_item.list')
         }
     ]
-    if current_user.has_role?(:admin) || current_user.has_role?(:ops)
-      @items << {
-          url: monitor_nodes_path,
-          logo: 'flat/256/lifeline6.png',
-          label: t('links.monitor_node.list')
-      }
-      @items << {
-          url: logging_items_path,
-          logo: 'flat/256/log2.png',
-          label: t('links.logging_item.list')
-      }
-    end
+
     if current_user.has_role?(:admin)
       @items << {
           url: nodes_path,
@@ -172,7 +171,7 @@ class PersonalController < ApplicationController
         logo: 'flat/256/call37.png',
         label: t('links.about_us')
     }
-    render 'index', layout:'application'
+    render 'index', layout: 'application'
 
   end
 

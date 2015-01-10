@@ -1,6 +1,6 @@
 class Logging::ItemsController < ApplicationController
   layout 'tabbed'
-  before_action :must_admin!
+  before_action :authenticate_user!
   include LoggingNodesHelper
   before_action :_nav_items
 

@@ -1,6 +1,7 @@
 class Logging::NodesController < ApplicationController
   layout 'tabbed'
-  before_action :must_admin!
+  before_action :authenticate_user!
+  before_action :must_admin!, only:[:edit, :update]
   include LoggingNodesHelper
   before_action :_nav_items
 
@@ -14,7 +15,7 @@ class Logging::NodesController < ApplicationController
     @items = @nodes.map do |n|
       {
           cols: [n.name, n.vip, n.flag, n.created_at],
-          url: edit_logging_node_path(n.id)
+          url: current_user.is_admin? ? edit_logging_node_path(n.id) : nil
       }
     end
 
