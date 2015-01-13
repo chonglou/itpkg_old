@@ -4,7 +4,7 @@ require 'itpkg/services/history'
 
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  before_action :prepare_project, only: [:edit, :update, :show, :destroy, :add_users]
+  before_action :prepare_project, only: [:edit, :update, :show, :destroy, :get_users, :add_users]
   before_action :check_user_authority, except: [:index, :new, :create]
 
   def index
@@ -40,12 +40,11 @@ class ProjectsController < ApplicationController
       @buttons = []
       @buttons << {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'}
       @buttons << {label: t('links.project.story.create'), url: new_project_story_path(@project), style: 'info'}
-      @buttons << {label: t('links.project.add'), url: '', method: '', data: {toggle: 'modal', target: '#invite_modal'}, style: 'success'}
+      @buttons << {label: t('links.project.add'), url: project_get_users_path(@project), method: 'get', remote: true, style: 'success'}
       @buttons << {label: t('links.project.list'), url: projects_path, style: 'warning'}
 
       #todo 分页显示
       @logs = ProjectLog.where(project_id: @project.id).order(created: :desc).limit(5)
-      @users = User.all.reject { |u| u == current_user }
     else
       flash[:alert] = t('message.project_not_exists')
       redirect_to :back
@@ -78,6 +77,10 @@ class ProjectsController < ApplicationController
     end
 
     redirect_to projects_path
+  end
+
+  def get_users
+    @users = User.all.reject { |u| u == current_user }
   end
 
   def add_users

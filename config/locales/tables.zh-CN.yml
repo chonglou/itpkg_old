@@ -60,6 +60,6 @@ zh-CN:
       details: '详细描述'
       action: '操作'
     user:
-      label: '用户列表'
+      label: '用户名'
       email: '邮件'
       add: '添加'

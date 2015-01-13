@@ -118,6 +118,7 @@ Rails.application.routes.draw do
         end
       end
 
+      get :get_users
       post :add_users
 
       resources :story_types, controller: 'projects/story_types'
