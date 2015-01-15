@@ -8,4 +8,8 @@ class Task < ActiveRecord::Base
 
   enum status: {submit: 0, processing: 1, finish: 2, reject: 3, done: 9}
   enum priority: {at_once: -10, high: -1, normal: 0, low: 1, ingnore: 10}
+
+  def to_html
+    Itpkg::StringHelper.md2html self.details
+  end
 end

@@ -1,0 +1,9 @@
+.table-hover--link-style {
+  tr:hover{
+    td {
+      color: #337ab7;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
