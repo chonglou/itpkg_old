@@ -48,6 +48,7 @@ en:
       remove: 'Remove'
     task:
       create: 'Create Task'
+      edit: 'Edit Task'
     docker: 'Docker'
     logging_item:
       list: 'Logs'

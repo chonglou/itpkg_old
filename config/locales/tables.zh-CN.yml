@@ -57,8 +57,11 @@ zh-CN:
       list_title_tag: '带有此标签的故事 - '
     task:
       id: 'ID'
+      points: '分值'
+      status: '状态'
       details: '详细描述'
       action: '操作'
+      new_comment: '新评论'
     user:
       label: '用户名'
       email: '邮件'

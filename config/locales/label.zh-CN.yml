@@ -33,8 +33,12 @@ zh-CN:
         status: '状态'
         story_types: '类型'
         story_tags: '标签'
-        status: '状态'
         description: '描述'
+      task:
+        point: '分值'
+        status: '状态'
+        priority: '优先级'
+        details: '详细描述'
       template:
         flag: '类型'
         name: '名称'

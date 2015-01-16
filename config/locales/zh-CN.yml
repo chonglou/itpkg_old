@@ -27,11 +27,16 @@ zh-CN:
       story_tags: '标签'
     task:
       title: '任务'
+      info_title: '任务信息'
       information: '基本信息'
       project: '所属项目'
       story: '所属故事'
+      point: '分值'
+      status: '状态'
+      priority: '优先级'
       details: '详细描述'
       edit: '编辑任务'
+      edit_comment: '编辑评论'
   message:
     unauthorized: '您没有足够的权限执行此操作'
     project_not_exists: '项目不存在'

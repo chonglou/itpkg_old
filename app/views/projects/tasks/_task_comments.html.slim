@@ -1,0 +1,61 @@
+= javascript_include_tag 'projects/task_comment'
+
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('titles.story.comments')}
+  div class='panel-body row-fluid'
+    - if @task_comments.any?
+      - for comment in @task_comments do
+        li class='col-sm-11'
+          p
+            i #{{md2html comment.content}}
+          div class='text-right' - by #{comment.user.full_name}, #{time_ago_in_words comment.created_at}
+        div class='col-sm-1 edit-remove-icons'
+          = link_to '',
+                    class: 'edit_task_comment_button',
+                    data: {toggle: 'modal',
+                           target: '#edit_task_comment_modal',
+                           id: comment.id,
+                           content: comment.content} do
+            span class='glyphicon glyphicon-edit' data-toggle='tooltip' title=t('buttons.edit')
+          = link_to project_story_task_task_comment_path(@project, @story, @task, comment),
+                    data: {confirm: t('labels.are_you_sure'), toggle: 'tooltip'},
+                    title: t('buttons.remove'),
+                    method: :delete do
+            span class='glyphicon glyphicon-remove'
+  hr
+
+  = form_for TaskComment.new,
+             url: project_story_task_task_comments_path(@project, @story, @task),
+             html: {class: 'form-horizontal'},
+             method: :post do |f|
+    div class='form-group'
+      div class='col-sm-10 col-sm-offset-1'
+        strong #{t('tables.task.new_comment')}
+
+    div class='form-group'
+      div class='col-sm-10 col-sm-offset-1'
+        = f.text_area :content, rows: 3, class: 'form-control'
+    div class='form-group'
+      div class='col-sm-1 col-sm-offset-1'
+        = f.submit t('buttons.submit'), class: 'btn btn-primary'
+
+div id='edit_task_comment_modal' class='modal fade'
+  div class='modal-dialog'
+    div class='modal-content'
+      div class='modal-header'
+        = link_to '', class: 'close', data: {dismiss: 'modal'} do
+          span #{'X'}
+          span class='sr-only' #{'Close'}
+        h4 class='modal-title' #{t('titles.task.edit_comment')}
+      div class='modal-body'
+        = bootstrap_form(TaskComment.new,
+                         url: project_story_task_task_comments_path(@project, @story, @task, 0),
+                         html: {id: 'edit_task_comment_form', method: 'put', action: 'update'}) do |f|
+          = f.group do
+            = f.label t('tables.task.details')
+            = f.text_area :content, id: 'edit_task_comment_content', rows: 5
+
+          = f.button_group do
+            = f.submit t('buttons.submit')
+            = f.cancel t('buttons.cancel'), data: {dismiss: 'modal'}
