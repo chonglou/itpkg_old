@@ -48,6 +48,7 @@ zh-CN:
       remove: '删除'
     task:
       create: '新建任务'
+      edit: '编辑任务'
     docker: 'Docker'
     logging_item:
       list: '日志存储'

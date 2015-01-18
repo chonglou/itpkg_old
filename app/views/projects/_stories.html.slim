@@ -5,6 +5,7 @@ div class='panel panel-primary'
     table class='table table-striped table-hover table-hover--link-style'
       thead
         tr
+          th #{t('tables.story.id')}
           th #{t('tables.story.title')}
           th #{t('tables.story.points')}
           th #{t('tables.story.status')}
@@ -12,10 +13,11 @@ div class='panel panel-primary'
       tbody
         - for story in @project.stories.select(&:active?) do
           tr class="clickable-tr" data-link="#{project_story_path(@project, story)}"
+            td class="col-sm-1" #{story.id}
             td class="col-sm-2" #{story.title}
             td class="col-sm-1" #{story.point}
             td class="col-sm-1" #{story.status}
-            td class="col-sm-9" #{{md2html story.description}}
+            td class="col-sm-8" #{{md2html story.description}}
 
 
     = link_to t('links.story.create'), new_project_story_path(@project), class: 'btn btn-primary'
