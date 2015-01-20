@@ -18,6 +18,14 @@
       = f.select :priority, priority_select_options
 
     = f.group do
+      = f.label :plan_start_time
+      = f.datetime_select :plan_start_time
+
+    = f.group do
+      = f.label :plan_finish_time
+      = f.datetime_select :plan_finish_time
+
+    = f.group do
       = f.label :details
       = f.text_area :details
 

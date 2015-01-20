@@ -29,6 +29,14 @@
       = f.text_field :story_tag_ids, value: nil
 
     = f.group do
+      = f.label :plan_start_time
+      = f.datetime_select :plan_start_time
+
+    = f.group do
+      = f.label :plan_finish_time
+      = f.datetime_select :plan_finish_time
+
+    = f.group do
       = f.label :description
       = f.text_area :description
 
