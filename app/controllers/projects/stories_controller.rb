@@ -118,6 +118,7 @@ class Projects::StoriesController < ApplicationController
   end
 
   def story_params
-    params.require(:story).permit(:title, :point, :status, :description, :story_type_ids, :story_tag_ids)
+    params.require(:story).permit(:title, :point, :status, :description, :story_type_ids, :story_tag_ids,
+                                  :plan_start_time, :plan_finish_time)
   end
 end

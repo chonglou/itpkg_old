@@ -33,11 +33,15 @@ zh-CN:
         status: '状态'
         story_types: '类型'
         story_tags: '标签'
+        plan_start_time: '预计开始时间'
+        plan_finish_time: '预计结束时间'
         description: '描述'
       task:
         point: '分值'
         status: '状态'
         priority: '优先级'
+        plan_start_time: '预计开始时间'
+        plan_finish_time: '预计结束时间'
         details: '详细描述'
       template:
         flag: '类型'
