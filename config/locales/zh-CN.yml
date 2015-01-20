@@ -25,8 +25,8 @@ zh-CN:
       edit_comment: '编辑评论'
       story_types: '类型'
       story_tags: '标签'
-      plan_start_time: '预计开始事件'
-      plan_finish_time: '预计结束事件'
+      plan_start_time: '预计开始时间'
+      plan_finish_time: '预计结束时间'
     task:
       title: '任务'
       info_title: '任务信息'
@@ -39,8 +39,8 @@ zh-CN:
       details: '详细描述'
       edit: '编辑任务'
       edit_comment: '编辑评论'
-      plan_start_time: '预计开始事件'
-      plan_finish_time: '预计结束事件'
+      plan_start_time: '预计开始时间'
+      plan_finish_time: '预计结束时间'
   message:
     unauthorized: '您没有足够的权限执行此操作'
     project_not_exists: '项目不存在'
