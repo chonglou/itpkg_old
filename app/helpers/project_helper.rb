@@ -4,7 +4,7 @@ module ProjectHelper
   end
 
   def priority_select_options
-    %w(immediately  high normal low ignore)
+    %w(immediately high normal low ignore)
   end
 
   def point_select_options
