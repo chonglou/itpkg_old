@@ -6,7 +6,7 @@ div id='invite_modal' class='modal fade'
           span #{'x'}
           span class='sr-only' #{'Close'}
         h4 class='modal-title' #{t('links.project.add')}
-      div class='modal-body'
+      div class='modal-body clearfix'
         table class='table table-striped'
           thead
             tr
@@ -14,15 +14,28 @@ div id='invite_modal' class='modal fade'
               th #{t('tables.user.label')}
               th #{t('tables.user.email')}
           tbody
-            - for user in @users do
-              tr
+            - @users.each_with_index do |user, index|
+              tr class="user-info user_page_#{index/7}"
                 td class="col-sm-2"
                   = check_box_tag :user, user.id, user.is_member_of?(@project), class: 'js-user-checkbox'
                 td class="col-sm-5" #{user.full_name}
                 td class="col-sm-5" #{user.email}
-            = form_tag project_add_users_path(@project), id: 'add_users_form' do
-              = hidden_field_tag :project_members, nil
-              = hidden_field_tag :none_project_members, nil
+
+        = form_tag project_add_users_path(@project), id: 'add_users_form' do
+          = hidden_field_tag :project_members, nil
+          = hidden_field_tag :none_project_members, nil
+
+        nav class='pull-right'
+          ul class="pagination"
+            li
+              a id='prev_page' href="#" aria-label="Previous"
+                span aria-hidden="true" &laquo;
+            - (1..@users.size/7+1).to_a.each do |page_number|
+              li class='js-page-number-wrapper'
+                = link_to page_number, '', class: 'js-page-number', data: {page: ".user_page_#{page_number-1}" }
+            li
+              a id='next_page' href="#" aria-label="Next"
+                span aria-hidden="true" &raquo;
 
       div class='modal-footer'
         = link_to t('buttons.submit'), '', id: 'add_users_button', class: 'btn btn-primary'

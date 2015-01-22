@@ -1,16 +1,9 @@
-= javascript_include_tag 'projects/story'
+- @title=t('links.task.edit')
 
-- @title=t('links.story.create')
-
-
-= bootstrap_form(@story, url: {action: 'create'}, data: { project_id: @project.id }) do |f|
+= bootstrap_form(@task, url: {action: 'update'}, ) do |f|
   = f.error_messages
   = f.fieldset do
     = f.legend(@title)
-
-    = f.group do
-      = f.label :title
-      = f.text_field :title, autofocus: true
 
     = f.group do
       = f.label :point
@@ -21,12 +14,8 @@
       = f.select :status, status_select_options
 
     = f.group do
-      = f.label :story_types
-      = f.text_field :story_type_ids, value: nil
-
-    = f.group do
-      = f.label :story_tags
-      = f.text_field :story_tag_ids, value: nil
+      = f.label :priority
+      = f.select :priority, priority_select_options
 
     = f.group do
       = f.label :plan_start_time
@@ -37,8 +26,8 @@
       = f.datetime_select :plan_finish_time
 
     = f.group do
-      = f.label :description
-      = f.text_area :description
+      = f.label :details
+      = f.text_area :details
 
     = f.button_group do
       = f.submit t('buttons.submit')

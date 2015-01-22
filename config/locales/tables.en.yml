@@ -33,6 +33,6 @@ en:
       details: 'Details'
       action: 'Action'
     user:
-      label: 'User List'
+      label: 'User'
       email: 'Email'
       add: 'Add'

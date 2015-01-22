@@ -54,8 +54,10 @@ function swap_select_items(from, to){
 
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
+
+    $(document).on('click', '.clickable-tr', function () {
+      window.location = $(this).data('link');
+    });
   });
 
 })(jQuery);
-
-

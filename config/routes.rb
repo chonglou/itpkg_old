@@ -114,10 +114,11 @@ Rails.application.routes.draw do
       resources(:stories, controller: 'projects/stories') do
         resources :story_comments, controller: 'projects/story_comments'
         resources :tasks, controller: 'projects/tasks' do
-          resources :task_comments
+          resources :task_comments, controller: 'projects/task_comments'
         end
       end
 
+      get :get_users
       post :add_users
 
       resources :story_types, controller: 'projects/story_types'
