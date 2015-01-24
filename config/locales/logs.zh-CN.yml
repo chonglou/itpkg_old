@@ -14,3 +14,5 @@ zh-CN:
       remove: '删除项目'
       story:
         create: '创建 story %{title}'
+        start: '开始 story %{title}'
+        finish: '结束 story %{title}'

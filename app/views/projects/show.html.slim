@@ -9,7 +9,8 @@ hr
 div #{{md2html @project.details}}
 br
   /todo 类似于project list
-= render partial: 'stories'
+div id='stories_table'
+  = render partial: 'stories'
 
 - if current_user.is_admin?
   br
