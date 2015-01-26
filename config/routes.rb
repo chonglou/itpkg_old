@@ -116,6 +116,8 @@ Rails.application.routes.draw do
         resources :tasks, controller: 'projects/tasks' do
           resources :task_comments, controller: 'projects/task_comments'
         end
+
+        post :update_status
       end
 
       get :get_users

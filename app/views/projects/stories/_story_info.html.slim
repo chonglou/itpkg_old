@@ -42,12 +42,22 @@ div class='panel panel-primary'
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.plan_start_time')}
-        div class='col-sm-10 text-left' #{@story.plan_start_time.strftime('%F %I:%M %p')}
+        div class='col-sm-10 text-left' #{@story.plan_start_time.try(:strftime, '%F %I:%M %p')}
 
       div class='row'
         div class='col-sm-2 text-right'
           strong #{t('titles.story.plan_finish_time')}
-        div class='col-sm-10 text-left' #{@story.plan_finish_time.strftime('%F %I:%M %p')}
+        div class='col-sm-10 text-left' #{@story.plan_finish_time.try(:strftime, '%F %I:%M %p')}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.real_start_time')}
+        div class='col-sm-10 text-left' #{@story.real_start_time.try(:strftime, '%F %I:%M %p')}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.story.real_finish_time')}
+        div class='col-sm-10 text-left' #{@story.real_finish_time.try(:strftime, '%F %I:%M %p')}
 
       div class='row'
         div class='col-sm-2 text-right'

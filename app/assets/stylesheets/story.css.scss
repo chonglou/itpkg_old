@@ -48,3 +48,9 @@ $colors: Aqua, Aquamarine, BurlyWood, CornflowerBlue, Crimson,
     @include type-tag-show(nth($colors, $i));
   }
 }
+
+.story-status-buttons {
+  margin-top: 22px;
+  width: 108px;
+  text-align: right;
+}
