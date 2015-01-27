@@ -16,3 +16,6 @@ zh-CN:
         create: '创建 story %{title}'
         start: '开始 story %{title}'
         finish: '结束 story %{title}'
+      task:
+        start: '开始%{title}下的一个任务'
+        finish: '结束%{title}下的一个任务'

@@ -9,9 +9,13 @@ div class='panel panel-primary'
         tr
           th #{t('tables.task.id')}
           th #{t('tables.task.details')}
+          th #{t('tables.task.action')}
       tbody
         - for task in @story.tasks.select(&:active?) do
-          tr class="clickable-tr" data-link="#{project_story_task_path(@project, @story, task)}"
-            td class='col-sm-1 col-md-1 task_id' #{task.id}
-            td class='col-sm-9 col-md-9 task_details' #{{md2html task.details}}
+          tr data-link="#{project_story_task_path(@project, @story, task)}"
+            td class='col-sm-1 col-md-1 clickable-td task_id' #{task.id}
+            td class='col-sm-7 col-md-9 clickable-td task_details' #{{md2html task.details}}
+            td class="col-md-2"
+              - for button in task_action_button(task)
+                = button
     = link_to t('links.task.create'), new_project_story_task_path(@project, @story), class: 'btn btn-primary'

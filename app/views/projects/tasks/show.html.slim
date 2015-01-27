@@ -1,5 +1,10 @@
 = render 'layouts/button_group', items:@buttons, back:true
-h3 #{t('titles.task.info_title')}
+
+div class='clearfix'
+  h3 class='pull-left' #{t('titles.task.info_title')}
+  div class='pull-right story-status-buttons'
+    - for button in task_action_button(@task)
+      = button
 hr
 
 = render partial: 'task_info'

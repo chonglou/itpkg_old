@@ -18,8 +18,8 @@ div class='panel panel-primary'
             td class="col-md-2 clickable-td" #{story.title}
             td class="col-md-1 clickable-td" #{story.point}
             td class="col-md-1 clickable-td" #{story.status}
-            td class="col-md-6 clickable-td" #{{md2html story.description}}
-            td class="col-md-2 btn-group"
+            td class="col-md-5 clickable-td" #{{md2html story.description}}
+            td class="col-md-2"
               - for button in story_action_button(story)
                 = button
 
