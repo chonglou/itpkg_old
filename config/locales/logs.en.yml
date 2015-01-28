@@ -14,3 +14,8 @@ en:
       remove: 'Remove project'
       story:
         create: 'Create story %{title}'
+        start: 'Start story %{title}'
+        finish: 'Finish story %{title}'
+      task:
+        start: 'Start a task of story %{title}'
+        finish: 'Finish a task of story %{title}'

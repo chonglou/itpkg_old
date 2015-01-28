@@ -35,6 +35,32 @@ class Projects::TasksController < ApplicationController
     end
   end
 
+  def update_status
+    status           = params[:status]
+    real_start_time  = @task.real_start_time
+    real_finish_time = @task.real_finish_time
+
+    case params[:status]
+      when 'processing'
+        text            = t('logs.project.task.start', title: @story.title)
+        real_start_time ||= Time.zone.now
+      when 'done'
+        text             = t('logs.project.task.finish', title: @story.title)
+        real_finish_time = Time.zone.now
+      else
+        text = nil
+    end
+
+    @task.update(status: status, real_start_time: real_start_time, real_finish_time: real_finish_time)
+
+    if text.present?
+      Itpkg::LogService.teamwork current_user.label, @project.id, project_story_path(@story.id, project_id: @project.id),
+                                 text, story_id: @story.id
+    end
+
+    redirect_to :back
+  end
+
   def destroy
     if current_user.is_member_of? @project
       @task.destroy

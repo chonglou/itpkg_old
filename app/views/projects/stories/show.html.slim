@@ -1,5 +1,9 @@
 = render 'layouts/button_group', items:@buttons, back:true
-h3 #{@story.title}
+div class='clearfix'
+  h3 class='pull-left' #{@story.title}
+  div class='pull-right story-status-buttons'
+    - for button in story_action_button(@story)
+      = button
 hr
 
 = render partial: 'story_info'
