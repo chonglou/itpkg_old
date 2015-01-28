@@ -1,0 +1,16 @@
+= render 'layouts/button_group', items:@buttons, back:true
+
+div class='clearfix'
+  h3 class='pull-left' #{t('titles.task.info_title')}
+  div class='pull-right story-status-buttons'
+    - for button in task_action_button(@task)
+      = button
+hr
+
+= render partial: 'task_info'
+= render partial: 'task_comments'
+
+div class='row row-fluid'
+  div class='col-sm-1'
+    = link_to t('buttons.edit'), edit_project_story_task_path(@project, @story, @task), class: 'btn btn-primary'
+  = render 'layouts/remove_button', name: 'buttons.remove', url: project_story_task_path(@story.project, @story, @task), back: false

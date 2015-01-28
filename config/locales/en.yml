@@ -48,11 +48,13 @@ en:
       story_tags: 'Tags'
     task:
       title: 'Task'
+      info_title: 'Task Information'
       information: 'Information'
       project: 'Project'
       story: 'Story'
       details: 'Details'
       edit: 'Edit Task'
+      edit_comment: 'Edit Comment'
   message:
     unauthorized: 'You are not allowed to do this operation.'
     project_not_exists: 'The project does not exist.'

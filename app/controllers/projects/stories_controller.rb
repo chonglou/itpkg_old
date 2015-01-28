@@ -79,6 +79,32 @@ class Projects::StoriesController < ApplicationController
     redirect_to project_path(@project)
   end
 
+  def update_status
+    status           = params[:status]
+    real_start_time  = @story.real_start_time
+    real_finish_time = @story.real_finish_time
+
+    case params[:status]
+      when 'processing'
+        text            = t('logs.project.story.start', title: @story.title)
+        real_start_time ||= Time.zone.now
+      when 'done'
+        text             = t('logs.project.story.finish', title: @story.title)
+        real_finish_time = Time.zone.now
+      else
+        text = nil
+    end
+
+    @story.update(status: status, real_start_time: real_start_time, real_finish_time: real_finish_time)
+
+    if text.present?
+      Itpkg::LogService.teamwork current_user.label, @project.id, project_story_path(@story.id, project_id: @project.id),
+                                 text, story_id: @story.id
+    end
+
+    redirect_to :back
+  end
+
   private
   def prepare_story
     @story = Story.where(id: params[:id], active: true).first
@@ -118,6 +144,7 @@ class Projects::StoriesController < ApplicationController
   end
 
   def story_params
-    params.require(:story).permit(:title, :point, :status, :description, :story_type_ids, :story_tag_ids)
+    params.require(:story).permit(:title, :point, :status, :description, :story_type_ids, :story_tag_ids,
+                                  :plan_start_time, :plan_finish_time)
   end
 end

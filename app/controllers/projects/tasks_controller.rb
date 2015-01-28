@@ -4,26 +4,61 @@ class Projects::TasksController < ApplicationController
   before_action :check_user_authority
 
   def new
+    @task = Task.new
   end
 
   def create
-    task = @story.tasks.build(task_params)
+    @task = @story.tasks.build(task_params)
 
-    if task.save
-      respond_to do |format|
-        format.json { render json: task }
-      end
+    if @task.save
+      redirect_to project_story_task_path(@project, @story, @task)
+    else
+      render :new
     end
+  end
+
+  def show
+    @buttons = [
+      {label: t('links.task.edit'), url: edit_project_story_task_path(@project, @story, @task), style: 'primary'},
+      {label: t('links.task.create'), url: new_project_story_task_path(@project, @story), style: 'warning'}
+    ]
+
+    @task_comments = @task.task_comments.where(active: true)
   end
 
   def edit
-    render 'edit', layout:nil
   end
 
   def update
-    if @task.update(task_params_for_update)
+    if @task.update(task_params)
       redirect_to project_story_path(@project, @story)
     end
+  end
+
+  def update_status
+    status           = params[:status]
+    real_start_time  = @task.real_start_time
+    real_finish_time = @task.real_finish_time
+
+    case params[:status]
+      when 'processing'
+        text            = t('logs.project.task.start', title: @story.title)
+        real_start_time ||= Time.zone.now
+      when 'done'
+        text             = t('logs.project.task.finish', title: @story.title)
+        real_finish_time = Time.zone.now
+      else
+        text = nil
+    end
+
+    @task.update(status: status, real_start_time: real_start_time, real_finish_time: real_finish_time)
+
+    if text.present?
+      Itpkg::LogService.teamwork current_user.label, @project.id, project_story_path(@story.id, project_id: @project.id),
+                                 text, story_id: @story.id
+    end
+
+    redirect_to :back
   end
 
   def destroy
@@ -43,7 +78,7 @@ class Projects::TasksController < ApplicationController
   end
 
   def prepare_task
-    @task = Task.where(id: params[:id], active: true).first
+    @task = Task.includes(:task_comments).where(id: params[:id], active: true).first
   end
 
   def check_user_authority
@@ -54,10 +89,6 @@ class Projects::TasksController < ApplicationController
   end
 
   def task_params
-    params.permit(:details, :story_id)
-  end
-
-  def task_params_for_update
-    params.require(:task).permit(:details, :story_id)
+    params.require(:task).permit(:point, :status, :priority, :details, :story_id, :plan_start_time, :plan_finish_time)
   end
 end

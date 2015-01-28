@@ -11,6 +11,7 @@ class AddTrackingTimesToStorysAndTasks < ActiveRecord::Migration
 
     add_column :tasks, :point,    :integer
     add_column :tasks, :status,   :integer, limit: 1
-    add_column :tasks, :priority, :integer
+
+    rename_column :tasks, :level, :priority
   end
 end

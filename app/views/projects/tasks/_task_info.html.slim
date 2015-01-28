@@ -1,0 +1,48 @@
+div class='panel panel-primary'
+  div class='panel-heading'
+    strong #{t('titles.task.information')}
+  div class='panel-body'
+    div class='container-fluid'
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.story')}
+        div class='col-sm-10 text-left' #{link_to @story.title, project_story_path(@project, @story)}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.point')}
+        div class='col-sm-10 text-left' #{@task.point}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.status')}
+        div class='col-sm-10 text-left' #{@task.status.capitalize}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.priority')}
+        div class='col-sm-10 text-left' #{@task.priority.capitalize}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.plan_start_time')}
+        div class='col-sm-10 text-left' #{@task.plan_start_time.try(:strftime, '%F %I:%M %p')}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.plan_finish_time')}
+        div class='col-sm-10 text-left' #{@task.plan_finish_time.try(:strftime, '%F %I:%M %p')}
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.real_start_time')}
+        div class='col-sm-10 text-left' #{@task.real_start_time.try(:strftime, '%F %I:%M %p')}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.real_finish_time')}
+        div class='col-sm-10 text-left' #{@task.real_finish_time.try(:strftime, '%F %I:%M %p')}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('titles.task.details')}
+        div class='col-sm-10 text-left' #{{md2html @task.details}}

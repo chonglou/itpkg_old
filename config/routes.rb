@@ -114,8 +114,12 @@ Rails.application.routes.draw do
       resources(:stories, controller: 'projects/stories') do
         resources :story_comments, controller: 'projects/story_comments'
         resources :tasks, controller: 'projects/tasks' do
-          resources :task_comments
+          resources :task_comments, controller: 'projects/task_comments'
+
+          post :update_status
         end
+
+        post :update_status
       end
 
       get :get_users
