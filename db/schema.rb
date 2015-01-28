@@ -472,7 +472,7 @@ ActiveRecord::Schema.define(version: 20150115055327) do
     t.text     "details",          limit: 65535,                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "priority",         limit: 2,     default: 0,    null: false
+    t.integer  "level",            limit: 2,     default: 0,    null: false
     t.boolean  "active",           limit: 1,     default: true
     t.datetime "plan_start_time"
     t.datetime "real_start_time"
@@ -480,6 +480,7 @@ ActiveRecord::Schema.define(version: 20150115055327) do
     t.datetime "real_finish_time"
     t.integer  "point",            limit: 4
     t.integer  "status",           limit: 1
+    t.integer  "priority",         limit: 4
   end
 
   create_table "translations", force: :cascade do |t|
