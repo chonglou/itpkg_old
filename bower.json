@@ -1,0 +1,30 @@
+{
+  "name": "ITPKG",
+  "version": "0.0.1",
+  "authors": [
+    "flamen <jitang.zheng@gmail.com>"
+  ],
+  "description": "IT-PACKAGE",
+  "license": "MIT",
+  "homepage": "https://github.com/chonglou/itpkg.git",
+  "dependencies": {
+    "bootstrap-sass": "latest",
+    "holderjs": "latest",
+    "angular": "latest",
+    "angular-ui-router": "latest",
+    "angular-animate": "latest",
+    "famfamfam-flags": "latest",
+    "famfamfam-silk": "latest",
+    "moment": "latest",
+    "jstree": "latest",
+    "jquery-file-upload": "latest",
+    "bootstrap3-datetimepicker": "latest"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

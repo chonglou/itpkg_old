@@ -17,12 +17,18 @@
  *= require bootstrap.patch
  *= require story
  */
+
+$icon-font-path: "bootstrap-sass/assets/fonts/bootstrap/";
+@import "bootstrap-sass/assets/stylesheets/bootstrap-sprockets";
+@import "bootstrap-sass/assets/stylesheets/bootstrap";
+@import "";
+/*
+
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import 'bootstrap-datetimepicker';
-/*
-*= require bootstrap-datepicker3
-*/
+
 @import "highlight-8.4/default";
 @import "jstree-3.0.8/default/style";
 @import "jQuery-File-Upload-9.8.1/jquery.fileupload";
+*/
