@@ -18,7 +18,10 @@
     "moment": "latest",
     "jstree": "latest",
     "jquery-file-upload": "latest",
-    "bootstrap3-datetimepicker": "latest"
+    "bootstrap3-datetimepicker": "latest",
+    "highlightjs": "latest",
+    "highcharts": "latest",
+    "select2-ng": "latest"
   },
   "ignore": [
     "**/.*",

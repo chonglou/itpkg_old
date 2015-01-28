@@ -13,33 +13,21 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require holder
-//= require moment
-//= require moment/zh-cn
-//= require bootstrap-sprockets
-//= require bootstrap-datetimepicker
-//= require angular
-//= require angular-animate
-//= require angular-resource
-//= require highcharts
+//= require bootstrap-sass/assets/javascripts/bootstrap-sprockets
+//= require holderjs/holder
+//= require moment/moment
+//= require moment/locale/zh-cn
+//= require bootstrap3-datetimepicker/build/js/bootstrap-datetimepicker.min.js
+//= require highlightjs/highlight.pack
+//= require highcharts/highcharts
 //= require highcharts/highcharts-more
-//= require highlight-8.4
-//= require jstree-3.0.8
-//= require jquery-ui/widget
-//= require jQuery-File-Upload-9.8.1/load-image.all.min
-//= require jQuery-File-Upload-9.8.1/canvas-to-blob.min
-//= require jQuery-File-Upload-9.8.1/jquery.iframe-transport
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload.js
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload-process.js
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload-image.js
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload-audio.js
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload-video.js
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload-validate.js
-//= require jQuery-File-Upload-9.8.1/jquery.fileupload-angular.js
-//= require widgets
-//= require select2
-//= require select2_locale_zh-CN
+//= require select2-ng/select2
+//= require select2-ng/select2_locale_zh-CN
+//= require jquery-file-upload/js/vendor/jquery.ui.widget
+//= require jquery-file-upload/js/jquery.iframe-transport
+//= require jquery-file-upload/js/jquery.fileupload
 
+//= require widgets
 
 function swap_select_items(from, to){
 
