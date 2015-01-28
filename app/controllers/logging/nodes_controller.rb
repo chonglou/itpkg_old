@@ -1,7 +1,7 @@
 class Logging::NodesController < ApplicationController
   layout 'tabbed'
   before_action :authenticate_user!
-  before_action :must_admin!, only:[:edit, :update]
+  before_action :must_admin!, only: [:edit, :update]
   include LoggingNodesHelper
   before_action :_nav_items
 
@@ -11,21 +11,29 @@ class Logging::NodesController < ApplicationController
 
     ]
 
-    @nodes = LoggingNode.order(id: :desc).page(params[:page])
-    @items = @nodes.map do |n|
-      {
-          cols: [n.name, n.vip, n.flag, n.created_at],
-          url: current_user.is_admin? ? edit_logging_node_path(n.id) : nil
-      }
+    if current_user.is_admin?
+      @nodes = LoggingNode.order(id: :desc).page(params[:page])
+      @items = @nodes.map do |n|
+        {
+            cols: [n.name, n.vip, n.flag, n.created_at],
+            url: edit_logging_node_path(n.id)
+        }
+      end
+    else
+      @nodes =LoggingNode.with_role(:reader, current_user)
+      @items = @nodes.map do |n|
+        {
+            cols: [n.name, n.vip, n.flag, n.created_at]
+        }
+      end
     end
-
 
   end
 
   def show
     @node = LoggingNode.find params[:id]
     @buttons = [
-        {label: t('links.logging_node.edit', name:@node.name), url: edit_logging_node_path(@node), style: 'primary'},
+        {label: t('links.logging_node.edit', name: @node.name), url: edit_logging_node_path(@node), style: 'primary'},
     ]
   end
 

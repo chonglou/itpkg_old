@@ -18,7 +18,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.2.8)
+    CFPropertyList (2.3.0)
     actionmailer (4.2.0)
       actionpack (= 4.2.0)
       actionview (= 4.2.0)
@@ -59,7 +59,7 @@ GEM
     arel (6.0.0)
     attr_encrypted (1.3.3)
       encryptor (>= 1.3.0)
-    autoprefixer-rails (4.0.2.2)
+    autoprefixer-rails (5.0.0.1)
       execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -78,7 +78,7 @@ GEM
       columnize (~> 0.8)
       debugger-linecache (~> 1.2)
       slop (~> 3.6)
-    cancancan (1.10.0)
+    cancancan (1.10.1)
     capistrano (3.3.5)
       capistrano-stats (~> 1.1.0)
       i18n
@@ -195,15 +195,17 @@ GEM
       ffi (~> 1.9)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
-    fog (1.26.0)
+    fog (1.27.0)
       fog-atmos
+      fog-aws (~> 0.0)
       fog-brightbox (~> 0.4)
-      fog-core (~> 1.27, >= 1.27.1)
+      fog-core (~> 1.27, >= 1.27.3)
       fog-ecloud
       fog-json
       fog-profitbricks
       fog-radosgw (>= 0.0.2)
       fog-sakuracloud (>= 0.0.4)
+      fog-serverlove
       fog-softlayer
       fog-storm_on_demand
       fog-terremark
@@ -215,11 +217,16 @@ GEM
     fog-atmos (0.1.0)
       fog-core
       fog-xml
+    fog-aws (0.0.6)
+      fog-core (~> 1.27)
+      fog-json (~> 1.0)
+      fog-xml (~> 0.1)
+      ipaddress (~> 0.8)
     fog-brightbox (0.7.1)
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.27.2)
+    fog-core (1.27.3)
       builder
       excon (~> 0.38)
       formatador (~> 0.2)
@@ -239,10 +246,13 @@ GEM
       fog-core (>= 1.21.0)
       fog-json
       fog-xml (>= 0.0.1)
-    fog-sakuracloud (0.1.1)
+    fog-sakuracloud (0.1.2)
       fog-core
       fog-json
-    fog-softlayer (0.3.27)
+    fog-serverlove (0.1.1)
+      fog-core
+      fog-json
+    fog-softlayer (0.3.30)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.0)
@@ -289,7 +299,7 @@ GEM
       activesupport (>= 3.0.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    lograge (0.3.0)
+    lograge (0.3.1)
       actionpack (>= 3)
       activesupport (>= 3)
       railties (>= 3)
@@ -301,8 +311,8 @@ GEM
     mime-types (2.4.3)
     mini_magick (4.0.2)
     mini_portile (0.6.2)
-    minitest (5.5.0)
-    momentjs-rails (2.8.3)
+    minitest (5.5.1)
+    momentjs-rails (2.9.0)
       railties (>= 3.1)
     mongoid (4.0.0)
       activemodel (~> 4.0)
@@ -341,7 +351,7 @@ GEM
       watir-webdriver (>= 0.6.11)
     page_navigation (0.9)
       data_magic (>= 0.14)
-    protobuf (3.4.2)
+    protobuf (3.4.3)
       activesupport (>= 3.2)
       middleware
       thor
@@ -392,7 +402,7 @@ GEM
       redis (~> 3.0, >= 3.0.4)
     responders (2.0.2)
       railties (>= 4.2.0.alpha, < 5)
-    rolify (3.5.1)
+    rolify (3.5.2)
     rspec-core (3.1.7)
       rspec-support (~> 3.1.0)
     rspec-expectations (3.1.2)
@@ -413,7 +423,7 @@ GEM
     rufus-scheduler (3.0.9)
       tzinfo
     rugged (0.21.3)
-    sass (3.4.9)
+    sass (3.4.10)
     sass-rails (5.0.1)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
