@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150115055327) do
+ActiveRecord::Schema.define(version: 20150129205741) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -120,7 +120,7 @@ ActiveRecord::Schema.define(version: 20150115055327) do
 
   create_table "documents", force: :cascade do |t|
     t.integer  "project_id", limit: 4,                 null: false
-    t.string   "name",       limit: 36,                null: false
+    t.string   "name",       limit: 255,               null: false
     t.string   "ext",        limit: 5
     t.integer  "status",     limit: 2,     default: 0, null: false
     t.datetime "created_at"

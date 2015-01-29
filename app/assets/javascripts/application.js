@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sass/assets/javascripts/bootstrap-sprockets
+//= require angular/angular
 //= require holderjs/holder
 //= require moment/moment
 //= require moment/locale/zh-cn
@@ -23,9 +24,19 @@
 //= require highcharts/highcharts-more
 //= require select2-ng/select2
 //= require select2-ng/select2_locale_zh-CN
+
+
+//= require blueimp-load-image/js/load-image.all.min
+//= require blueimp-canvas-to-blob/js/canvas-to-blob.min
 //= require jquery-file-upload/js/vendor/jquery.ui.widget
 //= require jquery-file-upload/js/jquery.iframe-transport
 //= require jquery-file-upload/js/jquery.fileupload
+//= require jquery-file-upload/js/jquery.fileupload-process
+//= require jquery-file-upload/js/jquery.fileupload-image
+//= require jquery-file-upload/js/jquery.fileupload-audio
+//= require jquery-file-upload/js/jquery.fileupload-video
+//= require jquery-file-upload/js/jquery.fileupload-validate
+//= require jquery-file-upload/js/jquery.fileupload-angular
 
 //= require widgets
 
