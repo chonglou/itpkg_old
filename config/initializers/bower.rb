@@ -13,6 +13,8 @@ Rails.application.config.assets.precompile << %r(jstree/dist/themes/default/(thr
 Rails.application.config.assets.precompile += %w(jstree/dist/jstree.min.js)
 # for ie
 Rails.application.config.assets.precompile += %w(html5shiv/dist/html5shiv.min.js respond/dest/respond.min.js)
+# for select2
+Rails.application.config.assets.precompile += %w(select2-ng/select2-spinner.gif select2-ng/select2.png)
 
 # Minimum Sass number precision required by bootstrap-sass
 ::Sass::Script::Number.precision = [8, ::Sass::Script::Number.precision].max
