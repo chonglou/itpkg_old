@@ -16,6 +16,7 @@ eval "$(rbenv init -)"
 cd $ITPKG_HOME/current 
 rake db:migrate 
 rake db:seed 
+bower install -p
 rake assets:precompile 
 EOF
 

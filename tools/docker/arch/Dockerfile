@@ -18,7 +18,7 @@ postfix dovecot \
 python2 python2-pip python2-virtualenv \
 # htpasswd 
 apr-util \
-&& pacman -Scc --noconfirm 
+&& pacman -Scc --noconfirm
 
 
 # useradd
@@ -70,6 +70,7 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && rm -r .git .ssh \
 && mv .rbenv-vars $ITPKG_HOME/shared/.rbenv-vars \
 && echo 'RAILS_ENV=production' >> $ITPKG_HOME/shared/.rbenv-vars \
+&& npm install -g bower \
 && bundle install --without test development \
 && for i in .rbenv-vars .ssh tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
 
