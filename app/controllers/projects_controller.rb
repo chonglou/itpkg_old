@@ -38,6 +38,7 @@ class ProjectsController < ApplicationController
     if @project.present?
       # todo include?有性能问题
       @buttons = []
+      @buttons << {label: t('links.project.document.list'), url: project_documents_path(project_id:params[:id]), style: 'info'}
       @buttons << {label: t('links.project.edit', name: @project.name), url: edit_project_path(params[:id]), style: 'primary'}
       @buttons << {label: t('links.project.story.create'), url: new_project_story_path(@project), style: 'info'}
       @buttons << {label: t('links.project.add'), url: project_get_users_path(@project), method: 'get', remote: true, style: 'success'}
