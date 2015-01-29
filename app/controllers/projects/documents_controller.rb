@@ -35,11 +35,12 @@ class Projects::DocumentsController < ApplicationController
     @document = Document.find params[:id]
     if _can_view?
       @buttons=[
-          {label: t('links.project.document.edit', name: @document.name), url: edit_project_document_path, style: 'primary'},
+
           {label: t('links.project.document.download', name: @document.name), url: project_document_download_path(document_id: @document.id, project_id: @project.id), style: 'success'},
+          {label: t('links.project.document.list'), url: project_documents_path, style: 'warning'}
       ]
       if _can_edit?
-        @buttons << {label: t('links.project.document.list'), url: project_documents_path, style: 'warning'}
+        @buttons << {label: t('links.project.document.edit', name: @document.name), url: edit_project_document_path, style: 'primary'}
       end
     else
       render status: 404
@@ -53,6 +54,7 @@ class Projects::DocumentsController < ApplicationController
                          size: tf.size, details: ''
       doc.avatar= tf
       if doc.save
+        current_user.add_role :creator, doc
         {
             id: doc.id,
             name: doc.name,
@@ -75,7 +77,9 @@ class Projects::DocumentsController < ApplicationController
 
   def edit
     @document = Document.find params[:id]
-    unless _can_edit?
+    if _can_edit?
+      render 'edit'
+    else
       render status: 404
     end
   end
@@ -102,7 +106,6 @@ class Projects::DocumentsController < ApplicationController
     end
     redirect_to project_documents_path(project_id: @project)
     #render json: {files: files}
-
   end
 
   private
