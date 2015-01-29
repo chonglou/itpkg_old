@@ -21,18 +21,11 @@ namespace :bower do
     end
 
     #-------JStree-------
-    s = "#{bower_home}/jstree"
-    d = "#{third_home}/jstree"
-    unless Dir.exists?(d)
-      puts `cp -av #{s}/dist #{d}`
-    end
+    {
+        'jstree/dist'=>'jstree',
+        'viewerjs/ViewerJS'=>'viewerjs'
+    }.each{|s, d| puts(`cp -av #{bower_home}/#{s} #{third_home}/#{d}`) unless Dir.exist?("#{third_home}/#{d}")}
 
-    #-------viewerjs------
-    s = "#{bower_home}/viewerjs"
-    d = "#{third_home}/viewerjs"
-    unless Dir.exists?(d)
-      puts `cp -av #{s}/ViewerJS #{d}`
-    end
 
   end
 
