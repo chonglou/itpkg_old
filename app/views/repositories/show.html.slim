@@ -4,7 +4,7 @@ h3 #{t 'links.repository.clone'}
 hr
 pre
   code
-    git clone #{@clone_url}
+    | git clone #{@clone_url}
 |OR
 pre
   code ssh-agent bash -c 'ssh-add YOUR_KEY_FILE; git clone #{@clone_url}'

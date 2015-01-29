@@ -3,7 +3,7 @@ require 'itpkg/services/site'
 Itpkg::SiteService.version!
 Setting.init = Time.now
 Setting.git = {
-    host: '127.0.0.1',
+    host: '::1',
     username: 'git',
     port: 22,
     public_key: "#{Rails.root}/.ssh/deploy.pub",

@@ -23,6 +23,7 @@
 //= require highcharts/highcharts-more
 //= require select2-ng/select2
 //= require select2-ng/select2_locale_zh-CN
+//= require jstree/dist/jstree
 //= require jquery-file-upload/js/vendor/jquery.ui.widget
 //= require jquery-file-upload/js/jquery.iframe-transport
 //= require jquery-file-upload/js/jquery.fileupload

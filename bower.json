@@ -8,6 +8,8 @@
   "license": "MIT",
   "homepage": "https://github.com/chonglou/itpkg.git",
   "dependencies": {
+    "html5shiv": "latest",
+    "respond": "latest",
     "bootstrap-sass": "latest",
     "holderjs": "latest",
     "angular": "latest",

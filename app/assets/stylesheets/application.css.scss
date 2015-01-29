@@ -10,6 +10,7 @@ $icon-font-path: "bootstrap-sass/assets/fonts/bootstrap/";
 
 @import "patchs/bootstrap.patch";
 @import "patchs/select2.patch";
+@import "patchs/jstree.patch";
 @import "main";
 @import "components";
 @import "story";
