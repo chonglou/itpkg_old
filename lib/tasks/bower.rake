@@ -16,6 +16,9 @@ namespace :bower do
   task :third do
     bower_home = "#{Rails.root}/vendor/assets/bower_components"
     third_home = "#{Rails.root}/public/3rd"
+    unless Dir.exist?(third_home)
+      puts `mkdir -pv #{third_home}`
+    end
 
     #-------JStree-------
     s = "#{bower_home}/jstree"
@@ -24,14 +27,12 @@ namespace :bower do
       puts `cp -av #{s}/dist #{d}`
     end
 
-    #-------jquery.fileupload
-
-    # s = "#{bower_home}/jquery-file-upload"
-    # d = "#{third_home}/jquery-file-upload"
-    # unless Dir.exists?(d)
-    #   FileUtils.mkdir_p d
-    #   %w(css img js).each {|n| puts `cp -av #{s}/#{n} #{d}/#{n}`}
-    # end
+    #-------viewerjs------
+    s = "#{bower_home}/viewerjs"
+    d = "#{third_home}/viewerjs"
+    unless Dir.exists?(d)
+      puts `cp -av #{s}/ViewerJS #{d}`
+    end
 
   end
 

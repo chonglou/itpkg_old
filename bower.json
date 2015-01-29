@@ -23,7 +23,8 @@
     "bootstrap3-datetimepicker": "latest",
     "highlightjs": "latest",
     "highcharts": "latest",
-    "select2-ng": "latest"
+    "select2-ng": "latest",
+    "viewerjs": "latest"
   },
   "ignore": [
     "**/.*",

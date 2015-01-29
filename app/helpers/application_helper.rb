@@ -55,6 +55,6 @@ module ApplicationHelper
   end
 
   def js_viewer(path)
-    "/ViewerJS/#..#{path}"
+    "/3rd/viewerjs/#..#{path}"
   end
 end
