@@ -10,7 +10,9 @@ html
     link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#{image_path 'logo/32x32.ico'}"
     title #{@title}#{'-' if @title}#{t 'titles.www_home' }
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = stylesheet_link_tag '/3rd/jstree/themes/default/style.min.css', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = javascript_include_tag '/3rd/jstree/jstree.min.js', 'data-turbolinks-track' => true
     /[if lt IE 9]
       = javascript_include_tag 'html5shiv/dist/html5shiv.min'
       = javascript_include_tag 'respond/dest/respond.min'

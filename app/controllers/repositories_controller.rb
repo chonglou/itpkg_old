@@ -31,7 +31,7 @@ class RepositoriesController < ApplicationController
 
       git.close
     end
-    render json: {core: {data: nodes}}.to_json
+    render json: nodes.to_json
   end
 
   def changes
@@ -178,15 +178,23 @@ class RepositoriesController < ApplicationController
     tree = git.tree(oid)
 
     tree.each_tree do |entry|
-      node = {children: [], state: {opened: false}, text: entry.fetch(:name), icon: 'glyphicon glyphicon-list'}
+      node = {
+          children: [],
+          state: {opened: false},
+          text: entry.fetch(:name),
+          icon: 'glyphicon glyphicon-list'
+      }
       _tree_walk(git, entry.fetch(:oid), node)
       parent.fetch(:children) << node
     end
 
-    tree.each_blob { |entry| parent.fetch(:children) << {
-        a_attr: {href: "#{repository_file_path(repository_id: @repository.id, oid: entry.fetch(:oid), name: entry.fetch(:name))}"},
+    tree.each_blob do |entry|
+      parent.fetch(:children) << {
+        a_attr: {
+            href: "#{repository_file_path(repository_id: @repository.id, oid: entry.fetch(:oid), name: entry.fetch(:name))}"
+        },
         text: entry.fetch(:name),
         icon: 'glyphicon glyphicon-leaf'}
-    }
+    end
   end
 end

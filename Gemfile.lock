@@ -51,7 +51,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
-    bcrypt (3.1.9)
+    bcrypt (3.1.10)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bson (2.3.0)
@@ -66,17 +66,17 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (~> 1.3)
-    capistrano-bundler (1.1.3)
+    capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
     capistrano-rails (1.1.2)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
-    capistrano-rbenv (2.0.2)
+    capistrano-rbenv (2.0.3)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
     capistrano-stats (1.1.1)
-    capistrano3-puma (0.8.3)
+    capistrano3-puma (0.8.4)
       capistrano (~> 3.0)
       puma (>= 2.6)
     capybara (2.4.4)
@@ -106,10 +106,10 @@ GEM
     coffee-script (2.3.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.8.0)
+    coffee-script-source (1.9.0)
     colorize (0.7.5)
     columnize (0.9.0)
-    connection_pool (2.1.0)
+    connection_pool (2.1.1)
     dalli (2.7.2)
     data_magic (0.20)
       faker (>= 1.1.2)
@@ -169,7 +169,7 @@ GEM
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     ffi (1.9.6)
-    ffi-rzmq (2.0.1)
+    ffi-rzmq (2.0.4)
       ffi-rzmq-core (>= 1.0.1)
     ffi-rzmq-core (1.0.3)
       ffi (~> 1.9)
@@ -197,7 +197,7 @@ GEM
     fog-atmos (0.1.0)
       fog-core
       fog-xml
-    fog-aws (0.0.6)
+    fog-aws (0.0.8)
       fog-core (~> 1.27)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
@@ -206,7 +206,7 @@ GEM
       fog-core (~> 1.22)
       fog-json
       inflecto (~> 0.0.2)
-    fog-core (1.27.3)
+    fog-core (1.27.4)
       builder
       excon (~> 0.38)
       formatador (~> 0.2)
@@ -226,13 +226,13 @@ GEM
       fog-core (>= 1.21.0)
       fog-json
       fog-xml (>= 0.0.1)
-    fog-sakuracloud (0.1.2)
+    fog-sakuracloud (1.0.0)
       fog-core
       fog-json
     fog-serverlove (0.1.1)
       fog-core
       fog-json
-    fog-softlayer (0.3.30)
+    fog-softlayer (0.4.0)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.0)
@@ -269,7 +269,7 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.2)
-    kaminari (0.16.1)
+    kaminari (0.16.2)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     launchy (2.4.3)
@@ -287,7 +287,7 @@ GEM
     mini_magick (4.0.2)
     mini_portile (0.6.2)
     minitest (5.5.1)
-    mongoid (4.0.0)
+    mongoid (4.0.1)
       activemodel (~> 4.0)
       moped (~> 2.0.0)
       origin (~> 2.1)
@@ -310,7 +310,7 @@ GEM
     net-ssh (2.9.2)
     nice-ffi (0.4)
       ffi (>= 0.5.0)
-    nokogiri (1.6.5)
+    nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
@@ -329,7 +329,7 @@ GEM
       middleware
       thor
       thread_safe
-    puma (2.10.2)
+    puma (2.11.0)
       rack (>= 1.1, < 2.0)
     rack (1.6.0)
     rack-cache (1.2)
@@ -373,8 +373,8 @@ GEM
     redis (3.2.0)
     redis-namespace (1.5.1)
       redis (~> 3.0, >= 3.0.4)
-    responders (2.0.2)
-      railties (>= 4.2.0.alpha, < 5)
+    responders (2.1.0)
+      railties (>= 4.2.0, < 5)
     rolify (3.5.2)
     rspec-core (3.1.7)
       rspec-support (~> 3.1.0)
@@ -395,7 +395,7 @@ GEM
     rubyzip (1.1.6)
     rufus-scheduler (3.0.9)
       tzinfo
-    rugged (0.21.3)
+    rugged (0.21.4)
     sass (3.4.10)
     sass-rails (5.0.1)
       railties (>= 4.0.0, < 5.0)
@@ -411,9 +411,9 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0)
-    sidekiq (3.3.0)
+    sidekiq (3.3.1)
       celluloid (>= 0.16.0)
-      connection_pool (>= 2.0.0)
+      connection_pool (>= 2.1.1)
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
@@ -433,7 +433,7 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.2.2)
+    sprockets-rails (2.2.4)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
@@ -525,7 +525,6 @@ DEPENDENCIES
   rails-i18n
   rails-settings-cached (= 0.4.1)
   redcarpet
-  responders (~> 2.0)
   rolify
   rspec-mocks
   rspec-rails

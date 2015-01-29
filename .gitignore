@@ -4,3 +4,4 @@
 *.swp
 /vendor/assets/bower_components
 /public/assets
+/public/3rd

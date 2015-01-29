@@ -4,13 +4,11 @@ $icon-font-path: "bootstrap-sass/assets/fonts/bootstrap/";
 @import "bootstrap3-datetimepicker/build/css/bootstrap-datetimepicker.min.css";
 @import "jquery-file-upload/css/jquery.fileupload";
 @import "highlightjs/styles/default";
-@import "jstree/dist/themes/default/style";
 @import "select2-ng/select2";
 @import "select2-ng/select2-bootstrap";
 
 @import "patchs/bootstrap.patch";
 @import "patchs/select2.patch";
-@import "patchs/jstree.patch";
 @import "main";
 @import "components";
 @import "story";

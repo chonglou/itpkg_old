@@ -10,7 +10,7 @@ Rails.application.config.assets.precompile << %r(bootstrap-sass/assets/fonts/boo
 Rails.application.config.assets.precompile << %r(famfamfam-(flags|silk)/img/[\w-]+\.(png)$)
 # jstree
 Rails.application.config.assets.precompile << %r(jstree/dist/themes/default/(throbber.gif|32px.png))
-
+Rails.application.config.assets.precompile += %w(jstree/dist/jstree.min.js)
 # for ie
 Rails.application.config.assets.precompile += %w(html5shiv/dist/html5shiv.min.js respond/dest/respond.min.js)
 

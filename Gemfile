@@ -30,7 +30,7 @@ gem 'bcrypt', '~> 3.1.7'
 # Use unicorn as the app server
 # gem 'unicorn'
 
-gem 'responders', '~> 2.0'
+#gem 'responders', '~> 2.0'
 
 # Use Capistrano for deployment
 group :development do

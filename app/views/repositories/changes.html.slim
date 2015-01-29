@@ -2,12 +2,12 @@
 
 h3 #{"#{@commit.fetch :time}: #{@commit.fetch :message}"}
 hr
-= render 'layouts/pager_bar_0', previous_url:@previous_url, next_url:@next_url
+= render 'layouts/pager_bar_0', previous_url: @previous_url, next_url: @next_url
 div id='fs_tree'
 p &nbsp;
 ul
   li #{@commit.fetch :name}&lt;#{@commit.fetch :email}&gt;
-= render 'layouts/code_block', style:'diff', code:@patch
+= render 'layouts/code_block', style: 'diff', code: @patch
 
 nav
   ul class='pager'
@@ -18,14 +18,23 @@ nav
 javascript:
   $(function () {
     $.get("#{repository_tree_path(repository_id:@repository.id, oid:@oid)}", function (result) {
-      //console.log(data);
-      $('div#fs_tree').jstree(result).bind("select_node.jstree", function(node, selected){
 
-        var url = selected.node.original.a_attr.href;
-        if(url){
-          window.location.href=url;
-        }
+      $('div#fs_tree').jstree({
+        core: {
+          data: result
+        },
+        plugins: ["dnd"]
+      }).bind(
+              "select_node.jstree",
+              function (node, selected) {
 
-      });
+                var url = selected.node.original.a_attr;
+                if (url) {
+                  window.location.href = url.href;
+                }
+
+
+              });
+
     });
   });
