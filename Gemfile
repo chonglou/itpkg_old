@@ -115,4 +115,5 @@ gem 'ffi-inliner', github: 'chonglou/ffi-inliner'
 gem 'elasticsearch-model'
 gem 'elasticsearch-persistence'
 gem 'elasticsearch-rails'
+gem 'xmpp4r'
 

@@ -19,4 +19,6 @@ done
 
 cd ~/local/gitolite/VREF && sh itpkg.sh $1
 
+cd /etc/ejabberd && sed -i "/hosts/{n;s/.*/  - \"$1\"/}" ejabberd.yml
+
 echo 'Done!'

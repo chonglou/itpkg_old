@@ -9,13 +9,13 @@ RUN pacman -Syu --noconfirm \
 # itpkg
 nodejs libmariadbclient imagemagick cmake libgit2 protobuf zeromq \
 # services
-percona-server percona-server-clients redis memcached nginx \
+percona-server percona-server-clients redis memcached nginx ejabberd \
 # openvpn
 easy-rsa openvpn \
 # mail
 postfix dovecot \
 # docker registry
-python2 python2-pip python2-virtualenv \
+python2 python2-pip python2-virtualenv swig \
 # htpasswd 
 apr-util \
 && pacman -Scc --noconfirm
@@ -70,7 +70,7 @@ RUN sudo mkdir -pv $ITPKG_HOME \
 && rm -r .git .ssh \
 && mv .rbenv-vars $ITPKG_HOME/shared/.rbenv-vars \
 && echo 'RAILS_ENV=production' >> $ITPKG_HOME/shared/.rbenv-vars \
-&& npm install -g bower \
+&& sudo npm install -g bower \
 && bundle install --without test development \
 && for i in .rbenv-vars .ssh tmp log; do ln -sv $ITPKG_HOME/shared/$i $i; done 
 
@@ -127,7 +127,7 @@ RUN virtualenv2 $HOME/local/python2 \
 
 # systemd
 RUN sudo cp -v /tmp/mnt/etc/systemd/system/*.service /etc/systemd/system \
-&& for s in sshd mysqld mongodb elasticsearch memcached redis docker-registry dovecot postfix named openvpn@server itpkg-workers itpkg-dispatcher itpkg-journal itpkg-wss itpkg-www itpkg-setup nginx; \
+&& for s in sshd mysqld mongodb elasticsearch memcached redis ejabberd docker-registry dovecot postfix named openvpn@server itpkg-workers itpkg-dispatcher itpkg-journal itpkg-wss itpkg-www itpkg-setup nginx; \
 do sudo systemctl enable $s; \
 done
 # clean
