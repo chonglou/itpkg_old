@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130063546) do
+ActiveRecord::Schema.define(version: 20150130064837) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150130063546) do
     t.string   "node",     limit: 255
     t.string   "domain",   limit: 255
     t.string   "resource", limit: 255
+    t.string   "subject",  limit: 500
   end
 
   add_index "chat_messages", ["domain"], name: "index_chat_messages_on_domain", using: :btree

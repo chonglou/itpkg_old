@@ -39,7 +39,14 @@ module Itpkg
           begin
             if m.body
               from = m.from
-              ChatMessage.create domain: from.domain, node:from.node, resource:from.resource, to: @email, body: m.body, flag: ChatMessage.flags[m.type], created: Time.now
+              ChatMessage.create domain: from.domain,
+                                 node:from.node,
+                                 resource:from.resource,
+                                 to: @email,
+                                 body: m.body,
+                                 subject: m.subject,
+                                 flag: ChatMessage.flags[m.type],
+                                 created: Time.now
             else
               @logger.error m
             end
