@@ -14,17 +14,14 @@ module Itpkg
 
       def login(password)
         @client.auth password
-
         @client.send(Jabber::Presence.new)
         @client.add_message_callback do |m|
-
+          #yield m.from, @email, m.body, m.type
           begin
-            ChatMessage.create from:m.from, to:@email, body:m.body, flag:ChatMessage.flags[m.type], created:Time.now
-          rescue =>e
+            ChatJob.perform_later m.from.to_s, @email, m.body, m.type.to_s, Time.now.to_s
+          rescue => e
             puts e
           end
-
-
         end
       end
 

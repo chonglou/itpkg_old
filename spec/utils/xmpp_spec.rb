@@ -21,16 +21,16 @@ describe 'Xmpp Client' do
   # end
 
   it 'login' do
-    @c1.login @password
-    @c2.login @password
+    @c1.login(@password)
+    @c2.login(@password)
   end
 
   it 'send message' do
-
-    @c1.send! @c2.email, "Hello, #{Time.now}"
-    sleep 2
-    @c2.send! @c1.email, "Hello, #{Time.now}"
-    sleep 2
+    1.upto(5) do |i|
+      @c1.send! @c2.email, "Hello, #{Time.now}, #{i}"
+      @c2.send! @c1.email, "Hello, #{Time.now}, #{i}"
+    end
+    sleep 5
   end
 
   it 'receive message' do

@@ -124,7 +124,7 @@ class RepositoriesController < ApplicationController
   end
 
   def create
-    @repository = Repository.new(params.require(:repository).permit(:name, :title))
+    @repository = Repository.new params.require(:repository).permit(:name, :title)
     if @repository.save
       current_user.add_role :creator, @repository
       GitAdminJob.perform_later
