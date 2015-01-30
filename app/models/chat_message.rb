@@ -7,4 +7,9 @@ class ChatMessage < ActiveRecord::Base
     s = "#{self.node}@#{s}" if self.node
     s
   end
+
+  def self.messages(email)
+    node, domain = email.split('@')
+    ChatMessage.select(:to, :node, :resource,:domain,:body, :created).where('(node = ? AND domain = ?) OR `to` = ?', node, domain, email)
+  end
 end
