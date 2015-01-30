@@ -39,7 +39,7 @@ module Itpkg
           begin
             if m.body
               from = m.from
-              ChatMessage.create domain: from.domain,
+              msg = ChatMessage.create domain: from.domain,
                                  node:from.node,
                                  resource:from.resource,
                                  to: @email,
@@ -47,6 +47,7 @@ module Itpkg
                                  subject: m.subject,
                                  flag: ChatMessage.flags[m.type],
                                  created: Time.now
+              yield(msg) if block_given?
             else
               @logger.error m
             end
@@ -58,11 +59,13 @@ module Itpkg
 
       def send!(to, body, type=:chat)
 
-        msg = Jabber::Message.new(to, body)
-        msg.type=type
-        @client.send msg
+        jm = Jabber::Message.new(to, body)
+        jm.type=type
+        @client.send jm
+        
         jid = @client.jid
-        ChatMessage.create domain: jid.domain, node:jid.node, resource:jid.resource, to: to, body: body, flag: ChatMessage.flags[type], created: Time.now
+        msg = ChatMessage.create domain: jid.domain, node:jid.node, resource:jid.resource, to: to, body: body, flag: ChatMessage.flags[type], created: Time.now
+        yield(msg) if block_given?
       end
 
 
