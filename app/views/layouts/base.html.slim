@@ -19,7 +19,11 @@ html
     = csrf_meta_tags
     - if current_user
       javascript:
-        var gl_user_ext = {id: "#{current_user.uid}", token: "#{Itpkg::Encryptor.hmac current_user.uid}"};
+        function generate_message(obj){
+          obj = obj || {};
+          obj.ext = {id: "#{current_user.uid}", token: "#{Itpkg::Encryptor.hmac current_user.uid}"};
+          return JSON.stringify(obj);
+        }
 
   body
     div class="navbar navbar-inverse navbar-fixed-top" role="navigation"

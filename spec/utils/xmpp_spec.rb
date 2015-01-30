@@ -6,8 +6,8 @@ require 'itpkg/utils/xmpp'
 describe 'Xmpp Client' do
   before(:all) do
     @password = '123456'
-    @c1 = Itpkg::Xmpp::Client.new 'user21@localhost'
-    @c2 = Itpkg::Xmpp::Client.new 'user22@localhost'
+    @c1 = Itpkg::Xmpp::Client.new "user21@#{ENV['ITPKG_DOMAIN']}"
+    @c2 = Itpkg::Xmpp::Client.new "user22@#{ENV['ITPKG_DOMAIN']}"
   end
 
   # after(:all) do
@@ -20,22 +20,19 @@ describe 'Xmpp Client' do
   #   @c2.register @password
   # end
 
-  it 'login' do
-    @c1.login(@password)
-    @c2.login(@password)
-  end
+  # it 'login' do
+  #   @c1.login(@password)
+  #   @c2.login(@password)
+  # end
+  #
+  # it 'send message' do
+  #   1.upto(5) do |i|
+  #     @c1.send! @c2.email, "Hello, #{Time.now}, #{i}"
+  #     @c2.send! @c1.email, "Hello, #{Time.now}, #{i}"
+  #   end
+  #   sleep 5
+  # end
 
-  it 'send message' do
-    1.upto(5) do |i|
-      @c1.send! @c2.email, "Hello, #{Time.now}, #{i}"
-      @c2.send! @c1.email, "Hello, #{Time.now}, #{i}"
-    end
-    sleep 5
-  end
-
-  it 'receive message' do
-
-  end
 
   # it 'change password' do
   #   password = '654321'

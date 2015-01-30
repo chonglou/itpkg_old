@@ -57,4 +57,8 @@ module ApplicationHelper
   def js_viewer(path)
     "/3rd/viewerjs/#..#{path}"
   end
+
+  def wss_path
+    "ws#{'s' if Rails.env.production?}://wss.#{ENV['ITPKG_DOMAIN']}#{':9292' unless Rails.env.production?}"
+  end
 end
