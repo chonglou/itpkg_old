@@ -7,6 +7,10 @@ module Itpkg
   module Encryptor
     module_function
 
+    def hmac(str)
+      OpenSSL::HMAC.hexdigest OpenSSL::Digest.new('sha256'), ENV['ITPKG_HMAC_KEY'], str
+    end
+
     def encode(obj)
       salt = SecureRandom.random_bytes 64
       key = ActiveSupport::KeyGenerator.new(ENV['ITPKG_PASSWORD']).generate_key(salt)

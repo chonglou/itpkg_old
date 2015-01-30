@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   attr_encrypted :chat_password, key: ENV['ITPKG_PASSWORD'], mode: :per_attribute_iv_and_salt
 
   after_create :_register_im
-  before_create :_generate_im_password
+  before_create :_generate_random
 
   include RailsSettings::Extend
   # Include default devise modules. Others available are:
@@ -57,8 +57,9 @@ class User < ActiveRecord::Base
   end
 
   private
-  def _generate_im_password
+  def _generate_random
     self.chat_password = SecureRandom.hex 4
+    self.uid = SecureRandom.uuid
   end
 
   def _register_im

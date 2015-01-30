@@ -17,6 +17,10 @@ html
       = javascript_include_tag 'html5shiv/dist/html5shiv.min'
       = javascript_include_tag 'respond/dest/respond.min'
     = csrf_meta_tags
+    - if current_user
+      javascript:
+        var gl_user_ext = {id: "#{current_user.uid}", token: "#{Itpkg::Encryptor.hmac current_user.uid}"};
+
   body
     div class="navbar navbar-inverse navbar-fixed-top" role="navigation"
       = render 'layouts/nav_bar'
