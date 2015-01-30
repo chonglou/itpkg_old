@@ -1,3 +1,5 @@
+require 'securerandom'
+require 'itpkg/utils/xmpp'
 
 class UserValidator < ActiveModel::Validator
   def validate(record)
@@ -10,6 +12,10 @@ end
 class User < ActiveRecord::Base
   rolify
   attr_accessor :login
+  attr_encrypted :chat_password, key: ENV['ITPKG_PASSWORD'], mode: :per_attribute_iv_and_salt
+
+  after_create :_register_im
+  before_create :_generate_im_password
 
   include RailsSettings::Extend
   # Include default devise modules. Others available are:
@@ -44,9 +50,23 @@ class User < ActiveRecord::Base
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if (login = conditions.delete(:login))
-      where(conditions).where(['label = :value OR email = :value', { :value => login }]).first
+      where(conditions).where(['label = :value OR email = :value', {:value => login}]).first
     else
       where(conditions).first
+    end
+  end
+
+  private
+  def _generate_im_password
+    self.chat_password = SecureRandom.hex 4
+  end
+
+  def _register_im
+    begin
+      c = Itpkg::Xmpp::Client.new self.email
+      c.register self.chat_password
+    rescue => e
+      logger.error e
     end
   end
 end
