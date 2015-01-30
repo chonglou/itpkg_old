@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130002908) do
+ActiveRecord::Schema.define(version: 20150130054642) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -24,14 +24,18 @@ ActiveRecord::Schema.define(version: 20150130002908) do
   end
 
   create_table "chat_messages", force: :cascade do |t|
-    t.string   "from",    limit: 255,              null: false
-    t.string   "to",      limit: 255,              null: false
-    t.string   "body",    limit: 1024,             null: false
-    t.integer  "flag",    limit: 4,    default: 0, null: false
-    t.datetime "created",                          null: false
+    t.string   "to",       limit: 255,              null: false
+    t.string   "body",     limit: 1024,             null: false
+    t.integer  "flag",     limit: 4,    default: 0, null: false
+    t.datetime "created",                           null: false
+    t.string   "node",     limit: 255
+    t.string   "domain",   limit: 255
+    t.string   "resource", limit: 255
   end
 
-  add_index "chat_messages", ["from"], name: "index_chat_messages_on_from", using: :btree
+  add_index "chat_messages", ["domain"], name: "index_chat_messages_on_domain", using: :btree
+  add_index "chat_messages", ["node"], name: "index_chat_messages_on_node", using: :btree
+  add_index "chat_messages", ["resource"], name: "index_chat_messages_on_resource", using: :btree
   add_index "chat_messages", ["to"], name: "index_chat_messages_on_to", using: :btree
 
   create_table "confirmations", force: :cascade do |t|
