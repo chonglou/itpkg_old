@@ -1,42 +1,18 @@
-/////////////////////////////////Demo Code Begin//////////////////////////////
-ul id='chat-demo'
-  li
-    button id='chat-send' class='btn btn-info' #{t 'buttons.send'}
-javascript:
-  //测试demo
-  $(function(){
+div class='im-section'
+  = link_to t('links.chat.chat'), '#friends', class: 'btn btn-primary im-section__toggle_button',
+            data: {toggle: 'collapse'}, aria: {expanded: false, controls: 'friends'}
 
-    var log = function(text){
-      $("ul#chat-demo").append("<li>"+text+"</li>");
-    };
-    var Socket = window.MozWebSocket || window.WebSocket;
-    var socket = new Socket('#{wss_path}/', ['xmpp']);
-    socket.onopen = function(){
-      log('连接: '+ socket.protocol);
-      socket.send(generate_message({action:'login'}));
-    };
-    socket.onmessage = function(event){
-      console.log(event);
-      log('收到: ' + event.data);
-    };
-    socket.onerror = function (event) {
-      log('错误: ' + event.message);
-    };
-    socket.onclose = function (event) {
-      log('关闭: ' + event.code + ', ' + event.reason);
-    };
-
-    $("button#chat-send").click(function(){
-      var msg = 'Hello, world, '+new Date();
-      log('发送：'+msg);
-      //注意 发送消息为json 需要调用generate_message添加认证信息
-
-      socket.send(generate_message({
-        action:'send',
-        to:'user21@localhost.localdomain',
-        body:msg
-      }));
-    });
-  });
-
-/////////////////////////////////Demo Code End//////////////////////////////
+  div id='friends' class='im-section__friends collapse'
+    = form_tag search_users_path, remote: true do
+      div class='input-group im-section__friends-search'
+        = text_field_tag :friend, '', class: 'form-control', placeholder: t('links.chat.search_user')
+        span class='input-group-btn'
+          = submit_tag t('links.chat.go'), class: 'btn btn-default'
+    div id='searched_users'
+    - if current_user.recent_contacts_ids.present?
+      ul class='list-group'
+        li class='list-group-item active'
+          | #{t('links.chat.recent_contacts')}
+        - for contact in current_user.recent_contacts
+          li class='list-group-item im-friend' data-url="#{chat_path(source: current_user.id, target: contact.id)}"
+            = contact.full_name

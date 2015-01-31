@@ -1,0 +1,81 @@
+= stylesheet_link_tag 'chat_window'
+= javascript_include_tag 'chat_window'
+
+div class='chat'
+  div id='chat_content' class='chat-box well'
+  div class='chat-message'
+    div class='form-group'
+      = text_area_tag :message, '', rows: 2, class: 'form-control'
+    div class='form-group text-right'
+      = link_to t('links.chat.clear'), '', id: 'clear_message', class: 'btn btn-default'
+      = link_to t('links.chat.send'), '', id: 'chat_send', class: 'btn btn-info chat-message__send'
+
+javascript:
+  (function ($) {
+    var clearMessage = function () {
+      $('#message').val('');
+    };
+
+    var show_message = function (text, direction) {
+      if (direction == 'in') {
+        $("#chat_content").append("<div class='message-container clearfix'><div class='arrow-left'><div class='outer'></div><div class='inner'></div></div><div class='message-content-left'><p>" + text + '</p></div></div>');
+      } else {
+        $("#chat_content").append("<div class='message-container clearfix'><div class='arrow-right'><div class='outer'></div><div class='inner'></div></div><div class='message-content-right'><p>" + text + '</p></div></div>');
+      }
+
+      $("#chat_content").scrollTop($("#chat_content")[0].scrollHeight)
+    };
+
+    var log = function (text) {
+      $("#chat_content").append("<li>" + text + "</li>");
+    };
+
+    var Socket = window.MozWebSocket || window.WebSocket;
+    var socket = new Socket('#{wss_path}/', ['xmpp']);
+
+    socket.onopen = function () {
+      log('连接: ' + socket.protocol);
+      socket.send(generate_message({action: 'login'}));
+    };
+
+    socket.onmessage = function (event) {
+      console.log(event);
+      // log('收到: ' + event.data);
+      show_message('收到：' + event.data, 'in');
+    };
+
+    socket.onerror = function (event) {
+      log('错误: ' + event.message);
+    };
+
+    socket.onclose = function (event) {
+      log('关闭: ' + event.code + ', ' + event.reason);
+    };
+
+    $(function () {
+      $("#chat_send").on('click', function (e) {
+        e.preventDefault();
+
+        var msg = $('#message').val(); // + new Date();
+
+        if (msg !== '') {
+          show_message(msg, 'out');
+          // show_message('发送：' + msg, 'in');
+          clearMessage();
+          //注意 发送消息为json 需要调用generate_message添加认证信息
+
+          socket.send(generate_message({
+            action: 'send',
+            to: 'user21@localhost.localdomain',
+            body: msg
+          }));
+        }
+      });
+
+      $('#clear_message').on('click', function (e) {
+        e.preventDefault();
+
+        clearMessage();
+      });
+    })
+  })(jQuery);

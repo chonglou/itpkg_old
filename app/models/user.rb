@@ -34,6 +34,7 @@ class User < ActiveRecord::Base
 
   validates_with UserValidator
 
+  scope :search, ->(name) { where('first_name LIKE ? OR last_name like ?', "%#{name}%", "%#{name}%") }
 
   def to_s
     "#{self.full_name}<#{self.email}>"
@@ -54,6 +55,23 @@ class User < ActiveRecord::Base
     else
       where(conditions).first
     end
+  end
+
+  def recent_contacts
+    User.where(id: self.recent_contacts_ids)
+  end
+
+  def add_recent_contact(user_id)
+    return if user_id.blank?
+
+    contacts_ids = recent_contacts_ids.try(:split, ',') || []
+
+    if contacts_ids.exclude?(user_id.to_s)
+      contacts_ids.push(user_id)
+      contacts_ids.shift if contacts_ids.size == 6
+    end
+
+    update(recent_contacts_ids: contacts_ids.join(','))
   end
 
   private
