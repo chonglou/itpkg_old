@@ -1,0 +1,107 @@
+@import "bootstrap-sass/assets/stylesheets/bootstrap";
+
+@mixin arrow {
+  width: 12px;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+  top: 6px;
+}
+
+@mixin arrow-left {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  position: absolute;
+  top: 0;
+}
+
+@mixin arrow-right {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  position: absolute;
+  top: 0;
+}
+
+@mixin message-content {
+  width: 300px;
+  height: auto;
+  border: 1px solid #999;
+  background-color: #fff;
+  padding: 6px 8px;
+  border-radius: 5px;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-box {
+  height: 400px;
+  margin: 5px;
+  overflow: scroll;
+}
+
+.chat-message {
+  height: 70px;
+  margin: 5px;
+}
+
+.chat-message__send {
+  margin-left: 10px;
+}
+
+.message-container {
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.message-container .arrow-left {
+  @include arrow;
+  float: left;
+  right: -1px;
+}
+
+.message-container .arrow-left .outer {
+  @include arrow-left;
+  border-right: 20px solid #999;
+  left: 0;
+}
+
+.message-container .arrow-left .inner {
+  @include arrow-left;
+  border-right: 20px solid #fff;
+  left: 2px;
+}
+
+.message-container .message-content-left {
+  @include message-content;
+  float: left;
+}
+
+.message-container .arrow-right {
+  @include arrow;
+  float: right;
+  right: 1px;
+}
+
+.message-container .arrow-right .outer {
+  @include arrow-right;
+  border-left: 20px solid #999;
+  right: 0;
+}
+
+.message-container .arrow-right .inner {
+  @include arrow-right;
+  border-left: 20px solid #fff;
+  right: 2px;
+}
+
+.message-container .message-content-right {
+  @include message-content;
+  float: right;
+}

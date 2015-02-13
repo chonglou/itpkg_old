@@ -59,3 +59,5 @@ en:
     unauthorized: 'You are not allowed to do this operation.'
     project_not_exists: 'The project does not exist.'
     empty_comment: 'You cannot submit an empty comment.'
+  chat:
+    user_not_fount: 'User Not Found'

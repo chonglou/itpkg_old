@@ -155,6 +155,8 @@ Rails.application.routes.draw do
     end
 
     get '/' => 'home#index', as: :www_home
+    get 'chat' => 'home#init_chat'
+    post 'search_users' => 'home#search_users'
   end
 
   root 'home#index'

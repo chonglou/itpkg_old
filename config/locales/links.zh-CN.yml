@@ -193,3 +193,11 @@ zh-CN:
       list: '收件箱'
       compose: '新建邮件'
       setting: '参数设置'
+    chat:
+      chat: '聊天'
+      go: '搜'
+      search_user: '搜索用户'
+      search_result: '搜索结果'
+      recent_contacts: '最近联系'
+      clear: '清除'
+      send: '发送'

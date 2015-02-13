@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150130175742) do
+ActiveRecord::Schema.define(version: 20150210041513) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -535,6 +535,7 @@ ActiveRecord::Schema.define(version: 20150130175742) do
     t.string   "encrypted_chat_password_salt", limit: 255
     t.string   "encrypted_chat_password_iv",   limit: 255
     t.string   "uid",                          limit: 36,               null: false
+    t.string   "recent_contacts_ids",          limit: 255
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

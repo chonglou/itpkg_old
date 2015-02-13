@@ -1,0 +1,11 @@
+ul class='list-group'
+  li class='list-group-item active'
+    | #{t('links.chat.search_result')}
+  - if @friends.any?
+    - for friend in @friends
+      li class='list-group-item im-friend' data-url="#{chat_path(source: current_user.id, target: friend.id)}"
+        = friend.full_name
+
+  - else
+    li class='list-group-item im-friend'
+      | #{t('chat.user_not_found')}

@@ -193,3 +193,9 @@ en:
       list: 'Inbox'
       compose: 'Compose'
       setting: 'Settings'
+    chat:
+      chat: 'Chat'
+      go: 'Go'
+      search_user: 'Search user'
+      search_result: 'Search Result'
+      recent_contacts: 'Recent Contacts'

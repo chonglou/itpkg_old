@@ -21,4 +21,14 @@ class HomeController < ApplicationController
       render status: 404
     end
   end
+
+  def search_users
+    @friends = User.search(params[:friend])
+  end
+
+  def init_chat
+    current_user.add_recent_contact(params[:target])
+
+    render layout: false
+  end
 end

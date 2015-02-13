@@ -1,0 +1,15 @@
+.im-section__toggle_button {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.im-section__friends {
+  position: relative;
+  .list-group-item:hover {
+    cursor: pointer;
+  }
+}
+
+.im-section__friends-search {
+  margin-bottom: 5px;
+}
