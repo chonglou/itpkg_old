@@ -12,6 +12,8 @@ div class='chat'
 
 javascript:
   (function ($) {
+    'use strict';
+
     var clearMessage = function () {
       $('#message').val('');
     };
@@ -53,10 +55,19 @@ javascript:
     };
 
     $(function () {
-      $("#chat_send").on('click', function (e) {
+      var $send = $("#chat_send");
+
+      $('#message').keypress(function (e) {
+        if (e.which === 13 || e.keyCode === 13) {
+          e.preventDefault();
+          $send.click();
+        }
+      });
+
+      $send.on('click', function (e) {
         e.preventDefault();
 
-        var msg = $('#message').val(); // + new Date();
+        var msg = $('#message').val().trim(); // + new Date();
 
         if (msg !== '') {
           show_message(msg, 'out');
