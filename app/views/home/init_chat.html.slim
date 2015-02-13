@@ -18,9 +18,9 @@ javascript:
 
     var show_message = function (text, direction) {
       if (direction == 'in') {
-        $("#chat_content").append("<div class='message-container clearfix'><div class='arrow-left'><div class='outer'></div><div class='inner'></div></div><div class='message-content-left'><p>" + text + '</p></div></div>');
+        $("#chat_content").append("<div class='bubble'>" + text + '</div>');
       } else {
-        $("#chat_content").append("<div class='message-container clearfix'><div class='arrow-right'><div class='outer'></div><div class='inner'></div></div><div class='message-content-right'><p>" + text + '</p></div></div>');
+        $("#chat_content").append("<div class='bubble bubble--alt'>" + text + '</div>');
       }
 
       $("#chat_content").scrollTop($("#chat_content")[0].scrollHeight)
@@ -60,7 +60,7 @@ javascript:
 
         if (msg !== '') {
           show_message(msg, 'out');
-          // show_message('发送：' + msg, 'in');
+          // show_message(msg, 'in');
           clearMessage();
           //注意 发送消息为json 需要调用generate_message添加认证信息
 

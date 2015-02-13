@@ -1,49 +1,12 @@
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
-
-@mixin arrow {
-  width: 12px;
-  height: 20px;
-  overflow: hidden;
-  position: relative;
-  top: 6px;
-}
-
-@mixin arrow-left {
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  position: absolute;
-  top: 0;
-}
-
-@mixin arrow-right {
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  position: absolute;
-  top: 0;
-}
-
-@mixin message-content {
-  width: 300px;
-  height: auto;
-  border: 1px solid #999;
-  background-color: #fff;
-  padding: 6px 8px;
-  border-radius: 5px;
-}
-
-.chat {
-  display: flex;
-  flex-direction: column;
-}
+$bubble-background-color: #d0cfd4;
+$bubble-alt-background-color: #2095FE;
+$bubble-font-color: #fff;
 
 .chat-box {
   height: 400px;
   margin: 5px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .chat-message {
@@ -55,53 +18,58 @@
   margin-left: 10px;
 }
 
-.message-container {
-  margin-bottom: 15px;
+.bubble {
+  background-color: $bubble-background-color;
+  border-radius: 15px;
+  box-sizing: border-box;
+  clear: both;
+  float: left;
+  margin-bottom: 20px;
+  padding: 8px 20px;
   position: relative;
+  width: 350px;
+  max-width: 100%;
+  word-wrap: break-word;
+  color: $bubble-font-color;
 }
 
-.message-container .arrow-left {
-  @include arrow;
-  float: left;
-  right: -1px;
+.bubble:before, .bubble:after {
+  border-radius: 10px;
+  content: '';
+  display: block;
+  position: absolute;
 }
 
-.message-container .arrow-left .outer {
-  @include arrow-left;
-  border-right: 20px solid #999;
-  left: 0;
+.bubble:before {
+  border: 10px solid transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  left: -7px;
+  z-index: -2;
 }
 
-.message-container .arrow-left .inner {
-  @include arrow-left;
-  border-right: 20px solid #fff;
-  left: 2px;
+.bubble:after {
+  border: 8px solid transparent;
+  border-bottom-color: $bubble-background-color;
+  bottom: 1px;
+  left: -5px;
 }
 
-.message-container .message-content-left {
-  @include message-content;
-  float: left;
-}
-
-.message-container .arrow-right {
-  @include arrow;
+.bubble--alt {
+  background-color: $bubble-alt-background-color;
   float: right;
-  right: 1px;
 }
 
-.message-container .arrow-right .outer {
-  @include arrow-right;
-  border-left: 20px solid #999;
-  right: 0;
+.bubble--alt:before {
+  border-bottom-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  left: auto;
+  right: -7px;
 }
 
-.message-container .arrow-right .inner {
-  @include arrow-right;
-  border-left: 20px solid #fff;
-  right: 2px;
-}
-
-.message-container .message-content-right {
-  @include message-content;
-  float: right;
+.bubble--alt:after {
+  border-bottom-color: $bubble-alt-background-color;
+  border-radius: 10px;
+  left: auto;
+  right: -5px;
 }
