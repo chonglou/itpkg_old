@@ -12,15 +12,17 @@ div class='chat'
 
 javascript:
   (function ($) {
+    'use strict';
+
     var clearMessage = function () {
       $('#message').val('');
     };
 
     var show_message = function (text, direction) {
       if (direction == 'in') {
-        $("#chat_content").append("<div class='message-container clearfix'><div class='arrow-left'><div class='outer'></div><div class='inner'></div></div><div class='message-content-left'><p>" + text + '</p></div></div>');
+        $("#chat_content").append("<div class='bubble'>" + text + '</div>');
       } else {
-        $("#chat_content").append("<div class='message-container clearfix'><div class='arrow-right'><div class='outer'></div><div class='inner'></div></div><div class='message-content-right'><p>" + text + '</p></div></div>');
+        $("#chat_content").append("<div class='bubble bubble--alt'>" + text + '</div>');
       }
 
       $("#chat_content").scrollTop($("#chat_content")[0].scrollHeight)
@@ -53,14 +55,23 @@ javascript:
     };
 
     $(function () {
-      $("#chat_send").on('click', function (e) {
+      var $send = $("#chat_send");
+
+      $('#message').keypress(function (e) {
+        if (e.which === 13 || e.keyCode === 13) {
+          e.preventDefault();
+          $send.click();
+        }
+      });
+
+      $send.on('click', function (e) {
         e.preventDefault();
 
-        var msg = $('#message').val(); // + new Date();
+        var msg = $('#message').val().trim(); // + new Date();
 
         if (msg !== '') {
           show_message(msg, 'out');
-          // show_message('发送：' + msg, 'in');
+          // show_message(msg, 'in');
           clearMessage();
           //注意 发送消息为json 需要调用generate_message添加认证信息
 
