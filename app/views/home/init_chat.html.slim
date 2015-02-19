@@ -32,6 +32,12 @@ javascript:
       $("#chat_content").append("<li>" + text + "</li>");
     };
 
+    var generate_message = function (obj) {
+      obj = obj || {};
+      obj.ext = {id: "#{current_user.uid}", token: "#{Itpkg::Encryptor.hmac current_user.uid}"};
+      return JSON.stringify(obj);
+    };
+
     var Socket = window.MozWebSocket || window.WebSocket;
     var socket = new Socket('#{wss_path}/', ['xmpp']);
 
@@ -55,6 +61,8 @@ javascript:
     };
 
     $(function () {
+      socket.onopen();
+
       var $send = $("#chat_send");
 
       $('#message').keypress(function (e) {
