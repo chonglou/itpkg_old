@@ -20,9 +20,9 @@ javascript:
 
     var show_message = function (text, direction) {
       if (direction == 'in') {
-        $("#chat_content").append("<div class='bubble'>" + text + '</div>');
+        $("#chat_content").append("<div class='message from'>" + text + '</div>');
       } else {
-        $("#chat_content").append("<div class='bubble bubble--alt'>" + text + '</div>');
+        $("#chat_content").append("<div class='message to'>" + text + '</div>');
       }
 
       $("#chat_content").scrollTop($("#chat_content")[0].scrollHeight)

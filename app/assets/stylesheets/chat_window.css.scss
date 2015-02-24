@@ -1,12 +1,14 @@
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
-$bubble-background-color: #d0cfd4;
-$bubble-alt-background-color: #2095FE;
-$bubble-font-color: #fff;
+$message-from-background-color: #d0cfd4;
+$message-to-background-color: #2095FE;
+$message-to-font-color: #ffffff;
+$message-from-font-color: #363636;
 
 .chat-box {
   height: 400px;
   margin: 5px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .chat-message {
@@ -18,58 +20,49 @@ $bubble-font-color: #fff;
   margin-left: 10px;
 }
 
-.bubble {
-  background-color: $bubble-background-color;
-  border-radius: 15px;
-  box-sizing: border-box;
-  clear: both;
-  float: left;
-  margin-bottom: 20px;
-  padding: 8px 20px;
+.message {
+  border-radius: 20px 20px 20px 20px;
+  padding: 15px 20px;
   position: relative;
-  width: 350px;
-  max-width: 100%;
-  word-wrap: break-word;
-  color: $bubble-font-color;
+  box-sizing: content-box;
 }
 
-.bubble:before, .bubble:after {
-  border-radius: 10px;
-  content: '';
-  display: block;
-  position: absolute;
+.message.to {
+  background-color: $message-to-background-color;
+  color: $message-to-font-color;
+  margin: 15px -2px 15px 80px;
 }
 
-.bubble:before {
-  border: 10px solid transparent;
-  border-bottom-color: rgba(0, 0, 0, 0.5);
+.message.from {
+  background-color: $message-from-background-color;
+  color: $message-from-font-color;
+  margin: 15px 80px 15px -2px;
+}
+
+.message.to + .message.to,
+.message.from + .message.from {
+  margin-top: -7px;
+}
+
+.message:before {
+  border-color: $message-to-background-color;
+  border-radius: 50% 50% 50% 50%;
+  border-style: solid;
+  border-width: 0 20px;
   bottom: 0;
-  left: -7px;
-  z-index: -2;
+  clip: rect(20px, 35px, 42px, 0px);
+  content: ' ';
+  height: 40px;
+  position: absolute;
+  right: -50px;
+  width: 30px;
+  z-index: 1;
+  box-sizing: content-box;
 }
 
-.bubble:after {
-  border: 8px solid transparent;
-  border-bottom-color: $bubble-background-color;
-  bottom: 1px;
-  left: -5px;
-}
-
-.bubble--alt {
-  background-color: $bubble-alt-background-color;
-  float: right;
-}
-
-.bubble--alt:before {
-  border-bottom-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  left: auto;
-  right: -7px;
-}
-
-.bubble--alt:after {
-  border-bottom-color: $bubble-alt-background-color;
-  border-radius: 10px;
-  left: auto;
-  right: -5px;
+.message.from:before {
+  box-sizing: content-box;
+  border-color: $message-from-background-color;
+  left: -50px;
+  transform: rotateY(180deg);
 }
