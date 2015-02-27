@@ -55,9 +55,14 @@ en:
       details: 'Details'
       edit: 'Edit Task'
       edit_comment: 'Edit Comment'
+    feedback:
+      info_title: 'Issue Details'
   message:
     unauthorized: 'You are not allowed to do this operation.'
     project_not_exists: 'The project does not exist.'
     empty_comment: 'You cannot submit an empty comment.'
+    feedback_panel_title: 'Thank you very much for reporting the issue!'
+    feedback_panel_body: 'We are listening, and your response will help us to improve the quality of our product.
+    Thank you so much for you support!'
   chat:
-    user_not_fount: 'User Not Found'
+    user_not_found: 'User Not Found'

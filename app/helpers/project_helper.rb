@@ -83,4 +83,27 @@ module ProjectHelper
     button = button_to text, link, class: style, disabled: disabled
     [button]
   end
+
+  def feedback_action_button(feedback)
+    text = link = style = disabled = nil
+
+    case feedback.status
+      when 'submit'
+        text = t('buttons.start')
+        link = project_feedback_update_status_path(feedback.project, feedback, id: feedback.id, status: :processing)
+        style = 'btn btn-default'
+      when 'processing'
+        text = t('buttons.finish')
+        link = project_feedback_update_status_path(feedback.project, feedback, id: feedback.id, status: :done)
+        style = 'btn btn-primary'
+        disabled = current_user != feedback.user
+      when 'done'
+        text     = t('buttons.complete')
+        style    = 'btn btn-default'
+        disabled = true
+      else return
+    end
+
+    button_to text, link, class: style, disabled: disabled
+  end
 end

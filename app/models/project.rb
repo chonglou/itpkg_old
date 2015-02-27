@@ -8,4 +8,5 @@ class Project < ActiveRecord::Base
   has_many :story_tags,  through: 'Story'
   has_many :story_types, through: 'Story'
   has_many :tasks,       through: 'Story'
+  has_many :feedbacks
 end

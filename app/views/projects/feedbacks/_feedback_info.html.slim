@@ -1,0 +1,37 @@
+div class='panel panel-primary'
+  div class='panel-body'
+    div class='container-fluid'
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.project')}
+        div class='col-sm-10 text-left' #{link_to @project.name, project_path(@project)}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.name')}
+        div class='col-sm-10 text-left' #{@feedback.name}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.email')}
+        div class='col-sm-10 text-left' #{@feedback.email}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.phone_number')}
+        div class='col-sm-10 text-left' #{@feedback.phone_number}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.status')}
+        div class='col-sm-10 text-left' #{@feedback.status.capitalize}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.user')}
+        div class='col-sm-10 text-left' #{@feedback.user.try(:full_name) || 'N/A'}
+
+      div class='row'
+        div class='col-sm-2 text-right'
+          strong #{t('links.feedback.content')}
+        div class='col-sm-10 text-left' #{{md2html @feedback.content}}

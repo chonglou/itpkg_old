@@ -45,9 +45,13 @@ zh-CN:
       plan_finish_time: '预计结束时间'
       real_start_time: '实际开始时间'
       real_finish_time: '实际结束时间'
+    feedback:
+      info_title: '故障详细信息'
   message:
     unauthorized: '您没有足够的权限执行此操作'
     project_not_exists: '项目不存在'
     empty_comment: '提交评论不能为空'
+    feedback_panel_title: '非常感谢您的问题反馈！'
+    feedback_panel_body: '我们一直在聆听着您的问题反馈，您的宝贵意见将为我们提高产品质量提供非常大的帮助。非常感谢您的大力支持！'
   chat:
     user_not_found: '没有找到用户'

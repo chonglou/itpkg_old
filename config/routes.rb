@@ -127,6 +127,11 @@ Rails.application.routes.draw do
 
       resources :story_types, controller: 'projects/story_types'
       resources :story_tags, controller: 'projects/story_tags'
+
+      resources :feedbacks, controller: 'projects/feedbacks' do
+        post :update_status
+        get :success
+      end
     end
 
 

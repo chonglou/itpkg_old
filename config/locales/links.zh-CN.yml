@@ -21,6 +21,8 @@ zh-CN:
         show: '查看文档 [%{name}]'
         download: '下载文档 [%{name}]'
         viewer: '在线查看文档 [%{name}]'
+      feedback: '故障报告'
+      feedback_remove: '删除此故障报告'
     status:
       workers:
         title: '任务队列'
@@ -49,6 +51,16 @@ zh-CN:
     task:
       create: '新建任务'
       edit: '编辑任务'
+    feedback:
+      create: '报告故障'
+      name: '报告人姓名'
+      email: '报告人邮箱'
+      phone_number: '报告人电话'
+      project: '所属项目'
+      status: '状态'
+      content: '描述'
+      user: '负责人'
+      list: '故障列表'
     docker: 'Docker'
     logging_item:
       list: '日志存储'

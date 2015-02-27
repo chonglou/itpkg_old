@@ -82,4 +82,23 @@
     initializePagination();
     initializeAddUsersForm();
   };
+
+  $(function () {
+    ZeroClipboard.config({swfPath: 'https://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.swf'});
+    var copy_button = $('.js-copy-button');
+
+    copy_button.on('click', function () {
+      ZeroClipboard.setData('text/plain', $(this).prev().val());
+    });
+
+    copy_button.hover(
+      function () {
+        $(this).children('i').tooltip('show');
+      },
+      function () {
+        $(this).children('i').tooltip('hide');
+      }
+    );
+
+  });
 })(jQuery);

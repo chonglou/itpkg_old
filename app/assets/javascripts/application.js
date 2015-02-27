@@ -24,6 +24,7 @@
 //= require highcharts/highcharts-more
 //= require select2-ng/select2
 //= require select2-ng/select2_locale_zh-CN
+//= require zeroclipboard/dist/ZeroClipboard.Core.js
 
 
 //= require blueimp-load-image/js/load-image.all.min

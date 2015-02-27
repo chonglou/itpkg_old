@@ -12,6 +12,18 @@ br
 div id='stories_table'
   = render partial: 'stories'
 
+h3 #{t('links.project.feedback')}
+hr
+
+div class='row'
+  div class='col-md-1'
+    = link_to t('links.feedback.list'), project_feedbacks_path(@project), class: 'btn btn-info feedback-button'
+  div class='col-md-7 col-md-offset-1'
+    div class='input-group'
+      = text_field_tag :new_feedback, new_project_feedback_url(@project), class: 'form-control', readonly: 'true'
+      span class='input-group-addon input-group-addon-clickable js-copy-button'
+        i class='glyphicon glyphicon-copy' data-toggle='tooltip' data-placement='bottom' title='Copy to clipboard'
+
 - if current_user.is_admin?
   br
   h3 #{t('links.project.remove', name:@project.name)}
