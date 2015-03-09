@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
          :async, authentication_keys: [:login]
 
   has_one :contact
+  has_many :feedbacks
   validates :label, uniqueness: true
   validates :label, :first_name, :last_name, presence: true
   validates_format_of :label, with: /\A[a-zA-Z][a-zA-Z0-9_]{2,12}\z/, on: :create

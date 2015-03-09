@@ -21,6 +21,8 @@ en:
         show: 'Show document [%{name}]'
         download: 'Download document [%{name}]'
         viewer: 'View document [%{name}] online'
+      feedback: 'Reported Issues'
+      feedback_remove: 'Delete this Issue'
     status:
       workers:
         title: 'Workers'
@@ -49,6 +51,15 @@ en:
     task:
       create: 'Create Task'
       edit: 'Edit Task'
+    feedback:
+      name: "Reporter's name"
+      email: "Reporter's email"
+      phone_number: "Reporter's phone"
+      create: 'Report an Issue'
+      project: 'Project'
+      content: 'Details'
+      user: 'Taken by'
+      list: 'Issues List'
     docker: 'Docker'
     logging_item:
       list: 'Logs'

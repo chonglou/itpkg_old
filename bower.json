@@ -24,7 +24,8 @@
     "highlightjs": "latest",
     "highcharts": "latest",
     "select2-ng": "latest",
-    "viewerjs": "latest"
+    "viewerjs": "latest",
+    "zeroclipboard": "~2.2.0"
   },
   "ignore": [
     "**/.*",

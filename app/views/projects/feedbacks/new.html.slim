@@ -1,0 +1,26 @@
+- title=t('links.feedback.create')
+
+= bootstrap_form(@feedback, url: {action: 'create'}, data: { project_id: @project.id }) do |f|
+  = f.error_messages
+  = f.fieldset do
+    = f.legend(title)
+
+    = f.group do
+      = f.label :name
+      = f.text_field :name, autofocus: true
+
+    = f.group do
+      = f.label :email
+      = f.text_field :email
+
+    = f.group do
+      = f.label :phone_number
+      = f.text_field :phone_number
+
+    = f.group do
+      = f.label :content
+      = f.text_area :content
+
+    = f.button_group do
+      = f.submit t('buttons.submit')
+      = f.back t('buttons.back')

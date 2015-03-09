@@ -1,0 +1,15 @@
+= render 'layouts/button_group', items: @buttons, back: true
+
+div class='clearfix'
+  h3 class='pull-left' #{t('titles.feedback.info_title')}
+  div class='pull-right status-buttons' #{feedback_action_button(@feedback)}
+hr
+
+div id='feedback_info'
+  = render partial: 'feedback_info'
+
+- if current_user.is_member_of? @project
+  br
+  h3 #{t('links.project.feedback_remove', name:@project.name)}
+  hr
+  = render 'layouts/remove_button', name: 'buttons.remove', url: project_feedback_path(@project, @feedback), back: false

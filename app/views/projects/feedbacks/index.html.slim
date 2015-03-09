@@ -1,0 +1,7 @@
+= render 'layouts/button_group', items:@buttons, back:true
+
+h3 #{@project.name}
+hr
+
+div id='feedbacks_table'
+  = render partial: 'feedbacks'

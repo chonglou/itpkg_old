@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150210041513) do
+ActiveRecord::Schema.define(version: 20150227031740) do
 
   create_table "certificates", force: :cascade do |t|
     t.text     "cert",               limit: 65535, null: false
@@ -171,6 +171,22 @@ ActiveRecord::Schema.define(version: 20150210041513) do
   end
 
   add_index "email_users", ["email"], name: "index_email_users_on_email", unique: true, using: :btree
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.string   "email",        limit: 255
+    t.string   "phone_number", limit: 255
+    t.text     "content",      limit: 65535
+    t.integer  "status",       limit: 4
+    t.boolean  "active",       limit: 1
+    t.integer  "project_id",   limit: 4
+    t.integer  "user_id",      limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "feedbacks", ["project_id"], name: "index_feedbacks_on_project_id", using: :btree
+  add_index "feedbacks", ["user_id"], name: "index_feedbacks_on_user_id", using: :btree
 
   create_table "finance_scores", force: :cascade do |t|
     t.integer  "project_id", limit: 4,                              null: false

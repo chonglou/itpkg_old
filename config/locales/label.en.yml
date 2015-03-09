@@ -26,3 +26,5 @@ en:
         flag_disable: 'Disable'
       email_user:
         email: 'Username'
+      feedback:
+        phone_number: 'Phone Number'

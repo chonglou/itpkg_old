@@ -43,6 +43,12 @@ zh-CN:
         plan_start_time: '预计开始时间'
         plan_finish_time: '预计结束时间'
         details: '详细描述'
+      feedback:
+        name: '姓名'
+        email: '邮箱'
+        status: '状态'
+        phone_number: '电话'
+        content: '故障描述'
       template:
         flag: '类型'
         name: '名称'
